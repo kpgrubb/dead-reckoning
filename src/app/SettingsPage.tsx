@@ -52,6 +52,13 @@ export function SettingsPage() {
         {audio.enabled && (
           <>
             <label className="dr-choice">
+              <input type="checkbox" checked={audio.checkpointSwitch} onChange={(e) => audio.setCheckpointSwitch(e.target.checked)} />
+              <span>
+                Switch to General Quarters during checkpoints
+                <span className="dr-muted"> — returns to your ambient track afterwards; a manual skip during a checkpoint wins</span>
+              </span>
+            </label>
+            <label className="dr-choice">
               <span className="dr-field__label" style={{ minWidth: '8ch' }}>Track</span>
               <select className="dr-input" value={audio.trackIndex} onChange={(e) => audio.setTrack(Number(e.target.value))} aria-label="Ambient track">
                 {TRACKS.map((t, i) => (

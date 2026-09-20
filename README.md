@@ -33,10 +33,12 @@ See [CLAUDE.md](./CLAUDE.md) for the full contracts. In short: `content/act-N/*.
 
 The top bar carries a **COMMS · AMBIENT** player (play/pause, skip, volume, mute; off by default; volume and last track are remembered). Tracks ship with the static build and are never fetched from the network.
 
+Tracks have a `role`: `ambient` tracks form the normal skip/loop rotation; the single `checkpoint` track ("General Quarters") is selected automatically while a checkpoint module is open and restored to the previous ambient track afterwards (Settings → "Switch to General Quarters during checkpoints"; a manual skip during a checkpoint wins). It otherwise plays only if picked explicitly in Settings.
+
 To add or swap a track:
-1. Drop the mp3 in `public/audio/` with a slug filename, e.g. `public/audio/mark-nine.mp3`.
-2. Add an entry to `TRACKS` in `src/store/audio.ts`: `{ id: 'mark-nine', title: 'Mark Nine', file: 'audio/mark-nine.mp3' }`.
-3. Rebuild. The playlist loops in array order.
+1. Drop the mp3 in `public/audio/` with a slug filename, e.g. `public/audio/mark-nine.mp3`. (ElevenLabs sometimes exports `.mp4`; extract with `ffmpeg -i in.mp4 -vn -codec:a libmp3lame -b:a 192k out.mp3`.)
+2. Add an entry to `TRACKS` in `src/store/audio.ts`: `{ id: 'mark-nine', title: 'Mark Nine', file: 'audio/mark-nine.mp3', role: 'ambient' }`.
+3. Rebuild. Ambient tracks loop in array order.
 
 ## Series bible
 

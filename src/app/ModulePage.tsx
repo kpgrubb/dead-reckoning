@@ -8,6 +8,7 @@ import { mdxComponents } from '@/components'
 import { ModuleContext, type ModuleContextValue } from '@/components/ModuleContext'
 import { useProgress } from '@/store/progress'
 import { useSettings } from '@/store/settings'
+import { useAudio } from '@/store/audio'
 import { isUnlocked } from './MissionMap'
 
 const cache = new Map<string, ComponentType<{ components?: MDXComponents }>>()
@@ -29,6 +30,13 @@ export function ModulePage() {
     registered.current = new Set()
     window.scrollTo({ top: 0 })
   }, [meta, setLastModule])
+
+  // Checkpoint modules switch the ambient audio to General Quarters (and restore it on leave).
+  useEffect(() => {
+    if (meta?.kind !== 'checkpoint') return
+    useAudio.getState().enterCheckpoint()
+    return () => useAudio.getState().leaveCheckpoint()
+  }, [meta])
 
   const registerBeat = useCallback((beatId: string) => {
     if (!registered.current.has(beatId)) {

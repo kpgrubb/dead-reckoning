@@ -37,6 +37,20 @@ html[data-motion="reduced"] .dr-audio.is-playing .dr-audio__vu i { animation: no
 }
 
 .dr-audio__track { color: var(--dr-fg-0); max-width: 18ch; overflow: hidden; text-overflow: ellipsis; }
+
+/* General Quarters (checkpoint track): alert accent on the tag and VU; no extra motion. */
+.dr-audio__gq {
+  color: var(--dr-alert);
+  border: 1px solid var(--dr-alert-dim);
+  border-radius: var(--dr-radius);
+  padding: 0 var(--dr-sp-1);
+  font-size: var(--dr-fs-2xs, 0.65rem);
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+}
+.dr-audio.is-gq { border-color: var(--dr-alert-dim); }
+.dr-audio.is-gq.is-playing .dr-audio__vu i { background: var(--dr-alert); }
+.dr-audio.is-gq .dr-audio__track { color: var(--dr-fg-0); }
 .dr-audio__index { color: var(--dr-fg-2); }
 
 .dr-audio__controls { display: inline-flex; align-items: center; gap: var(--dr-sp-1); }

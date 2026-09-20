@@ -48,6 +48,46 @@ test.describe('ambient audio player', () => {
     await expect(group2.getByRole('button', { name: 'Play ambient audio' })).toHaveAttribute('aria-pressed', 'false')
   })
 
+  test('switches to General Quarters on a checkpoint page and restores the ambient track on leave', async ({ page }) => {
+    await page.goto('/')
+    const group = page.getByRole('group', { name: 'Ambient audio' })
+    await group.getByRole('button', { name: 'Next track' }).click()
+    await expect(group.locator('.dr-audio__track')).toContainText('Ceres Approach')
+    // Paused: opening the checkpoint pre-selects GQ without starting playback.
+    await page.goto('/#/module/act-0-checkpoint')
+    await expect(group.locator('.dr-audio__track')).toContainText('General Quarters')
+    await expect(group.locator('.dr-audio__gq')).toBeVisible()
+    await expect(group.getByRole('button', { name: 'Play ambient audio' })).toHaveAttribute('aria-pressed', 'false')
+    // Leave: previous ambient track comes back.
+    await page.goto('/#/')
+    await expect(group.locator('.dr-audio__track')).toContainText('Ceres Approach')
+    await expect(group.locator('.dr-audio__gq')).toHaveCount(0)
+  })
+
+  test('a manual skip during a checkpoint wins; GQ is not in the skip rotation', async ({ page }) => {
+    await page.goto('/#/module/act-0-checkpoint')
+    const group = page.getByRole('group', { name: 'Ambient audio' })
+    await expect(group.locator('.dr-audio__track')).toContainText('General Quarters')
+    await group.getByRole('button', { name: 'Next track' }).click()
+    await expect(group.locator('.dr-audio__track')).toContainText('Running Cold')
+    await group.getByRole('button', { name: 'Next track' }).click()
+    await expect(group.locator('.dr-audio__track')).toContainText('Ceres Approach')
+    await group.getByRole('button', { name: 'Next track' }).click()
+    await expect(group.locator('.dr-audio__track')).toContainText('Running Cold') // never GQ
+    await page.goto('/#/')
+    await expect(group.locator('.dr-audio__track')).toContainText('Running Cold') // not yanked back to the pre-checkpoint track
+  })
+
+  test('with the checkpoint switch off, no auto-switch happens', async ({ page }) => {
+    await page.goto('/#/settings')
+    await page.getByLabel(/Switch to General Quarters/).uncheck()
+    await page.goto('/#/module/act-0-checkpoint')
+    const group = page.getByRole('group', { name: 'Ambient audio' })
+    await expect(page.locator('.dr-checkpoint')).toBeVisible()
+    await expect(group.locator('.dr-audio__track')).toContainText('Running Cold')
+    await expect(group.locator('.dr-audio__gq')).toHaveCount(0)
+  })
+
   test('keeps state across route changes and can be hidden from Settings', async ({ page }) => {
     await page.goto('/')
     const group = page.getByRole('group', { name: 'Ambient audio' })
