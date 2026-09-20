@@ -176,7 +176,7 @@ Every inference module (6-01 → 9-04) carries at least one interpretation rubri
 
 ---
 
-## Per-Act table
+## Per-Act table (first pass — superseded by the post-fix table in the Verification section)
 
 | Act | Modules reviewed | Delete-the-math | Note |
 |---|---|---|---|
@@ -193,3 +193,64 @@ Every inference module (6-01 → 9-04) carries at least one interpretation rubri
 | Epilogue | 10-01, 10-02 | 10-01 pass; 10-02 exempt (interlude; posteriors verified) | Observed-power phrasing |
 
 Counts: Blocking 6 · Required 41 (Prologue/I 8, II 4, III 3, IV 7, V 4, VI 4, VII 5, VIII 4, IX 4, Epilogue 1 — cross-Act items counted once under the Act that owns the module) · Advisory 17.
+
+---
+
+# Verification (after the Showrunner's §8 resolution)
+
+Scope: `docs/beat-sheet.md` §8, the revised §2 registry (DS-00, DS-05, DS-06, DS-17, DS-21, f_lane), §6's new rule, and the blocks named in B1–B6; ten stripped Situations spot-checked (0-03, 1-02, 4-06, 4-07, 4-08, 4-09, 5-02, 5-03, 6-02, 6-04, plus 7-03/7-04/8-01/8-02/9-02/9-03 read in full). Numbers re-derived with SciPy in the scratchpad (`verify2.py`, not committed).
+
+## Final verdict: **PASS** — Phase 3 may start. No Blocking items remain.
+
+Three stale text fragments and one registry line are listed below as Required (text-level, owning Act Team or Showrunner; none affects a dataset that another Act consumes).
+
+## Blocking items — status
+
+| # | Status | Evidence |
+|---|---|---|
+| B1 | **Closed.** | DS-00 is one model; DS-09/DS-11/DS-02 derive from it. Re-derived: nineteen's delay SD ≈ 2.67 → z 4.59 (σ = 2.66), one-sample t 4.56; lost-vs-surviving diff 2.6, SE 0.620, t 4.19, CI (1.30, 3.90); Refit set by simulation (4,000 seeds): paired mean diff 1.91, SD 1.71, t 3.88; two-sample t 1.72; 55% of raw seeds pass the sheet's rejection rule (paired p < 0.01 and two-sample p > 0.05) — the "about half" claim holds. Ostrow's pooled mean 0.255, SE 0.111, power 0.13. 2-04/5-02/5-03/7-03…7-06 carry the new targets. |
+| B2 | **Closed.** | f_lane(d) in DS-00/02/09/16; `required_fuel` is a Bureau column; 2-06 teaches fuel-on-required-fuel as the line; 9-02 tests slope = 1; 9-03 uses excess fuel per true tonne on Δv_K. Simulation (2,000 seeds, d ~ U(2.4, 6.0), 1% fuel noise, 0.5% whole-phase mass noise): 9-02 slope 1.13, SE 0.037; 9-03 slope 0.00075, SE 0.00019, median t 3.9, β₀ ≈ 0.00077; the declared-mass alternative gives median t 2.25 — the Showrunner's stated reason for the per-true-tonne response is confirmed. See the Required note on the departure-date distribution for why the sheet's 1.17 / t 4.7 are at the optimistic end. |
+| B3 | **Closed.** | DS-21 sink ledger: every Act IV block now carries MET/profile/sink %; two 62–64-h Watch windows, six purges; *Marius Regio* 34 h into window 2, tracked to the 64-h limit; per-block sink percentages reproduce from 108 h Quiet / 64 h Watch (e.g. 4-03 51% vs stated ≈ 49; 4-05 36% vs ≈ 34; 4-07 42% vs ≈ 40; 4-10 58% vs ≈ 55 — all inside seed tolerance). Act VIII: ballistic flyby at 30 km/s (undock 2.8 h at 0.3 g ✓; 14 d = 0.24 AU ✓); last purge ends 42 h before closest approach at 4.5 million km (✓ beyond the 2.6-million-km civilian purge range; Kettle's sensors stated civilian-grade in DS-17); sink 63% at 180/22 and 76% at 06:00 on the 68-GJ sink ✓; lidar window 14 min ✓; DS-17 slug 2,100 km at 3.5 km/s = 10 min ✓; torch 22 min from Watch, cold thrusters ≤ 200 N → < 12 m ✓ (bible §2.5 amended). 8-01/8-02 timings rewritten to the flyby. |
+| B4 | **Closed.** | 2.6 AU relabelled as path length at arrival; turnover MET 46/19 in the Act II checkpoint's opening scene; Act III header "braking since turnover at MET 46/19"; "turnover at MET 80" absent from sheet and bible. Lags: 3.3 min at MET 30 (act-1-checkpoint "three minutes") ✓; 14 min at 52 ✓; 24 min at Ceres ✓. Transit legs re-derived: Mark 9 → Ceres 0.4 AU at 15 mgee = 14.8 d / 188 km/s ✓ (Ceres MET 133); Ceres → *Halden Reach* 0.12 AU at 10 mgee = 9.9 d / 84 km/s ✓; Ceres → Callisto 2.5 AU at 4 mgee = 71.5 d / 242 km/s ✓ (Epilogue MET 305–335); 518 km/s full tanks ✓. |
+| B5 | **Closed.** | 5-04's beat is the inverse question (1-in-100 gap ≈ 0.0104 ✓); 5-05's is the 1-in-1,000 mean gap (≈ 1.93 d ✓) and cites 4-09's log; 6-04 computes z and p for the first time; 4-03 reverses P(no loss | gradual fade) = 100/119 = 0.84 vs P(gradual fade | loss) = 19/31 = 0.61 ✓ (DS-01 now carries 100 resolved gradual dropouts; the Board's "84%" is real and true); 0-03 owns the 1.4%, 1-02 the 71%; 7-03 ("Within a Day") is Ostrow's dilution and its power. No cross-Act repeat remains. |
+| B6 | **Closed.** | §6 rule present and binding; every spot-checked Situation now poses without the target (4-07: Sandoval stops at "Variances add"; 4-08/4-09/5-02/5-03/6-02/6-04 give no numbers; 1-04: Ebele gives only 3.4 h; 7-04: the sink loss is the beat's second paired analysis and Sandoval speaks after it; 8-02: the learner computes 0.30 and issues the order). |
+
+## The Showrunner's three disagreements — accepted
+
+1. **B1 option (a) rejected** (uprated hulls carry more, h 0.10–0.13). Accepted. My alternative would have put the paired t near 2.2–2.6, below the learner's α = 0.01 at df 11, and the adopted model gives 7-02's "more torch" its literal mechanism. Simulation confirms paired t ≈ 3.9 vs two-sample ≈ 1.7. One consequence to keep visible: DS-02's residuals are now two-tiered (+6–9 and +10–13%), which 7-04 uses — good — and 2-04's Clue line must say so (see Required).
+2. **B2 fallback rejected in favour of f_lane(d).** Accepted; it was my preferred fix.
+3. **9-03 response changed to fuel per true tonne.** Accepted, with the reasoning confirmed by simulation (declared-mass response: median t ≈ 2.3; per-true-tonne: ≈ 3.9–4.7 depending on the departure-date spread). The in-story cost (two days of link time for the whole-phase archive, motivated in 9-01) is plausible and is itself a small lesson in measurement error. Two things the Instructor should say in 9-03: the intercept is slightly negative and d-dependent (a thrust-limited hull's Lane Δv is 234 km/s, below the nominal 242, so "excess over the nominal requirement" is ≈ −0.006 at Δv_K = 0 — Sandoval's "two-thirty by Mark nine" line covers it); and β₀ is computed per hull from its own thrust-limited Δv_L, averaged, not from 3.33 AU.
+
+## Required (text-level; fix in Phase 3)
+
+- **Showrunner / DS-09 (one registry line).** 9-02's slope target (1.17, CI (1.09, 1.25)) and 9-03's t ≈ 4.7 depend on how the nineteen's departure dates are spread across the Lane cycle: the fuel-to-required ratio falls with lane length (≈ 1.19 at 2.4 AU, ≈ 1.13 at 6 AU), and the Δv_K signal is diluted at long lane lengths. With d ~ U(2.4, 6.0) I get 1.13 ± 0.037 and median t 3.9 (24% of seeds under t = 3). State the departure-date / lane-length distribution in DS-09 (e.g. traffic concentrated in the Close Season, ~70% of transits at d ≤ 3.6 AU) and add a seed-rejection rule for DS-16 (9-03 t ≥ 4; 9-02 interval excludes 1 by ≥ 0.05). Then the stated targets are reachable and the `data.ts` tests are deterministic.
+- **act-0-03 (Act I):** Situation still says "mean mark 7.1"; the Clue line and DS-01 say 6.5. One word.
+- **act-2-04 (Act II):** Clue line still says "6–9% heavier"; Situation, DS-00 and DS-02 say 6–13% in two tiers.
+- **act-6-01, 6-04, 6-05 (Act VI):** delete-the-math lines still say "MET 138"; the transmission is now MET 140 (6-08 header 140–141; reply 141/02:10).
+- **DS-21 (Showrunner, two cells):** turnover lag at 1.3 AU is ≈ 11 min, not "≈ 9"; the Kettle → Ceres return leg spends 287 − 35 = 252 km/s, not "≈ 224" (or Ceres arrival is 63, not 35). Neither touches a module.
+
+## Advisory
+
+- 8-04 on DS-02's examiner column: expected 0.83, hypergeometric P(≥ 17 of 19 on Dacre's 18 of 412) ≈ 5 × 10⁻²⁷ ✓; the "zero of ten thousand" simulation reads correctly.
+- 6-02: n ≈ 11,263 for a 0.2-point margin ✓; three more years (~1,300 transits) → ≈ 0.34 points ✓. 6-06 power 0.76 / 0.90 ✓.
+- 4-08's being-seen binomials (0.21 / 0.08 / 0.02 per window) ✓. 4-01 "about two in a hundred" ✓ (0.018).
+- 1-02 and 4-03 are now distinct from 0-03 and 2-01 respectively; 7-03 no longer repeats 5-03. The ledger below reflects that.
+- "Belt-plain" still appears in §6's voice card (`marsh` line); §8 assigns the change to the Act III Writer — fine, but the card is Showrunner-owned; change the word there too.
+
+## Per-Act table (post-fix)
+
+| Act | Modules | Delete-the-math | Note |
+|---|---|---|---|
+| Prologue | 0-01, 0-02, 0-03 | 0-01 exempt (line reworded); 0-02 pass; 0-03 pass (1.4% only) | 0-03 Situation "7.1" → 6.5 |
+| I | 1-01…1-07, cp | all pass; 1-02 owns the 71%; 1-04 earned by the learner's dotplot | lag "three minutes" ✓ |
+| II | 2-01…2-06, cp | all pass; 2-06's fuel lesson is now real (required-fuel line) | 2-04 Clue "6–9%" → 6–13%; turnover in cp ✓ |
+| III | 3-01…3-05, cp | all pass; 3-05 clue no longer overclaims (p 0.23 one-sided) | header fixed ✓ |
+| IV | 4-01…4-10, cp | all pass; 4-03 distinct from 2-01; 4-07 earned; 4-02/4-05/4-08 chain (labelled) | sink ledger ✓; 4-06 parameters ✓; 4-05 decision ✓ |
+| V | 5-01…5-05, cp | all pass; 5-04/5-05 inverse questions leave the observed gaps to VI/VII | 5-03 mark test on all 31 ✓ |
+| VI | 6-01…6-08, cp | all pass; 6-04 computes z/p first; 6-01 chain | three "MET 138" → 140 |
+| VII | 7-01…7-07, cp | all pass; 7-03 is Ostrow's dilution/power; 7-04 sink loss earned; 7-06 labelled dual of 7-05; 7-01 chain | 8.9 h vs design / 5 h vs working ✓ |
+| VIII | 8-01…8-04, cp | all pass; 8-02: learner computes 0.30 and issues the order; 8-03 chain; 8-04 on DS-02's examiner | flyby physics ✓; DS-17 ✓ |
+| IX | 9-01…9-04, cp | all pass; 9-01 chain; 9-04 answer key present | DS-09 departure-date distribution (Required) |
+| Epilogue | 10-01, 10-02 | pass; exempt | MET 305–335 ✓; observed-power phrasing fixed ✓ |
+
+Counts after verification: Blocking 0 · Required 5 (Showrunner 2, Act I 1, Act II 1, Act VI 1) · Advisory 5. The first-pass Required items listed in §8 as "left for the owning Act Team" stand as written there.

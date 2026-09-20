@@ -1,6 +1,13 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('ambient audio player', () => {
+  // Checkpoint modules are gated by prerequisites; turn strict gating off so the tests can open one directly.
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/#/settings')
+    const gating = page.getByLabel(/Lock modules until prerequisites/)
+    if (await gating.isChecked()) await gating.uncheck()
+  })
+
   test('is off on first load, toggles play/pause, skips tracks, mutes', async ({ page }) => {
     await page.goto('/')
     const group = page.getByRole('group', { name: 'Ambient audio' })

@@ -128,6 +128,7 @@ Every in-world dataset, with provenance, variables, size, and the **generating s
 - **Provenance.** Senior Examiner Brandt, on her own authority (MET 196); clean. `hull`; `departure_date`; `lane_length_AU`; `declared_mass` (t); `required_fuel` (t) = `f_lane(d) × declared`; `fuel_loaded` (t); `examiner` (Dacre / Voss / Amari / Penrose); `diverted` (19 flagged, by DS-13 ⋈ DS-01); for the 19, `inferred_mass_full` (t, Ebele's whole-accelerate-phase reprocessing, ±0.5%) and `dv_kettle` (km/s) = Δv from Mark 9.4 to rest at Kettle on that departure date, from the nav software: **U(24, 38)** across six years as the geometry moves.
 - **Generating story.** Per DS-00: honest 881 `fuel = required × (1 + N(0, 0.010))`; the 19 with their h (ten at 0.06–0.09, nine at 0.10–0.13), thrust-limited Lane Δv and dv_kettle. **Examiner:** Dacre signed 22 of 900 — **17 of the 19 diverted and 5 honest**; the other three examiners signed 878 (2 diverted, 876 honest). This *confirms* the same pattern already visible in DS-02's 412 (18 signed, 17 diverted) — act-8-04 runs on DS-02; 9-01's Situation notes Brandt's 900 agree.
 - **Headline numbers.** **9-02 — fuel loaded on required Lane fuel, the 19: slope ≈ 1.17, SE ≈ 0.04, df 17, 95% interval ≈ (1.09, 1.25) — excludes 1.00**; the 881 honest: slope 1.000, SE ≈ 0.001, brackets 1. (Honest samples of 19 give SE(b) ≈ 0.012 — 9-01's simulated spread; the nineteen's SE is larger because their residuals carry what they hid.) **9-03 — excess fuel per true tonne, `y = fuel_loaded / inferred_mass_full − f_lane(d)`, on dv_kettle, the 19: slope ≈ 0.00076 per km/s, SE ≈ 0.00016, t ≈ 4.7, df 17, p < 0.001** (one-sided against β = 0). Physical value: the marginal fuel fraction per km/s of extra braking at the operating point, e^(−Δv_L/vₑ)/vₑ with the thrust-limited Δv_L ≈ 234 km/s: **β₀ ≈ 0.00079**; the two-sided test against β₀ fails to reject. (Ebele's first guess, 1/vₑ = 0.0010, is the slope at zero Δv; Sandoval corrects him.) Using y on *declared* mass instead would leave h in the residuals and roughly halve t — 9-01's reason for reprocessing the telemetry. Examiner × diverted (900): expected Dacre-diverted 0.46 (< 5; chi-square invalid); hypergeometric P(≥ 17 of 19 on Dacre's 22) ≈ 10⁻²⁸ (a simulated p reads 0 of 10,000).
+- **Departure dates and seed rule (gate verification, Required 1).** The nineteen's departures are not uniform over the six years: PROVIDENT sailed when the Lane was short. Draw `lane_length_AU` for the 19 as **15 of 19 in the Close Season, d ~ U(2.4, 3.6)**, and **4 spread over d ~ U(3.6, 6.0)**; the honest 881 draw d ~ U(2.4, 6.0) (the Lane's schedule is indifferent to length). `dv_kettle` follows the same date. Act IX's `data.ts` must **reject seeds** where the 9-02 interval for the nineteen includes 1.00, where the 9-03 one-sided t < 4.0, or where the honest 881 interval fails to bracket 1.00 — and assert the headline numbers above within ±15% (slope) / ±0.5 (t). With uniform departures the targets are reachable only about three seeds in four; with the Close-Season concentration they hold on most seeds.
 - **Used by.** 9-01, 9-02, 9-03, 9-04, checkpoint IX (act-8-04 uses DS-02's examiner column).
 
 ### DS-17 · Kettle picket model (Ebele's tree, Act VIII)
@@ -155,7 +156,7 @@ Brachistochrone `t = 2√(d/a)`, `Δv = 2√(d·a)`; full tanks **518 km/s** (90
 | 0–10 | Jovian space, shakedown | 518 | seconds |
 | 10/03 | Depart for the Lane, 4 mgee | 518 | — |
 | 30 | 0.39 AU out (Act I close) | — | **3.3 min** |
-| **46/19** | **Turnover** (midpoint of the 73-day run) | — | ≈ 9 min |
+| **46/19** | **Turnover** (midpoint of the 73-day run) | — | ≈ 11 min |
 | 52 | 1.7 AU out (Act II close) | — | **14 min** |
 | 80 | Braking; Act III close | — | 21.5 min |
 | 83/11 | Torch off at the Mark 9 region: **2.6 AU path length** (the Lane is ≈ 3.06 AU at arrival), 73 d, 247 km/s spent | 271 | **21.6 min** |
@@ -168,7 +169,7 @@ Brachistochrone `t = 2√(d/a)`, `Δv = 2√(d·a)`; full tanks **518 km/s** (90
 | 166–181 | Coast, 14 d at 30 km/s = 0.24 AU; three purges en route, the **last ending MET 179/12, 4.5 million km out** (beyond civilian purge range); Watch from then | 404 | 23 min |
 | 180/22 · 181/06 | Survey camera 8 h out; **closest approach 38,000 km, 06:00**; sink **63% → 76%** (post-refit 68 GJ, Watch 320 kW, 34 → 42 h) | 404 | 22.7 min |
 | 181/06:24 → 17:24 | Torch (22 min from Watch), then 0.3 g for eleven hours away from Kettle, wings out | 287 | 22.7 min |
-| 183 → 215 | Turn for Ceres: kill the run and the flyby velocity, brake in at 5 mgee (≈ 224 total); **≈ 118 at MET 203** | 35 at Ceres | 22 min |
+| 183 → 215 | Turn for Ceres: kill the run and the flyby velocity, brake in at 5 mgee (≈ 252 total); **≈ 118 at MET 203** | 35 at Ceres | 22 min |
 | 215–233 | Ceres; *Halden Reach* matches velocity in the approach (228); Inspectorate (231); refuel | 518 | 21.8 min |
 | 233 → 305 | Ceres → Callisto, 2.5 AU at 4 mgee: 71.5 d, 242 km/s | 276 | — |
 | **305–335** | **Epilogue** at Adlinda / Valhalla; Jupiter–Ceres ≈ 2.35 AU (19.5 min) | — | seconds |
@@ -215,7 +216,7 @@ Crew: engineer, xo, sensors · MET 2–5 · Jovian space, first and second cold 
 
 #### act-0-03 · Tasking — 20 min · AP 1.1, 1.3 · calc: —
 Crew: comms, analyst, xo, medic, admiralty · MET 8/14:00–10/03:00 · Jovian space; departure burn at 4 mgee.
-**Situation.** Solberg: "Valhalla. Forty-one seconds out." The Board directs *Nightjar* to the Lane, reporting through the Directorate of Lane Operations; signed Ashby-Hale personally; *Good hunting, Anselm.* Ferrante's fitness board. Ebele's first brief: the Incident File as one summary page — 31 hulls, six years, mean mark 7.1, "spread along the Lane," a table of classifications. You ask for the file. It is 2,200 records. He offers a summary by morning; you tell him you want the records, and while the file loads you have him compute what fraction of the *summary's* rows are actually losses.
+**Situation.** Solberg: "Valhalla. Forty-one seconds out." The Board directs *Nightjar* to the Lane, reporting through the Directorate of Lane Operations; signed Ashby-Hale personally; *Good hunting, Anselm.* Ferrante's fitness board. Ebele's first brief: the Incident File as one summary page — 31 hulls, six years, mean mark 6.5, "spread along the Lane," a table of classifications. You ask for the file. It is 2,200 records. He offers a summary by morning; you tell him you want the records, and while the file loads you have him compute what fraction of the *summary's* rows are actually losses.
 **Concept.** Frequency and relative-frequency tables; what population the Register describes (Lane incidents as recorded by two offices) and what it does not (the Lane). Misconceptions: "the register is the population"; confusing count with proportion.
 **Instrument.** Register browser (sortable/filterable table with a frequency-table panel that recomputes counts and relative frequencies on filter).
 **Dataset.** DS-01, all 2,200 records, `severity` and `classification` columns.
@@ -376,7 +377,7 @@ Crew: analyst, xo, engineer · MET 36 · Bridge.
 **Dataset.** DS-02 (the 19 at +6–13%, in two tiers).
 **Drills.** 6, one rubric (`residualInterpretation`): compute a residual; interpret it (actual vs predicted, direction, tonnes); read a residual plot pattern; identify heteroscedasticity or its absence.
 **Mission beat.** kind numeric + interpretation — residual for the seeded *Nicholson Regio* row (≈ +1,500 t) and its interpretation in context; then the count of hulls with residuals above +5% (19) and how many of them were later lost (19). Wrong: sign error → "You just said it was lighter."
-**Clue.** Nineteen lost hulls departed 6–9% heavier than certified; the other twelve did not. Not yet proven: who falsified, why, where they went.
+**Clue.** Nineteen lost hulls departed 6–13% heavier than certified (two tiers: +6–9% for ten, +10–13% for the nine later uprated); the other twelve did not. Not yet proven: who falsified, why, where they went.
 **Log entry.** *Residual = actual − predicted; its sign is a direction.* Mistake: predicted − actual.
 **Delete-the-math.** This is the book's first hard fact; delete it and there is no "nineteen," no request to the Inspectorate, no reply from the Board, and no Act III.
 
@@ -706,7 +707,7 @@ Crew: analyst, xo · MET 133 · Intel terminal, docked.
 **Mission beat.** kind interpretation — interpret "95% confidence" for the Lane's loss rate (rubric: repeated samples / long run / % of intervals capture; forbidden: probability about this interval). Wrong: Ferrier: "Which interval?"
 **Clue.** None yet; the discipline is being set.
 **Log entry.** *Confidence is a property of the method, not of one interval.* Mistake: "95% chance the parameter is in here."
-**Delete-the-math.** Without the capture demonstration the learner writes the forbidden sentence at MET 138, and the Board's counsel reads it aloud.
+**Delete-the-math.** Without the capture demonstration the learner writes the forbidden sentence at MET 140, and the Board's counsel reads it aloud.
 
 #### act-6-02 · Margin — 30 min · AP 6.2, 6.3 · calc: —
 Crew: analyst, xo, comms · MET 134 · Bridge.
@@ -742,7 +743,7 @@ Crew: analyst, xo · MET 137 · Bridge.
 **Mission beat.** kind numeric (z and p for the seeded 19/900 vs 12/1,712, pooled) + kind interpretation — interpret the p-value in context (rubric: assuming H₀, at least as extreme, probability, context; forbidden: probability H₀ true, due to chance). Wrong: "That's the sentence they'd read out."
 **Clue.** Eight in ten thousand. Not yet proven: a decision, a conclusion, by whom or why.
 **Log entry.** *p is the probability of data this extreme if H₀ is true — not the probability H₀ is true.* Mistake: "due to chance."
-**Delete-the-math.** Without the p-value there is no number under the accusation; and the exact sentence is the thing the book turns on at MET 138.
+**Delete-the-math.** Without the p-value there is no number under the accusation; and the exact sentence is the thing the book turns on at MET 140.
 
 #### act-6-05 · Strike the Word — 25 min · AP 6.6 · calc: —
 Crew: analyst, xo · MET 137/20:00 · Bridge.
@@ -754,10 +755,10 @@ Crew: analyst, xo · MET 137/20:00 · Bridge.
 **Mission beat.** kind interpretation — write the conclusion (rubric: decision, p vs α, evidence framing, direction, population and variable; forbidden: proves, accept, targeted/by whom). Wrong: "Strike the word."
 **Clue.** Convincing evidence of a higher loss rate for Perrine-beneficiary hulls. Not yet proven: agency, intent, where the hulls are.
 **Log entry.** *Reject or fail to reject; evidence for Hₐ in context; never "prove."* Mistake: "accept H₀."
-**Delete-the-math.** The conclusion sentence is the report. Delete it and the MET 138 transmission is an opinion; Ashby-Hale's reply and Act VII do not follow.
+**Delete-the-math.** The conclusion sentence is the report. Delete it and the MET 140 transmission is an opinion; Ashby-Hale's reply and Act VII do not follow.
 
 #### act-6-06 · Paid in Hulls, Paid in People — 30 min · AP 6.7 · calc: —
-Crew: medic, engineer, xo · MET 138 · Wardroom, off the record.
+Crew: medic, engineer, xo · MET 140 · Wardroom, off the record.
 **Situation.** Ferrante, second person, on the cost of each error: Type I is your career and a Service scandal on a Martian adjuster's desk; Type II is the next nineteen hulls. You set α and write down why; the learner computes the power of the two-proportion test at each α against the difference specified *before* the test (a doubling of the loss rate), and against the difference the Board would call "consistent with comparable corridors." Sandoval, on the deck: some errors are paid in hulls and some in people, and you are about to find out which. The module tells the learner that in her voice and does not explain it.
 **Concept.** Type I / Type II errors and consequences in context; power and its drivers (n, α, effect size); choosing α by consequences. Misconceptions: Type I always worse; power = 1 − α; smaller α is free.
 **Instrument.** Type I / II error and power explorer: null and alternative on one axis; α cutoff draggable; shaded α, β, power; n and effect-size sliders.
@@ -1146,7 +1147,7 @@ Every open question from the bible (§14), the curriculum map (§8), and every c
 - `medic` Ferrante — Second person to you off the record ("You haven't slept"). Physical detail before judgement; never "fine." Base rates before the patient; answers moral questions with clinical ones; states each death once.
 - `admiralty` The Board — Passive voice and nominalisations ("It is noted that…"; "The Board directs"). Never *loss*; always *incident*. Praise is a warning. Always ≥ 43 minutes away.
 - `ashbyhale` — First person, warm, as a man who taught you. Never raises his voice; speaks of the Directorate Problem as settled fact. Does not mention the four: "I did not ask."
-- `marsh` — Belt-plain, profane, exact about her own ship, contemptuous of paperwork. Her brother died on *Thessaly Ember*. Asks what you are going to do.
+- `marsh` — Ceres-plain, profane, exact about her own ship, contemptuous of paperwork. Her brother died on *Thessaly Ember*. Asks what you are going to do.
 - `brandt` — Civil servant, sixty, exact; the Bureau's stamp is the one honest thing on the Lane. Acts on her own authority and says so.
 - Non-roster (`name=`): **Ostrow** — courteous, superior, never threatens, cites regulations and "the Board's officer on the Lane"; **Lindqvist-Oduya** — correct, unhappy, keeps her own log, speaks on open channels when it matters; **Renn** — Martian, precise about money, amused by Compact manners; **Okafor-Reyes** — through channels, slow, careful, remembers his predecessor; **Achterberg** — one sentence at a time, asks questions in the right order; **Maalouf** — two lines, unsigned when it counts; **Halvorsen** — does not sit in the chair.
 
