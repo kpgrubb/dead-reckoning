@@ -69,7 +69,7 @@ Module-count rationale: Unit 4 (12 topics, up to 20% of the exam) gets the most 
 - Topics: 1.1 (population vs sample: the Register vs the corridor), 1.3 Representing a Categorical Variable with Tables (seed; taught in full in act-1-01)
 - Objectives: (a) Read a frequency table and compute relative frequencies. (b) State what population the Register describes and what it does not. (c) Pose the mission question as a statistical question.
 - Instrument: the Register — sortable/filterable table with a frequency-table panel that recomputes counts and relative frequencies on filter. **[new: register browser]**
-- Investigative use: the official incident register arrives with the tasking order; the learner computes the share of losses coded "accident" and notes the population the register covers (one corridor, one reporting authority). Seeds the whole book's dataset.
+- Investigative use: the official incident register arrives with the tasking order; the learner computes what fraction of the register's 2,200 records are losses (the Board's summary mean is taken over all of them) and notes the population the register covers (one corridor, one reporting authority). The losses' own classification table is act-1-02's. Seeds the whole book's dataset.
 - Misconceptions: "the register is the population" (it is a recorded sample of a reporting process); confusing count and proportion.
 
 Act 0 subtotal: 20 + 20 + 20 = **60 min**.
@@ -128,7 +128,7 @@ Act 0 subtotal: 20 + 20 + 20 = **60 min**.
 - Topics: 1.9 Comparing Distributions of a Quantitative Variable
 - Objectives: (a) Compare two or more distributions using parallel boxplots, back-to-back stemplots or comparative histograms. (b) Write a comparison that addresses shape, center, variability and unusual features in context with comparative language. (c) Choose the display that best supports a stated comparison.
 - Instrument: comparative distribution display — parallel boxplots / back-to-back stemplot / overlaid histograms of two groups with a group-selector. **[new: comparative display]**
-- Investigative use: signatures of ships that completed the corridor vs ships later lost — the learner writes the first formal comparison; the lost ships' distribution is shifted and tighter than it should be.
+- Investigative use: lost hulls vs the Lane on hull age and declared cargo value, and the losses' mark-at-last-contact distribution against the all-incident mark distribution (an arrived hull's last contact is always Mark 12, so "arrived" is the wrong baseline for *where*) — the first formal comparison; the lost hulls cluster late and carry cheaper declared cargo.
 - Misconceptions: describing each distribution separately instead of comparing; "bigger box = more data".
 
 **act-1-07 · The Normal Curve** — `content/act-1/07-the-normal-curve.mdx`
@@ -293,7 +293,7 @@ Act III subtotal: 25 + 30 + 30 + 30 + 30 + 20 = **165 min**.
 - Topics: 4.5 Conditional Probability
 - Objectives: (a) Calculate and interpret conditional probabilities from a two-way table and from a tree diagram. (b) Apply the general multiplication rule P(A ∩ B) = P(A)·P(B|A). (c) Reverse a conditioning using a tree (P(B|A) from P(A|B)) and explain the difference in context.
 - Instrument: probability tree builder — build branches, enter probabilities, read joint and reversed conditionals; live check that branches sum to 1. **[§8]**
-- Investigative use: P(detected | running cold) vs P(detected | running warm) from the sweep log; and, from the Register, P(cause coded "accident" | owner) vs P(owner | cause coded "accident") — the learner shows the Admiralty quoted the wrong conditional.
+- Investigative use: P(a passing freighter detects the corvette | cold) vs P(detects | purging) from the being-seen model; and, from the Register, P(no loss | gradual transponder fade) — the Board's "84%" over all 2,200 records — vs P(gradual fade | loss): the learner shows the Board quoted the wrong conditional. (The owner-class reversal belongs to act-2-01.) See beat-sheet §8, B5.
 - Misconceptions: P(A|B) = P(B|A) (the prosecutor's fallacy); conditioning on the wrong total.
 
 **act-4-04 · Independence** — `content/act-4/04-independence.mdx`
@@ -392,7 +392,7 @@ Act IV subtotal: 25 + 25 + 30 + 25 + 25 + 30 + 30 + 30 + 25 + 25 + 25 = **295 mi
 - Topics: 5.5 Sampling Distributions for Sample Proportions · 5.6 Sampling Distributions for Differences in Sample Proportions
 - Objectives: (a) State the mean and SD of the sampling distribution of p̂ and check the large-counts condition (np ≥ 10, n(1 − p) ≥ 10) and the 10% condition. (b) State the mean and SD of p̂1 − p̂2 and its conditions. (c) Calculate and interpret probabilities about a sample proportion or a difference in sample proportions in context.
 - Instrument: proportion sampling simulator — one or two corridor populations with true loss rates; draw samples of n transits; stack p̂ or p̂1 − p̂2; overlay the normal model when conditions hold. **[new: proportion sampler]** (CLT machine, Bernoulli mode, two-population.)
-- Investigative use: how much the corridor's sample loss proportion can vary by chance around the baseline; and how much two corridors' loss proportions can differ by chance alone — the null model for Act VI.
+- Investigative use: how much the corridor's sample loss proportion can vary by chance around the baseline; and how much two owner classes' loss proportions can differ by chance alone — the null model for Act VI, posed as the inverse question (what gap would be a 1-in-100 event under a common rate); the observed gap is not computed until Act VI. See beat-sheet §8, B5.
 - Misconceptions: using p̂ in place of p in the SD when p is known; forgetting the 10% condition when sampling without replacement; "difference of proportions has SD equal to the difference of SDs".
 
 **act-5-05 · Differences in Means** — `content/act-5/05-differences-in-means.mdx`
@@ -516,7 +516,7 @@ Act VI subtotal: 30 + 30 + 25 + 25 + 25 + 30 + 25 + 30 + 25 = **245 min**.
 - Topics: 7.4 Setting Up a Test for a Population Mean · 7.5 Carrying Out a Test for a Population Mean
 - Objectives: (a) State hypotheses about a population mean and verify conditions for a one-sample t-test. (b) Calculate the t statistic and p-value (with df) and interpret the p-value in context. (c) Write a conclusion in context and connect it to the interval.
 - Instrument: p-value visualizer in t mode (df-aware null distribution). **[§8, reused]**
-- Investigative use: is the mean transit time of the suspect owner's ships different from the corridor's published mean? Test, statistic, p-value, conclusion.
+- Investigative use: the one-sample t on the nineteen diverted hulls' Mark-9 delay is the procedure (Briefing, drills); the mission beat dismantles the Board's pooled comparison (all Perrine vs all other transits) by computing what it must average if nineteen of nine hundred are late, and the power it had to see that excess (≈ 0.12). See beat-sheet §8, B5.
 - Misconceptions: p-value from the normal table with small n; "reject H0 so the mean is exactly the alternative".
 
 **act-7-04 · Before and After** — `content/act-7/04-before-and-after.mdx`
@@ -618,14 +618,14 @@ Act VIII subtotal: 30 + 25 + 30 + 30 + 20 = **135 min**.
 - Topics: 9.2 Confidence Intervals for the Slope of a Regression Model · 9.3 Justifying a Claim About the Slope of a Regression Model Based on a Confidence Interval
 - Objectives: (a) Construct a t-interval for the slope (b ± t*·SE_b, df = n − 2) from computer output and interpret it in context. (b) Use the interval to justify a claim about the slope (including whether it excludes 0 or a physically required value). (c) Describe how n and residual spread affect the interval's width.
 - Instrument: slope interval builder from computer output, plus the capture simulator in slope mode. **[new: output reader] · [§8 capture simulator, slope mode]**
-- Investigative use: physics fixes the fuel-per-tonne slope for the ship class; the suspect owner's interval for that slope excludes the physical constant — their declared masses are systematically wrong.
+- Investigative use: fuel loaded regressed on the fuel the plotted profile required (slope 1 for any honest hull, whatever the departure geometry); the nineteen diverted hulls' interval excludes 1 while the honest Perrine hulls' brackets it — their declared masses are systematically wrong.
 - Misconceptions: df = n − 1 for a slope; interpreting the interval as a range of slopes "in the data".
 
 **act-9-03 · Testing the Slope** — `content/act-9/03-testing-the-slope.mdx`
 - Topics: 9.4 Setting Up a Test for the Slope of a Regression Model · 9.5 Carrying Out a Test for the Slope of a Regression Model
 - Objectives: (a) State hypotheses about a population slope (β = 0 or β = β0) and verify conditions. (b) Calculate t = (b − β0)/SE_b with df = n − 2 and obtain the p-value, from output or by hand. (c) Write a conclusion in context and state what a significant slope does and does not prove.
 - Instrument: p-value visualizer in slope mode with linked residual diagnostics. **[§8, reused]**
-- Investigative use: the final regression: excess fuel fraction (fuel loaded ÷ declared mass − 0.215) regressed on the Δv from Mark 9.4 to Kettle on each hull's departure date — a variable that should have zero relationship with fuel loaded under any innocent story — has a slope significantly different from zero, and consistent with the rocket equation. Under any innocent story, β = 0; the p-value says otherwise. This is the analysis that proves intent.
+- Investigative use: the final regression: excess fuel per true tonne (fuel loaded ÷ whole-phase inferred mass − the departure month's required fraction) regressed on the Δv from Mark 9.4 to Kettle on each hull's departure date — a variable that should have zero relationship with fuel loaded under any innocent story — has a slope significantly different from zero, and consistent with the rocket equation. Under any innocent story, β = 0; the p-value says otherwise. This is the analysis that proves intent.
 - Misconceptions: "a significant slope proves cause"; using the two-sided p-value from output for a one-sided test without halving.
 
 **act-9-04 · Selecting the Procedure** — `content/act-9/04-selecting-the-procedure.mdx`

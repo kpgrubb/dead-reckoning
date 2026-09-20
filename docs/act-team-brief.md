@@ -21,7 +21,7 @@ You are the **lead of an Act Team**. You produce every micro-module of your Act 
 Nothing else. Shared-component or store changes are **requests** in your report. No new npm dependencies.
 
 ## How to organize the work
-Recommended (you may adapt): (1) build `data.ts` first and write a test asserting the registry's headline numbers (e.g. "two-proportion z ≈ 3.2", "19 hulls at +6–9%"); (2) spawn an **Instrument Builder** sub-agent for the Act's instruments (give it the beat-sheet instrument lines and the shared README); (3) spawn **module sub-agents**, each owning 2–3 modules end to end (scene, briefing, drills, beat, log) with the full beat-sheet blocks pasted in; (4) write the checkpoint yourself; (5) integrate, verify, fix, report. Sub-agents get only what you brief them — paste the relevant beat-sheet blocks and the rules below verbatim rather than pointing at 30k-word files.
+Recommended (you may adapt): (1) build `data.ts` first and write a test asserting the registry's headline numbers (e.g. "two-proportion z ≈ 3.2", "19 hulls at +6–13%"); (2) spawn an **Instrument Builder** sub-agent for the Act's instruments (give it the beat-sheet instrument lines and the shared README); (3) spawn **module sub-agents**, each owning 2–3 modules end to end (scene, briefing, drills, beat, log) with the full beat-sheet blocks pasted in; (4) write the checkpoint yourself; (5) integrate, verify, fix, report. Sub-agents get only what you brief them — paste the relevant beat-sheet blocks and the rules below verbatim rather than pointing at 30k-word files.
 
 ## Module skeleton (every teaching module, in this order)
 ```mdx
