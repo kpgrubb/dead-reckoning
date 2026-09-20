@@ -1,0 +1,77 @@
+---
+id: act-0-01
+act: 0
+title: "Shakedown"
+kind: module
+ap_topics: []
+objectives:
+  - "Verify the module pipeline: scene, briefing, instrument, drill, mission beat, log entry"
+prereqs: []
+est_minutes: 10
+calc_briefing: null
+summary: "PLACEHOLDER — Prologue Act Team replaces this module. Pipeline proof only."
+---
+
+import { mean } from '@/lib/stats'
+
+export const fixes = [11.2, 14.8, 9.6, 13.1, 12.4, 15.9]
+
+<Scene stamp="MET 000:04:12" location="Callisto departure corridor" condensed="You take the corvette out on her first shakedown. The navigation officer reports dead-reckoning fix errors; you ask for the numbers, not the adjectives.">
+
+The corvette answers the helm like something that has been waiting a long time to be let out. You keep your hands off the console and watch the officers work.
+
+Forward of you, the navigation station is logging position fixes against the Callisto beacon — dead reckoning first, beacon truth second, the difference in kilometers. The XO reads the errors off the display and calls them "acceptable."
+
+You ask for the numbers instead.
+
+</Scene>
+
+<Dialogue speaker="xo" aside="Not looking up from the plot.">
+Six fixes since departure, Commander. Errors between about ten and sixteen kilometers. Nothing to worry about.
+</Dialogue>
+
+<Briefing title="The mean as a summary" topics={[]}>
+<Briefing.Intuition>
+"Between ten and sixteen" is a range. A range hides where most of the values sit. The first thing you want from a handful of numbers is a single number that stands for all of them — a **center**.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i" terms={{ '\\bar{x}': 'sample mean', 'n': 'number of observations', 'x_i': 'the i-th observation' }} label="Sample mean" />
+</Briefing.Definition>
+<Briefing.Worked>
+The six fix errors are {fixes.join(', ')} km. Their sum is {fixes.reduce((a, b) => a + b, 0).toFixed(1)}; divided by six, the mean is **{mean(fixes).toFixed(2)} km**.
+</Briefing.Worked>
+</Briefing>
+
+<Plot spec={{ kind: 'dotplot', values: fixes, label: 'Fix error (km)' }} label="NAV · DEAD-RECKONING FIX ERROR" description="Dotplot of six dead-reckoning fix errors in kilometers, ranging from about 9.6 to 15.9." showTable />
+
+<MonteCarlo label="NAV · SIMULATED FIX ERRORS" task="normal-sample-mean" params={{ n: 6, mu: 12.5, sigma: 2.5 }} n={500} statLabel="mean fix error (km)" description="Histogram of simulated mean fix errors from repeated six-fix runs." />
+
+<Drill generator="act-0/fix-error-mean" count={4} />
+
+<MissionBeat id="act-0-01-mean" kind="numeric" answer={mean(fixes)} tolerance={0.05} units="km" digits={1}
+  prompt="The XO wants a number for the log, not a range. What is the mean fix error, to one decimal place?">
+  <Success>
+  <Dialogue speaker="xo">Logged. Thirteen kilometers and change. Better than the yard promised.</Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">That's not what the sum gives me, Commander. Six values. Add them, divide by six.</Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by="act-0-01-mean">
+
+<Scene stamp="MET 000:06:40">
+
+The number goes into the log. It will matter later, when someone tells you a different number and expects you not to notice.
+
+</Scene>
+
+<LogEntry
+  title="Sample mean"
+  concept="The mean is the balance point of a dataset: the sum of the values divided by their count. It uses every observation, which makes it precise and also sensitive to extreme values."
+  formula="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i"
+  mistake="Reporting a range (“between 10 and 16”) when a single summary of center is asked for."
+  tags={['mean', 'center', '1.7']}
+/>
+
+</Gated>

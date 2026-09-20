@@ -1,0 +1,117 @@
+/*
+ * DEAD RECKONING — design tokens (baseline).
+ * Visual language: restrained military-grade bridge instruments. Light-on-dark, muted palette,
+ * alert accents reserved for meaning (caution/alert/confirm). The Visual Design System agent owns
+ * this file and may extend it; components must consume tokens, never raw colors.
+ *
+ * Theme switching: html[data-theme="high-contrast"] overrides. Motion: html[data-motion="reduced"].
+ */
+:root {
+  /* Surfaces */
+  --dr-bg-0: #07090d;        /* void — page background */
+  --dr-bg-1: #0d1117;        /* hull — panel background */
+  --dr-bg-2: #131a24;        /* console — raised panel */
+  --dr-bg-3: #1a2331;        /* control — inputs, hover */
+  --dr-line: #22303f;        /* panel borders */
+  --dr-line-strong: #34475c;
+
+  /* Text */
+  --dr-fg-0: #d7dee8;        /* primary */
+  --dr-fg-1: #9aa8b8;        /* secondary */
+  --dr-fg-2: #667587;        /* muted / labels */
+
+  /* Instrument phosphor (the "display green-amber") */
+  --dr-phosphor: #9fd3a8;    /* primary readout */
+  --dr-phosphor-dim: #5f8f6a;
+  --dr-amber: #e0b05a;       /* caution */
+  --dr-amber-dim: #8a6d35;
+  --dr-alert: #e0564f;       /* alert / hostile / rejected null */
+  --dr-alert-dim: #7f3430;
+  --dr-cyan: #6fc3d6;        /* sensor / data series 2 */
+  --dr-violet: #a68be0;      /* series 3 */
+  --dr-steel: #8fa3b8;       /* series 4 / neutral */
+
+  /* Semantic */
+  --dr-accent: var(--dr-phosphor);
+  --dr-success: var(--dr-phosphor);
+  --dr-warn: var(--dr-amber);
+  --dr-danger: var(--dr-alert);
+  --dr-focus: #ffffff;
+
+  /* Chart series (D3 ordinal) */
+  --dr-series-1: var(--dr-phosphor);
+  --dr-series-2: var(--dr-cyan);
+  --dr-series-3: var(--dr-amber);
+  --dr-series-4: var(--dr-violet);
+  --dr-series-5: var(--dr-steel);
+  --dr-grid: #1c2734;
+  --dr-axis: #4a5b6e;
+
+  /* Typography — vendored fonts go in /public/fonts; system fallbacks until then */
+  --dr-font-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --dr-font-mono: "IBM Plex Mono", "Cascadia Mono", "Consolas", ui-monospace, monospace;
+  --dr-font-prose: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --dr-text-scale: 1;
+  --dr-fs-xs: calc(0.75rem * var(--dr-text-scale));
+  --dr-fs-sm: calc(0.875rem * var(--dr-text-scale));
+  --dr-fs-md: calc(1rem * var(--dr-text-scale));
+  --dr-fs-lg: calc(1.125rem * var(--dr-text-scale));
+  --dr-fs-xl: calc(1.5rem * var(--dr-text-scale));
+  --dr-fs-2xl: calc(2rem * var(--dr-text-scale));
+  --dr-lh-prose: 1.65;
+
+  /* Spacing */
+  --dr-sp-1: 4px;
+  --dr-sp-2: 8px;
+  --dr-sp-3: 12px;
+  --dr-sp-4: 16px;
+  --dr-sp-5: 24px;
+  --dr-sp-6: 32px;
+  --dr-sp-7: 48px;
+  --dr-sp-8: 64px;
+  --dr-radius: 3px;
+  --dr-measure: 68ch;
+
+  /* Motion */
+  --dr-dur-fast: 120ms;
+  --dr-dur: 220ms;
+  --dr-dur-slow: 480ms;
+  --dr-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  color-scheme: dark;
+}
+
+html[data-theme="high-contrast"] {
+  --dr-bg-0: #000000;
+  --dr-bg-1: #000000;
+  --dr-bg-2: #0a0a0a;
+  --dr-bg-3: #161616;
+  --dr-line: #6a6a6a;
+  --dr-line-strong: #9a9a9a;
+  --dr-fg-0: #ffffff;
+  --dr-fg-1: #e6e6e6;
+  --dr-fg-2: #bdbdbd;
+  --dr-phosphor: #b6ffbf;
+  --dr-phosphor-dim: #7ddb8a;
+  --dr-amber: #ffd27a;
+  --dr-alert: #ff7b73;
+  --dr-cyan: #9fe8fa;
+  --dr-violet: #cdb8ff;
+  --dr-steel: #cfdceb;
+  --dr-grid: #3a3a3a;
+  --dr-axis: #9a9a9a;
+}
+
+html[data-motion="reduced"] {
+  --dr-dur-fast: 0ms;
+  --dr-dur: 0ms;
+  --dr-dur-slow: 0ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion="full"]) {
+    --dr-dur-fast: 0ms;
+    --dr-dur: 0ms;
+    --dr-dur-slow: 0ms;
+  }
+}
