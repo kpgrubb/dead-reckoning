@@ -29,6 +29,15 @@ npm run e2e        # playwright end-to-end walkthrough (builds first)
 
 See [CLAUDE.md](./CLAUDE.md) for the full contracts. In short: `content/act-N/*.mdx` are the micro-modules, `src/lib/stats` is the numeric source of truth, `src/lib/problems` generates every drill and checkpoint from a seed, and `src/instruments/act-N` holds the interactive ship instruments.
 
+## Ambient audio
+
+The top bar carries a **COMMS · AMBIENT** player (play/pause, skip, volume, mute; off by default; volume and last track are remembered). Tracks ship with the static build and are never fetched from the network.
+
+To add or swap a track:
+1. Drop the mp3 in `public/audio/` with a slug filename, e.g. `public/audio/mark-nine.mp3`.
+2. Add an entry to `TRACKS` in `src/store/audio.ts`: `{ id: 'mark-nine', title: 'Mark Nine', file: 'audio/mark-nine.mp3' }`.
+3. Rebuild. The playlist loops in array order.
+
 ## Series bible
 
 Book Two notes live in `docs/story-bible.md` (§ Book Two hooks).

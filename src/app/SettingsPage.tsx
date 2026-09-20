@@ -1,6 +1,7 @@
 import { useSettings, type Motion, type StoryDensity, type TextSize, type Theme } from '@/store/settings'
 import { useProgress } from '@/store/progress'
 import { useShipLog } from '@/store/log'
+import { useAudio, TRACKS } from '@/store/audio'
 
 function Radio<T extends string>({ name, value, options, onChange }: { name: string; value: T; options: { v: T; label: string; hint?: string }[]; onChange: (v: T) => void }) {
   return (
@@ -24,6 +25,7 @@ export function SettingsPage() {
   const resetAll = useProgress((p) => p.resetAll)
   const learnerSeed = useProgress((p) => p.learnerSeed)
   const clearLog = useShipLog((l) => l.clear)
+  const audio = useAudio()
   return (
     <div className="dr-settings">
       <h1 className="dr-map__title">Settings</h1>
@@ -37,6 +39,35 @@ export function SettingsPage() {
           <input type="checkbox" checked={s.strictGating} onChange={(e) => s.set({ strictGating: e.target.checked })} />
           <span>Lock modules until prerequisites are complete</span>
         </label>
+      </fieldset>
+      <fieldset className="dr-choices" aria-label="Ambient audio">
+        <legend className="dr-field__label">Ambient audio</legend>
+        <label className="dr-choice">
+          <input type="checkbox" checked={audio.enabled} onChange={(e) => audio.setEnabled(e.target.checked)} />
+          <span>
+            Show the COMMS · AMBIENT player in the top bar
+            <span className="dr-muted"> — two looping ambient tracks; off by default until you press play</span>
+          </span>
+        </label>
+        {audio.enabled && (
+          <>
+            <label className="dr-choice">
+              <span className="dr-field__label" style={{ minWidth: '8ch' }}>Track</span>
+              <select className="dr-input" value={audio.trackIndex} onChange={(e) => audio.setTrack(Number(e.target.value))} aria-label="Ambient track">
+                {TRACKS.map((t, i) => (
+                  <option key={t.id} value={i}>
+                    {t.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="dr-choice">
+              <span className="dr-field__label" style={{ minWidth: '8ch' }}>Volume</span>
+              <input type="range" min={0} max={100} step={5} value={Math.round(audio.volume * 100)} onChange={(e) => audio.setVolume(Number(e.target.value) / 100)} aria-label="Ambient volume" />
+              <span className="dr-muted">{Math.round(audio.volume * 100)}%</span>
+            </label>
+          </>
+        )}
       </fieldset>
       <section className="dr-settings__danger">
         <div className="dr-field__label">Progress</div>
