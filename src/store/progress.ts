@@ -37,8 +37,11 @@ export interface ProgressState {
   lastModule: string | null
   /** Story decisions the narrative can branch flavor on (not structure). */
   decisions: Record<string, string>
+  /** Mission beats where the learner consulted the hint (beatId → ISO time). */
+  consults: Record<string, string>
 
   markComplete: (moduleId: string) => void
+  recordConsult: (beatId: string) => void
   setLastModule: (moduleId: string) => void
   recordBeat: (beatId: string, passed: boolean, choice?: string) => void
   recordDrill: (drillKey: string, correct: boolean) => void
@@ -62,6 +65,9 @@ export const useProgress = create<ProgressState>()(
       checkpoints: {},
       lastModule: null,
       decisions: {},
+      consults: {},
+
+      recordConsult: (beatId) => set((s) => (s.consults[beatId] ? s : { consults: { ...s.consults, [beatId]: new Date().toISOString() } })),
 
       markComplete: (moduleId) =>
         set((s) => (s.completed[moduleId] ? s : { completed: { ...s.completed, [moduleId]: { at: new Date().toISOString() } } })),
@@ -106,7 +112,7 @@ export const useProgress = create<ProgressState>()(
       setDecision: (key, value) => set((s) => ({ decisions: { ...s.decisions, [key]: value } })),
 
       resetAll: () =>
-        set({ learnerSeed: freshSeed(), completed: {}, beats: {}, drills: {}, checkpoints: {}, lastModule: null, decisions: {} }),
+        set({ learnerSeed: freshSeed(), completed: {}, beats: {}, drills: {}, checkpoints: {}, lastModule: null, decisions: {}, consults: {} }),
     }),
     { name: 'dead-reckoning:progress', version: 1 },
   ),

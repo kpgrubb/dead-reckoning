@@ -81,4 +81,43 @@ export function runSimulation(opts: SimulationOptions): SimulationHandle {
   }
 }
 
-export { tasks, registerTask } from './tasks'
+/**
+ * Synchronous, in-thread run of a registered task — for tests, mission-beat answers and small
+ * simulations inside MDX where a Worker round-trip is unnecessary. Deterministic for a given seed
+ * and identical to what the worker would produce with the same seed.
+ */
+export function simulate(task: string, params: Record<string, unknown>, seed: number, n: number): number[] {
+  const fn = tasks[task]
+  if (!fn) throw new Error(`Unknown simulation task "${task}"`)
+  const rng = new Rng(seed)
+  const out = new Array<number>(n)
+  for (let i = 0; i < n; i++) out[i] = fn(rng, params)
+  return out
+}
+
+/** Running mean/sd over a results array without re-reducing from scratch each frame (for readouts). */
+export class RunningStats {
+  n = 0
+  private m = 0
+  private m2 = 0
+  push(x: number): void {
+    this.n++
+    const d = x - this.m
+    this.m += d / this.n
+    this.m2 += d * (x - this.m)
+  }
+  pushAll(xs: readonly number[]): void {
+    for (const x of xs) this.push(x)
+  }
+  get mean(): number {
+    return this.n ? this.m : NaN
+  }
+  get variance(): number {
+    return this.n > 1 ? this.m2 / (this.n - 1) : NaN
+  }
+  get sd(): number {
+    return Math.sqrt(this.variance)
+  }
+}
+
+export { tasks, registerTask, hasTask, drawParent, parentMean, parentSd } from './tasks'

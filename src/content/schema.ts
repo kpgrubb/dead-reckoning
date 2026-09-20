@@ -44,8 +44,8 @@ export const ACT_TITLES: Record<ActNumber, { code: string; title: string; apUnit
   4: { code: 'ACT IV', title: 'Running Cold', apUnit: 'Unit 4 · Probability, Random Variables & Distributions' },
   5: { code: 'ACT V', title: 'Noise Floor', apUnit: 'Unit 5 · Sampling Distributions' },
   6: { code: 'ACT VI', title: 'Accusation', apUnit: 'Unit 6 · Inference for Proportions' },
-  7: { code: 'ACT VII', title: 'Refit', apUnit: 'Unit 7 · Inference for Means' },
-  8: { code: 'ACT VIII', title: 'Ledger', apUnit: 'Unit 8 · Chi-Square' },
+  7: { code: 'ACT VII', title: 'Halden Reach', apUnit: 'Unit 7 · Inference for Means' },
+  8: { code: 'ACT VIII', title: 'Kettle', apUnit: 'Unit 8 · Chi-Square' },
   9: { code: 'ACT IX', title: 'Intent', apUnit: 'Unit 9 · Inference for Slopes' },
-  10: { code: 'EPILOGUE', title: 'Consequences', apUnit: null },
+  10: { code: 'EPILOGUE', title: 'Provident', apUnit: null },
 }

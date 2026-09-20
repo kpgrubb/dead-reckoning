@@ -5,18 +5,30 @@
  *  - No hand-computed answers anywhere. Drills, mission beats, worked examples and checkpoints
  *    compute their numbers by calling these functions.
  *  - Functions return full precision; round only at display time via `format.ts`.
- *  - Every function is unit-tested against SciPy/R reference fixtures in tests/fixtures/.
+ *  - Every function is unit-tested against SciPy/NumPy reference fixtures in tests/fixtures/.
  *
- * Module map (Simulation & Stats Engine agent implements the not-yet-written ones):
- *  descriptive.ts   mean, median, sd, quartiles, fiveNumber, outliers, zScore …      [baseline present]
- *  format.ts        rounding/formatting helpers (AP conventions)                       [baseline present]
- *  distributions/   normal, t, chi2, binomial, geometric: pdf/pmf, cdf, inverse cdf   [TODO]
- *  regression.ts    least squares, r, r², residuals, SE of slope, transformations     [TODO]
- *  inference.ts     z/t procedures for proportions & means (1-, 2-sample, paired),
- *                   chi-square GOF/independence/homogeneity, slope t-test, CIs         [TODO]
- *  resampling.ts    bootstrap, permutation/randomization tests                         [TODO]
- *  random-variables.ts  discrete RV mean/variance, linear combos, binomial/geometric moments [TODO]
- *  special.ts       erf, gamma, beta, incomplete beta/gamma (numerical foundations)   [TODO]
+ * Module map (see README.md in this directory for the full API reference and AP conventions):
+ *  descriptive.ts        mean, median, sd, quartiles (TI-84 rule), fiveNumber, outliers, zScore, percentile,
+ *                        skewness, modes, frequencyTable, bins, describe, linearTransformSummary …
+ *  format.ts             round, roundSig, fmt, fmtP, fmtPct, fmtInt
+ *  special.ts            erf/erfc, lgamma, incomplete gamma/beta, choose, invertMonotone
+ *  distributions/        normal, t, chi2, f, binomial, geometric, uniform, exponential, poisson (namespaced)
+ *  critical.ts           zStar, tStar, chi2Star, zCritical, tCritical, pValueZ/T/Chi2
+ *  twoWay.ts             twoWay, expectedCounts, conditional, marginals
+ *  random-variables.ts   discreteRV, expectedValue, linearTransformRV, sumRV, differenceRV, convolve, diceSumRV
+ *  regression.ts         linearRegression, correlation, regressionFromSummary, transformedRegression
+ *  inference.ts          onePropInterval/Test, twoPropInterval/Test, oneMeanInterval/Test, pairedT*, twoMean*,
+ *                        chiSquareGOF/Independence/Homogeneity, slopeTest/Interval(+FromComputerOutput),
+ *                        powerZTest*, sampleSizeFor*, condition checkers
+ *  resampling.ts         bootstrap*, permutationTest*, simulatedPValue
  */
 export * from './descriptive'
 export * from './format'
+export * from './special'
+export * from './distributions'
+export * from './critical'
+export * from './twoWay'
+export * from './random-variables'
+export * from './regression'
+export * from './inference'
+export * from './resampling'

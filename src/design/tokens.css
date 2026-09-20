@@ -1,66 +1,125 @@
 /*
- * DEAD RECKONING — design tokens (baseline).
- * Visual language: restrained military-grade bridge instruments. Light-on-dark, muted palette,
- * alert accents reserved for meaning (caution/alert/confirm). The Visual Design System agent owns
- * this file and may extend it; components must consume tokens, never raw colors.
+ * DEAD RECKONING — design tokens.
  *
- * Theme switching: html[data-theme="high-contrast"] overrides. Motion: html[data-motion="reduced"].
+ * Visual language: bridge instruments. Restrained military-grade HUD, light-on-dark, muted palette.
+ * Accent colors MEAN something and are never decorative:
+ *   phosphor  data / primary / confirm          cyan    sensor / series 2
+ *   amber     caution / engineering             red     alert / hostile / rejected null
+ *   violet    intel                             steel   neutral / reference
+ *
+ * Two layers of color:
+ *   1. READOUT accents (--dr-phosphor, --dr-cyan …) are light enough to be TEXT on the void (≥4.5:1).
+ *   2. MARK series (--dr-series-N) are mid-lightness fills for chart marks, validated for colour-vision
+ *      separation (OKLab ΔE ≥ 15 between adjacent slots). Text never wears a series colour.
+ *
+ * Theme switching: [data-theme="high-contrast"] (on <html> via settings, or on any subtree for
+ * side-by-side samples). Motion: [data-motion="reduced"] or the OS preference zeroes every duration —
+ * components must treat 0ms as "jump to final state".
  */
-:root {
-  /* Surfaces */
-  --dr-bg-0: #07090d;        /* void — page background */
-  --dr-bg-1: #0d1117;        /* hull — panel background */
-  --dr-bg-2: #131a24;        /* console — raised panel */
-  --dr-bg-3: #1a2331;        /* control — inputs, hover */
-  --dr-line: #22303f;        /* panel borders */
-  --dr-line-strong: #34475c;
+:root,
+[data-theme='default'] {
+  /* ---- Surfaces ---- */
+  --dr-bg-0: #07090d; /* void — page background */
+  --dr-bg-1: #0d1117; /* hull — panel background */
+  --dr-bg-2: #131a24; /* console — raised panel, hover */
+  --dr-bg-3: #1a2331; /* control — inputs, active */
+  --dr-line: #22303f; /* panel borders, hairlines */
+  --dr-line-strong: #34475c; /* control borders */
+  --dr-line-rail: #2c3b4c; /* panel corner brackets */
 
-  /* Text */
-  --dr-fg-0: #d7dee8;        /* primary */
-  --dr-fg-1: #9aa8b8;        /* secondary */
-  --dr-fg-2: #667587;        /* muted / labels */
+  /* ---- Text (all ≥ 4.5:1 on bg-0…bg-2) ---- */
+  --dr-fg-0: #d7dee8; /* primary   14.7:1 */
+  --dr-fg-1: #9aa8b8; /* secondary  8.2:1 */
+  --dr-fg-2: #7b8a9c; /* muted / labels 5.6:1 */
 
-  /* Instrument phosphor (the "display green-amber") */
-  --dr-phosphor: #9fd3a8;    /* primary readout */
+  /* ---- Readout accents (text-safe on the void) ---- */
+  --dr-phosphor: #9fd3a8; /* 11.7:1 */
   --dr-phosphor-dim: #5f8f6a;
-  --dr-amber: #e0b05a;       /* caution */
+  --dr-phosphor-glow: rgba(159, 211, 168, 0.18);
+  --dr-amber: #e0b05a; /* 10.0:1 */
   --dr-amber-dim: #8a6d35;
-  --dr-alert: #e0564f;       /* alert / hostile / rejected null */
+  --dr-alert: #e8615a; /* 5.8:1 */
   --dr-alert-dim: #7f3430;
-  --dr-cyan: #6fc3d6;        /* sensor / data series 2 */
-  --dr-violet: #a68be0;      /* series 3 */
-  --dr-steel: #8fa3b8;       /* series 4 / neutral */
+  --dr-cyan: #6fc3d6; /* 9.9:1 */
+  --dr-cyan-dim: #3e7d8c;
+  --dr-violet: #a68be0; /* 7.0:1 */
+  --dr-violet-dim: #6b579a;
+  --dr-steel: #8fa3b8; /* 7.7:1 */
+  --dr-steel-dim: #56697d;
 
-  /* Semantic */
+  /* ---- Semantic ---- */
   --dr-accent: var(--dr-phosphor);
   --dr-success: var(--dr-phosphor);
   --dr-warn: var(--dr-amber);
   --dr-danger: var(--dr-alert);
+  --dr-info: var(--dr-cyan);
   --dr-focus: #ffffff;
+  --dr-focus-ring: 0 0 0 2px var(--dr-bg-0), 0 0 0 4px var(--dr-focus);
+  --dr-selection: rgba(159, 211, 168, 0.28);
 
-  /* Chart series (D3 ordinal) */
-  --dr-series-1: var(--dr-phosphor);
-  --dr-series-2: var(--dr-cyan);
-  --dr-series-3: var(--dr-amber);
-  --dr-series-4: var(--dr-violet);
-  --dr-series-5: var(--dr-steel);
-  --dr-grid: #1c2734;
-  --dr-axis: #4a5b6e;
+  /* ---- Panel tones (label colour, stripe, LED) ---- */
+  --dr-tone-default: var(--dr-fg-1);
+  --dr-tone-tactical: var(--dr-phosphor);
+  --dr-tone-sensor: var(--dr-cyan);
+  --dr-tone-engineering: var(--dr-amber);
+  --dr-tone-intel: var(--dr-violet);
+  --dr-tone-log: var(--dr-steel);
+  --dr-tone-alert: var(--dr-alert);
 
-  /* Typography — vendored fonts go in /public/fonts; system fallbacks until then */
-  --dr-font-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --dr-font-mono: "IBM Plex Mono", "Cascadia Mono", "Consolas", ui-monospace, monospace;
-  --dr-font-prose: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  /* ---- Chart mark series (validated categorical set; steel is the neutral reference slot) ---- */
+  --dr-series-1: #45a057; /* phosphor mark */
+  --dr-series-2: #1fa0d6; /* cyan mark     */
+  --dr-series-3: #c08a18; /* amber mark    */
+  --dr-series-4: #8f70d8; /* violet mark   */
+  --dr-series-5: #6b89a9; /* steel — reference / neutral only */
+  --dr-series-alert: #d24a43; /* rejected / hostile mark */
+
+  /* ---- Chart semantics ---- */
+  --dr-chart-surface: var(--dr-bg-0);
+  --dr-chart-grid: #182230;
+  --dr-chart-axis: #52657a;
+  --dr-chart-tick: var(--dr-fg-2);
+  --dr-chart-label: var(--dr-fg-1);
+  --dr-chart-title: var(--dr-fg-0);
+  --dr-chart-null: var(--dr-series-5); /* null / reference distribution */
+  --dr-chart-alt: var(--dr-series-2); /* alternative / observed sample */
+  --dr-chart-rejected: var(--dr-series-alert); /* rejection region, hostile track */
+  --dr-chart-fit: var(--dr-phosphor); /* least-squares line, model */
+  --dr-chart-residual: var(--dr-series-3); /* residual bars / deviations */
+  --dr-chart-reference: var(--dr-steel); /* mean / zero / threshold lines */
+  --dr-chart-observed: var(--dr-amber); /* observed statistic marker */
+  --dr-chart-shade: rgba(159, 211, 168, 0.28); /* shaded probability area */
+  --dr-chart-shade-alt: rgba(111, 195, 214, 0.28);
+  --dr-chart-shade-rejected: rgba(232, 97, 90, 0.3);
+  --dr-chart-shade-caution: rgba(224, 176, 90, 0.26);
+  --dr-chart-selected: var(--dr-focus);
+  --dr-chart-ring: var(--dr-bg-0); /* surface ring around dots */
+  --dr-chart-mark-alpha: 0.92;
+  --dr-grid: var(--dr-chart-grid); /* legacy aliases kept for other agents */
+  --dr-axis: var(--dr-chart-axis);
+
+  /* ---- Typography ---- */
+  --dr-font-ui: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --dr-font-mono: 'IBM Plex Mono', 'Cascadia Mono', 'Consolas', ui-monospace, monospace;
+  --dr-font-prose: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
   --dr-text-scale: 1;
+  --dr-fs-2xs: calc(0.6875rem * var(--dr-text-scale));
   --dr-fs-xs: calc(0.75rem * var(--dr-text-scale));
   --dr-fs-sm: calc(0.875rem * var(--dr-text-scale));
   --dr-fs-md: calc(1rem * var(--dr-text-scale));
   --dr-fs-lg: calc(1.125rem * var(--dr-text-scale));
   --dr-fs-xl: calc(1.5rem * var(--dr-text-scale));
   --dr-fs-2xl: calc(2rem * var(--dr-text-scale));
+  --dr-fs-3xl: calc(2.75rem * var(--dr-text-scale));
   --dr-lh-prose: 1.65;
+  --dr-lh-ui: 1.5;
+  --dr-lh-tight: 1.2;
+  --dr-track-label: 0.08em; /* letterspacing for mono caps labels */
+  --dr-track-wide: 0.16em;
+  --dr-chart-fs-tick: 11px; /* chart text does not scale with --dr-text-scale on purpose: fixed instrument type */
+  --dr-chart-fs-label: 12px;
 
-  /* Spacing */
+  /* ---- Spacing & shape ---- */
   --dr-sp-1: 4px;
   --dr-sp-2: 8px;
   --dr-sp-3: 12px;
@@ -70,48 +129,92 @@
   --dr-sp-7: 48px;
   --dr-sp-8: 64px;
   --dr-radius: 3px;
+  --dr-radius-lg: 6px;
   --dr-measure: 68ch;
+  --dr-bracket: 10px; /* panel corner bracket length */
+  --dr-control-h: 34px; /* min height for buttons/inputs */
+  --dr-z-topbar: 10;
+  --dr-z-overlay: 20;
 
-  /* Motion */
+  /* ---- Motion ---- */
   --dr-dur-fast: 120ms;
   --dr-dur: 220ms;
   --dr-dur-slow: 480ms;
   --dr-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dr-scanline-alpha: 0.035; /* CSS-only phosphor texture; zero under reduced motion / high contrast */
 
   color-scheme: dark;
 }
 
-html[data-theme="high-contrast"] {
+/* ---------------------------------------------------------------------------------------------
+ * High contrast: same product, ≥ 7:1 body text, brighter accents, solid borders, no glow/texture.
+ * ------------------------------------------------------------------------------------------- */
+[data-theme='high-contrast'] {
   --dr-bg-0: #000000;
   --dr-bg-1: #000000;
-  --dr-bg-2: #0a0a0a;
-  --dr-bg-3: #161616;
-  --dr-line: #6a6a6a;
-  --dr-line-strong: #9a9a9a;
-  --dr-fg-0: #ffffff;
-  --dr-fg-1: #e6e6e6;
-  --dr-fg-2: #bdbdbd;
+  --dr-bg-2: #0d0d0d;
+  --dr-bg-3: #1a1a1a;
+  --dr-line: #7a7a7a;
+  --dr-line-strong: #b0b0b0;
+  --dr-line-rail: #9a9a9a;
+
+  --dr-fg-0: #ffffff; /* 21:1  */
+  --dr-fg-1: #ededed; /* 17.7:1 */
+  --dr-fg-2: #c9c9c9; /* 12.6:1 */
+
   --dr-phosphor: #b6ffbf;
-  --dr-phosphor-dim: #7ddb8a;
+  --dr-phosphor-dim: #8fe39a;
+  --dr-phosphor-glow: transparent;
   --dr-amber: #ffd27a;
-  --dr-alert: #ff7b73;
-  --dr-cyan: #9fe8fa;
-  --dr-violet: #cdb8ff;
-  --dr-steel: #cfdceb;
-  --dr-grid: #3a3a3a;
-  --dr-axis: #9a9a9a;
+  --dr-amber-dim: #d9ad4f;
+  --dr-alert: #ff8a83;
+  --dr-alert-dim: #d9645d;
+  --dr-cyan: #a5ecfb;
+  --dr-cyan-dim: #74c7da;
+  --dr-violet: #d4c2ff;
+  --dr-violet-dim: #ad98e6;
+  --dr-steel: #d5e0ec;
+  --dr-steel-dim: #a9b8c8;
+  --dr-focus: #ffff00;
+  --dr-focus-ring: 0 0 0 2px #000000, 0 0 0 4px #ffff00;
+  --dr-selection: rgba(255, 255, 0, 0.35);
+
+  --dr-series-1: #6fdc82;
+  --dr-series-2: #4fd0ff;
+  --dr-series-3: #f0c060;
+  --dr-series-4: #c9a8ff;
+  --dr-series-5: #b8c8d8;
+  --dr-series-alert: #ff7a72;
+
+  --dr-chart-grid: #3a3a3a;
+  --dr-chart-axis: #c0c0c0;
+  --dr-chart-shade: rgba(182, 255, 191, 0.4);
+  --dr-chart-shade-alt: rgba(165, 236, 251, 0.4);
+  --dr-chart-shade-rejected: rgba(255, 138, 131, 0.42);
+  --dr-chart-shade-caution: rgba(255, 210, 122, 0.4);
+  --dr-chart-mark-alpha: 1;
+  --dr-scanline-alpha: 0;
 }
 
-html[data-motion="reduced"] {
+/* ---- Motion overrides ---- */
+[data-motion='reduced'] {
   --dr-dur-fast: 0ms;
   --dr-dur: 0ms;
   --dr-dur-slow: 0ms;
+  --dr-scanline-alpha: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html:not([data-motion="full"]) {
+  html:not([data-motion='full']) {
     --dr-dur-fast: 0ms;
     --dr-dur: 0ms;
     --dr-dur-slow: 0ms;
+    --dr-scanline-alpha: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --dr-scanline-alpha: 0;
   }
 }

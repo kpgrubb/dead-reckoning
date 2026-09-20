@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { HashRouter, Routes, Route, NavLink } from 'react-router-dom'
 import { MissionMap } from './app/MissionMap'
 import { ModulePage } from './app/ModulePage'
@@ -7,6 +7,8 @@ import { SettingsPage } from './app/SettingsPage'
 import { useSettings, applySettings } from './store/settings'
 import { useProgress } from './store/progress'
 import { modules } from './content/registry'
+
+const StyleReference = lazy(() => import('./design/StyleReference'))
 
 function Shell() {
   const settings = useSettings()
@@ -23,6 +25,7 @@ function Shell() {
           <NavLink to="/">MISSION MAP</NavLink>
           <NavLink to="/log">SHIP’S LOG</NavLink>
           <NavLink to="/settings">SETTINGS</NavLink>
+          <NavLink to="/style" className="dr-topbar__nav-aux">STYLE</NavLink>
         </nav>
         <span className="dr-topbar__status" aria-label="Progress">
           {completed}/{modules.length} MODULES
@@ -34,6 +37,14 @@ function Shell() {
           <Route path="/module/:id" element={<ModulePage />} />
           <Route path="/log" element={<ShipLogPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route
+            path="/style"
+            element={
+              <Suspense fallback={<p className="dr-muted">Loading style reference…</p>}>
+                <StyleReference />
+              </Suspense>
+            }
+          />
         </Routes>
       </main>
     </div>

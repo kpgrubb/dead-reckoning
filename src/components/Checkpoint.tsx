@@ -1,44 +1,30 @@
 /**
- * <Checkpoint act="act-1" /> — Act assessment runner (baseline). Assessment Designer refines UX.
- * Items are generated fresh per attempt from the CheckpointSpec; pass threshold gates the Act.
+ * <Checkpoint act="act-1" /> — Act assessment runner.
+ *
+ * Timer-free (shows est_minutes), progress indicator, mixed item types including `display`
+ * ("interpret this display": a Plot, then the question), submit-all grading with an unanswered-items
+ * confirmation, score readout, in-story debrief listing missed items with review-module links,
+ * retry with fresh parameters. In-progress responses persist to sessionStorage so an accidental
+ * navigation does not lose a 20-minute attempt. Passing marks the checkpoint module complete.
+ *
+ * <CheckpointRunner spec={…}> renders a spec directly (tests, previews).
  */
-import { useMemo, useState } from 'react'
-import { getCheckpoint } from '@/lib/problems/checkpoints'
-import { instantiate } from '@/lib/problems/generate'
-import { grade } from '@/lib/problems/grade'
+import { useEffect, useId, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { buildCheckpointProblems, clearDraft, getCheckpoint, loadDraft, saveDraft, scoreCheckpoint, type CheckpointScore, type CheckpointSpec, type MissedItem } from '@/lib/problems/checkpoints'
+import { answerText, isAnswered } from '@/lib/problems/grade'
 import { getGenerator } from '@/lib/problems/registry'
-import type { GradeResult, ProblemInstance, Response } from '@/lib/problems/types'
-import { seedFrom } from '@/lib/rng'
+import type { Response } from '@/lib/problems/types'
 import { useProgress } from '@/store/progress'
 import { getModule } from '@/content/registry'
-import { Link } from 'react-router-dom'
 import { Panel } from './Panel'
 import { RichText } from './RichText'
-import { Plot } from './Plot'
 import { useModule } from './ModuleContext'
+import { AnswerInput, ProblemDisplay, ResultBlock } from './Drill'
+import './assessment.css'
 
 export function Checkpoint({ act }: { act: string }) {
   const spec = getCheckpoint(act)
-  const { meta } = useModule()
-  const learnerSeed = useProgress((s) => s.learnerSeed)
-  const record = useProgress((s) => s.checkpoints[act])
-  const recordCheckpoint = useProgress((s) => s.recordCheckpoint)
-  const markComplete = useProgress((s) => s.markComplete)
-  const attemptNo = record?.attempts.length ?? 0
-  const [started, setStarted] = useState(false)
-  const [responses, setResponses] = useState<Record<string, Response>>({})
-  const [results, setResults] = useState<Record<string, GradeResult> | null>(null)
-
-  const problems = useMemo<Record<string, ProblemInstance>>(() => {
-    if (!spec) return {}
-    const out: Record<string, ProblemInstance> = {}
-    for (const item of spec.items) {
-      const g = typeof item.generator === 'string' ? getGenerator(item.generator) : item.generator
-      out[item.id] = instantiate(g, seedFrom(learnerSeed, act, item.id, attemptNo))
-    }
-    return out
-  }, [spec, learnerSeed, act, attemptNo])
-
   if (!spec) {
     return (
       <Panel label="CHECKPOINT" tone="alert">
@@ -46,44 +32,85 @@ export function Checkpoint({ act }: { act: string }) {
       </Panel>
     )
   }
+  return <CheckpointRunner spec={spec} />
+}
 
+export function CheckpointRunner({ spec }: { spec: CheckpointSpec }) {
+  const act = spec.act
+  const { meta } = useModule()
+  const learnerSeed = useProgress((s) => s.learnerSeed)
+  const record = useProgress((s) => s.checkpoints[act])
+  const recordCheckpoint = useProgress((s) => s.recordCheckpoint)
+  const markComplete = useProgress((s) => s.markComplete)
+  const attemptNo = record?.attempts.length ?? 0
+  const draft = useMemo(() => loadDraft(act, learnerSeed, attemptNo), [act, learnerSeed, attemptNo])
+  const [started, setStarted] = useState(!!draft)
+  const [resumed, setResumed] = useState(!!draft)
+  const [responses, setResponses] = useState<Record<string, Response>>(draft ?? {})
+  const [outcome, setOutcome] = useState<CheckpointScore | null>(null)
+  const [confirming, setConfirming] = useState(false)
+  const uid = useId()
+
+  const problems = useMemo(() => buildCheckpointProblems(spec, learnerSeed, attemptNo), [spec, learnerSeed, attemptNo])
   const threshold = spec.threshold ?? 0.8
 
-  const submit = () => {
-    const res: Record<string, GradeResult> = {}
-    let earned = 0
-    let total = 0
-    const missed: { itemId: string; reviewModules: string[] }[] = []
-    for (const item of spec.items) {
-      const r = grade(problems[item.id].answer, responses[item.id] ?? null)
-      res[item.id] = r
-      const w = item.weight ?? 1
-      total += w
-      earned += w * r.score
-      if (!r.correct) missed.push({ itemId: item.id, reviewModules: item.review })
-    }
-    const score = total ? earned / total : 0
-    const passed = score >= threshold
-    setResults(res)
-    recordCheckpoint(act, { at: new Date().toISOString(), score, passed, missed })
-    if (passed) markComplete(meta.id)
-  }
+  // Persist the in-progress attempt.
+  useEffect(() => {
+    if (started && !outcome) saveDraft(act, learnerSeed, attemptNo, responses)
+  }, [act, learnerSeed, attemptNo, responses, started, outcome])
 
-  const retry = () => {
+  const answered = spec.items.filter((it) => isAnswered(problems[it.id].answer, responses[it.id] ?? null)).length
+  const total = spec.items.length
+
+  const submit = () => {
+    const s = scoreCheckpoint(spec, problems, responses)
+    setOutcome(s)
+    setConfirming(false)
+    clearDraft(act)
+    recordCheckpoint(act, { at: new Date().toISOString(), score: s.score, passed: s.passed, missed: s.missed })
+    if (s.passed) markComplete(meta.id)
+  }
+  const trySubmit = () => {
+    if (answered < total && !confirming) {
+      setConfirming(true)
+      return
+    }
+    submit()
+  }
+  const begin = () => {
     setStarted(true)
+    setResumed(false)
     setResponses({})
-    setResults(null)
+    setOutcome(null)
+    setConfirming(false)
   }
 
   const last = record?.attempts[record.attempts.length - 1]
+  const best = record?.attempts.length ? Math.max(...record.attempts.map((a) => a.score)) : 0
 
-  if (!started && !results) {
+  if (!started && !outcome) {
     return (
-      <Panel label={`CHECKPOINT · ${spec.title.toUpperCase()}`} status={`${spec.items.length} ITEMS · ${spec.est_minutes} MIN · PASS ≥ ${Math.round(threshold * 100)}%`} tone="tactical" className="dr-checkpoint">
+      <Panel label={`CHECKPOINT · ${spec.title.toUpperCase()}`} status={`${total} ITEMS · ≈ ${spec.est_minutes} MIN · PASS ≥ ${Math.round(threshold * 100)}%`} tone="tactical" className="dr-checkpoint">
         <RichText text={spec.briefing} />
-        {record?.passed && <p className="dr-checkpoint__passed">Checkpoint passed (best {Math.round(Math.max(...record.attempts.map((a) => a.score)) * 100)}%). You may re-run for practice.</p>}
-        {last && !record?.passed && <Debrief score={last.score} missed={last.missed} onFail={spec.onFail} />}
-        <button type="button" className="dr-btn dr-btn--primary" onClick={retry}>
+        <div className="dr-checkpoint__meta">
+          <span>
+            <strong>{total}</strong> items
+          </span>
+          <span>
+            ≈ <strong>{spec.est_minutes}</strong> min · no timer
+          </span>
+          <span>
+            pass ≥ <strong>{Math.round(threshold * 100)}%</strong>
+          </span>
+          {attemptNo > 0 && (
+            <span>
+              attempts <strong>{attemptNo}</strong>
+            </span>
+          )}
+        </div>
+        {record?.passed && <p className="dr-checkpoint__passed">Checkpoint passed (best {Math.round(best * 100)}%). You may re-run for practice with new parameters.</p>}
+        {last && !record?.passed && <Debrief spec={spec} score={last.score} missed={last.missed} />}
+        <button type="button" className="dr-btn dr-btn--primary" onClick={begin}>
           {attemptNo ? 'RETRY · NEW PARAMETERS' : 'BEGIN'}
         </button>
       </Panel>
@@ -91,97 +118,160 @@ export function Checkpoint({ act }: { act: string }) {
   }
 
   return (
-    <Panel label={`CHECKPOINT · ${spec.title.toUpperCase()}`} status={`ATTEMPT ${attemptNo + (results ? 0 : 1)}`} tone="tactical" className="dr-checkpoint">
+    <Panel label={`CHECKPOINT · ${spec.title.toUpperCase()}`} status={outcome ? `ATTEMPT ${attemptNo} · SCORED` : `ATTEMPT ${attemptNo + 1} · ≈ ${spec.est_minutes} MIN`} tone="tactical" className="dr-checkpoint">
+      {!outcome && (
+        <div className="dr-checkpoint__progress" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={answered} aria-label="Items answered">
+          <span>
+            {answered}/{total} answered
+          </span>
+          <div className="dr-checkpoint__bar" aria-hidden="true">
+            <div className="dr-checkpoint__bar-fill" style={{ width: `${Math.round((100 * answered) / total)}%` }} />
+          </div>
+          <span>≈ {spec.est_minutes} min · no timer</span>
+        </div>
+      )}
+      {resumed && !outcome && (
+        <p className="dr-checkpoint__resume" role="status">
+          Resumed your in-progress attempt.
+        </p>
+      )}
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          if (!results) submit()
+          if (!outcome) trySubmit()
         }}
       >
         <ol className="dr-checkpoint__items">
           {spec.items.map((item, idx) => {
             const p = problems[item.id]
-            const a = p.answer.type === 'display' ? p.answer.question : p.answer
+            const isDisplayItem = p.answer.type === 'display'
             const disp = p.answer.type === 'display' ? p.answer.display : p.data
-            const r = results?.[item.id]
+            const r = outcome?.results[item.id]
             const v = responses[item.id] ?? null
+            const done = isAnswered(p.answer, v)
             const set = (x: Response) => setResponses((s) => ({ ...s, [item.id]: x }))
+            const headId = `${uid}-${item.id}`
+            const g = typeof item.generator === 'string' ? getGenerator(item.generator) : item.generator
             return (
-              <li key={item.id} className={`dr-checkpoint__item ${r ? (r.correct ? 'is-correct' : 'is-wrong') : ''}`}>
-                {disp && <Plot spec={disp} description={`Display for checkpoint item ${idx + 1}.`} showTable={disp.kind === 'table'} />}
-                <RichText text={p.prompt} />
-                {a.type === 'numeric' && <input className="dr-input dr-input--mono" inputMode="decimal" aria-label={`Answer ${idx + 1}`} value={typeof v === 'string' ? v : ''} onChange={(e) => set(e.target.value)} disabled={!!results} />}
-                {a.type === 'choice' && (
-                  <fieldset className="dr-choices" disabled={!!results}>
-                    <legend className="visually-hidden">Options</legend>
-                    {a.options.map((o, i) => (
-                      <label key={i} className="dr-choice">
-                        <input type="radio" name={item.id} checked={v === i} onChange={() => set(i)} />
-                        <RichText text={o} className="dr-choice__text" />
-                      </label>
-                    ))}
-                  </fieldset>
-                )}
-                {a.type === 'multi' && (
-                  <fieldset className="dr-choices" disabled={!!results}>
-                    <legend className="visually-hidden">Select all that apply</legend>
-                    {a.options.map((o, i) => {
-                      const arr = Array.isArray(v) ? v : []
-                      return (
-                        <label key={i} className="dr-choice">
-                          <input type="checkbox" checked={arr.includes(i)} onChange={(e) => set(e.target.checked ? [...arr, i] : arr.filter((x) => x !== i))} />
-                          <RichText text={o} className="dr-choice__text" />
-                        </label>
-                      )
-                    })}
-                  </fieldset>
-                )}
-                {a.type === 'interpretation' && <textarea className="dr-input" rows={4} aria-label={`Answer ${idx + 1}`} value={typeof v === 'string' ? v : ''} onChange={(e) => set(e.target.value)} disabled={!!results} />}
-                {r && (
-                  <div className={`dr-drill__result ${r.correct ? 'is-correct' : 'is-wrong'}`}>
-                    <strong>{r.correct ? 'CONFIRMED' : 'REJECTED'}</strong> — {r.feedback}
-                    {!r.correct && (
-                      <div className="dr-drill__solution">
-                        <RichText text={p.solution} />
-                      </div>
-                    )}
+              <li key={item.id}>
+                <section className={`dr-checkpoint__item ${r ? (r.correct ? 'is-correct' : 'is-wrong') : ''} ${done ? 'is-answered' : ''}`} aria-labelledby={headId}>
+                  <div className="dr-checkpoint__item-head">
+                    <h4 id={headId}>
+                      Item {idx + 1} of {total}
+                      {(item.weight ?? 1) !== 1 ? ` · weight ${item.weight}` : ''}
+                      {isDisplayItem ? ' · interpret the display' : ''}
+                    </h4>
+                    <span className="dr-checkpoint__item-state">{r ? (r.correct ? 'CONFIRMED' : 'MISSED') : done ? 'ANSWERED' : 'OPEN'}</span>
                   </div>
-                )}
+                  {disp && <ProblemDisplay spec={disp} index={idx} isDisplayItem={isDisplayItem} />}
+                  <RichText text={p.prompt} />
+                  <AnswerInput answer={p.answer} value={v} onChange={set} disabled={!!outcome} ariaLabel={`Answer to item ${idx + 1}`} name={`${uid}-${item.id}`} />
+                  {r && (
+                    <ResultBlock result={r} misconception={r.correct ? undefined : p.misconception}>
+                      {!r.correct && (
+                        <>
+                          <div className="dr-checkpoint__answer-key">ANSWER · {answerText(p.answer)}</div>
+                          <div className="dr-drill__solution">
+                            <div className="dr-drill__solution-title">WORKED SOLUTION · {g.label}</div>
+                            <RichText text={p.solution} />
+                          </div>
+                        </>
+                      )}
+                    </ResultBlock>
+                  )}
+                </section>
               </li>
             )
           })}
         </ol>
-        {!results && (
-          <button type="submit" className="dr-btn dr-btn--primary">
-            SUBMIT CHECKPOINT
-          </button>
+        {!outcome && (
+          <div className="dr-checkpoint__actions">
+            <button type="submit" className="dr-btn dr-btn--primary">
+              SUBMIT CHECKPOINT
+            </button>
+            <span className="dr-muted">
+              {answered}/{total} answered
+            </span>
+          </div>
+        )}
+        {confirming && !outcome && (
+          <div className="dr-checkpoint__confirm" role="alertdialog" aria-label="Unanswered items">
+            <span>
+              {total - answered} item{total - answered === 1 ? '' : 's'} unanswered — unanswered items score zero. Submit anyway?
+            </span>
+            <button type="button" className="dr-btn dr-btn--warn" onClick={submit}>
+              SUBMIT ANYWAY
+            </button>
+            <button type="button" className="dr-btn dr-btn--ghost" onClick={() => setConfirming(false)}>
+              KEEP WORKING
+            </button>
+          </div>
         )}
       </form>
-      {results && last && (
-        <div className="dr-checkpoint__outcome">
-          <div className="dr-checkpoint__score">
-            SCORE {Math.round(last.score * 100)}% — {last.passed ? 'PASSED' : 'BELOW THRESHOLD'}
+      {outcome && (
+        <div className="dr-checkpoint__outcome" role="region" aria-label="Checkpoint result">
+          <div className={`dr-checkpoint__score ${outcome.passed ? '' : 'is-fail'}`} role="status">
+            SCORE {Math.round(outcome.score * 100)}% — {outcome.passed ? 'PASSED' : 'BELOW THRESHOLD'}
           </div>
-          {last.passed ? <RichText text={spec.onPass} /> : <Debrief score={last.score} missed={last.missed} onFail={spec.onFail} />}
-          {!last.passed && (
-            <button type="button" className="dr-btn dr-btn--primary" onClick={retry}>
-              RETRY · NEW PARAMETERS
-            </button>
-          )}
+          <div className="dr-checkpoint__score-detail">
+            {total - outcome.missed.length}/{total} items · threshold {Math.round(threshold * 100)}% · attempt {attemptNo}
+          </div>
+          {outcome.passed ? <RichText text={spec.onPass} /> : <Debrief spec={spec} score={outcome.score} missed={outcome.missed} />}
+          <div className="dr-checkpoint__actions">
+            {!outcome.passed && (
+              <button type="button" className="dr-btn dr-btn--primary" onClick={begin}>
+                RETRY · NEW PARAMETERS
+              </button>
+            )}
+            {outcome.passed && (
+              <button type="button" className="dr-btn dr-btn--ghost" onClick={begin}>
+                RUN AGAIN · PRACTICE
+              </button>
+            )}
+          </div>
         </div>
       )}
     </Panel>
   )
 }
 
-function Debrief({ score, missed, onFail }: { score: number; missed: { itemId: string; reviewModules: string[] }[]; onFail: string }) {
+function Debrief({ spec, score, missed }: { spec: CheckpointSpec; score: number; missed: MissedItem[] }) {
   const review = [...new Set(missed.flatMap((m) => m.reviewModules))]
   return (
-    <div className="dr-checkpoint__debrief">
-      <div className="dr-checkpoint__debrief-tag">DEBRIEF · last score {Math.round(score * 100)}%</div>
-      <RichText text={onFail} />
+    <div className="dr-checkpoint__debrief" role="region" aria-label="Debrief">
+      <div className="dr-checkpoint__debrief-tag">DEBRIEF · score {Math.round(score * 100)}%</div>
+      <RichText text={spec.onFail} />
+      {missed.length > 0 && (
+        <ul className="dr-checkpoint__missed" aria-label="Missed items">
+          {missed.map((m) => {
+            const idx = spec.items.findIndex((it) => it.id === m.itemId)
+            const item = spec.items[idx]
+            const g = item ? (typeof item.generator === 'string' ? getGenerator(item.generator) : item.generator) : null
+            return (
+              <li key={m.itemId} className="dr-checkpoint__missed-item">
+                <div className="dr-checkpoint__missed-head">
+                  <span>Item {idx + 1}</span>
+                  {g && <span>{g.label}</span>}
+                  {g && <span>AP {g.ap_topics.join(' · ')}</span>}
+                </div>
+                {item?.debrief && <RichText text={item.debrief} className="dr-checkpoint__missed-debrief" />}
+                <div className="dr-checkpoint__missed-links">
+                  {m.reviewModules.map((id) => {
+                    const mod = getModule(id)
+                    return (
+                      <Link key={id} to={`/module/${id}`}>
+                        REVIEW {mod ? `${mod.id} · ${mod.title}` : id}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+      )}
       {review.length > 0 && (
-        <ul className="dr-checkpoint__review">
+        <ul className="dr-checkpoint__review" aria-label="Modules to revisit">
           {review.map((id) => {
             const m = getModule(id)
             return (

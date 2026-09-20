@@ -1,0 +1,24 @@
+/*
+ * Vendored IBM Plex — latin subset only, weights 400/500/600 + italics.
+ * Loaded from node_modules via @fontsource; Vite copies the woff2 files into the build. No network.
+ *
+ *   Plex Serif → narrative prose (scenes, dialogue)
+ *   Plex Sans  → UI, briefings, drill text
+ *   Plex Mono  → readouts, labels, ship's log, axis ticks
+ */
+@import '@fontsource/ibm-plex-sans/latin-400.css';
+@import '@fontsource/ibm-plex-sans/latin-400-italic.css';
+@import '@fontsource/ibm-plex-sans/latin-500.css';
+@import '@fontsource/ibm-plex-sans/latin-600.css';
+@import '@fontsource/ibm-plex-sans/latin-600-italic.css';
+
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-400-italic.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
+@import '@fontsource/ibm-plex-mono/latin-600.css';
+
+@import '@fontsource/ibm-plex-serif/latin-400.css';
+@import '@fontsource/ibm-plex-serif/latin-400-italic.css';
+@import '@fontsource/ibm-plex-serif/latin-500.css';
+@import '@fontsource/ibm-plex-serif/latin-600.css';
+@import '@fontsource/ibm-plex-serif/latin-600-italic.css';
