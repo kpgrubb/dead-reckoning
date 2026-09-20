@@ -84,6 +84,14 @@ Vite 8 + React 19 + TypeScript 6, MDX 3, D3 7, KaTeX, Zustand 5, Vitest 5, Playw
 - `npm run dev` · `npm run build` (tsc -b + vite build) · `npm test` (vitest run) · `npm run e2e` (playwright) · `npm run lint`
 - Do **not** add dependencies without orchestrator approval (note the request in your report).
 
+## Where things are (after Phase 1)
+- **Story canon:** `docs/story-bible.md` (world, CSV *Nightjar*, crew, hidden truth, clue trail, hard-science ledger §2 — every number in prose must agree with it). Crew roster/voices: `src/content/crew.ts` (`you`, `xo`, `sensors`, `analyst`, `engineer`, `comms`, `medic`, `admiralty`, `ashbyhale`, `marsh`, `brandt`).
+- **Curriculum:** `docs/curriculum-map.md` (70 modules, ids, AP topics, instruments, checkpoint blueprints), `docs/ap-coverage.md`. **Beat sheet:** `docs/beat-sheet.md` — the per-module build spec Act Teams follow.
+- **Stats API:** `src/lib/stats/README.md` — namespaced distributions (`normal.cdf`, `t.quantile`, `binomial.atLeast`…), `inference.ts` (uniform result shape with `conditions`), `regression.ts`, `resampling.ts`, `random-variables.ts`, `critical.ts`. Use `simulate(task, params, seed, n)` from `@/lib/sim` for deterministic simulation answers; `runSimulation` for live worker runs.
+- **Problems:** `docs/problem-authoring.md` — `defineGenerator`, `drawDataset`/`drawScatter`/`drawTwoWay`, `retry`, `tableMd`, rubric templates in `src/lib/problems/rubrics.ts` (confidence interval, significance conclusion, slope, r², correlation, residual, SD, expected value, sampling bias, conditions). Every generator is swept over 200 seeds by `tests/unit/problems/all-generators.test.ts`.
+- **Charts/controls:** `src/instruments/shared/README.md` — `Histogram`, `Dotplot`, `Boxplot`, `Scatter` (draggable), `DensityCurve`, `BarChart`, `Slider`, `NumberField`, `Segmented`, `Readout`, `Legend`, `useChartFrame`. Theme in `src/design/chart-theme.ts`; icons in `src/design/icons.tsx`; live style reference at `/#/style`.
+- **Panel** supports `led`, `icon`, `flush`; **MissionBeat** supports `hint` (CONSULT), `answerKind`, `allowInequality`, rubric-template spreading for `kind="interpretation"`.
+
 ## Agent working rules
 - Act Teams edit only `content/act-N/`, `src/instruments/act-N/`, `src/lib/problems/generators/act-N/`, `src/lib/problems/checkpoints/act-N.ts`. Shared-component changes are requests to the orchestrator, listed in your final report.
 - Before finishing: `npm run build` and `npm test` must pass for your files. Run `npx vitest run <your test path>` while iterating.

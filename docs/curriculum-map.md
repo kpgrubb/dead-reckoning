@@ -17,8 +17,8 @@ Companion: `docs/ap-coverage.md` (topic → module / checkpoint matrix).
 | IV Running Cold | 4 · Probability & Distributions (10–20%) | 12 | 10 | 25 | 11 | 295 |
 | V Noise Floor | 5 · Sampling Distributions (7–12%) | 8 | 5 | 20 | 6 | 160 |
 | VI Accusation | 6 · Proportions (12–15%) | 11 | 8 | 25 | 9 | 245 |
-| VII Refit | 7 · Means (10–18%) | 10 | 7 | 25 | 8 | 225 |
-| VIII Ledger | 8 · Chi-Square (2–5%) | 7 | 4 | 20 | 5 | 135 |
+| VII Halden Reach | 7 · Means (10–18%) | 10 | 7 | 25 | 8 | 225 |
+| VIII Kettle | 8 · Chi-Square (2–5%) | 7 | 4 | 20 | 5 | 135 |
 | IX Intent | 9 · Slopes (2–5%) | 6 | 4 | 25 | 5 | 140 |
 | 10 Epilogue | — | (revisits 4.5, 6.7) | 2 | — | 2 | 40 |
 | **Total** | 9 units | **80 topics** | **61** | **9 checkpoints · 200 min** | **70** | **1,865 min = 31.1 h** |
@@ -100,7 +100,7 @@ Act 0 subtotal: 20 + 20 + 20 = **60 min**.
 - Topics: 1.4 Representing a Categorical Variable with Graphs
 - Objectives: (a) Construct and read bar charts (counts and relative frequencies) and, when appropriate, pie charts. (b) Identify how a graph's baseline, scale or area distorts the comparison. (c) Compare two categorical distributions with side-by-side bars in context.
 - Instrument: misleading-display detector — a bar chart of cause codes with adjustable baseline, axis scale and bar width; a "restore honest axes" toggle. **[new: display-integrity panel]**
-- Investigative use: the Admiralty's summary chart of loss causes vs the same data on honest axes; "piracy" looks negligible until the baseline is fixed.
+- Investigative use: the Admiralty's summary chart of classifications over all 2,200 Register records vs the same variable on losses only, on honest axes; "unknown" looks negligible (≈ 5% of all records) until the denominator is fixed (22 of 31 losses, 71%). See beat-sheet §5, decisions 3–4.
 - Misconceptions: pie charts for non-part-of-whole data; reading a truncated axis as a proportional difference.
 
 **act-1-03 · Drive Signatures** — `content/act-1/03-drive-signatures.mdx`
@@ -323,7 +323,7 @@ Act III subtotal: 25 + 30 + 30 + 30 + 30 + 20 = **165 min**.
 - Topics: 4.9 Combining Random Variables
 - Objectives: (a) Calculate the mean and SD of a linear transformation aX + b of a random variable. (b) Calculate the mean and SD of sums and differences of independent random variables (variances add; SDs do not). (c) Explain why independence is required for the variance rule and what changes for a difference.
 - Instrument: random-variable combiner — two independent heat-load distributions (reactor, life-support), drag their means/SDs, watch the sum's distribution form and its SD compare to the "naive" sum of SDs. **[§8]**
-- Investigative use: the chief's margin: total heat load is the sum of independent system loads; the learner computes the total's SD correctly and shows why the design margin the yard quoted (adding SDs) was too generous.
+- Investigative use: the chief's margin: total heat load is the sum of independent system loads; the learner computes the total's SD correctly (√Σσ²) and shows why the yard's quoted margin (treating the six load errors as averaging out) was too generous and the analyst's (adding SDs) too pessimistic.
 - Misconceptions: SDs add; variance of a difference subtracts; forgetting the multiplier squares in the variance.
 
 **act-4-08 · Pings** — `content/act-4/08-pings.mdx`
@@ -377,7 +377,7 @@ Act IV subtotal: 25 + 25 + 30 + 25 + 25 + 30 + 30 + 30 + 25 + 25 + 25 = **295 mi
 - Objectives: (a) Calculate probabilities and percentiles for a normal distribution with given parameters, in both directions. (b) Assess whether a normal model is reasonable for a distribution (dotplot/histogram/normal probability plot). (c) Interpret a normal-model probability in context as a long-run proportion.
 - Instrument: z-score / normal-area explorer in inverse mode (enter an area, read the cutoff) with a normal-probability-plot side panel. **[§8, reused]**
 - Calc: `integral-as-accumulation`
-- Investigative use: the corridor's transit-time distribution is well modeled as normal; the learner finds the cutoff below which only 1% of honest transits fall — a threshold the suspect ships will be measured against.
+- Investigative use: the corridor's Mark-9 delay distribution is well modeled as normal; the learner finds the 1% cutoff and shows that no single suspect hull is individually remarkable (about one honest transit in seven is that late) — the evidence is in the mean, which is act-5-03's job. See beat-sheet §5, decision 7.
 - Misconceptions: "the CLT makes the population normal"; using the normal model on a clearly skewed variable without saying so.
 
 **act-5-03 · The Machine** — `content/act-5/03-the-machine.mdx`
@@ -469,14 +469,14 @@ Act V subtotal: 30 + 25 + 30 + 30 + 25 + 20 = **160 min**.
 - Topics: 6.8 Confidence Intervals for the Difference of Two Proportions · 6.9 Justifying a Claim About the Difference of Two Proportions Based on a Confidence Interval
 - Objectives: (a) Verify conditions and construct a two-sample z-interval for p1 − p2. (b) Interpret the interval in context, including the meaning of an interval that contains 0. (c) Use the interval to justify a claim about the difference.
 - Instrument: two-proportion interval explorer — two sample panels (n, successes), the interval on a difference axis with 0 marked. **[new: difference-of-proportions panel]**
-- Investigative use: the suspect corridor vs a control corridor of similar traffic — the interval for the difference in loss rates excludes zero.
+- Investigative use: Perrine-beneficiary hulls vs all other hulls on the Lane — the interval for the difference in loss rates excludes zero. (The corridor-vs-corridor comparison moves to act-8-03/04 as a homogeneity test; beat-sheet §5, decision 13.)
 - Misconceptions: interpreting the sign of the difference backwards (order of subtraction); "the interval contains 0 so the proportions are equal".
 
 **act-6-08 · The Accusation** — `content/act-6/08-the-accusation.mdx`
 - Topics: 6.10 Setting Up a Test for the Difference of Two Population Proportions · 6.11 Carrying Out a Test for the Difference of Two Population Proportions
 - Objectives: (a) State hypotheses for a two-proportion z-test and verify conditions using the pooled proportion. (b) Calculate the pooled proportion, the test statistic and the p-value. (c) Write a conclusion in context and state the scope of inference.
 - Instrument: two-proportion test visualizer — pooled p̂ display, null distribution, shaded p-value. **[§8 p-value visualizer, two-proportion mode]**
-- Investigative use: the first formal accusation: loss rate on the suspect corridor vs control, tested, with hypotheses, conditions, statistic, p-value and conclusion, written as a report the learner signs.
+- Investigative use: the first formal accusation: loss rate of Perrine-beneficiary hulls vs all others on the Lane (19/900 vs 12/1,712), tested with the pooled proportion, with hypotheses, conditions (the large-counts check passes narrowly at 10.7 — a deliberate beat), statistic, p-value and conclusion, written as a report the learner signs.
 - Misconceptions: forgetting to pool under H0; using unpooled SE in the test; conclusion phrased about the samples.
 
 **act-6-checkpoint · Checkpoint: Accusation** — `content/act-6/checkpoint.mdx` — 25 min — blueprint in §5.
@@ -485,7 +485,7 @@ Act VI subtotal: 30 + 30 + 25 + 25 + 25 + 30 + 25 + 30 + 25 = **245 min**.
 
 ---
 
-### Act VII — Unit 7 · Inference for Quantitative Data: Means · "Refit" (7 modules + checkpoint · 225 min)
+### Act VII — Unit 7 · Inference for Quantitative Data: Means · "Halden Reach" (7 modules + checkpoint · 225 min)
 
 | id | working title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
@@ -496,7 +496,7 @@ Act VI subtotal: 30 + 30 + 25 + 25 + 25 + 30 + 25 + 30 + 25 = **245 min**.
 | act-7-05 | Two Fleets, Two Means | 7.6, 7.7 | 1, 3, 4 | act-7-04, act-5-05 | null | 25 | R |
 | act-7-06 | Transit Anomaly | 7.8, 7.9 | 1, 3, 4 | act-7-05 | null | 30 | R |
 | act-7-07 | Which Procedure | 7.10 | 1, 4 | act-7-06 | null | 30 | R |
-| act-7-checkpoint | Checkpoint: Refit | 7.1–7.10 | 1–4 | act-7-07 | null | 25 | R |
+| act-7-checkpoint | Checkpoint: Halden Reach | 7.1–7.10 | 1–4 | act-7-07 | null | 25 | R |
 
 **act-7-01 · Should I Worry About Error** — `content/act-7/01-should-i-worry-about-error.mdx`
 - Topics: 7.1 Introducing Statistics: Should I Worry About Error? · 7.2 Constructing a Confidence Interval for a Population Mean (the t distribution, df, conditions)
@@ -530,7 +530,7 @@ Act VI subtotal: 30 + 30 + 25 + 25 + 25 + 30 + 25 + 30 + 25 = **245 min**.
 - Topics: 7.6 Confidence Intervals for the Difference of Two Means · 7.7 Justifying a Claim About the Difference of Two Means Based on a Confidence Interval
 - Objectives: (a) Verify conditions and construct a two-sample t-interval for μ1 − μ2 (df from technology or the conservative min(n1 − 1, n2 − 1)). (b) Interpret the interval in context, including an interval containing 0. (c) Use the interval to justify a claim about the difference.
 - Instrument: two-sample interval explorer — two dotplots with summary panels, the interval on a difference axis, df display. **[new: difference-of-means panel]**
-- Investigative use: transit times for the suspect owner's ships vs all other owners — the interval for the difference in mean transit time, interpreted in hours.
+- Investigative use: two intervals for differences in mean Mark-9 delay — surviving Perrine hulls vs all other owners (contains 0: the honest Perrine hulls are honest) and lost Perrine hulls vs surviving Perrine hulls (excludes 0) — interpreted in days.
 - Misconceptions: pooling SDs by default; "conservative df" misunderstood as "more accurate".
 
 **act-7-06 · Transit Anomaly** — `content/act-7/06-transit-anomaly.mdx`
@@ -547,13 +547,13 @@ Act VI subtotal: 30 + 30 + 25 + 25 + 25 + 30 + 25 + 30 + 25 = **245 min**.
 - Investigative use: the learner assembles all the Act VI–VII findings into one inference brief, choosing the procedure for each and stating each conclusion's limits, before the brief is transmitted.
 - Misconceptions: choosing a procedure by the number of groups alone; skipping conditions because "the computer did it".
 
-**act-7-checkpoint · Checkpoint: Refit** — `content/act-7/checkpoint.mdx` — 25 min — blueprint in §5.
+**act-7-checkpoint · Checkpoint: Halden Reach** — `content/act-7/checkpoint.mdx` — 25 min — blueprint in §5.
 
 Act VII subtotal: 30 + 25 + 30 + 30 + 25 + 30 + 30 + 25 = **225 min**.
 
 ---
 
-### Act VIII — Unit 8 · Inference for Categorical Data: Chi-Square · "Ledger" (4 modules + checkpoint · 135 min)
+### Act VIII — Unit 8 · Inference for Categorical Data: Chi-Square · "Kettle" (4 modules + checkpoint · 135 min)
 
 | id | working title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
@@ -561,7 +561,7 @@ Act VII subtotal: 30 + 25 + 30 + 30 + 25 + 30 + 30 + 25 = **225 min**.
 | act-8-02 | Goodness of Fit | 8.3 | 3, 4 | act-8-01 | null | 25 | R |
 | act-8-03 | Two-Way | 8.4, 8.5 | 1, 3 | act-8-02, act-4-04 | null | 30 | R |
 | act-8-04 | Independence | 8.6, 8.7 | 1, 4 | act-8-03 | null | 30 | R |
-| act-8-checkpoint | Checkpoint: Ledger | 8.1–8.7 | 1–4 | act-8-04 | null | 20 | R |
+| act-8-checkpoint | Checkpoint: Kettle | 8.1–8.7 | 1–4 | act-8-04 | null | 20 | R |
 
 **act-8-01 · Are My Results Unexpected** — `content/act-8/01-are-my-results-unexpected.mdx`
 - Topics: 8.1 Introducing Statistics: Are My Results Unexpected? · 8.2 Setting Up a Chi-Square Goodness of Fit Test
@@ -588,10 +588,10 @@ Act VII subtotal: 30 + 25 + 30 + 30 + 25 + 30 + 30 + 25 = **225 min**.
 - Topics: 8.6 Carrying Out a Chi-Square Test for Homogeneity or Independence · 8.7 Skills Focus: Selecting an Appropriate Inference Procedure for Categorical Data
 - Objectives: (a) Calculate the chi-square statistic and p-value for a two-way table and write a conclusion in context. (b) Identify the cells that drive the result and describe the association in context. (c) Select the appropriate categorical procedure (one-proportion z, two-proportion z, GOF, homogeneity, independence) for a question.
 - Instrument: the independence visualizer with the distribution panel, plus the procedure selector in categorical mode. **[§8, reused] · [new: procedure selector, categorical mode]**
-- Investigative use: losses are not independent of owner; the cells driving the statistic are one owner's "accident"-coded losses. Combined with Act II's descriptive cross-tab, this is the ledger of who and what.
+- Investigative use: losses are not independent of beneficiary; the driving cell is *Perrine, lost*. The examiner × lost table fails the expected-count condition (one cell expects 0.46) and is answered by simulating the null (permutation of loss labels among departures), not by chi-square; classification × office is a census of the 31 and is described, not tested. Combined with Act II's descriptive cross-tab, this is the ledger of who and what. See beat-sheet §5, decision 2.
 - Misconceptions: "association from a chi-square test implies cause"; reading a significant test as "large" association.
 
-**act-8-checkpoint · Checkpoint: Ledger** — `content/act-8/checkpoint.mdx` — 20 min — blueprint in §5.
+**act-8-checkpoint · Checkpoint: Kettle** — `content/act-8/checkpoint.mdx` — 20 min — blueprint in §5.
 
 Act VIII subtotal: 30 + 25 + 30 + 30 + 20 = **135 min**.
 
@@ -625,7 +625,7 @@ Act VIII subtotal: 30 + 25 + 30 + 30 + 20 = **135 min**.
 - Topics: 9.4 Setting Up a Test for the Slope of a Regression Model · 9.5 Carrying Out a Test for the Slope of a Regression Model
 - Objectives: (a) State hypotheses about a population slope (β = 0 or β = β0) and verify conditions. (b) Calculate t = (b − β0)/SE_b with df = n − 2 and obtain the p-value, from output or by hand. (c) Write a conclusion in context and state what a significant slope does and does not prove.
 - Instrument: p-value visualizer in slope mode with linked residual diagnostics. **[§8, reused]**
-- Investigative use: the final regression: a variable that should have zero relationship with loss timing (a schedule, a payout, a reporting window) has a slope significantly different from zero. Under any innocent story, β = 0; the p-value says otherwise. This is the analysis that proves intent.
+- Investigative use: the final regression: excess fuel fraction (fuel loaded ÷ declared mass − 0.215) regressed on the Δv from Mark 9.4 to Kettle on each hull's departure date — a variable that should have zero relationship with fuel loaded under any innocent story — has a slope significantly different from zero, and consistent with the rocket equation. Under any innocent story, β = 0; the p-value says otherwise. This is the analysis that proves intent.
 - Misconceptions: "a significant slope proves cause"; using the two-sided p-value from output for a one-sided test without halving.
 
 **act-9-04 · Selecting the Procedure** — `content/act-9/04-selecting-the-procedure.mdx`
@@ -641,7 +641,7 @@ Act IX subtotal: 30 + 25 + 30 + 30 + 25 = **140 min**.
 
 ---
 
-### Act 10 — Epilogue · "Consequences" (2 modules · 40 min)
+### Act 10 — Epilogue · "Provident" (2 modules · 40 min)
 
 | id | working title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
@@ -889,7 +889,7 @@ Common rules (build-order §4; `CheckpointSpec` in `src/lib/problems/checkpoints
 | q11 | NUM | act-6-08 | 6.10, 6.11 | Pooled proportion and the two-proportion z statistic; p-value |
 | q12 | DISP | act-6-04 | 6.5 | Normal curve with a shaded region: which alternative hypothesis and which p-value does this shading represent |
 
-### act-7-checkpoint · Refit (11 items · 25 min)
+### act-7-checkpoint · Halden Reach (11 items · 25 min)
 | # | format | reviews | topic | item |
 |---|---|---|---|---|
 | q1 | MC | act-7-01 | 7.1 | Why t rather than z; the df; how t compares to normal |
@@ -904,7 +904,7 @@ Common rules (build-order §4; `CheckpointSpec` in `src/lib/problems/checkpoints
 | q10 | MC | act-7-07 | 7.10 | Select the procedure for each of three described questions |
 | q11 | DISP | act-7-05, act-7-07 | 7.6, 7.10 | Two small-sample dotplots: are the conditions for a two-sample t procedure met, and why |
 
-### act-8-checkpoint · Ledger (9 items · 20 min)
+### act-8-checkpoint · Kettle (9 items · 20 min)
 | # | format | reviews | topic | item |
 |---|---|---|---|---|
 | q1 | MC | act-8-01 | 8.2 | Hypotheses and the expected count for a category under a claimed distribution |

@@ -105,6 +105,63 @@ export const CREW: Record<string, CrewMember> = {
     voice: 'Civil servant, sixty, exact. Speaks of the Bureau\'s stamp as the one honest thing on the Lane. Sends the Act IX fuel file on her own authority.',
     accent: 'var(--dr-steel)',
   },
+  // Secondary recurring voices (bible §6, §8). Use <Dialogue name="…"> for one-off speakers.
+  ostrow: {
+    id: 'ostrow',
+    name: 'Lucan Ostrow',
+    rank: 'CAPT',
+    role: 'Lane Liaison Officer, Uruk office; PROVIDENT\'s field hand',
+    voice: 'Correct, cordial, always one rank above you in the room. Cites procedure by number. Never says "loss"; says "diversion" once, by accident, in Act VII.',
+    accent: 'var(--dr-alert-dim)',
+  },
+  lindqvist: {
+    id: 'lindqvist',
+    name: 'Petra Lindqvist-Oduya',
+    rank: 'CDR',
+    role: 'CO, tender CSV Halden Reach',
+    voice: 'Follows lawful orders and keeps her own log. Short, professional, no warmth until she has read your numbers herself.',
+    accent: 'var(--dr-cyan)',
+  },
+  renn: {
+    id: 'renn',
+    name: 'Renn',
+    rank: 'Adjuster',
+    role: 'Tharsis Mutual (Mars), Ceres office',
+    voice: 'Martian insurer. Talks in payouts and probabilities; offers the claims register because Tharsis wants its money back, and says so.',
+    accent: 'var(--dr-warn)',
+  },
+  okafor: {
+    id: 'okafor',
+    name: 'Nnamdi Okafor-Reyes',
+    rank: 'Investigator',
+    role: 'Lane Authority, Ceres office',
+    voice: 'Careful, through channels, slower than you want. Knows his predecessor was reassigned for asking. Every sentence has a file reference.',
+    accent: 'var(--dr-steel)',
+  },
+  achterberg: {
+    id: 'achterberg',
+    name: 'Seren Achterberg',
+    rank: 'VADM',
+    role: 'Service Inspectorate',
+    voice: 'One-sentence transmissions. Asks which findings would survive a hostile review. Praise is a single unsigned line.',
+    accent: 'var(--dr-fg-0)',
+  },
+  maalouf: {
+    id: 'maalouf',
+    name: 'Ines Maalouf',
+    rank: 'CDRE',
+    role: 'Flag Secretary to the Board, Valhalla',
+    voice: 'Signs the Board\'s transmissions; her own messages are two lines and unsigned. Becomes the channel to the Inspectorate if copied.',
+    accent: 'var(--dr-alert)',
+  },
+  halvorsen: {
+    id: 'halvorsen',
+    name: 'Halvorsen',
+    rank: 'PO',
+    role: 'Sensor watch (Oyelaran\'s second; runs the board after Act VIII)',
+    voice: 'Reads the board exactly as trained. Does not sit in her chair. Says "contact" where Oyelaran said "confirmed".',
+    accent: 'var(--dr-phosphor-dim)',
+  },
 }
 
 export function crewMember(id: string): CrewMember {
