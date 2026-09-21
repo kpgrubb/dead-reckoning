@@ -1,0 +1,242 @@
+---
+id: act-1-07
+act: 1
+title: "How Hot Is Too Hot"
+kind: module
+ap_topics: ["1.10"]
+objectives:
+  - "Compute a z-score and say what it means: a distance from the centre, measured in standard deviations"
+  - "Predict the effect of a linear change of units aX + b on centre, spread and shape — and show that z survives it"
+  - "Use the empirical rule and a normal model to turn a cutoff into a proportion, and a proportion back into a cutoff"
+  - "Report a normal-model area as a probability, and refuse to read the height of a density as one"
+prereqs: ["act-1-04"]
+est_minutes: 30
+calc_briefing: "area-under-a-curve"
+summary: "One contact runs hot for its declared mass. Under a model built from the fleet's own sixty, how rare is that — and how rare is rare enough to put in a signal?"
+---
+
+import { fmt, fmtInt, fmtPct, linearTransformSummary, normal, zScore } from '@/lib/stats'
+import { contacts, fleetModel, harpagia, harpagiaTail, harpagiaZ, HARPAGIA_CERTIFICATION, RATED_SPREAD_PCT } from '@/instruments/act-1/data'
+import { NormalExplorer } from '@/instruments/act-1/NormalExplorer'
+import { DecisionEcho } from '@/instruments/act-1/DecisionEcho'
+
+export const oyelaranZ = zScore(harpagia.ratio_pct, 100, RATED_SPREAD_PCT)
+export const bands = [1, 2, 3].map((k) => normal.between(fleetModel.mean - k * fleetModel.sd, fleetModel.mean + k * fleetModel.sd, fleetModel.mean, fleetModel.sd))
+export const tonnes = linearTransformSummary({ mean: fleetModel.mean, sd: fleetModel.sd }, HARPAGIA_CERTIFICATION.declared_mass_t / 100, -HARPAGIA_CERTIFICATION.declared_mass_t)
+export const hypoMass = 20000
+export const hypoHot = 0.09 * hypoMass
+export const oyelaranTex = `z = \\frac{${fmt(harpagia.ratio_pct, 1)} - 100}{${fmt(RATED_SPREAD_PCT, 1)}} = ${fmt(oyelaranZ, 2)}`
+export const tonnesA = HARPAGIA_CERTIFICATION.declared_mass_t / 100
+export const tonnesTex = `\\mu_y = ${fmt(tonnesA, 0)} \\times ${fmt(fleetModel.mean, 1)} - ${HARPAGIA_CERTIFICATION.declared_mass_t} = ${fmt(tonnes.mean ?? 0, 1)}\\ \\text{t}, \\qquad \\sigma_y = ${fmt(tonnesA, 0)} \\times ${fmt(fleetModel.sd, 2)} = ${fmt(tonnes.sd ?? 0, 1)}\\ \\text{t}`
+
+<Scene stamp="MET 025/09:15" location="Sensor bay · 0.22 AU from Callisto, 4 mgee" condensed="Twelve days after the contact that dragged the mean of the first eleven, Oyelaran has reduced it three more times and it will not move: 109.2 percent of the class-table expectation, plus or minus three. Her z of 2.6 was taken against the table's rated spread, which is a specification and not a measurement; the fleet's own sixty have a spread of their own. Sandoval converts percent to tonnes and shows that a change of units moves the centre and the spread but never the z.">
+
+The sensor bay is the coldest compartment that has people in it. It has to be: the Eyes are four eight-tenths-metre infrared telescopes at the mast head and everything warm in their line of sight is noise, so the bay behind them runs at eleven degrees and Oyelaran works in gloves with the fingers cut off. Twenty-five days out. Callisto is twenty-two hundredths of an astronomical unit astern, fifty-one kilometres a second, a minute and fifty seconds of light each way. The Bureau's file on one hull was requested eleven days ago and has not come back.
+
+She has the contact up when you come in, which means she has had it up for a while.
+
+C-004. Logged {harpagia.met}, before this ship was a week into the Lane. *{harpagia.hull}*, Adlinda Mk 3, pulse {fmt(harpagia.pulse_hz, 1)} hertz, which is the family signature and not in dispute. Declared departure mass {fmtInt(harpagia.declared_mass)} tonnes off the transponder. Class-table expectation for that mass on that filed profile, {fmt(harpagia.expected_TW, 4)} terawatts. Measured plume, {fmt(harpagia.plume_TW, 4)}.
+
+"Ratio {fmt(harpagia.ratio_pct, 1)} percent of expectation," she says. "I have reduced it three times since Tuesday. It does not move."
+
+You ask her for the error.
+
+There is a pause of the kind she does not usually leave. Then, flatly, the way a person says a word in a language they have decided to start speaking: "Plus or minus three. At this range the Eyes are good to three percent on plume power. So it is somewhere between six and twelve percent hot, and it is hot in every version of that."
+
+It is the first time she has volunteered one. Sandoval, who is here because the sensor bay's chilled loop is hers, does not look up from the gauge she is reading, and does not say anything, which from her is applause.
+
+Ebele has the other half of it. Oyelaran's original note put the contact at two point six spreads out — {fmt(oyelaranZ, 1)}, he has checked it — and the number she divided by was the class table's rated spread of {fmt(RATED_SPREAD_PCT, 1)} percent.
+
+"So that's the table's number, ma'am. It's what the yard certifies the family to hold — a tolerance. It's what the drive is *promised* to do." He has the sixty contacts open beside it. "We have sixty hulls in the log, measured by us, with the same Eyes, over thirteen days. They have a spread of their own, and it isn't the table's. It's tighter. If we're asking how strange this contact is, the honest model is the one the fleet actually built, not the one on the certificate."
+
+Which is a real correction and he makes it without triumph, because he has been corrected enough this month to know what it costs.
+
+Sandoval finally puts the gauge down. "Then say it in tonnes, because percent of expectation is not a thing anybody at Valhalla has ever had to carry." She works it on the bulkhead slate, and she works it on a round number, because the point is the arithmetic and not this hull. "Call it a twenty-thousand-tonne declaration. Nine percent hot on the plume is nine percent more mass under the same acceleration than the manifest says — {fmtInt(hypoHot)} tonnes you are not being told about. Plus or minus, and I will want the plus or minus before I write it."
+
+She rubs it out and writes the general form instead: multiply the axis by a number, shift it by a number, and every centre goes with it while every spread only scales.
+
+"And the z does not move," she says. "Percent or tonnes or hods of gravel. You have divided a distance by a spread, and both of them are in the same units, so the units cancel and what is left is how far out the thing is. That is the only number in this bay that does not care what we measure in."
+
+Which leaves the question. Under a model of honest hulls built from the fleet's own sixty — how rare is a contact that hot? Not *is it high*. Everyone in the bay can see it is high. How rare: a proportion, with a denominator, that could go in a signal.
+
+</Scene>
+
+<Dialogue speaker="sensors" aside="She has the sixty on the display and is not looking at the hot one.">
+Confirmed hot. That is as far as I will go on my own instrument. If you want a number for how often the Lane should produce one of these, that is a model, and a model is not a measurement.
+</Dialogue>
+
+<Dialogue speaker="analyst">
+So the model is the fleet's own. Sixty contacts, the flagged one set aside so it isn't helping to build the thing it's being judged against, and a normal curve through what's left. Then the answer to *how rare* is an area under it.
+</Dialogue>
+
+<Briefing title="Distance in spreads, and the area past it" topics={["1.10"]}>
+<Briefing.Intuition>
+A raw value answers nothing on its own. A plume running a few percent above expectation means one thing in a drive family whose hulls scatter by half a percent and something else entirely in a family that scatters by five. **Standardising** removes the units and the scale: a **z-score** says how many standard deviations a value sits from the centre, and its sign says which side.
+
+$z = 1$ is one spread above the mean. $z = -2$ is two below. Because the numerator and denominator carry the same units, $z$ has none — which is what lets you compare a plume ratio with a sink temperature with a navigational fix error.
+
+**A linear change of units changes the numbers and not the picture.** Re-express every value as $y = aX + b$ — percent to tonnes, kelvin to celsius, kilometres to megametres — and every measure of *centre or position* (mean, median, quartiles, a specific value) is transformed the same way, while every measure of *spread* (SD, IQR, range) is scaled by $|a|$ and never shifted by $b$: adding a constant to everything moves the whole distribution without stretching it. The **shape** does not change at all. And $z$ is unchanged, because $a$ divides out of the top and the bottom.
+
+**From a value to a proportion.** When a variable is modelled by a normal curve, the proportion of the model between two cutoffs is the **area** under the curve between them. The **empirical rule** is three of those areas, rounded: about 68 percent within ±1 SD, 95 percent within ±2, 99.7 percent within ±3. A table or a calculator gives the rest. Run the model backwards — from a proportion to the cutoff that produces it — and you have an **inverse normal**, which is how a threshold gets set instead of guessed.
+
+**A percentile** is the same idea stated as a rank: the percent of the distribution below a value.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula
+  tex="z = \frac{x - \mu}{\sigma}"
+  terms={{ 'x': 'the observed value', '\\mu': 'the centre of the model', '\\sigma': 'the standard deviation of the model', 'z': 'distance from the centre, in standard deviations — unitless, signed' }}
+  label="The z-score"
+/>
+
+<Formula
+  tex="y = aX + b \;\Longrightarrow\; \mu_y = a\mu_x + b, \quad \sigma_y = |a|\,\sigma_x, \quad z \text{ unchanged}"
+  terms={{ 'a': 'the scale factor — stretches centre and spread alike', 'b': 'the shift — moves the centre, leaves every spread alone' }}
+  label="Effect of a linear transformation"
+/>
+
+<Formula
+  tex="P(a \le X \le b) = \int_a^b f(x)\,\mathrm{d}x = \Phi\!\left(\frac{b-\mu}{\sigma}\right) - \Phi\!\left(\frac{a-\mu}{\sigma}\right)"
+  terms={{ 'f(x)': 'the density — a height, never a probability', '\\Phi': 'the standard normal cumulative area, the proportion below a z' }}
+  label="A proportion is an area"
+/>
+
+A density assigns no probability to a single point: an interval of width zero has no area, so $P(X = x) = 0$ and "at least" and "more than" are the same request.
+</Briefing.Definition>
+<Briefing.Worked>
+**Oyelaran's number, and what it was divided by.** The class table rates the Mk 3 family at 100 percent of expectation with a rated spread of {fmt(RATED_SPREAD_PCT, 1)} percent. Against that certificate, a contact at {fmt(harpagia.ratio_pct, 1)} percent stands at
+
+<Formula tex={oyelaranTex} terms={{ 'z': 'how far the contact sits above the certificate’s centre, counted in rated spreads — a tolerance the yard promises, not a spread anyone measured' }} label="Oyelaran’s z, against the class table" />
+
+— about {fmt(oyelaranZ, 1)} spreads above centre, *if* the yard's tolerance is the right thing to divide by. It is a specification, not a measurement, and a measured fleet is entitled to a tighter one.
+
+**The empirical rule, on a normal model.** Whatever a model's centre and spread happen to be, a normal curve puts {fmtPct(bands[0], 1)} of itself within ±1 SD of the centre, {fmtPct(bands[1], 1)} within ±2 SD and {fmtPct(bands[2], 1)} within ±3 SD. So the whole region beyond three spreads — both tails together — holds {fmtPct(1 - bands[2], 2)} of the model, and one tail holds half of that. Past three spreads the rule can only gesture; for a figure you need the area itself.
+
+**The same model in tonnes.** Take the fleet's centre of {fmt(fleetModel.mean, 1)} percent of expectation and its spread of {fmt(fleetModel.sd, 2)}, and re-express them as tonnes above a declaration of {fmtInt(HARPAGIA_CERTIFICATION.declared_mass_t)} t. That is a linear change of units with a scale factor of {fmt(tonnesA, 0)} tonnes per percent and a shift of minus the declaration:
+
+<Formula tex={tonnesTex} terms={{ '\\mu_y': 'the centre in tonnes above the declaration — scaled and shifted', '\\sigma_y': 'the spread in tonnes — scaled only; the shift never touches it' }} label="The fleet model, re-expressed in tonnes" />
+
+The centre lands essentially on the declaration itself, and the spread becomes a few hundred tonnes. The shape is the shape it was, and every z on that axis is the number it was before: both the distance and the spread were multiplied by {fmt(tonnesA, 0)}, and the factor divides out.
+</Briefing.Worked>
+<Briefing.Caution>
+*"z only works for normal data."* It does not. A z-score is arithmetic — a distance divided by a spread — and it is defined for any distribution with a mean and an SD. What needs the normal model is the step *after* it: turning that z into a proportion. Standardise anything; take areas only when a normal model has been argued for.
+
+*The empirical rule applied to every distribution.* 68–95–99.7 is a reading of the normal curve and of nothing else. On a strongly skewed variable — time to silence, say — "within one SD of the mean" can hold far more or far less than 68 percent, and a mean plus two SDs can sit beyond the largest value in the data.
+
+*Reading the height of a density as a probability.* The curve's height is probability per unit of $x$; on a narrow enough axis it can exceed 1. Only an area is a probability. And because a point has no width, no single value has a probability at all — which is why "at least 109.2" and "more than 109.2" are the same question of a density, and are not the same question of a list of sixty contacts.
+</Briefing.Caution>
+</Briefing>
+
+<NormalExplorer />
+
+<CalcBriefing topic="area-under-a-curve" />
+
+<Drill generator="act-1/z-tail-area" count={2} />
+<Drill generator="act-1/empirical-rule" count={1} />
+<Drill generator="act-1/inverse-normal" count={1} />
+<Drill generator="act-1/unit-conversion" count={1} />
+<Drill generator="act-1/percentile-of-contact" count={1} />
+<Drill generator="act-1/z-interpretation" count={1} />
+
+<MissionBeat id="act-1-07-z" kind="numeric" answer={harpagiaZ} answerKind="testStat" label="DISTANCE IN SPREADS"
+  prompt={`The model on the panel is the fleet's own: the ${fmtInt(contacts.length)} logged contacts with the flagged one set aside, mean ${fmt(fleetModel.mean, 1)} percent of expectation, standard deviation ${fmt(fleetModel.sd, 2)}. Against that model, what is the z-score of the *${harpagia.hull}* contact at ${fmt(harpagia.ratio_pct, 1)} percent? Give it to **two decimal places**.`}
+  hint="z is the distance from the centre divided by the spread. Use the mean and SD the panel prints for the model — not the class table's rated spread, which is the number Oyelaran divided by the first time.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes it on the slate under Oyelaran's original, and does not cross hers out.">
+  So her two point six wasn't wrong arithmetic, sir — it was the right arithmetic on the wrong spread. Divide by what the fleet does instead of what the certificate promises and the same contact moves further out. The value never changed. The ruler did.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="She takes the slate and writes the fraction out with the numbers in it.">
+  Top of the fraction is how far the thing is from the middle, Skipper. Bottom is the spread — the fleet's, the one on the panel, not the one the yard printed on a certificate in a different decade. Then two decimals, because the third one is noise and I will not sign for it.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-1-07-tail" kind="numeric" answer={harpagiaTail} answerKind="proportion" digits={4} tolerance={0.00006} label="HOW RARE"
+  prompt={`Now the proportion. Under that same normal model of honest plume ratios, what fraction of hulls would run **at or above** ${fmt(harpagia.ratio_pct, 1)} percent of expectation? Set the panel to *above*, put the cutoff on the contact, and read the area. Give a proportion to **four decimal places**.`}
+  hint="This is the area under the curve to the right of the cutoff — an upper tail, not a height. The panel's readout gives it directly; it is also 1 minus the area below.">
+  <Success>
+  <Dialogue speaker="sensors" aside="Quieter than she was an hour ago. She reads the readout twice before she says it.">
+  One in something under two thousand. And I have logged sixty contacts in thirteen days on one corridor.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst">
+  Yes, sir. That's — yes. I read the height of the curve, and the height isn't a probability, it's density. It's the *area* past the cutoff. Four decimals, because the whole point of the number is how small it is.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-1-07-z", "act-1-07-tail"]}>
+
+<Scene stamp="MET 025/11:40" location="Sensor bay · 0.22 AU from Callisto, 4 mgee" condensed={`The contact stands ${fmt(harpagiaZ, 2)} spreads above the fleet's own centre, with a model tail of ${fmt(harpagiaTail, 4)} — about one hull in ${fmtInt(Math.round(1 / harpagiaTail))}. Oyelaran goes quiet, then states the caveat herself: the model is built from sixty contacts on one corridor, and the number says how rare the reading is, not what produced it.`}>
+
+{fmt(harpagiaZ, 2)} standard deviations above the centre of the fleet's own model, and a tail of {fmt(harpagiaTail, 4)} — about one hull in {fmtInt(Math.round(1 / harpagiaTail))}, if the hulls of the Lane are honest and the model is right.
+
+Oyelaran does not say anything for a while. This is what she does when the data gets strange: she gets quieter, and the readouts get more attention than the people. She runs the reduction a fourth time while you stand there. It comes back the same, which everyone expected, and she needed anyway.
+
+"Two things," she says at last. "The first is that my number was worse arithmetic than I thought it was. I divided by the certificate. I should have divided by the fleet, and if I had, I would have brought you a bigger number eleven days ago." She does not apologise for it and you do not want her to. "The second is that this is a model. Sixty contacts, one corridor, thirteen days, and a normal curve I chose because the sixty looked like one. The tail is a statement about the curve. It is not a statement about that hull."
+
+"It is a statement about how surprised we are allowed to be," Ebele says.
+
+"That is the same sentence with feelings in it."
+
+Sandoval, from the hatch: "It is one in something under two thousand, and we found it in the first eleven we looked at. Either the Lane is a busier place than the file says, or we got lucky, or the model is wrong. All three of those are worth a paragraph and none of them is worth a conclusion."
+
+You have her put all three in the preliminary, in that order, with the tail and the z and Oyelaran's plus-or-minus, and the sentence that says the model is the fleet's own and was built without the contact in it.
+
+</Scene>
+
+<DecisionEcho beat="act-1-03-trust" option="Trust the class table">
+<Dialogue speaker="sensors" aside="She brings this up herself, without being asked, which is its own kind of report.">
+Eleven days ago you went with the table against me, sir, and I have just spent a morning proving the table was the worse ruler. I want it on the log that you were right to want a second opinion and wrong about which one — the contact was real, the table's spread was a promise, and it took sixty measurements to know which. If you had ordered me to drop it, I would have dropped it.
+</Dialogue>
+</DecisionEcho>
+
+<DecisionEcho beat="act-1-03-trust" option="Trust Oyelaran">
+<Dialogue speaker="sensors" aside="She brings this up herself, without being asked, which is its own kind of report.">
+You backed my read eleven days ago, sir, and I want the rest of it on the log too: I was right that the contact was real and wrong to distrust the table on nothing but instinct. What made the table the worse ruler was sixty measurements, not my certainty. If the sixty had come back with the table's spread, you would have backed a wrong call, and it would have been my fault.
+</Dialogue>
+</DecisionEcho>
+
+<Scene variant="transmission" stamp="MET 026/07:05" location="Bureau of Lane Certification · Uruk High · file received at 0.25 AU, 2 min 05 s one way" condensed="The Bureau's certification arrives, eleven days after it was requested: hull Harpagia Sulcus, drive Adlinda Mk 3, departure Uruk High, certified departure mass 19,400 tonnes — the same figure the transponder declared. Examining officer, R. Dacre. Nobody aboard has any reason to note the name.">
+
+**BUREAU OF LANE CERTIFICATION · URUK HIGH · DEPARTURE CERTIFICATE (EXTRACT)**
+
+- Hull: **{HARPAGIA_CERTIFICATION.hull}**
+- Drive: {HARPAGIA_CERTIFICATION.drive}
+- Departure: {HARPAGIA_CERTIFICATION.departure}
+- Certified departure mass: **{fmtInt(HARPAGIA_CERTIFICATION.declared_mass_t)} t**
+- Examining officer: {HARPAGIA_CERTIFICATION.examiner}
+
+*Certified in accordance with Lane Authority survey standard. Mass as declared by the master and verified at the gantry.*
+
+</Scene>
+
+<Scene stamp="MET 026/07:30" location="Sensor bay · 0.25 AU from Callisto, 4 mgee" condensed="The certification matches the transponder to the tonne, which settles nothing: a hull can be honestly certified at 19,400 tonnes and still have left the gantry heavier. The module ends with the ratio standing alone — hot is an adjective, and turning it into a mass needs a second variable the Register does not carry.">
+
+Ebele reads it twice and then reads it out, because the first time he did not believe the fourth line.
+
+Nineteen thousand four hundred tonnes. The certificate and the transponder agree to the tonne, which is what a certificate is for and is also, this morning, a small and specific disappointment. If the two numbers had disagreed you would have had a discrepancy, and a discrepancy is a thing you can put in a signal and let other people chase.
+
+What you have instead is a hull that was certified at a mass, declared that same mass on its transponder, and then burned like something heavier — a plume {fmt(harpagia.ratio_pct - 100, 1)} percent above what that mass and that acceleration should produce, on a reduction Oyelaran has now run four times with her plus-or-minus attached to every one.
+
+"So either the drive is not what the table says a Mk 3 is," Ebele says, "or the profile it filed isn't the profile it flew, or the mass is wrong. And the certificate only closes the first half of the third one. Somebody at a gantry wrote it down, sir. It doesn't say the hold was full of what the manifest says."
+
+Examining officer: {HARPAGIA_CERTIFICATION.examiner}. A name on a line, in the place where a name goes. Oyelaran logs the extract against C-004 and nobody in the bay has any reason to look at it twice, and nobody does.
+
+Which leaves *hot*, which is an adjective. Nine percent above expectation is a ratio — one number, standing by itself, with nothing on the other side of it. To get from a ratio to a mass you need what the plume was against what the hull *actually* carried, and the Register has one of those columns and not the other. Sandoval says it on her way out, to the corridor rather than to anybody in particular, in the tone she uses for a debt coming due.
+
+"One number is a reading. You want to know what it means, you'll need two."
+
+</Scene>
+
+<LogEntry
+  title="z is distance in SDs; area is probability"
+  concept="A z-score standardises a value — (x − μ)/σ — so it says how many standard deviations the value sits from the centre, with no units left to argue about; a linear change of units y = aX + b moves the centre to aμ + b, scales the spread by |a|, leaves the shape alone and leaves z exactly where it was. Turning that z into a proportion needs a model: under a normal curve the proportion between two cutoffs is the area under it, of which the empirical rule's 68, 95 and 99.7 percent are three particular readings."
+  formula="z = \frac{x - \mu}{\sigma}, \qquad \mu_y = a\mu_x + b, \;\; \sigma_y = |a|\sigma_x, \qquad P(a \le X \le b) = \int_a^b f(x)\,\mathrm{d}x"
+  mistake="Reading the height of a density as a probability. The curve's height is probability per unit of x and can exceed 1; only an area is a probability, and a single point — width zero — has none at all. The second mistake is the empirical rule applied to a distribution that is not normal."
+  tags={['z-score', 'standardizing', 'linear transformation', 'empirical rule', 'normal model', 'density', 'percentile', 'area', '1.10']}
+/>
+
+</Gated>

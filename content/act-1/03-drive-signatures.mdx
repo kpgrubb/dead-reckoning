@@ -1,0 +1,230 @@
+---
+id: act-1-03
+act: 1
+title: "Drive Signatures"
+kind: module
+ap_topics: ["1.5", "1.6"]
+objectives:
+  - "Build a dotplot, a stemplot and a histogram of the same quantitative variable and say what each one keeps and what each one throws away"
+  - "Treat bin width as a decision: check a shape at more than one width before describing it, and report the width"
+  - "Describe a distribution in context — shape, centre, variability, unusual features — with numbers and units"
+  - "Name the skew from the direction of the tail, not from where the peak sits"
+prereqs: ["act-1-01"]
+est_minutes: 30
+calc_briefing: null
+summary: "Sixty drive plumes on the Lane. Plume power draws two humps, one per drive family; the ratio to the class table draws one hump and one point out on the right."
+---
+
+import { bins, fmt, fmtInt, iqr, max as maxOf, mean, median, min as minOf, sd } from '@/lib/stats'
+import { CLASS_TABLE, RATED_SPREAD_PCT, contacts, expectedPlumeTW, harpagia, plumeTW, ratioPct, REGISTER_META } from '@/instruments/act-1/data'
+import { DistributionBuilder } from '@/instruments/act-1/DistributionBuilder'
+import { describeDistribution } from '@/lib/problems/generators/act-1/_rubrics'
+
+export const mk3Plume = contacts.filter((c) => c.drive_family === 'Mk 3').map((c) => c.plume_TW)
+export const tesseraPlume = contacts.filter((c) => c.drive_family === 'Tessera-C').map((c) => c.plume_TW)
+export const mk2Plume = contacts.filter((c) => c.drive_family === 'Mk 2').map((c) => c.plume_TW)
+
+export const coarseBins = bins(plumeTW, { method: 'width', width: 0.1, start: 0.1 })
+export const fineBins = bins(plumeTW, { method: 'width', width: 0.025, start: 0.125 })
+export const valleyBin = fineBins.bins
+  .filter((b) => b.lo >= median(tesseraPlume) && b.hi <= median(mk3Plume))
+  .reduce((a, b) => (b.count < a.count ? b : a))
+
+export const nominalMk3 = expectedPlumeTW('Mk 3', 20000, 3)
+export const hotExcess = harpagia.ratio_pct - 100
+
+<Scene stamp="MET 015/07:40" location="Sensor bay · 0.025 AU from Callisto, 4 mgee · light-lag 12 s" condensed="Three days on, twelve seconds of light astern, Oyelaran has sixty drive plumes in the contact log. Plotted as measured power the sixty make two humps, one per drive family, exactly as the class table says they should. Plotted as a ratio to what the table expects for each hull's declared mass they make one hump — and one point out on the right, alone. Oyelaran says the table is wrong; Sandoval says the table has a rated spread; you ask Ebele what bin width he used, and he does not know.">
+
+Twenty-five thousandths of an astronomical unit astern of Callisto, and twelve seconds of light between this ship and anyone who could answer her. Seventeen kilometres a second and building. The sensor bay is the coldest compartment aboard because Sandoval keeps it that way: the Eyes are four eight-hundred-millimetre cooled telescopes at the mast head, and a warm optic sees nothing but itself.
+
+Oyelaran has been on the Lane since the second day out. Eleven contacts in the first three days, sixty by the end of the week — every one of them a freighter under thrust, every one of them a torch the Eyes can measure to about three percent at this range. She reads you one off the log as you come into the bay, the way she reads everything, quantity first and meaning second.
+
+<Dialogue speaker="sensors" aside="She does not look up from the plot.">
+Plume {fmt(nominalMk3, 2)} terawatt, {fmtInt(CLASS_TABLE['Mk 3'].pulse_hz)} hertz. Mk 3. It's a Sulcus hull. Confirmed Mk 3, on profile.
+</Dialogue>
+
+You let *confirmed* go for the moment and write it down instead.
+
+What the Eyes measure is power. What the class table holds is an expectation: for a declared departure mass and a filed acceleration, an Adlinda Mk 3 burning at {fmtInt(CLASS_TABLE['Mk 3'].pulse_hz)} hertz should push so much plume, and a Tessera-C at {fmtInt(CLASS_TABLE['Tessera-C'].pulse_hz)} hertz rather less. Two numbers, then. The one the sky gives you and the one the paperwork predicts.
+
+You have Ebele plot the first of them — all {fmtInt(REGISTER_META.contacts)} measured plume powers on one axis, nothing else on it.
+
+Two humps. A low pile around {fmt(mean(tesseraPlume), 2)} terawatt and a high one around {fmt(mean(mk3Plume), 2)}, with the {fmtInt(mk2Plume.length)} older independents sitting between them. It is exactly what the class table says the Lane should look like: {fmtInt(mk3Plume.length)} big Sulcus hulls, {fmtInt(tesseraPlume.length)} Tessera-C, a handful of Mk 2s, three drive families making three piles of light. Nobody learns anything from it and everybody is reassured, which is the condition under which mistakes get filed.
+
+Then you have him plot the other one. Not the power. The *ratio*: each contact's measured plume as a percent of what the class table expects for that hull's own declared mass and filed profile. The drive families come out of it — a Tessera-C and a Sulcus that are each burning exactly what their own paperwork predicts land on the same mark, whatever their masses — and sixty contacts collapse onto one axis and make one hump.
+
+One hump, and one point out on the right.
+
+Oyelaran has been looking at it for eleven seconds before she says anything, and when she does she is quieter than she was.
+
+<Dialogue speaker="sensors">
+Then the class table is wrong, sir. That figure is what a Mk 3 should burn, and that contact is not burning it.
+</Dialogue>
+
+<Dialogue speaker="engineer" aside="She has come up from the cellar and is standing in the hatch with a slate she has not looked at.">
+The class table has a spread on it, Lieutenant. Every hull in that pile is off the table by something. Put the number on the spread before you tell the Captain the table is wrong.
+</Dialogue>
+
+Ebele has the histogram up and is already reaching to describe it. You stop him and ask what bin width he used.
+
+He does not know. The terminal chose it.
+
+<Dialogue speaker="analyst" aside="He is scrolling back through the display's own settings looking for a number that was never his.">
+So — the default, sir. It picked it off the range. I didn't set it.
+</Dialogue>
+
+Then set it three times, you tell him. Wide, narrow, and something a person would defend. And do not describe anything to me until the shape survives all three.
+
+</Scene>
+
+<Briefing title="Three ways to draw one column, and four things to say about it" topics={["1.5", "1.6"]}>
+<Briefing.Intuition>
+One quantitative variable, three standard displays, and they differ in what they keep.
+
+A **dotplot** puts one dot over every value on a number line. Nothing is lost and nothing is smoothed; it works while the batch is small enough to count.
+
+A **stemplot** splits each value into a **stem** (the leading digits) and a **leaf** (the next digit), and states the **leaf unit** so the plot can be read back into numbers. Every value survives, sorted, which makes medians and quartiles readable straight off the page.
+
+A **histogram** divides the axis into bins of equal **width**, counts how many individuals fall in each, and draws a bar of that height. Bars touch, because the axis is continuous and there is nothing between two bins. The individual values inside a bar are gone — that is the trade, and what you buy with it is a shape you can see at sixty values, or at six thousand.
+
+**Bin width is a decision, not a property of the data.** One batch of numbers makes a different picture at every width. Too wide and two piles merge into one; too narrow and the display becomes a comb of ones and twos, and you are reading sampling noise as structure. Report the width, and look at the shape at more than one of them before you describe it.
+
+Then describe it, and describe it in this order — **shape, centre, spread, unusual features (SOCS)**, every one of them with the units of the variable and the name of the individuals:
+
+1. **Shape.** Symmetric, or skewed, or bimodal. Skew is named for the direction of the **long tail**, not for where the peak sits: a batch piled at the low end with a tail running to the right is *skewed right*.
+2. **Centre.** A median or a mean, with its value.
+3. **Spread.** An IQR, a standard deviation or a range, with its value.
+4. **Unusual features.** Outliers, gaps, clusters — named, with their values.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\text{bar height}_j = \#\{\, x_i : e_j \le x_i \lt e_{j+1} \,\}, \qquad e_{j+1} - e_j = w" terms={{ 'w': 'the bin width — the analyst’s decision, not the data’s', 'e_j': 'the jth bin edge, so the jth bar covers the values from e_j up to e_{j+1}' }} label="What one histogram bar counts" />
+
+A relative-frequency histogram divides each bar by $n$; the shape is identical and only the vertical axis changes. Neither version is readable without its bin width stated.
+</Briefing.Definition>
+<Briefing.Worked>
+Take the sixty contacts' **measured plume power**, in terawatts, and bin it two ways.
+
+At a bin width of 0.1 TW there are {fmtInt(coarseBins.bins.length)} bars, and their counts are {coarseBins.bins.map((b) => fmtInt(b.count)).join(' · ')}. That is as flat as a deck plate. On that display the Lane is one undifferentiated batch of freighters.
+
+At a bin width of 0.025 TW there are {fmtInt(fineBins.bins.length)} bars, and the same sixty numbers make two piles with a trough between them: the bar at {fmt(valleyBin.lo, 3)} to {fmt(valleyBin.hi, 3)} TW holds {fmtInt(valleyBin.count)}, while the piles on either side of it run to {fmtInt(maxOf(fineBins.bins.map((b) => b.count)))}. Nothing about the data changed. The first display could not resolve two drive families and the second can.
+
+So: **shape** — bimodal, two piles with a gap; **centre** — the median plume power is {fmt(median(plumeTW), 2)} TW and the mean {fmt(mean(plumeTW), 2)} TW, and here is the trouble, because {fmt(mean(plumeTW), 2)} TW falls in the trough, and no hull on the Lane burns it; **spread** — the sixty run from {fmt(minOf(plumeTW), 2)} to {fmt(maxOf(plumeTW), 2)} TW, an IQR of {fmt(iqr(plumeTW), 2)}; **unusual features** — none beyond the two piles themselves, which are the {fmtInt(mk3Plume.length)} Mk 3 hulls at a mean of {fmt(mean(mk3Plume), 2)} TW and the {fmtInt(tesseraPlume.length)} Tessera-C at {fmt(mean(tesseraPlume), 2)}.
+
+Say the shape first and the centre becomes a sentence you would never have written otherwise.
+</Briefing.Worked>
+<Briefing.Caution>
+*Naming the skew from the peak.* A distribution piled on the left with a long tail to the right is **skewed right**. Learners — and staff officers — read the peak, see it sitting low on the axis, and write "skewed left". The name belongs to the tail. When you are unsure, compare the mean with the median: the mean is dragged toward the tail.
+
+*Treating a histogram as a bar chart.* Its bars touch because the axis is continuous, so they may never be reordered by height, the gaps between them are values and not categories, and a display without its bin width in the caption cannot be checked by anyone. A bar chart's categories have no order and no width; a histogram's bins have both.
+
+*Describing a display instead of a distribution.* "There is a tall bar at the left" is about the ink. "The measured plume powers of the sixty contacts are bimodal, with a pile of Tessera-C hulls near {fmt(mean(tesseraPlume), 2)} TW and a pile of Mk 3 hulls near {fmt(mean(mk3Plume), 2)} TW" is about the Lane.
+</Briefing.Caution>
+</Briefing>
+
+<DistributionBuilder />
+
+<Drill generator="act-1/shape-from-histogram" count={1} />
+<Drill generator="act-1/bin-width" count={1} />
+<Drill generator="act-1/stemplot-read" count={1} />
+<Drill generator="act-1/histogram-vs-bar" count={1} />
+<Drill generator="act-1/unusual-feature" count={1} />
+<Drill generator="act-1/describe-signature-histogram" count={1} />
+
+<MissionBeat id="act-1-03-describe" kind="interpretation" label="SAY WHAT IT IS"
+  prompt={`Set the builder to the plume **ratio** — measured plume power as a percent of the class-table expectation — with all ${fmtInt(REGISTER_META.contacts)} contacts on the axis and no grouping. Describe that distribution in context: shape, centre with its value, variability with its value, and any unusual feature with its value. Two or three sentences, with units.`}
+  hint="Shape first, then centre, then spread, then the thing that does not fit. Take the centre and the spread off the readouts — a median with an IQR, or a mean with an SD — and check the shape at more than one bin width before you commit to a word for it."
+  {...describeDistribution({
+    variable: 'plume-power ratio',
+    units: 'percent of the class-table expectation',
+    population: `the ${REGISTER_META.contacts} Lane contacts`,
+    shape: 'symmetric',
+    center: [median(ratioPct), mean(ratioPct)],
+    spread: [iqr(ratioPct), sd(ratioPct)],
+    spreadLabel: 'IQR',
+    unusual: { kind: 'outlier', value: harpagia.ratio_pct },
+  })}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes it into the contact log verbatim, which is the first time he has written anything down before saying it.">
+  So one hump, centred about where the table says it should be, and everybody's within a few percent of their own paperwork. Except one, sir. That one isn't in the hump at all.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="sensors" aside="She has the three bin widths up side by side and is pointing at the middle one.">
+  Four things, sir, in order. Shape — is it one pile or two, and if one, does either tail run longer than the other. Then the centre, with a number on it. Then the spread, with a number on it. Then anything that is not in the pile, with *its* number on it. And the units on all of them, because a ratio without "percent of expectation" after it is not a measurement of anything.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by="act-1-03-describe">
+
+<Scene stamp="MET 015/13:05" location="Sensor bay · 0.025 AU from Callisto, 4 mgee · light-lag 12 s" condensed="The point on the right has a name: MV Harpagia Sulcus, a Mk 3 on a declared 19,400 tonnes, running about nine percent over the class table's expectation. Sandoval puts the table's rated spread on the record. Oyelaran wants the table struck; Sandoval wants the contact re-measured. Nothing here proves that a hot plume means a heavy hull, and the Captain has to decide which of the two he is going to write down.">
+
+The point on the right has a hull id on it, and the hull id has a name, and Oyelaran reads it out the way she reads a bearing.
+
+<Dialogue speaker="sensors">
+Contact {harpagia.contact_id}, logged {harpagia.met}. MV *{harpagia.hull}*. Mk 3, {fmt(harpagia.pulse_hz, 1)} hertz, declared departure mass {fmtInt(harpagia.declared_mass)} tonnes. Plume {fmt(harpagia.plume_TW, 3)} terawatt against an expectation of {fmt(harpagia.expected_TW, 3)}. She is running {fmt(hotExcess, 1)} percent hot for what she says she weighs.
+</Dialogue>
+
+{fmt(hotExcess, 1)} percent. Held against the class table, on a hull that filed {fmtInt(harpagia.declared_mass)} tonnes out of Uruk High.
+
+Sandoval finally looks at the slate she came in with.
+
+<Dialogue speaker="engineer">
+The table's rated spread is {fmt(RATED_SPREAD_PCT, 1)} percent, Skipper. Plus or minus. That is the yard's number, not mine — it covers pump wear, nozzle erosion, a cold start, a bad mass declaration made by an honest clerk. Against {fmt(RATED_SPREAD_PCT, 1)} percent that contact is not impossible. It is only unlikely.
+</Dialogue>
+
+<Dialogue speaker="sensors" aside="Quieter still. She has the ratio plot up and will not take it down.">
+The Eyes measure to three percent, Chief. Not nine.
+</Dialogue>
+
+Both of them are right, which is the whole difficulty. A plume that runs {fmt(hotExcess, 1)} percent over expectation is either a hull heavier than its manifest, or a drive out of tune, or a class table whose rated spread is too narrow for a fleet that has been flying twenty years — and nothing on this display distinguishes those three. What you have is one number and no comparison. What you would need is the same hull measured twice, or a great many hulls measured against their masses, and neither of those exists in a contact log four days old.
+
+What you do have is a preliminary going to Valhalla, and one line in it that has to say something.
+
+</Scene>
+
+<MissionBeat id="act-1-03-trust" kind="decision" label="THE CLASS TABLE"
+  prompt="The contact log goes into the preliminary with a note against it. Which reading does the note take as its working assumption — the class table, or your sensors officer?"
+  options={["Trust the class table", "Trust Oyelaran"]}>
+  <Outcome option={0}>
+  <Dialogue speaker="engineer" aside="She writes the rated spread into the margin herself, with the yard's document number beside it.">
+  Then the note says the contact is inside the table's rated tolerance and we flag it for re-measurement. I can defend that to any survey officer in the Compact, Skipper. It has the disadvantage of being the answer everybody wants.
+  </Dialogue>
+  <Dialogue speaker="sensors" aside="She logs the contact id anyway, in her own hand, on her own sheet.">
+  Understood, sir. I will keep the Eyes on Sulcus hulls regardless. If the table is right, the next twenty will sit in the pile and I will have cost us nothing.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="sensors" aside="She does not sound vindicated. She sounds like someone who has been handed something heavy.">
+  Then the note says the measurement stands and the expectation is suspect, sir. I will want every Sulcus hull we see from here logged with its declared mass. If I am wrong, that will show too.
+  </Dialogue>
+  <Dialogue speaker="engineer" aside="Silence, and then a gauge — she turns the slate round so you can see the yard's tolerance on it before she goes below.">
+  Noted, Skipper. For the record: a rated spread of {fmt(RATED_SPREAD_PCT, 1)} percent, plus or minus, and a preliminary that sets it aside on one contact. I am not saying you are wrong. I am saying that is what the page will look like at Valhalla.
+  </Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<Gated by="act-1-03-trust">
+
+<Scene variant="log" stamp="MET 015/16:20" location="CSV Nightjar · commanding officer's log" condensed="One Sulcus hull runs about nine percent over the class table's expectation for the mass she declared. That is one contact, one display and no comparison — nothing yet says that hot means heavy.">
+
+Sixty contacts on the Lane in four days. Fifty-nine of them sit in one pile around what their own paperwork predicts, and one does not.
+
+MV *{harpagia.hull}*, Sulcus hull, Adlinda Mk 3, declared {fmtInt(harpagia.declared_mass)} tonnes out of Uruk High, measured at {fmt(hotExcess, 1)} percent over the class table's expectation for that mass. Logged, with the bin width, the display and the fences that produced the flag.
+
+It is one contact. A single value standing apart is a question, not a finding, and the question it asks is *why* — for which the honest answers are still a heavy hull, a tired drive, or a table with a tolerance that no longer describes its fleet. Nothing aboard this ship can yet separate them. We would need the plume and the mass together, and the log holds a declaration, not a weight.
+
+Noted for the preliminary. Continuing on profile.
+
+</Scene>
+
+<LogEntry
+  title="Shape first, then centre, then spread, then the thing that doesn't fit"
+  concept="Dotplots, stemplots and histograms all display one quantitative variable, and they differ in what survives: a dotplot and a stemplot keep every value, a histogram trades them for a shape by counting individuals into bins of a width the analyst chooses and must report. Describe what you see in the order shape, centre, spread, unusual features — each with a number, its units and the individuals it belongs to — and check the shape at more than one bin width before naming it."
+  formula="\text{bar height}_j = \#\{\, x_i : e_j \le x_i \lt e_{j+1} \,\}, \qquad e_{j+1} - e_j = w"
+  mistake="Describing the peak and calling it the skew. A batch piled on the left with a long tail to the right is skewed RIGHT — skew is named for the tail, not the pile. When in doubt, compare the mean with the median: the mean is pulled toward the tail."
+  tags={['dotplot', 'stemplot', 'histogram', 'bin width', 'shape', 'SOCS', 'skew', 'outlier', '1.5', '1.6']}
+/>
+
+</Gated>
+</Gated>

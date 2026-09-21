@@ -95,8 +95,20 @@ function goodWidth(values: number[], step: number): number {
   return Math.round(w * 1000) / 1000
 }
 
+/** A bin origin at or below the minimum, proof against the floating-point edge of `Math.floor(lo/w)*w`. */
+function safeStart(values: number[], width: number): number {
+  const lo = minOf(values)
+  let start = Math.floor(lo / width) * width
+  for (let i = 0; i < 4 && start > lo; i++) start -= width
+  return start
+}
+
+function binCounts(values: number[], width: number): number[] {
+  return bins(values, { method: 'width', width, start: safeStart(values, width) }).bins.map((b) => b.count)
+}
+
 function barCount(values: number[], width: number): number {
-  return bins(values, { method: 'width', width }).bins.length
+  return binCounts(values, width).length
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -338,7 +350,7 @@ const SHAPE_OPTIONS: { key: ShapeKey; text: string }[] = [
 
 /** A dip between two peaks, measured on the batch's own histogram. */
 function hasValley(values: number[], width: number): boolean {
-  const counts = bins(values, { method: 'width', width }).bins.map((b) => b.count)
+  const counts = binCounts(values, width)
   if (counts.length < 5) return false
   let peakLeft = 0
   let peakLeftIdx = 0

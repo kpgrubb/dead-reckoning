@@ -14,24 +14,32 @@ calc_briefing: "minimizing-squared-error"
 summary: "Ebele drags a line across four hundred and twelve hulls until the squares stop shrinking. Then he predicts a mass for a ship at the top of the range, and Ferrier asks whether the file goes that far."
 ---
 
-import { fmt, fmtInt, linearRegression, max, min, sseForLine } from '@/lib/stats'
+import { fmt, fmtInt, linearRegression, max, min, regressionFromSummary, round, sseForLine } from '@/lib/stats'
 import { slopeInterpretation } from '@/lib/problems/rubrics'
 import { manifest, massFit, honestManifest } from '@/instruments/act-2/data'
 import { LeastSquaresVisual } from '@/instruments/act-2/LeastSquaresVisual'
 
 export const proving = [
-  { hull: 'Vesta Tariff', declared: 14.8, fuel: 2.79 },
-  { hull: 'Juno Factor', declared: 16.2, fuel: 2.96 },
-  { hull: 'Pallas Consignment', declared: 17.5, fuel: 3.31 },
-  { hull: 'Hygiea Ledger', declared: 18.9, fuel: 3.48 },
-  { hull: 'Davida Bond', declared: 20.4, fuel: 3.84 },
-  { hull: 'Psyche Margin', declared: 22.1, fuel: 4.05 },
-  { hull: 'Thisbe Carriage', declared: 23.6, fuel: 4.44 },
-  { hull: 'Eunomia Bourse', declared: 25.3, fuel: 4.68 },
+  { hull: 'Vesta Tariff', declared: 14.8, fuel: 2.81 },
+  { hull: 'Juno Factor', declared: 16.2, fuel: 3.04 },
+  { hull: 'Pallas Consignment', declared: 17.5, fuel: 3.2 },
+  { hull: 'Hygiea Ledger', declared: 18.9, fuel: 3.56 },
+  { hull: 'Davida Bond', declared: 20.4, fuel: 3.75 },
+  { hull: 'Psyche Margin', declared: 22.1, fuel: 4.08 },
+  { hull: 'Thisbe Carriage', declared: 23.6, fuel: 4.45 },
+  { hull: 'Eunomia Bourse', declared: 25.3, fuel: 4.67 },
 ]
 export const provingX = proving.map((p) => p.declared)
 export const provingY = proving.map((p) => p.fuel)
 export const provingFit = linearRegression(provingX, provingY)
+export const provingSummary = {
+  r: round(provingFit.r, 4),
+  sx: round(provingFit.sx, 4),
+  sy: round(provingFit.sy, 4),
+  xMean: round(provingFit.xMean, 3),
+  yMean: round(provingFit.yMean, 3),
+}
+export const fromSummary = regressionFromSummary(provingSummary)
 export const target = honestManifest[137]
 
 <Scene stamp="MET 034/07:20" location="Engineering deck · the sink vault · 0.56 AU from Callisto, 4 mgee" condensed="Ebele brings the Manifest file down to the engineering deck and fits a line to it: inferred mass on declared mass, slope in tonnes per tonne, intercept forced toward zero because an empty declaration should infer nothing. He drags a candidate line and watches the squared residuals shrink, then lets the display snap to the smallest total.">
@@ -39,6 +47,10 @@ export const target = honestManifest[137]
 The engineering deck sits two metres below the wardroom and four degrees warmer, and under four milligee you feel the difference in your knees on the ladder. Sandoval has the sink vault open. Sixty tonnes of lithium, half of it liquid now, and a gauge she taps with one finger every time she passes it, which she will tell you is not superstition but calibration.
 
 Ebele has brought the terminal down because Ferrier told him to stop reading the file at the intel station, where the whole watch could see him do it. Four hundred and twelve departures. Declared mass along the bottom, the mass the Lane's own telemetry infers up the side, and a cloud so tight it looks ruled.
+
+Oyelaran has surrendered four of her twelve hours to the archive again this watch and entered the fact on the log in units. Ferrier entered the four hours back at her, also in units. The Board's answer to the preliminary — *noted; continue within the assigned profile* — has been open on the intel terminal since MET 30, eleven lines of it, because Ferrier will not let anyone close it.
+
+What is on this screen is no longer a shape. The Register was shapes: a histogram with two piles in it, a fence, a box and its whiskers. This is two numbers for every hull, one from a signature and one from a telescope, and two numbers for every hull make a claim that can be checked against itself.
 
 "So — sir. A line through this has a slope in tonnes per tonne." He says it the way a man says something he has checked twice. "Inferred tonnes per declared tonne. And the intercept has to sit on zero, or near enough, because a hull that declares nothing should infer nothing. There is no certificate for an empty ship that still weighs something."
 
@@ -94,26 +106,26 @@ Adlinda Yards keeps an acceptance file on every hull that leaves its slips. Eigh
 
 {proving.map((p) => `${p.hull} ${fmt(p.declared, 1)} / ${fmt(p.fuel, 2)}`).join(' · ')}
 
-The summaries: $\bar{x} = {fmt(provingFit.xMean, 3)}$ kt, $\bar{y} = {fmt(provingFit.yMean, 3)}$ kt, $s_x = {fmt(provingFit.sx, 3)}$, $s_y = {fmt(provingFit.sy, 3)}$, and $r = {fmt(provingFit.r, 3)}$.
+The summaries, all eight rows: $\bar{x}$ = {fmt(provingSummary.xMean, 3)} kt, $\bar{y}$ = {fmt(provingSummary.yMean, 3)} kt, $s_x$ = {fmt(provingSummary.sx, 4)}, $s_y$ = {fmt(provingSummary.sy, 4)}, and $r$ = {fmt(provingSummary.r, 4)}.
 
 The slope comes first, because the intercept depends on it:
 
-$$b = r\,\frac{s_y}{s_x} = {fmt(provingFit.r, 3)} \times \frac{ {fmt(provingFit.sy, 3)} }{ {fmt(provingFit.sx, 3)} } = {fmt(provingFit.slope, 4)}$$
+<Formula tex={`b = r\\,\\frac{s_y}{s_x} = ${fmt(provingSummary.r, 4)} \\times \\frac{${fmt(provingSummary.sy, 4)}}{${fmt(provingSummary.sx, 4)}} = ${fmt(fromSummary.slope, 6)}`} label="Slope of the proving-run fit (kt of fuel per kt of declared mass)" />
 
-$$a = \bar{y} - b\bar{x} = {fmt(provingFit.yMean, 3)} - ({fmt(provingFit.slope, 4)})({fmt(provingFit.xMean, 3)}) = {fmt(provingFit.intercept, 4)}$$
+<Formula tex={`a = \\bar{y} - b\\bar{x} = ${fmt(provingSummary.yMean, 3)} - (${fmt(fromSummary.slope, 6)})(${fmt(provingSummary.xMean, 3)}) = ${fmt(fromSummary.intercept, 4)}`} label="Intercept — the line is pinned through the point of averages" />
 
-So the fitted line is $\hat{y} = {fmt(provingFit.intercept, 3)} + {fmt(provingFit.slope, 3)}x$, and it reads: **for each additional kilotonne of declared mass, the predicted fuel loaded for the proving run increases by about {fmt(provingFit.slope, 3)} kt.** Not "a hull one kilotonne heavier burns {fmt(provingFit.slope, 3)} kt more" — the line predicts; the hulls do as they like.
+So the fitted line is ŷ = {fmt(fromSummary.intercept, 3)} + {fmt(fromSummary.slope, 3)}x, and it reads: **for each additional kilotonne of declared mass, the predicted fuel loaded for the proving run increases by about {fmt(fromSummary.slope, 3)} kt.** Not "a hull one kilotonne heavier burns {fmt(fromSummary.slope, 3)} kt more" — the line predicts; the hulls do as they like.
 
-The intercept, {fmt(provingFit.intercept, 3)} kt, is the predicted fuel for a hull declaring nothing. Zero is well outside the observed range ({fmt(Math.min(...provingX), 1)} to {fmt(Math.max(...provingX), 1)} kt), so the honest reading is that the number is close to zero, as the physics says it should be, and that the yard has no data on empty hulls.
+The intercept, {fmt(fromSummary.intercept, 3)} kt, is the predicted fuel for a hull declaring nothing. Zero is well outside the observed range ({fmt(min(provingX), 1)} to {fmt(max(provingX), 1)} kt), so the honest reading is that the number sits close to zero, as the physics says it should, and that the yard holds no data on empty hulls.
 
-Least squares earns its name here. The fitted line's total is $\sum e^2 = {fmt(provingFit.sse, 4)}$ kt². Tilt it to a slope of 0.19 and hold the intercept, and the total climbs to {fmt(sseForLine(provingX, provingY, 0.19, provingFit.intercept), 4)} kt²; flatten it to 0.18 and it climbs to {fmt(sseForLine(provingX, provingY, 0.18, provingFit.intercept), 4)} kt². Every other line is worse, and that is the entire claim the line makes.
+Least squares earns its name here. Pin the line through the point of averages — every candidate has to pass through it — and swing it. At a slope of 0.195 the total is {fmt(sseForLine(provingX, provingY, 0.195, provingFit.yMean - 0.195 * provingFit.xMean), 4)} kt². At 0.170 it is {fmt(sseForLine(provingX, provingY, 0.17, provingFit.yMean - 0.17 * provingFit.xMean), 4)} kt². At the fitted {fmt(provingFit.slope, 4)} it is $\sum e^2$ = {fmt(provingFit.sse, 4)} kt², and nothing you do to the line brings it lower. Being worse at nothing else is the entire claim this line makes.
 </Briefing.Worked>
 <Briefing.Caution>
 Three ways to lose the marks, and the report.
 
-*"Fuel loaded increases by {fmt(provingFit.slope, 3)} kt for every extra kilotonne."* No **predicted**, no **on average**. That sentence says every hull does it, and no hull in the file does.
+*"Fuel loaded increases by {fmt(fromSummary.slope, 3)} kt for every extra kilotonne."* No **predicted**, no **on average**. That sentence says every hull does it, and no hull in the file does.
 
-*"A hull declaring nothing burns {fmt(provingFit.intercept, 3)} kt."* The intercept is always the predicted response at $x = 0$; it is only a physical statement when zero lies inside the observed range. Here it does not, and the yard's file cannot testify about a ship that does not exist.
+*"A hull declaring nothing burns {fmt(fromSummary.intercept, 3)} kt."* The intercept is always the predicted response at $x = 0$; it is only a physical statement when zero lies inside the observed range. Here it does not, and the yard's file cannot testify about a ship that does not exist.
 
 *Swapping the axes.* The least-squares line of $y$ on $x$ and the line of $x$ on $y$ are different lines — the first minimises vertical misses, the second horizontal ones — and only one of them answers the question you asked. Regressing declared mass on inferred mass would give a slope with units of declared tonnes per inferred tonne, which is not the question the Bureau's file is being asked.
 </Briefing.Caution>
@@ -167,9 +179,13 @@ Three ways to lose the marks, and the report.
 
 <Scene stamp="MET 034/09:05" location="Engineering deck · the sink vault" condensed="The honest Lane infers one tonne of mass for every tonne declared. Sandoval asks for the give-or-take and is told again that it is months away. Nothing has yet been proven about the hulls that sit above the line.">
 
-So that is the Lane, as the Bureau and the Lane Authority describe it between them: {fmt(massFit.slope, 2)} tonnes inferred for every tonne declared, across four hundred and twelve departures, with an intercept of {fmt(massFit.intercept, 0)} tonnes on a fleet whose lightest hull declares fourteen thousand — which is to say, nothing.
+So that is the Lane, as the Bureau and the Lane Authority describe it between them: for every tonne a certificate declares, the Lane infers {fmt(massFit.slope, 2)} tonnes of mass, across four hundred and twelve departures — with an intercept of {fmt(massFit.intercept, 0)} tonnes on a fleet whose lightest hull declares fourteen thousand, which is to say, nothing.
 
-It is a dull result. It is supposed to be. A corridor where the certificates match the telemetry is a corridor where the certificates are worth reading, and until this morning nobody in the Service had checked.
+It is a dull result. It is supposed to be. A corridor where the certificates match the telemetry is a corridor where the certificates are worth reading, and until this morning nobody in the Service had checked. Six years of losses, four Senior Examiners, two and a half thousand transits, and nobody had ever laid the Authority's telemetry beside the Bureau's signatures and asked whether the two files agreed. They agree. That is the finding, and it is worth exactly one line of the report.
+
+The line is also, now, a measuring instrument. A rule you lay against a hull. Every departure in the file has a figure the line predicts for it and a figure the Lane actually measured, and the difference between those two figures is a quantity nobody in this ship has looked at yet.
+
+Ebele writes the slope into the draft with the units on it and the word *predicted* in front of it twice, once in each sentence, because he has been told. The draft has one paragraph and no findings.
 
 Sandoval reads the slope off the display and does not write it down.
 

@@ -1,0 +1,193 @@
+/* Act III instruments — tokens only. Imported by the components that need it. */
+
+/* ---------- Shared button rows and notes ---------- */
+.dr-act3__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dr-sp-2);
+  align-items: center;
+  margin: var(--dr-sp-3) 0 var(--dr-sp-2);
+}
+.dr-act3__note {
+  margin: var(--dr-sp-2) 0 0;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  color: var(--dr-fg-2);
+  letter-spacing: 0.04em;
+  line-height: var(--dr-lh-ui);
+}
+.dr-act3__note strong {
+  color: var(--dr-fg-1);
+  font-weight: 500;
+}
+.dr-act3__note code {
+  color: var(--dr-fg-0);
+  font-family: var(--dr-font-mono);
+}
+
+/* ---------- Draw trace (SamplingSimulator) ---------- */
+.dr-act3__trace {
+  margin-top: var(--dr-sp-3);
+  padding: var(--dr-sp-2) var(--dr-sp-3);
+  border: 1px solid var(--dr-line);
+  border-radius: var(--dr-radius);
+  background: var(--dr-bg-1);
+}
+.dr-act3__trace-head {
+  margin: 0 0 var(--dr-sp-1);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-2xs);
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-2);
+}
+.dr-act3__hulls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dr-sp-1) var(--dr-sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 7.5em;
+  overflow-y: auto;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-2xs);
+  color: var(--dr-fg-1);
+}
+.dr-act3__hulls li {
+  white-space: nowrap;
+}
+
+/* ---------- Confounding meter (DesignBuilder) ---------- */
+.dr-act3__meter {
+  margin: var(--dr-sp-2) 0 var(--dr-sp-1);
+}
+.dr-act3__meter-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--dr-sp-2);
+  margin: 0 0 var(--dr-sp-1);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-2xs);
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-2);
+}
+.dr-act3__meter-track {
+  height: 10px;
+  border: 1px solid var(--dr-line);
+  border-radius: var(--dr-radius);
+  background: var(--dr-bg-3);
+  overflow: hidden;
+}
+.dr-act3__meter-fill {
+  height: 100%;
+  transition: width var(--dr-dur) var(--dr-ease);
+}
+.dr-act3__meter-scale {
+  display: flex;
+  justify-content: space-between;
+  margin: var(--dr-sp-1) 0 0;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-2xs);
+  color: var(--dr-fg-2);
+}
+
+/* ---------- Roster (DesignBuilder) ---------- */
+.dr-act3__roster-wrap {
+  max-height: 22em;
+  overflow-y: auto;
+  border: 1px solid var(--dr-line);
+  border-radius: var(--dr-radius);
+}
+.dr-act3__roster {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+.dr-act3__roster caption {
+  caption-side: top;
+  text-align: left;
+  padding: var(--dr-sp-2) var(--dr-sp-2) var(--dr-sp-1);
+  font-size: var(--dr-fs-2xs);
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-2);
+}
+.dr-act3__roster th,
+.dr-act3__roster td {
+  border-bottom: 1px solid var(--dr-line);
+  padding: var(--dr-sp-1) var(--dr-sp-2);
+  text-align: right;
+  white-space: nowrap;
+}
+.dr-act3__roster th[scope='col'] {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--dr-bg-2);
+  color: var(--dr-fg-2);
+  font-weight: 500;
+  font-size: var(--dr-fs-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.dr-act3__roster th[scope='row'] {
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--dr-fg-0);
+  font-weight: 400;
+}
+.dr-act3__roster td:last-child {
+  padding: 0;
+}
+.dr-act3__group-btn {
+  display: block;
+  width: 100%;
+  min-height: var(--dr-control-h);
+  padding: var(--dr-sp-1) var(--dr-sp-2);
+  border: 0;
+  background: var(--dr-bg-0);
+  color: var(--dr-fg-1);
+  font: inherit;
+  letter-spacing: var(--dr-track-label);
+  text-align: right;
+  cursor: pointer;
+  transition:
+    background var(--dr-dur-fast) var(--dr-ease),
+    color var(--dr-dur-fast) var(--dr-ease);
+}
+.dr-act3__group-btn:hover {
+  background: var(--dr-bg-2);
+}
+.dr-act3__group-btn:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--dr-focus);
+}
+.dr-act3__group-btn.is-escort {
+  color: var(--dr-phosphor);
+  box-shadow: inset 0 -2px 0 var(--dr-phosphor-dim);
+}
+.dr-act3__group-btn.is-none {
+  color: var(--dr-steel);
+  box-shadow: inset 0 -2px 0 var(--dr-steel-dim);
+}
+
+/* ---------- Shuffle log (RandomizationMachine) ---------- */
+.dr-act3__shuffle {
+  margin: var(--dr-sp-2) 0 0;
+  padding: var(--dr-sp-2) var(--dr-sp-3);
+  border-left: 2px solid var(--dr-phosphor-dim);
+  background: var(--dr-bg-1);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  color: var(--dr-fg-1);
+  letter-spacing: 0.04em;
+}
+.dr-act3__shuffle strong {
+  color: var(--dr-fg-0);
+  font-weight: 500;
+}

@@ -1,0 +1,175 @@
+/* Act IV instruments — tokens only, no raw colours. Imported by `_ui.tsx`. */
+
+/* ---------- Probability bar ---------- */
+.dr-probbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dr-sp-1);
+  min-width: 0;
+}
+.dr-probbar__head,
+.dr-probbar__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--dr-sp-2);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+.dr-probbar__head {
+  color: var(--dr-fg-1);
+}
+.dr-probbar__foot {
+  color: var(--dr-fg-2);
+}
+.dr-probbar__label {
+  letter-spacing: 0.04em;
+}
+.dr-probbar__value {
+  color: var(--dr-fg-0);
+}
+.dr-probbar__track {
+  position: relative;
+  height: 10px;
+  border: 1px solid var(--dr-line);
+  border-radius: var(--dr-radius-sm, 2px);
+  background: var(--dr-bg-1);
+  overflow: hidden;
+}
+.dr-probbar__fill {
+  height: 100%;
+  transition: width var(--dr-dur-fast, 0ms) ease-out;
+}
+
+/* ---------- Cellar gauge ---------- */
+.dr-sink {
+  display: flex;
+  align-items: center;
+  gap: var(--dr-sp-2);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--dr-fg-2);
+  flex-wrap: wrap;
+}
+.dr-sink__label {
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+}
+.dr-sink__track {
+  position: relative;
+  display: block;
+  flex: 1 1 120px;
+  min-width: 90px;
+  max-width: 260px;
+  height: 8px;
+  border: 1px solid var(--dr-line);
+  border-radius: var(--dr-radius-sm, 2px);
+  background: var(--dr-bg-1);
+  overflow: hidden;
+}
+.dr-sink__fill {
+  display: block;
+  height: 100%;
+  transition: width var(--dr-dur-fast, 0ms) ease-out;
+}
+.dr-sink__value {
+  min-width: 3.2em;
+  text-align: right;
+  color: var(--dr-fg-0);
+}
+.dr-sink__profile,
+.dr-sink__stamp {
+  letter-spacing: 0.04em;
+}
+.dr-sink__stamp {
+  color: var(--dr-fg-3, var(--dr-fg-2));
+}
+
+/* ---------- Probability tree (4-03) ---------- */
+.dr-tree {
+  overflow-x: auto;
+}
+.dr-tree__edge {
+  stroke: var(--dr-line-strong);
+  fill: none;
+}
+.dr-tree__edge.is-selected {
+  stroke: var(--dr-phosphor);
+}
+.dr-tree__leaf {
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Editable probability grid (4-02, 4-04, 4-05) ---------- */
+.dr-pgrid {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+.dr-pgrid caption {
+  caption-side: top;
+  text-align: left;
+  padding: 0 0 var(--dr-sp-2);
+  font-size: var(--dr-fs-xs);
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-2);
+}
+.dr-pgrid th,
+.dr-pgrid td {
+  border: 1px solid var(--dr-line);
+  padding: var(--dr-sp-1) var(--dr-sp-2);
+  text-align: right;
+}
+.dr-pgrid th {
+  color: var(--dr-fg-2);
+  font-weight: 500;
+  font-size: var(--dr-fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--dr-bg-1);
+}
+.dr-pgrid th[scope='row'] {
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--dr-fg-1);
+}
+.dr-pgrid td.is-total {
+  color: var(--dr-fg-0);
+  font-weight: 600;
+}
+.dr-pgrid td.is-invalid {
+  color: var(--dr-alert);
+}
+.dr-pgrid input {
+  width: 100%;
+  min-width: 4.5em;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: right;
+  padding: 0;
+}
+.dr-pgrid input:focus-visible {
+  outline: 2px solid var(--dr-focus, var(--dr-phosphor));
+  outline-offset: 1px;
+}
+
+/* ---------- Venn / event-space panel (4-02) ---------- */
+.dr-events {
+  position: relative;
+  touch-action: none;
+}
+.dr-events__region {
+  cursor: grab;
+}
+.dr-events__region.is-dragging {
+  cursor: grabbing;
+}
