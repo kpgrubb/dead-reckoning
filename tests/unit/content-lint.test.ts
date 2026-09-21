@@ -71,6 +71,47 @@ describe('content MDX lint', () => {
     expect(offences).toEqual([])
   })
 
+  /**
+   * remark-math tokenises the body of `$…$` / `$$…$$` before MDX sees it, so a JSX expression
+   * inside math is never evaluated: KaTeX typesets the literal source (`fmt(AUDIT_SE,4)`) on the
+   * page. It compiles and builds clean. Put the symbol in math and the number outside it, or use
+   * `<Formula tex={`…`} />`, whose template literal *is* evaluated. Found by Act V (22 instances).
+   */
+  it('never puts a JSX expression inside a math span', () => {
+    // JS that cannot be TeX: our formatters, Math.*, .toFixed(), a braced property access, or a
+    // braced camelCase identifier.
+    const jsSignals = [/\b(?:fmt|fmtPct|fmtInt|fmtP|round|roundSig)\s*\(/, /\bMath\./, /\.toFixed\s*\(/, /\{[A-Za-z_$][\w$]*\.[\w$]+\}/, /\{[a-z][a-z0-9]*[A-Z][A-Za-z0-9]*\}/]
+    const offences: string[] = []
+
+    for (const file of files) {
+      // Blank out backtick-delimited regions first: a `$$…${expr}…$$` inside a JS template literal
+      // (e.g. a generator `prompt={`…`}`) *is* evaluated, and markdown inline code is not math.
+      // Replace with spaces so every offset, and therefore every reported line number, is preserved.
+      const src = body(fs.readFileSync(file, 'utf8')).replace(/`[^`]*`/gs, (m) => m.replace(/[^\n]/g, ' '))
+      const spans: { text: string; line: number }[] = []
+      const lineOf = (idx: number) => src.slice(0, idx).split('\n').length
+
+      // Display math first, so its `$$` pairs are not re-read as two inline spans.
+      const consumed: [number, number][] = []
+      for (const m of src.matchAll(/\$\$([\s\S]*?)\$\$/g)) {
+        spans.push({ text: m[1], line: lineOf(m.index!) })
+        consumed.push([m.index!, m.index! + m[0].length])
+      }
+      for (const m of src.matchAll(/(?<!\\)\$([^$\n]+?)(?<!\\)\$/g)) {
+        const at = m.index!
+        if (consumed.some(([a, b]) => at >= a && at < b)) continue
+        if (m[1].startsWith('{')) continue // `${…}` inside a JS template literal, not markdown math
+        spans.push({ text: m[1], line: lineOf(at) })
+      }
+
+      for (const span of spans) {
+        const hit = jsSignals.find((re) => re.test(span.text))
+        if (hit) offences.push(`${rel(file)}:${span.line}: JSX expression inside math — "${span.text.trim().slice(0, 60)}"`)
+      }
+    }
+    expect(offences).toEqual([])
+  })
+
   /** Every module MDX needs the frontmatter the manifest and router rely on. Calc bodies have none. */
   it('gives every module file the required frontmatter, and every calc body none', () => {
     const offences: string[] = []

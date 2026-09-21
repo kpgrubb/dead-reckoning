@@ -36,6 +36,7 @@ import {
   loadForEndurance,
   metStamp,
   pctPerHour,
+  sinkAt,
 } from '@/instruments/act-4/data'
 import { RandomVariableCombiner } from '@/instruments/act-4/RandomVariableCombiner'
 import { KeyTable, SinkReadout } from '@/instruments/act-4/_ui'
@@ -44,6 +45,9 @@ import { LoiterEcho, LoiterFigure } from '@/instruments/act-4/story'
 export const heat = heatFor('act-4-07')
 export const hoursIn = hoursBetween(WINDOW_1.from, heat.at)
 export const hoursLeft = hoursBetween(heat.at, WINDOW_1.to)
+/** The closing scene, two hours and forty minutes on: its cellar comes off the ledger at that MET. */
+export const closeAt = heat.at + 160 / 1440
+export const closeHoursLeft = hoursBetween(closeAt, WINDOW_1.to)
 /** Moments from a mean and a spread — the only shape the sum and difference rules need. */
 export const mom = (m, s) => ({ mean: m, variance: s * s, sd: s })
 export const life = WATCH_SUBSYSTEMS.find((s) => s.id === 'life')
@@ -282,7 +286,7 @@ All six loads. The rule is on the board. Do the arithmetic the Chief declined to
 
 <Gated by={["act-4-07-sd", "act-4-07-saturate", "act-4-07-margin"]}>
 
-<Scene stamp="MET 089/14:40" location={`Engineering deck · Watch, cellar ${fmt(heat.sinkPct, 0)}%`} condensed={`The margin goes on the plan: ${fmtInt(WATCH_MEAN_KW)} ± ${fmt(WATCH_SD_KW, 1)} kW, which is ${fmt(WATCH_DESIGN_HOURS, 1)} hours give or take ${fmt(WATCH_DESIGN_SD_HOURS, 1)}, which is why the Chief works to ${WATCH_WORKING_HOURS} and writes down ${WATCH_IN_WRITING_HOURS}. The yard's ± ${fmtInt(YARD_MARGIN_KW)} stays in the file unexplained — a mistake or not, and no evidence yet which. Ebele turns to the window's scheduled close passes and finds the next question: several hulls, each with its own chance of seeing a cold ship, and no distribution yet that can price the set of them.`}>
+<Scene stamp={metStamp(closeAt)} location={`Engineering deck · Watch, cellar ${fmt(sinkAt(closeAt), 0)}%`} condensed={`The margin goes on the plan: ${fmtInt(WATCH_MEAN_KW)} ± ${fmt(WATCH_SD_KW, 1)} kW, which is ${fmt(WATCH_DESIGN_HOURS, 1)} hours give or take ${fmt(WATCH_DESIGN_SD_HOURS, 1)}, which is why the Chief works to ${WATCH_WORKING_HOURS} and writes down ${WATCH_IN_WRITING_HOURS}. The yard's ± ${fmtInt(YARD_MARGIN_KW)} stays in the file unexplained — a mistake or not, and no evidence yet which. Ebele turns to the window's scheduled close passes and finds the next question: several hulls, each with its own chance of seeing a cold ship, and no distribution yet that can price the set of them.`}>
 
 Sandoval writes the total across the head of the schedule the way she writes everything, which is once and in full: {fmtInt(WATCH_MEAN_KW)} ± {fmt(WATCH_SD_KW, 1)} kilowatts, six independent loads, variances added, root taken once, assumption stated.
 
@@ -296,7 +300,7 @@ That is the whole of it, Skipper. The design curve quotes you the middle of a di
 
 The three margins go into the log side by side: the Ensign's {fmtInt(NAIVE_SUM_OF_SDS_KW)}, the correct {fmt(WATCH_SD_KW, 1)}, and Adlinda's {fmtInt(YARD_MARGIN_KW)} — the last with the certificate's date beside it and no comment attached, because a comment would be a theory and there is no evidence for one yet.
 
-It is either a mistake or it is not. A yard that certifies a margin five times too generous has either averaged six errors it had no business averaging, or it has been asked for a number that makes a hull look better than it is. Both happen. They do not look different on a certificate, and the ship is on Watch with {fmt(hoursLeft, 0)} hours to run, and this is not the watch to find out.
+It is either a mistake or it is not. A yard that certifies a margin five times too generous has either averaged six errors it had no business averaging, or it has been asked for a number that makes a hull look better than it is. Both happen. They do not look different on a certificate, and the ship is on Watch with {fmt(closeHoursLeft, 0)} hours to run, and this is not the watch to find out.
 
 Ebele files it and goes back to the plot, and what is on the plot is traffic.
 

@@ -99,6 +99,17 @@ function reserved(p: number): boolean {
   return RESERVED.some((r) => Math.abs(p - r) < 0.003)
 }
 
+/** "a" or "an" for a singular noun — the contexts include an *acceptance run* and an *assist*. */
+function a(noun: string): string {
+  return `${/^[aeiou]/i.test(noun) ? 'an' : 'a'} ${noun}`
+}
+
+/** The same, capitalised, for the head of a sentence. */
+function A(noun: string): string {
+  const s = a(noun)
+  return s[0].toUpperCase() + s.slice(1)
+}
+
 function columns(ctx: Ctx): string[] {
   return [ctx.rowVar, ctx.cols[0], ctx.cols[1], 'total']
 }
@@ -196,7 +207,7 @@ export const independenceCheck = defineGenerator({
       {
         text: `Independent — P(${A} | ${B}) = ${fmt(cond, 3)} and the marginal P(${A}) = ${fmt(marg, 3)} are the same number, so conditioning on ${B} changes nothing.`,
         correct: independent,
-        why: independent ? null : `Those two numbers are not the same here: ${fmt(cond, 3)} against ${fmt(marg, 3)}. Knowing a ${ctx.one} is ${B} moves the probability, which is what dependence looks like in a table.`,
+        why: independent ? null : `Those two numbers are not the same here: ${fmt(cond, 3)} against ${fmt(marg, 3)}. Knowing ${a(ctx.one)} is ${B} moves the probability, which is what dependence looks like in a table.`,
       },
       {
         text: `Not independent — P(${A} | ${B}) = ${fmt(cond, 3)} against a marginal P(${A}) = ${fmt(marg, 3)}, so conditioning on ${B} changes the probability.`,
@@ -253,7 +264,7 @@ export const generalAddition = defineGenerator({
       const n = tw.total
       const union = (rowTotal + colTotal - both) / n
       return {
-        prompt: `${ctx.frame.replace('{n}', String(n))}\n\n${tableMd(columns(ctx), countRows(ctx, counts))}\n\nOne ${ctx.one} is drawn from the file at random. What is the probability that it is **${ctx.rows[0]}** *or* **${ctx.cols[0]}** — counting a ${ctx.one} that is both only once? Report a proportion to three decimal places.`,
+        prompt: `${ctx.frame.replace('{n}', String(n))}\n\n${tableMd(columns(ctx), countRows(ctx, counts))}\n\nOne ${ctx.one} is drawn from the file at random. What is the probability that it is **${ctx.rows[0]}** *or* **${ctx.cols[0]}** — counting ${a(ctx.one)} that is both only once? Report a proportion to three decimal places.`,
         data: tableSpec(columns(ctx), countRows(ctx, counts)),
         answer: numericAnswer(union, 'proportion', { digits: 3 }),
         hints: [
@@ -276,7 +287,7 @@ export const generalAddition = defineGenerator({
     )
     const union = pA + pB - pBoth
     return {
-      prompt: `${ctx.frame.replace('{n}', 'several hundred')}\n\nThe office quotes three figures off the file. A ${ctx.one} drawn at random is **${ctx.rows[0]}** with probability ${fmt(pA, 2)}; it is **${ctx.cols[0]}** with probability ${fmt(pB, 2)}; and it is both with probability ${fmt(pBoth, 2)}.\n\nWhat is the probability that a ${ctx.one} drawn at random is ${ctx.rows[0]} *or* ${ctx.cols[0]} (or both)? Report a proportion to three decimal places.`,
+      prompt: `${ctx.frame.replace('{n}', 'several hundred')}\n\nThe office quotes three figures off the file. ${A(ctx.one)} drawn at random is **${ctx.rows[0]}** with probability ${fmt(pA, 2)}; it is **${ctx.cols[0]}** with probability ${fmt(pB, 2)}; and it is both with probability ${fmt(pBoth, 2)}.\n\nWhat is the probability that ${a(ctx.one)} drawn at random is ${ctx.rows[0]} *or* ${ctx.cols[0]} (or both)? Report a proportion to three decimal places.`,
       answer: numericAnswer(union, 'proportion', { digits: 3 }),
       hints: [
         'These two events are not mutually exclusive — the third figure says so. Use the general addition rule, which subtracts the overlap once.',

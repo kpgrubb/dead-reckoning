@@ -93,17 +93,17 @@ What the theorem **says**: as $n$ grows, the sampling distribution of $\bar{x}$ 
 <Briefing.Worked>
 A case with no stakes in it, so the arithmetic can be watched on its own. The Lane Authority's 2181 scheduling audit timed **{fmtInt(AUDIT_N)} Mercantile transits** to Mark 9 against the nominal plot. Their mean delay came out **{fmt(AUDIT_MEAN, 2)} days**. Is that a slow month, or is it nothing?
 
-The population is the Ledger's honest transits: $\mu = {fmt(LANE_DELAY_MEAN, 3)}$ d, $\sigma = {fmt(LANE_DELAY_SD, 3)}$ d. Both licences for the shape are open here — the parent is near-normal *and* {fmtInt(AUDIT_N)} is at least 30 — so name one and move on.
+The population is the Ledger's honest transits: $\mu$ = {fmt(LANE_DELAY_MEAN, 3)} d, $\sigma$ = {fmt(LANE_DELAY_SD, 3)} d. Both licences for the shape are open here — the parent is near-normal *and* {fmtInt(AUDIT_N)} is at least 30 — so name one and move on.
 
-$$\mu_{\bar x} = \mu = {fmt(LANE_DELAY_MEAN, 3)} \text{ d}, \qquad \sigma_{\bar x} = \frac{\sigma}{\sqrt{n}} = \frac{{fmt(LANE_DELAY_SD, 3)}}{\sqrt{ {fmtInt(AUDIT_N)} }} = {fmt(AUDIT_SE, 4)} \text{ d}$$
+<Formula tex={`\\mu_{\\bar x} = \\mu = ${fmt(LANE_DELAY_MEAN, 3)} \\text{ d}, \\qquad \\sigma_{\\bar x} = \\frac{\\sigma}{\\sqrt{n}} = \\frac{${fmt(LANE_DELAY_SD, 3)}}{\\sqrt{ ${fmtInt(AUDIT_N)} }} = ${fmt(AUDIT_SE, 4)} \\text{ d}`} label="Centre and spread of the audit's mean" />
 
-$$z = \frac{ {fmt(AUDIT_MEAN, 3)} - {fmt(LANE_DELAY_MEAN, 3)} }{ {fmt(AUDIT_SE, 4)} } = {fmt(AUDIT_Z, 3)} \qquad\Longrightarrow\qquad P(\bar{x} \ge {fmt(AUDIT_MEAN, 2)}) = {fmtP(AUDIT_P)}$$
+<Formula tex={`z = \\frac{ ${fmt(AUDIT_MEAN, 3)} - ${fmt(LANE_DELAY_MEAN, 3)} }{ ${fmt(AUDIT_SE, 4)} } = ${fmt(AUDIT_Z, 3)} \\qquad\\Longrightarrow\\qquad P(\\bar{x} \\ge ${fmt(AUDIT_MEAN, 2)}) = ${fmtP(AUDIT_P)}`} label="Standardizing the audit's mean and reading the tail" />
 
 So: **{fmtPct(AUDIT_P, 1)}** of audits of {fmtInt(AUDIT_N)} honest transits come out at least that slow. Unremarkable. A scheduling clerk with a grievance would be told to wait for more data, and would be told right.
 
-Now hold that against the individual-level question, which is the one act-5-02 was about. A *single* honest transit {fmt(AUDIT_MEAN, 2)} days behind the plot is not even slightly unusual — {fmtPct(AUDIT_ONE, 0)} of them manage it, two in five. The same lateness is a shrug for one hull and a {fmtPct(AUDIT_P, 1)} event for a group of {fmtInt(AUDIT_N)}, because the spread the *mean* has to travel is {fmt(LANE_DELAY_SD / AUDIT_SE, 1)} times smaller. That factor is $\sqrt{ {fmtInt(AUDIT_N)} }$, and it is the entire engine of this Act.
+Now hold that against the individual-level question, which is the one act-5-02 was about. A *single* honest transit {fmt(AUDIT_MEAN, 2)} days behind the plot is not even slightly unusual — {fmtPct(AUDIT_ONE, 0)} of them manage it, two in five. The same lateness is a shrug for one hull and a {fmtPct(AUDIT_P, 1)} event for a group of {fmtInt(AUDIT_N)}, because the spread the *mean* has to travel is {fmt(LANE_DELAY_SD / AUDIT_SE, 1)} times smaller. That factor is the square root of {fmtInt(AUDIT_N)}, and it is the entire engine of this Act.
 
-And the blunder, priced. Divide by $n$ instead of $\sqrt{n}$ and the spread reads {fmt(AUDIT_WRONG_SD, 4)} d instead of {fmt(AUDIT_SE, 4)} d — six times too tight. The same audit then standardizes to $z = {fmt(AUDIT_WRONG_Z, 2)}$, and a quiet month on the Mars run becomes an event the display cannot print a probability for. Every figure downstream of that error is wrong in the same direction: too extreme, too confident, too easy to demolish.
+And the blunder, priced. Divide by $n$ instead of $\sqrt{n}$ and the spread reads {fmt(AUDIT_WRONG_SD, 4)} d instead of {fmt(AUDIT_SE, 4)} d — six times too tight. The same audit then standardizes to a $z$ of {fmt(AUDIT_WRONG_Z, 2)}, and a quiet month on the Mars run becomes an event the display cannot print a probability for. Every figure downstream of that error is wrong in the same direction: too extreme, too confident, too easy to demolish.
 </Briefing.Worked>
 <Briefing.Caution>
 *The CLT normalises the population.* It does not. It never touches the population. Put a flat parent in the machine, raise $n$ from 2 to 40, and watch the top plot: it does not move by a pixel while the bottom pile narrows and rounds off. Marks stay uniform. Silences stay skewed. Only the pile of averages changes, and it was never made of transits.

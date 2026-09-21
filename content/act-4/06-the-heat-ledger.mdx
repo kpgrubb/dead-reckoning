@@ -29,6 +29,7 @@ import {
   hoursBetween,
   loiterOption_,
   metStamp,
+  sinkAt,
 } from '@/instruments/act-4/data'
 import { HeatBudgetPlanner } from '@/instruments/act-4/HeatBudgetPlanner'
 import { WeightedSumBar } from '@/instruments/act-4/WeightedSumBar'
@@ -37,6 +38,8 @@ import { ProfileEcho } from '@/instruments/act-4/story'
 import { expectedValueInterpretation } from '@/lib/problems/rubrics'
 
 export const heat = heatFor('act-4-06')
+/** Forty minutes before the window opens — the cellar read off the ledger at that MET, not at the header's. */
+export const decisionAt = WINDOW_1.from - 40 / 1440
 export const near = loiterOption_('near')
 export const middle = loiterOption_('middle')
 export const far = loiterOption_('far')
@@ -277,7 +280,7 @@ Now do the other two. The middle point's table is on the plot above; the near po
 
 <Gated by={["act-4-06-expected", "act-4-06-saturate", "act-4-06-interpret"]}>
 
-<Scene stamp="MET 088/11:20" location={`Bridge · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="Forty minutes to the window. The three points are priced: the near one has the traffic and a tail that runs past the cellar, the far one is cheap and sees almost nothing, the middle sits between them on both counts. Sandoval will not choose and Ferrier will not either. She will log whichever point you do not take.">
+<Scene stamp={metStamp(decisionAt)} location={`Bridge · Quiet, cellar ${fmt(sinkAt(decisionAt), 0)}%`} condensed="Forty minutes to the window. The three points are priced: the near one has the traffic and a tail that runs past the cellar, the far one is cheap and sees almost nothing, the middle sits between them on both counts. Sandoval will not choose and Ferrier will not either. She will log whichever point you do not take.">
 
 The plan is on the table with all three lines on it and nothing crossed out.
 
@@ -328,7 +331,7 @@ Forty minutes.
   </Outcome>
 </MissionBeat>
 
-<Scene stamp="MET 088/12:00" location="Bridge · the first Watch window opens" condensed="The ship moves to the chosen point and the window opens on the hour. What the plan still cannot say is how much the Chief's sixty-four hours is itself worth — a number with a spread on it, built out of six subsystem loads, and the yard's spec sheet says something about that spread that Ebele is about to add up wrong.">
+<Scene stamp={windowOpens} location="Bridge · the first Watch window opens" condensed="The ship moves to the chosen point and the window opens on the hour. What the plan still cannot say is how much the Chief's sixty-four hours is itself worth — a number with a spread on it, built out of six subsystem loads, and the yard's spec sheet says something about that spread that Ebele is about to add up wrong.">
 
 The ship makes the adjustment cold, on attitude thrusters, and at {windowOpens} the Eyes come up to the profile and the cellar starts to fill.
 

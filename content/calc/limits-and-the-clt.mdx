@@ -1,0 +1,35 @@
+import { LimitStack } from '@/instruments/act-5/LimitStack'
+
+Ebele leaves this one open on the intel terminal at the end of the watch, with the machine already loaded, because Oyelaran asked him *how fast* and he did not have a number ready. You do not need it to work the problem. It is here because "as $n$ grows" is a promise about a limit, and a promise is worth knowing the terms of.
+
+**A limit is a destination, not an arrival.** To write $\lim_{n \to \infty} a_n = L$ is to claim one thing and only one thing: name any tolerance $\varepsilon$, however small, and from some point on the sequence stays inside it.
+
+<Formula
+  tex="\lim_{n \to \infty} a_n = L \iff \forall \varepsilon > 0 \;\; \exists N \;:\; n > N \implies |a_n - L| < \varepsilon"
+  terms={{ '\\varepsilon': 'how close is close enough — chosen by whoever is being sceptical, not by you', 'N': 'the sample size from which the promise holds', 'L': 'the limit — a destination the sequence need never reach' }}
+  label="What a limit claims, and what it does not"
+/>
+
+Nothing in that says any $a_n$ equals $L$. The sequence $1/\sqrt{n}$ has limit zero and is never zero. So "the sampling distribution of $\bar{x}$ *is* normal at $n \ge 30$" is not what the theorem says, and the honest version — it is close enough at $n \ge 30$ that the error is smaller than anything the argument turns on — is the version that survives a hostile reader.
+
+**What converges is the standardized mean.** $\bar{x}$ itself converges to a point: its spread is $\sigma/\sqrt{n} \to 0$, so the whole distribution collapses onto $\mu$ and there is no shape left to talk about. The object that keeps a shape is the one rescaled by its own spread as it shrinks:
+
+<Formula
+  tex="Z_n = \frac{\bar{x}_n - \mu}{\sigma/\sqrt{n}} \;\xrightarrow[\;n \to \infty\;]{}\; Z \sim N(0, 1)"
+  terms={{ 'Z_n': 'the sample mean standardized by its OWN standard deviation at that n', '\\sigma/\\sqrt{n}': 'the shrinking ruler — the rescaling that stops the picture collapsing', 'N(0,1)': 'the one fixed curve every parent converges to' }}
+  label="The Central Limit Theorem, stated as a limit"
+/>
+
+That is the content of the theorem: divide by a ruler that shrinks at exactly the rate the distribution shrinks, and what is left over stops depending on the parent at all. A flat parent, a two-humped parent, a parent that is nothing but ones and zeros — all of them arrive at the same curve. It is a statement about $Z_n$. The parent is not a party to it and does not change.
+
+**How fast is a separate question, and it has an answer.** Convergence in shape is governed by the parent's skewness, and the error in the normal approximation falls like $1/\sqrt{n}$ — which is why a strongly skewed parent needs more $n$ than a symmetric one for the same fidelity, and why "$n \ge 30$" is a rule of thumb rather than a theorem. The *spread* falls at the same rate, and that rate is the one worth internalizing:
+
+$$\frac{\mathrm{d}}{\mathrm{d}n}\left(\sigma n^{-1/2}\right) = -\frac{\sigma}{2}\,n^{-3/2}$$
+
+The derivative is negative — more data always helps — but its magnitude falls off like $n^{-3/2}$, so each additional transit buys less than the one before it. Going from 4 to 16 halves the spread. Halving it again costs 48 more. Precision is bought at quadratic prices, and that single fact sets the cost of every survey, every patrol and every sample size argument in this book.
+
+Run the stack. Walk **sample size n** from 1 upward with the skewed parent selected and watch three things at once: the parent's own density, which never moves; the standardized mean against the fixed $N(0,1)$ curve, which straightens as $n$ climbs; and *largest gap from N(0, 1) · the convergence*, a number that falls rather than a claim you are asked to take on faith. Then read *n needed to halve σ/√n* and notice what it costs each time you ask.
+
+<LimitStack />
+
+**Why this matters here.** Every probability this watch is computed from the normal model applied to a mean of nineteen — and nineteen is nowhere near infinity, so the licence cannot come from the limit. It comes from the other condition: the Ledger's honest delays are already near-normal, and a normal parent gives $\bar{x}$ a normal sampling distribution exactly, at every $n$. Knowing which of the two licences you are standing on is the difference between an argument that holds at nineteen and one that only sounded like it did.

@@ -8,7 +8,7 @@ objectives:
   - "Determine whether a setting is binomial: binary outcome, independent trials, a fixed number of them, and the same probability on each"
   - "Calculate binomial probabilities P(X = k) and cumulative probabilities, keeping the boundary cell on the correct side of the inequality"
   - "Interpret a binomial probability in context, including the 10% condition when the trials are draws from a finite population"
-prereqs: ["act-4-04", "act-4-06"]
+prereqs: ["act-4-07"]
 est_minutes: 30
 calc_briefing: null
 summary: "Ten minutes from the wings going out, the Eyes ask for a number instead of a reassurance. The window's close passes were on the public plot before the window opened — different hulls, different offices, nothing joining them — which is the one thing Nightjar's own re-sweeps never were."
@@ -177,7 +177,7 @@ The near loiter point, priced for the second window — the point inside the tra
 
 <Formula tex={nearNoneTex} label="No hull resolves her across twelve independent passes" />
 
-The complement is the risk term: at least one hull resolves her somewhere in the window with probability {fmt(P_SEEN_COLD.near, 4)} — about {oneIn(P_SEEN_COLD.near)}. At the middle point, with fewer passes, the same arithmetic gives {fmt(P_SEEN_COLD.middle, 4)}; at the far point, {fmt(P_SEEN_COLD.far, 4)}.
+The complement is the risk term: at least one hull resolves her somewhere in the window with probability {fmt(P_SEEN_COLD.near, 4)} — about {oneIn(P_SEEN_COLD.near)}. Out at the far point, where the plot carries {fmtInt(CLOSE_PASSES.far)} scheduled pass, the same arithmetic gives {fmt(P_SEEN_COLD.far, 4)}: the whole of the exposure is the one pass.
 
 **The boundary cell, written out**, because this is where the question is usually lost:
 

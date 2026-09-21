@@ -1,0 +1,279 @@
+---
+id: act-5-04
+act: 5
+title: "Proportions in the Noise"
+kind: module
+ap_topics: ["5.5", "5.6"]
+objectives:
+  - "State the mean and standard deviation of the sampling distribution of a sample proportion, and check the Large Counts and independence conditions that license a normal model for it"
+  - "State the mean and standard deviation of the sampling distribution of a difference in sample proportions under a common rate, and explain why variances add"
+  - "Calculate a probability about a proportion or a difference in proportions, and run the calculation backwards to find the gap that would be rare"
+prereqs: ["act-5-03"]
+est_minutes: 30
+calc_briefing: null
+summary: "Before anyone says a fleet loses more hulls than another, build the picture of two fleets that lose them at exactly the same rate — and find out how far apart honest luck alone can push them."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct, normal, samplingSdProportion } from '@/lib/stats'
+import { GAP_1_IN_100, LARGE_COUNTS_OTHER, LARGE_COUNTS_PERRINE, LEDGER_N, OTHER_N, PERRINE_N, POOLED_RATE, SD_DIFF_PROPORTIONS, SD_PHAT_OTHER, SD_PHAT_PERRINE, TRANSITS_BY_OWNER } from '@/instruments/act-5/data'
+import { ProportionSampler } from '@/instruments/act-5/ProportionSampler'
+// The Briefing's worked case runs on the Mercantile and independent counts, so neither figure the
+// beats ask for (the 900-transit SD, the 900-against-1,712 SD, and the gap that inverts it) is
+// printed anywhere above the beats.
+export const MERCANTILE_N = TRANSITS_BY_OWNER.Mercantile
+export const INDEPENDENT_N = TRANSITS_BY_OWNER.independent
+export const SD_MERCANTILE = samplingSdProportion(POOLED_RATE, MERCANTILE_N)
+export const SD_INDEPENDENT = samplingSdProportion(POOLED_RATE, INDEPENDENT_N)
+export const SD_DIFF_WORKED = Math.sqrt(SD_MERCANTILE ** 2 + SD_INDEPENDENT ** 2)
+export const SD_DIFF_WRONG = SD_MERCANTILE - SD_INDEPENDENT
+export const SD_DIFF_WRONG_RATIO = SD_DIFF_WORKED / Math.abs(SD_DIFF_WRONG)
+export const COUNTS_MERCANTILE = MERCANTILE_N * POOLED_RATE
+export const ARRIVALS_MERCANTILE = MERCANTILE_N * (1 - POOLED_RATE)
+export const COUNTS_INDEPENDENT = INDEPENDENT_N * POOLED_RATE
+export const WORKED_GAP = 0.008
+export const WORKED_Z = WORKED_GAP / SD_DIFF_WORKED
+export const WORKED_P = normal.sf(WORKED_Z)
+export const SMALL_N = 200
+export const SMALL_COUNTS = SMALL_N * POOLED_RATE
+export const PERRINE_SHARE = PERRINE_N / LEDGER_N
+
+<Scene stamp="MET 116/09:20" location="Bridge · coasting cold · two days to the torch" condensed="Two days out from the torch. Ebele arrives on the bridge with the Ledger sorted by owner class and the observed loss counts for each — the comparison the whole file has been pointing at since Act II. Ferrier stops him before the first number leaves his mouth and makes him put the sheet face down. The ship is going to build the picture of two fleets losing hulls at exactly the same rate first, and look at what it actually saw afterwards, in that order, on the record — because a null model built after the observation is a null model built to fit it.">
+
+The middle watch handed over at 08:00 and the ship has the particular quiet of a hull two days from doing something. The cellar is at forty-one per cent and falling on the Chief's schedule. Two hundred and sixty-three kilometres a second in the tanks. Callisto twenty-one and a half minutes away, which is far enough that nobody up there can help you with the next two days and close enough that they will have opinions afterwards.
+
+Ebele comes onto the bridge at a speed that is not quite running with a slate held against his chest, face in.
+
+<Dialogue speaker="analyst" aside="He has been up since the forenoon watch and has not said so, which is its own report.">
+So I have it sorted, sir. The Ledger by owner class, all {fmtInt(LEDGER_N)} transits, six years, and the loss counts against each class. It took the night because the flag field is free text before 2180 and there are eleven ways to spell Perrine. Sir, the numbers are — 
+</Dialogue>
+
+Ferrier puts two fingers on the top edge of the slate and turns it over onto the console. Not fast. Not hard. The way you close a hatch you intend to open again.
+
+<Dialogue speaker="xo" aside="She does not take the slate away from him. She just keeps it face down under her hand, which is worse.">
+No. Not yet. — Ensign, what would you expect to see if there were nothing there at all?
+</Dialogue>
+
+He starts to answer and stops, because the honest answer is that he has not worked it out, and because he can see where it goes.
+
+The thing Ferrier is doing has a name in the Service and a longer one in a court. If you look at the observation first and then build the model of ordinary, you will build a model with the observation's shape pressed into it — not dishonestly, not even consciously, but you will choose a window, a class boundary, a definition of *loss*, and every one of those choices will be made by a man who already knows which way he wants the answer to fall. The other side will find those choices. They are paid to.
+
+<Dialogue speaker="xo" aside="Both hands on the console now. The slate stays face down between them for the rest of the watch.">
+Two fleets fly the same corridor. Same rate, same risk, nobody stealing anything, nothing wrong anywhere. One flies nine hundred transits and one flies seventeen hundred. Tell me what the gap between their loss rates looks like. Not whether ours is bigger. What *honest* looks like — where it sits, how wide it is, and how far apart two clean fleets are allowed to land before a reasonable officer raises an eyebrow. — Write that down and sign it. Then we turn the slate over.
+</Dialogue>
+
+Which is the whole of the module, and Ebele — to his credit, at nine in the morning after a night with a free-text flag field — says *yes, sir*, opens a clean page, and does not ask to see the sheet.
+
+</Scene>
+
+<Briefing title="The distribution of nothing happening" topics={["5.5", "5.6"]}>
+<Briefing.Intuition>
+A loss rate is a mean in disguise. Score every transit 1 if the hull is lost and 0 if it arrives; the sample proportion $\hat p$ is the average of those $n$ zeros and ones, which means everything from act-5-03 applies to it without amendment — centre, spread, shape, all of it. The only thing that changes is that a Bernoulli parent's standard deviation is not a free parameter. It is fixed by $p$ itself: $\sigma = \sqrt{p(1-p)}$. Put that into $\sigma/\sqrt{n}$ and the standard deviation of the sample proportion drops out with no new theory in it.
+
+**Centre.** $\mu_{\hat p} = p$. Over all samples of size $n$, the sample proportion lands on the true rate. It is unbiased, and it stays unbiased at every $n$ — which, as act-5-01 established the hard way, is a different property from being *precise*.
+
+**Spread.** $\sigma_{\hat p} = \sqrt{p(1-p)/n}$. Note which $p$ is in there: the **true** rate assumed by the model, not the one you just measured. When a rate is given to you — the Authority's published Lane figure, the Board's baseline — the model is built on the given rate, and substituting your own observed $\hat p$ is answering a different question with the same arithmetic.
+
+**Shape** needs a licence, and for proportions it is not $n \ge 30$. A proportion lives between 0 and 1, and when $p$ is small the distribution is jammed up against the floor and skewed right no matter how large $n$ is. What matters is whether there is room on both sides — whether the *counts*, not the sample size, are big enough:
+
+**Large Counts:** $np \ge 10$ **and** $n(1-p) \ge 10$.
+
+On the Lane, with a rate near one per cent, that condition bites. It takes several hundred transits before the expected number of losses reaches ten at all, and on a fleet of {fmtInt(SMALL_N)} transits the expected count is {fmt(SMALL_COUNTS, 2)} — the sampling distribution is real, but it is lumpy and right-skewed and a normal curve laid over it is a lie told with a smooth line. Quote the counts. Never quote the verdict alone.
+
+**Independence** is the second condition and it is about where the $n$ came from. The textbook form is the **10 % condition**: when sampling *without replacement* from a finite population, take no more than a tenth of it, or the draws start informing each other. Here the population is not a bin. A fleet's transits are draws from an ongoing operation that will keep flying the Lane next year and the year after; the Ledger's {fmtInt(LEDGER_N)} rows are a window on a process, not the whole of it. That is why nine hundred transits — {fmtPct(PERRINE_SHARE, 0)} of the rows in the snapshot — does not break independence, and it is the sentence a reviewer will want to see written out rather than assumed.
+
+**Two fleets.** Under a *common* rate the difference $\hat p_1 - \hat p_2$ is centred on **zero** — both fleets are estimating the same number, so their difference estimates nothing. Its spread is the one line in this Act that people get wrong in writing, in print, in evidence:
+
+Variances add. Always, for independent quantities, and for a difference exactly as much as for a sum, because subtracting a random quantity is adding a random quantity that has been flipped, and flipping it does not make it quieter. The standard deviation of the difference is therefore *larger than either one alone* — never the difference of the two standard deviations, which is smaller than both and is a claim that two noisy fleets somehow make a quiet comparison.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\mu_{\hat p} = p, \qquad \sigma_{\hat p} = \sqrt{\frac{p(1-p)}{n}}" terms={{ '\\hat p': 'the sample proportion — losses divided by transits, in one sample', 'p': 'the TRUE rate the model assumes, never the one just observed', 'n': 'transits in the sample' }} label="Centre and spread of a sample proportion" />
+
+<Formula tex="np \ge 10 \quad\text{and}\quad n(1-p) \ge 10 \qquad\text{(Large Counts)}" terms={{ 'np': 'expected losses — print this number, not the verdict', 'n(1-p)': 'expected arrivals' }} label="The condition that licenses a normal model for p̂" />
+
+<Formula tex="\mu_{\hat p_1 - \hat p_2} = p_1 - p_2, \qquad \sigma_{\hat p_1 - \hat p_2} = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}" terms={{ 'p_1 - p_2': 'zero under a common rate — the difference estimates nothing', '+': 'the whole lesson: a plus sign, under the root, for a difference' }} label="Difference in two sample proportions — variances add" />
+</Briefing.Definition>
+<Briefing.Worked>
+Take two classes with nothing at stake between them. The Ledger's **Mercantile** hulls flew {fmtInt(MERCANTILE_N)} Lane transits over the six years and the **independents** flew {fmtInt(INDEPENDENT_N)}. Assume both fly at the Authority's published Lane rate, $p$ = {fmt(POOLED_RATE, 5)} — {fmtPct(POOLED_RATE, 2)} — which is the model in which nothing whatever is going on.
+
+**One fleet, first.** For the Mercantile hulls:
+
+<Formula tex={`\\sigma_{\\hat p} = \\sqrt{\\frac{p(1-p)}{n}} = \\sqrt{\\frac{ ${fmt(POOLED_RATE, 5)} \\times ${fmt(1 - POOLED_RATE, 5)} }{ ${fmtInt(MERCANTILE_N)} }} = ${fmt(SD_MERCANTILE, 5)}`} label="One fleet's loss rate, at the published Lane rate" />
+
+Conditions before the number is used for anything: $np$ = {fmt(COUNTS_MERCANTILE, 2)} and $n(1-p)$ = {fmt(ARRIVALS_MERCANTILE, 1)}, both at least ten, so a normal model is licensed — narrowly on the loss side, comfortably on the other, which is exactly the state of every proportion argument on this corridor.
+
+**Then the difference.** The independents are the smaller fleet, so they are the noisier one: their $\sigma_{\hat p}$ is {fmt(SD_INDEPENDENT, 5)}. Combine them:
+
+<Formula tex={`\\sigma_{\\hat p_1 - \\hat p_2} = \\sqrt{ ${fmt(SD_MERCANTILE, 5)}^2 + ${fmt(SD_INDEPENDENT, 5)}^2 } = ${fmt(SD_DIFF_WORKED, 5)}`} label="Variances add — and the result is wider than either piece" />
+
+Larger than either one, as it must be. The wrong operation gives {fmt(SD_MERCANTILE, 5)} − {fmt(SD_INDEPENDENT, 5)} = {fmt(SD_DIFF_WRONG, 5)} — a **negative** standard deviation, which is at least frank about what sort of error it is; write the two fleets down in the other order and it comes out positive and about {fmt(SD_DIFF_WRONG_RATIO, 0)} times too small, which is the version that gets published.
+
+**Forwards.** Suppose somebody reports the Mercantile hulls running {fmtPct(WORKED_GAP, 1)} above the independents. Under the common-rate model:
+
+<Formula tex={`z = \\frac{ ${fmt(WORKED_GAP, 4)} - 0 }{ ${fmt(SD_DIFF_WORKED, 5)} } = ${fmt(WORKED_Z, 3)} \\qquad\\Longrightarrow\\qquad P(\\hat p_1 - \\hat p_2 \\ge ${fmt(WORKED_GAP, 3)}) = ${fmtP(WORKED_P)}`} label="A hypothetical gap, standardized against the noise floor" />
+
+About {fmtPct(WORKED_P, 1)} of pairs of identical fleets this size land that far apart or further, by luck alone, with no difference between them of any kind.
+
+**Backwards** is the direction this watch actually needs, and it is the same machine turned round. Instead of *here is a gap, how rare is it*, ask *here is a rarity, how big a gap does it take*. Pick the tail area, find the $z^\star$ that cuts it off, multiply by the spread. An area of one in a hundred in one tail gives a $z^\star$ of {fmt(normal.isf(0.01), 4)}, and the gap is $z^\star \sigma$ — a number in loss proportion that you can write down *before* you have looked at anything, which is the only time it is worth anything.
+</Briefing.Worked>
+<Briefing.Caution>
+*Using $\hat p$ in the standard deviation when $p$ is given.* The model's spread is built from the model's rate. If the Authority publishes {fmtPct(POOLED_RATE, 2)} and you are asking what that rate would produce, it is $p$ = {fmt(POOLED_RATE, 5)} that goes under the root. Substituting the rate you observed builds the null model out of the observation, which is the exact error Ferrier stopped with two fingers on a slate — and it is worth knowing that Act VI will *deliberately* pool the two observed counts to estimate a common rate, for a specific reason, under a stated hypothesis. That is a different procedure with a different justification. It is not this one.
+
+*"$n$ is big, so it's normal."* Not for proportions. $n = 2{,}000$ at a rate of 0.002 gives four expected losses and a distribution that looks like a picket fence leaning on the axis. It is $np$ and $n(1-p)$ that decide, and when the rate is near one per cent the loss side is the one that fails. Print both counts.
+
+*Subtracting standard deviations.* $\sigma_1 - \sigma_2$ for a difference is not a rounding error, it is a different universe: it says that comparing two uncertain fleets is more precise than measuring either. Variances add — under the root, a plus sign, every time. If your answer for a difference is smaller than the SD of one of the pieces, you have made this mistake and the display will tell you so in red.
+
+*Forgetting what the 10 % condition is for.* It is not a ritual. It licenses treating the draws as independent when you are scooping from a finite bin. Transits on a working corridor are not scoops from a bin, and saying so in one sentence is cheaper than having a reviewer say it for you.
+</Briefing.Caution>
+</Briefing>
+
+Ebele builds it as a machine rather than as a formula, because he has stopped trusting formulas he has not watched run. **ONE FLEET** draws a fleet of $n$ transits at a true rate $p$, counts the losses, divides, and puts one dot on the stack. Do it five hundred times and the pile that grows is the sampling distribution of a loss rate.
+
+Press RUN a few times and read `√(p(1 − p)/n) · the theory` against `SD of the simulated p̂ · the machine`. Then do the thing the panel is really for: drag **transits in the fleet** down towards 200 and watch `n · p · expected losses` fall through ten. The moment it does, the normal curve is withdrawn from the plot and the readout turns red — the sampling distribution is still there, the pile is still a pile, but the smooth model over the top of it has lost its licence and the instrument will not draw a line it cannot defend.
+
+<ProportionSampler mode="one" n={MERCANTILE_N} />
+
+<Dialogue speaker="analyst" aside="He has the n slider at the bottom of its travel and the curve gone from the plot, and he is looking at the bare histogram with something like relief.">
+So it is lumpy, sir. At two hundred transits the whole distribution is six or seven possible loss counts and it is right-skewed, because you cannot lose fewer than none. That is why it wants ten expected losses and not thirty transits — thirty transits at this rate expects a third of a loss. — I had the condition memorised in the wrong units for about four years.
+</Dialogue>
+
+<Drill generator="act-5/sd-of-phat" count={1} />
+<Drill generator="act-5/large-counts-check" count={1} />
+<Drill generator="act-5/probability-about-phat" count={1} />
+
+<MissionBeat id="act-5-04-sd-phat" kind="numeric" answer={SD_PHAT_PERRINE} answerKind="other" digits={4} label="ONE FLEET · THE WIDTH OF A RATE"
+  prompt={`Ferrier's first figure, and the sheet is still face down.\n\nA fleet flies **${fmtInt(PERRINE_N)} transits** of the Hundred-Day Lane. Assume it flies them at the Authority's published Lane rate, $p = ${fmt(POOLED_RATE, 5)}$ — the model in which nothing is wrong anywhere.\n\nWhat is the **standard deviation of that fleet's observed loss rate** $\\hat p$? Give it to four decimal places, as a proportion.`}
+  hint="The rate is given, so the given rate is what goes under the root — both times. Root of p(1 − p) over n, with n the transits flown, not the losses.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes it as a percentage underneath, and then a sentence underneath that, because Ferrier has been training the sentence into him since Act III.">
+  So a clean fleet of {fmtInt(PERRINE_N)} lands within about {fmt(100 * SD_PHAT_PERRINE, 2)} of a percentage point of the true rate, give or take, sir. Which means two honest fleets this size can differ by a third of a percentage point without anything at all having happened to either of them.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She does not look at his slate. She says it to the forward screen, which is what she does when the error is one she expected.">
+  Two ways to get that wrong and you have found one of them. Either you put a rate you measured under the root instead of the rate you were given — in which case you have built the model of ordinary out of the thing you were going to compare to it — or you divided by the number of losses rather than the number of transits. The n is the fleet. The p is the Authority's.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-5-04-conditions" kind="choice" label="THE LINE FERRIER WANTS IN THE BRIEF"
+  prompt={`Before that standard deviation is allowed to carry a normal model, the brief has to say why it may. The fleet is ${fmtInt(PERRINE_N)} transits at $p = ${fmt(POOLED_RATE, 5)}$; the Ledger snapshot holds ${fmtInt(LEDGER_N)} transits in total.\n\nWhich line goes in the brief?`}
+  options={[
+    `Large Counts holds — expected losses $np = ${fmt(LARGE_COUNTS_PERRINE, 2)}$ and expected arrivals $n(1-p) = ${fmt(PERRINE_N - LARGE_COUNTS_PERRINE, 1)}$, both at least ten, the first of them narrowly — and the ${fmtInt(PERRINE_N)} transits are draws from an ongoing corridor operation rather than scoops from a fixed bin, so they may be treated as independent.`,
+    `The sample is large — ${fmtInt(PERRINE_N)} is far past 30 — so the Central Limit Theorem licenses a normal model for $\\hat p$ whatever the expected counts are.`,
+    `The 10 % condition fails: ${fmtInt(PERRINE_N)} transits are ${fmtPct(PERRINE_SHARE, 0)} of the ${fmtInt(LEDGER_N)} in the Ledger, well over a tenth, so no normal model is available for this fleet.`,
+    `Large Counts fails on the loss side, because the observed rate is near one per cent and one per cent of anything is a small number, so the sampling distribution must be handled as a binomial count instead.`,
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    `n ≥ 30 is the licence for a sample MEAN of a general population. A proportion is pinned between 0 and 1, so what matters is whether there is room on both sides of it: np and n(1 − p), both at least ten. At a rate near one per cent, 30 transits expect a third of a loss.`,
+    `That is the right condition applied to the wrong population. The 10 % rule guards independence when you are drawing WITHOUT replacement from a fixed, finite bin. A fleet's transits are draws from a corridor that will still be running next year — a process, not a bin — and the ${fmtInt(LEDGER_N)}-row snapshot is a window on it, not the whole of it. Say so in the brief and the condition is met.`,
+    `Check it rather than eyeballing it: ${fmtInt(PERRINE_N)} × ${fmt(POOLED_RATE, 5)} = ${fmt(LARGE_COUNTS_PERRINE, 2)}, which clears ten — narrowly, which is why the number and not the verdict belongs in the brief. Had it come out at eight, your answer would have been the right one.`,
+  ]}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads the line twice and changes one word in it, from 'passes' to the number itself.">
+  {fmt(LARGE_COUNTS_PERRINE, 2)}. Not "the condition is satisfied" — {fmt(LARGE_COUNTS_PERRINE, 2)}. It clears the bar by two thirds of a loss, and a reviewer who has to work that out for himself will assume we hoped he would not. Print it, and print the other one beside it, and put the independence sentence under both in plain words.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Conditions are not a ritual you perform before the arithmetic. Each one licenses a specific step, and if you cannot say which step, you have not checked anything. Which condition puts a shape on the distribution of $\hat p$ — and which one lets you treat {fmtInt(PERRINE_N)} transits as {fmtInt(PERRINE_N)} independent draws?
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Scene stamp="MET 116/11:05" location="Bridge · the slate still face down on the console" condensed="With the one-fleet model built and its conditions written out, Ferrier moves to the comparison itself — two fleets, nine hundred transits against seventeen hundred, flying at one common rate. Ebele reaches for the difference of the two standard deviations and Ferrier lets him get it wrong out loud before Sandoval, passing through with a gauge, settles it in four words from Act IV.">
+
+Two hours in and the slate has not been turned over. The first page is finished: one fleet, the width of its rate, both counts, the independence sentence in words a lawyer could not bend. Ferrier initials the bottom of it and moves her hand to the second page, which is blank.
+
+<Dialogue speaker="xo">
+Now two fleets. Nine hundred transits and seventeen hundred, same corridor, same rate, nothing wrong with either of them. Their observed rates will not match — you have just told me why. What I want is the distribution of the *gap*. Where it sits, and how wide.
+</Dialogue>
+
+Ebele has the centre in a second: zero. Both fleets are estimating the same number, so their difference estimates nothing, and nothing is where it sits. Then he writes the spread as the bigger standard deviation minus the smaller one, looks at it, and does not cross it out — which is the thing he has learned to do and the reason he is useful.
+
+<Dialogue speaker="analyst" aside="The wrong number is on the slate and he has left it there with a box round it.">
+So that gives me something smaller than either fleet on its own, sir, and I do not believe it. Comparing two uncertain numbers cannot be more precise than measuring one of them. I have written it down so I can see what I did.
+</Dialogue>
+
+Sandoval comes through the bridge on her way aft with a gauge in one hand and no interest whatever in the display, glances at the boxed line the way an engineer glances at a bolt, and gives him four words on her way past the hatch.
+
+<Dialogue speaker="engineer" aside="She does not stop walking. It is the same sentence she used on the sink budget in Act IV and she says it the same way.">
+Variances add, Ensign. Squares go in, the root comes out at the end, and what comes out is bigger than either thing you started with. It is bigger for a difference too — subtracting a noisy number does not cancel its noise, it contributes it.
+</Dialogue>
+
+</Scene>
+
+<Drill generator="act-5/sd-of-difference-proportions" count={1} />
+<Drill generator="act-5/gap-that-would-be-rare" count={1} />
+<Drill generator="act-5/interpret-proportion-probability" count={1} />
+
+<MissionBeat id="act-5-04-sd-diff" kind="numeric" answer={SD_DIFF_PROPORTIONS} answerKind="other" digits={4} label="TWO FLEETS · THE WIDTH OF A GAP"
+  prompt={`Two owner classes on the same corridor, flying at one **common** rate $p = ${fmt(POOLED_RATE, 5)}$: one flies **${fmtInt(PERRINE_N)} transits**, the other flies **${fmtInt(OTHER_N)}**. Nothing is wrong with either of them.\n\nWhat is the **standard deviation of the difference in their observed loss rates**, $\\hat p_1 - \\hat p_2$? Four decimal places, as a proportion.`}
+  hint="Centre first — under a common rate the difference estimates nothing, so it is centred at zero. Then the spread: each fleet contributes p(1 − p) over its own n, the two contributions add under the root, and the answer must come out larger than either fleet's SD alone.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He puts the three standard deviations in a row on the page — the two fleets and the gap — in that order, so the arithmetic is visible without a formula.">
+  {fmt(SD_PHAT_PERRINE, 5)} and {fmt(SD_PHAT_OTHER, 5)} make {fmt(SD_DIFF_PROPORTIONS, 5)}, sir, and it is bigger than either one, which is how I know I have not subtracted. Two clean fleets this size land about four and a half tenths of a percentage point apart as a matter of routine.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="She has come back through with the gauge and stopped this time, which she does not do.">
+  You subtracted standard deviations. That answer is smaller than either fleet on its own, which says a comparison of two uncertain things is steadier than one measurement of one of them, and if a ship's system told you that you would pull the card. Square them. Add them. Root the total. That order.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-5-04-gap" kind="numeric" answer={GAP_1_IN_100} answerKind="other" digits={4} label="THE BAR, SET BEFORE THE MEASUREMENT"
+  prompt={`The question Ferrier actually wants answered, and the reason the slate is still face down.\n\nTwo owner classes, ${fmtInt(PERRINE_N)} transits against ${fmtInt(OTHER_N)}, at one common rate $p = ${fmt(POOLED_RATE, 5)}$. **How large a gap between their loss rates — the first class above the second — would be a one-in-a-hundred event under that common rate?**\n\nOne-sided. Give the gap in loss proportion, to four decimal places.`}
+  hint="The same distribution, read backwards: you have the area and you want the cutoff. Centre zero, spread as you just computed it, then the z* with one one-hundredth of the area above it — and multiply. Take care to use the one-tailed critical value, not the two-tailed one.">
+  <Success>
+  <Dialogue speaker="xo" aside="She writes it at the top of the second page, above every other number, and draws a line under it.">
+  {fmt(GAP_1_IN_100, 4)}. About {fmt(100 * GAP_1_IN_100, 2)} of a percentage point, or nine or ten extra hulls in nine hundred. — That is the bar, and it is set. Sign the page and note the time on it. Whatever is on that slate, it was measured against a line we drew before we looked, and the man who reads this at Valhalla can check the line without taking our word for one thing on it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the two-tailed value on his slate and finds it himself, two lines down, before anybody says anything.">
+  Yes — I have put the whole one per cent in both tails, sir, which answers *how big a gap in either direction*, and the question was how big a gap with one class above the other. One tail. The critical value comes down and so does the bar. Same spread, same centre, different question, and I should have read the word "above".
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-5-04-sd-phat", "act-5-04-conditions", "act-5-04-sd-diff", "act-5-04-gap"]}>
+
+<Scene stamp="MET 116/12:40" location="Bridge · the second page signed and timed" condensed="The null model is built, signed and timed, and the slate is still face down. Ebele runs the two-fleet machine to see the bar he has just computed standing out at the edge of a pile of honest differences. Ferrier writes the finding in the register in the only form it can take — a statement about what honest looks like, with no observation in it at all — and then names what the ship still does not have: the gap itself, and the register at Ceres that says who is paid when a hull stops.">
+
+He runs it in **TWO FLEETS** mode with the line drawn on, and this is the picture the second page is about: five hundred pairs of identical fleets, nine hundred against seventeen hundred, flying a corridor where nothing is wrong. The differences pile up around zero, symmetric, dull. And out on the right, where the pile has thinned to almost nothing, the bar stands at {fmt(GAP_1_IN_100, 4)}.
+
+One pair in a hundred reaches it by luck. Not none. One in a hundred — which is the part that will matter when somebody argues the other way, because a bar that nothing ever crosses is not a bar, it is a claim that chance does not exist.
+
+<ProportionSampler mode="two" />
+
+<Dialogue speaker="analyst" aside="He has run it eleven times and the eleventh stack has two dots past the line, which he points at rather than explaining away.">
+So there are two out there, sir, in five hundred pairs. That is the model working. If I run it until the torch lights I will get about five in every five hundred, because that is what one in a hundred means, and any pair that lands out there is two honest fleets and a coincidence. — Which is exactly why the bar is worth having. It does not say *impossible*. It says *how often*, and it said it before we looked.
+</Dialogue>
+
+Ferrier writes the finding into the Board's register in the form that has no observation in it anywhere, which is a strange thing to file and the reason it is worth filing.
+
+<Dialogue speaker="xo" aside="She dates it, times it, and signs under the time, which she has not done for a finding that contains no data.">
+Under a common Lane loss rate of {fmt(POOLED_RATE, 5)}, the difference in observed loss proportions between an owner class flying {fmtInt(PERRINE_N)} transits and one flying {fmtInt(OTHER_N)} is centred on zero with a standard deviation of {fmt(SD_DIFF_PROPORTIONS, 5)}; expected losses are {fmt(LARGE_COUNTS_PERRINE, 2)} and {fmt(LARGE_COUNTS_OTHER, 2)} respectively, so a normal model is licensed. A one-sided gap of {fmt(GAP_1_IN_100, 4)} or more arises under that model once in a hundred comparisons. This vessel has not yet examined the observed rates and has run no test.
+</Dialogue>
+
+Then she does the other half. She always does the other half.
+
+<Dialogue speaker="xo" aside="Two items this time. The slate is still face down under her left hand while she writes with her right.">
+One. We have a bar and no measurement. Whatever is on this slate, it has not been compared to anything yet, and it will not be until a null model exists with a signature and a time on it — which it now does. Two. A gap between owner classes, if there is one, is a number about hulls. It is not a number about *people*. The Ledger knows who flew; it does not know who is paid when one of these stops. That register is in an office on Ceres, and the difference between a pattern and an accusation is the distance between those two documents.
+</Dialogue>
+
+She takes her hand off the slate and does not turn it over, because turning it over is not this watch's work and the arithmetic on the other side of it belongs to a compartment at Ceres with a different set of documents in it. Ebele takes it away face down. Two days to the torch.
+
+</Scene>
+
+<LogEntry
+  title="The width of a rate, and the width of a gap"
+  concept="A sample proportion is the mean of zeros and ones, so it has centre p and standard deviation √(p(1 − p)/n) — built from the rate the model assumes, not the rate just observed — and its shape may be treated as normal only when the expected counts np and n(1 − p) both clear about ten, which at a one-per-cent rate takes several hundred observations rather than the thirty a mean would need. For two independent groups under a common rate the difference in sample proportions is centred on zero with variance p(1 − p)/n₁ + p(1 − p)/n₂: variances add for a difference exactly as for a sum, so the spread of a comparison is always wider than the spread of either piece."
+  formula="\mu_{\hat p} = p, \quad \sigma_{\hat p} = \sqrt{\frac{p(1-p)}{n}}; \qquad \sigma_{\hat p_1 - \hat p_2} = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}; \qquad \text{gap}_{1/q} = z^\star_{1/q}\,\sigma_{\hat p_1 - \hat p_2}"
+  mistake="Putting the observed p̂ under the root when the model hands you p₀ — which builds the picture of ordinary out of the very observation it is supposed to judge. Its two companions: reading n ≥ 30 as the licence for a proportion (it is np ≥ 10 and n(1 − p) ≥ 10, and near a one-per-cent rate the loss side is the one that fails), and subtracting standard deviations for a difference, which returns a number smaller than either piece and claims that comparing two uncertain fleets is more precise than measuring one."
+  tags={['sampling distribution of p̂', 'large counts', '10% condition', 'difference in proportions', 'variances add', 'null model', 'inverse question', '5.5', '5.6']}
+/>
+
+</Gated>

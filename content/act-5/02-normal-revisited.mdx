@@ -93,7 +93,7 @@ Read it in words before it goes anywhere: about {fmtInt(Math.round(100 * fleetTa
 
 <Formula tex={`z^\\star = \\Phi^{-1}(0.95) = ${fmt(fleetZ5, 4)}, \\qquad x = ${fmt(fleetModel.mean, 1)} + ${fmt(fleetZ5, 4)} \\times ${fmt(fleetModel.sd, 2)} = ${fmt(fleetCut5, 3)}`} terms={{ 'z^\\star': 'the standard-normal cutoff with 95 percent of the area below it', 'x': 'the ratio, in percent of expectation, that 5 percent of honest hulls exceed' }} label="Area in, value out" />
 
-So the line goes at **{fmt(fleetCut5, 2)} percent of expectation** — and one honest hull in twenty crosses it by doing nothing but flying the Lane. Ask for the 90th percentile instead and the same machinery returns {fmt(fleetP90, 2)} percent, at $z = {fmt(fleetZ90, 3)}$: a smaller area below, a smaller $z$, a lower line. Every one of these is the same integral, evaluated once forwards and once backwards.
+So the line goes at **{fmt(fleetCut5, 2)} percent of expectation** — and one honest hull in twenty crosses it by doing nothing but flying the Lane. Ask for the 90th percentile instead and the same machinery returns {fmt(fleetP90, 2)} percent, at a $z$ of {fmt(fleetZ90, 3)}: a smaller area below, a smaller $z$, a lower line. Every one of these is the same integral, evaluated once forwards and once backwards.
 
 **The check nobody skips.** All of that is worth exactly what the model is worth. The sixty contacts were plotted before any area was quoted from them, and they were symmetric about their centre with nothing stranded in either tail. Had they been skewed, the arithmetic would have run just as smoothly and the tail would have been a lie — normal-model areas fail hardest in precisely the tail you most want to quote.
 </Briefing.Worked>

@@ -13,7 +13,7 @@ export const act4Checkpoint: CheckpointSpec = {
   act: 'act-4',
   title: 'Running Cold',
   briefing:
-    'MET 105/13:40. The wings came in twenty minutes ago and the cellar reads five. Twenty-three days of loiter, seven purges, two windows, one hull that turned — and a report that goes to Valhalla at 106 with every probability in it attached. Sandoval has the heat plan on the wardroom table face up, which is where she put it. *"Every number in this goes on the record, Skipper, and the record is what the Chief works to. I am not asking you to defend the plan. I am asking you to defend the arithmetic."* Ferrier stands where she can read it the right way up and says nothing, which is how she says she agrees. Answer from the plan. Where you are asked for a sentence, write the one you would sign.',
+    'MET 105/13:40. The wings came in an hour ago and the cellar reads six. Twenty-three days of loiter, seven purges, two windows, one hull that turned — and a report that goes to Valhalla at 106 with every probability in it attached. Sandoval has the heat plan on the wardroom table face up, which is where she put it. *"Every number in this goes on the record, Skipper, and the record is what the Chief works to. I am not asking you to defend the plan. I am asking you to defend the arithmetic."* Ferrier stands where she can read it the right way up and says nothing, which is how she says she agrees. Answer from the plan. Where you are asked for a sentence, write the one you would sign.',
   est_minutes: 25,
   threshold: 0.8,
   items: [

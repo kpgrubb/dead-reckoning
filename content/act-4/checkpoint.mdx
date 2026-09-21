@@ -7,7 +7,7 @@ ap_topics: ["4.1", "4.2", "4.3", "4.4", "4.5", "4.6", "4.7", "4.8", "4.9", "4.10
 objectives:
   - "Defend every probability in the heat plan from the arithmetic that produced it — simulation, complement, conditional, independence, distribution, expectation, variance, binomial, geometric"
   - "State what an expected value, a tail and a long-run average do and do not promise, in the ship's own units"
-prereqs: ["act-4-07", "act-4-09", "act-4-10"]
+prereqs: ["act-4-10"]
 est_minutes: 25
 calc_briefing: null
 summary: "Twenty-three days of loiter, seven purges, one hull that turned. Before the report goes to Valhalla, the Chief wants every number in the annex defended."
@@ -15,13 +15,16 @@ summary: "Twenty-three days of loiter, seven purges, one hull that turned. Befor
 
 import { PassGate } from '@/instruments/act-4/story'
 import { fmt } from '@/lib/stats'
-import { ACT_END, LOITER_DAYS, PURGE_COUNT, PURGE_HOURS_TOTAL, TORCH_OFF, WINDOW_1, WINDOW_2, hoursBetween, metStamp, sinkAt } from '@/instruments/act-4/data'
+import { ACT_END, LOITER_DAYS, PURGE_COUNT, PURGE_HOURS, PURGE_HOURS_TOTAL, PURGE_STARTS, TORCH_OFF, WINDOW_1, WINDOW_2, hoursBetween, metStamp, sinkAt } from '@/instruments/act-4/data'
 
 export const windowHours = hoursBetween(WINDOW_1.from, WINDOW_1.to) + hoursBetween(WINDOW_2.from, WINDOW_2.to)
+/** The last purge of the loiter closed 2.6 h after the wings went out; the review is an hour after that. */
+export const wingsIn = PURGE_STARTS[PURGE_STARTS.length - 1] + PURGE_HOURS / 24
+export const reviewAt = wingsIn + 64 / 1440
 
-<Scene stamp="MET 105/13:40" location="Wardroom · Mark 9 region, 0.42 AU from Ceres · Quiet, cellar 5%" condensed="Twenty minutes after the last purge closes. Twenty-three days of loiter, seven purges, two Watch windows, one hull that turned off profile at Mark 9.4. The report goes to Valhalla at MET 106 with the heat plan and every probability in it attached. Sandoval will not let it go until the arithmetic is defended.">
+<Scene stamp={metStamp(reviewAt)} location={`Wardroom · Mark 9 region, 0.42 AU from Ceres · Quiet, cellar ${fmt(sinkAt(reviewAt), 0)}%`} condensed="Twenty minutes after the last purge closes. Twenty-three days of loiter, seven purges, two Watch windows, one hull that turned off profile at Mark 9.4. The report goes to Valhalla at MET 106 with the heat plan and every probability in it attached. Sandoval will not let it go until the arithmetic is defended.">
 
-The wings came in at 105/12:36 and the ship has been quiet for an hour, which is the only kind of quiet anyone aboard trusts.
+The wings came in at {metStamp(wingsIn).slice(4)} and the ship has been quiet for an hour, which is the only kind of quiet anyone aboard trusts.
 
 Twenty-three days. {PURGE_COUNT} purges, {fmt(PURGE_HOURS_TOTAL, 1)} hours of them with the radiators out and the ship a lamp to anything with a naval-grade aperture inside half an astronomical unit. {fmt(windowHours, 0)} hours on Watch across two windows. One hull that came up the Lane on profile, began to fade, and turned eleven degrees while it was still braking.
 

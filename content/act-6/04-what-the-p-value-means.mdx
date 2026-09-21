@@ -1,0 +1,297 @@
+---
+id: act-6-04
+act: 6
+title: "At Least as Extreme"
+kind: module
+ap_topics: ["6.5"]
+objectives:
+  - "Interpret a p-value in context as the probability, computed assuming H₀ is true, of obtaining a statistic at least as extreme as the one observed"
+  - "Obtain a p-value from the normal model and from a simulated null distribution, and reconcile the two — including why a simulation of N runs cannot resolve a probability finer than 1/N"
+  - "Explain what a p-value is not: the probability that H₀ is true, the probability the result is 'due to chance', 1 − p as the probability of Hₐ, or a single tail read as a two-sided area"
+prereqs: ["act-6-03"]
+est_minutes: 25
+calc_briefing: null
+summary: "The statistic and the p-value exist for the first time in this commission — and Ferrier will not look at either of them until the sentence underneath is one that survives a hearing."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct, onePropTest, pValueZ } from '@/lib/stats'
+import {
+  OTHER_LOSSES,
+  OTHER_TRANSITS,
+  PERRINE_HOLDINGS,
+  PERRINE_LOSSES,
+  PERRINE_TEST,
+  PERRINE_TRANSITS,
+  POOLED_RATE,
+  ROOK_2176,
+  simulateNullZ,
+  simulatedPValue,
+} from '@/instruments/act-6/data'
+import { PValueVisualiser, ROOK_NULL_RATE } from '@/instruments/act-6/PValueVisualiser'
+import { BeneficiaryTwoWay, DECISION_IDS, Decided } from '@/instruments/act-6/story'
+import { interpretPValueRubric } from '@/lib/problems/generators/act-6/p-value'
+
+export const rook = onePropTest({ x: ROOK_2176.losses, n: ROOK_2176.transits, p0: ROOK_NULL_RATE, alt: 'greater', random: true })
+export const rookRate = ROOK_2176.losses / ROOK_2176.transits
+export const rookTwoSided = pValueZ(rook.statistic, 'two-sided')
+export const rookCount = ROOK_2176.transits * ROOK_NULL_RATE
+export const rookFailures = ROOK_2176.transits * (1 - ROOK_NULL_RATE)
+export const rookTex = `z = \\frac{\\hat p - p_0}{\\sqrt{p_0(1-p_0)/n}} = \\frac{${fmt(rookRate, 5)} - ${fmt(ROOK_NULL_RATE, 3)}}{${fmt(rook.se, 5)}} = ${fmt(rook.statistic, 2)}`
+export const rookTailTex = `P = P\\big(Z \\ge ${fmt(rook.statistic, 2)}\\big) = ${fmt(rook.pValue, 4)}`
+export const nullZ = simulateNullZ('lane', 10000)
+export const simP = simulatedPValue(nullZ, PERRINE_TEST.statistic)
+export const simRuns = Math.round(simP * nullZ.length)
+export const simFloor = 1 / nullZ.length
+export const inTenThousand = Math.round(PERRINE_TEST.pValue * 10000)
+export const oneInHowMany = Math.round(1 / PERRINE_TEST.pValue / 10) * 10
+export const laneRubric = interpretPValueRubric({
+  pValue: PERRINE_TEST.pValue,
+  alt: 'greater',
+  nullInWords: `${PERRINE_HOLDINGS} hulls and every other hull on the Lane are lost at the same rate`,
+  statisticPhrase: 'a difference in sample loss rates',
+  population: 'transits on the Hundred-Day Lane',
+  variable: 'loss rate per transit',
+})
+
+<Scene stamp="MET 137/06:50" location="Bridge · alongside, Ceres, transponder on, sink at eleven per cent" condensed="Ebele has the statistic and the p-value on the board before the forenoon watch, and a sentence written underneath them. The sentence says there is a small chance the difference is due to chance. Ferrier will not look at the numbers. She makes him read the sentence aloud, strikes it, and explains why: the number will be recomputed by everyone who reads the file, and the sentence will not. Whatever the arithmetic says, it says it about the data and not about the world, and the file goes to Valhalla with a sentence on it or it does not go at all.">
+
+Ebele has been at the intel terminal since the middle watch. You can tell because the coffee bulb wedged against the console has gone cold and he has not noticed, and because the board behind him carries three columns of working with the top of the first one rubbed out twice.
+
+He has the number. Two numbers, in fact — the standardized statistic and the area beyond it — and he has written a sentence under them in the careful hand he uses when he knows the sentence matters.
+
+Ferrier comes onto the bridge at 06:50 with the watch list in one hand, looks at the board, and puts her hand flat over the top half of it.
+
+<Dialogue speaker="xo" aside="She does not look at the numbers. She keeps her palm on them, which is not a joke and nobody treats it as one.">
+Not yet. Read me the sentence.
+</Dialogue>
+
+<Dialogue speaker="analyst" aside="He reads it off the board the way you read something you are pleased with, which is the last time this morning he will sound like that.">
+So — there is a small chance that the difference between the two loss rates is due to chance.
+</Dialogue>
+
+The bridge is quiet. Solberg, who is not part of this, turns a page.
+
+<Dialogue speaker="xo" aside="Still not looking at the numbers.">
+Strike it.
+</Dialogue>
+
+<Dialogue speaker="analyst" aside="He has the stylus halfway to the board and stops with it there.">
+Sir — it is a small number. That is what a small number means.
+</Dialogue>
+
+And here is where you come in, because this is not Ferrier's correction to make. It is yours. You have written this sentence before, badly, on a report with your own signature under it, and you are the only person on this deck who has been read back their own wording by somebody who wanted it to fail.
+
+So you take the stylus off him and you strike the words *due to chance* yourself, and you ask him the question that does the work: **under what assumption was that number computed?**
+
+He gets there in about four seconds, which is fast.
+
+<Dialogue speaker="analyst" aside="He is looking at the struck words rather than at either of you, and his voice drops into the register he uses when he is reasoning out loud instead of reporting.">
+Yes, sir. That's — yes. Under the null. Every step of that calculation assumed the two rates are equal. I built the whole distribution out of that assumption. So chance is not *one* of the explanations in there. Under the null, chance is the only thing in there, with certainty, and what the number measures is how often chance on its own would throw a gap at least this big. It is a statement about the data. I wrote it as a statement about the Lane.
+</Dialogue>
+
+Ferrier takes her hand off the board.
+
+<Dialogue speaker="xo" aside="She reads the numbers once, without expression, and then goes back to the struck sentence, which is the part she is actually interested in.">
+The number is going to be recomputed by every analyst at Valhalla inside an hour of reading it, and they will all get the same one, because arithmetic is not where this file is vulnerable. The sentence is where it is vulnerable. Somebody in a panelled room is going to read your sentence out loud in the voice people use when they have already decided it is wrong, and then they are going to explain, slowly, to a board of flag officers, that this ship does not understand what it has computed. The number survives that. We do not.
+</Dialogue>
+
+She hands the stylus back to him.
+
+<Dialogue speaker="xo" aside="One line, and she waits while he writes it down.">
+So. Write the sentence that survives. Then say it back to me.
+
+</Dialogue>
+
+</Scene>
+
+<Briefing title="A p-value is a probability about data, computed inside a world where H₀ is true" topics={["6.5"]}>
+<Briefing.Intuition>
+Build the world $H_0$ describes. Run it. Count how often it does something at least as surprising as what you actually saw. That count, as a proportion, is the p-value, and every word of the definition is load-bearing.
+
+**Assuming $H_0$ is true.** The sampling distribution you measure the statistic against is the one $H_0$ predicts — its centre, its spread, its shape. $H_0$ is an *input*. Nothing that comes out the other end can be a verdict on it, any more than the answer to "how far is Ceres if the ephemeris is right?" is a verdict on the ephemeris.
+
+**At least as extreme.** Not "this result". The probability of any exact sample proportion is essentially zero, so a p-value that meant "the probability of exactly what we saw" would be zero for every data set ever collected and would tell you nothing. What the p-value collects is a whole **tail**: every outcome the alternative counts as at least as surprising as the one observed. Which outcomes those are is decided by $H_a$ — before the data — and by nothing else.
+
+**A probability, which is to say a long-run rate.** Read it as a frequency over repetitions that never happened: *if the Lane really ran at one rate, a season like this one would come back at least this lopsided in about p of all seasons.* Say it that way and the misreadings become impossible to write down.
+
+**Two roads to the same number.** You can compute the tail area under the normal model the conditions licensed, or you can build the null by brute force — simulate ten thousand seasons in which $H_0$ is exactly true, standardize each one, and count the runs at least as extreme. The second is not an approximation of the first. Both are approximations of the same thing, which is the true sampling distribution of the statistic, and the normal curve is a *description* of the distribution the simulation is drawing from.
+
+They differ in where they fail. The normal model is smooth all the way into the far tail and is worst exactly there, where the counts are thin and the curve's symmetry is a fiction. The simulation is honest everywhere and has a floor: **ten thousand runs cannot resolve a probability finer than one in ten thousand.** If the true p is smaller than that, the simulation will report zero, or one, or two, and the difference between those is noise.
+
+**What it is not.** Four sentences, and each of them will be read back to you:
+
+1. *the probability that $H_0$ is true* — the p-value conditions **on** $H_0$;
+2. *the probability the result is due to chance* — under $H_0$, chance is the only mechanism, with certainty;
+3. *1 − p, the probability that $H_a$ is true* — both numbers are computed entirely inside $H_0$;
+4. *a one-tailed area, reported for a two-sided alternative* — which halves the number and doubles the real false-alarm rate.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="P = P\big(\text{statistic at least as extreme as the observed one} \;\big|\; H_0 \text{ true}\big)" terms={{ 'H_0': 'the null hypothesis — assumed, not tested for probability', '\\text{at least as extreme}': 'the set of outcomes Hₐ counts as evidence against H₀, fixed before the data' }} label="The p-value, in words" />
+
+<Formula tex="P = P(Z \ge z) \quad\text{or}\quad P(Z \le z) \quad\text{or}\quad 2\,P(Z \ge |z|)" terms={{ z: 'the standardized statistic: (estimate − null value) ÷ SE under H₀', 'P(Z \\ge z)': 'upper tail — for Hₐ: greater', 'P(Z \\le z)': 'lower tail — for Hₐ: less', '2\\,P(Z \\ge |z|)': 'both tails — for Hₐ: not equal' }} label="From the normal model: which tail the alternative names" />
+
+<Formula tex="P_{\text{sim}} = \frac{\#\{\text{simulated null runs at least as extreme as the observed statistic}\}}{\text{number of runs}}" terms={{ '\\#\\{\\cdot\\}': 'a count of runs, not an area under a curve', '\\text{number of runs}': 'the resolution floor: no simulated p-value can be smaller than 1 ÷ runs' }} label="From simulation: build the null, run it, count" />
+</Briefing.Definition>
+<Briefing.Worked>
+**The 2176 report. Yours.**
+
+Thirteen losses in {fmtInt(ROOK_2176.transits)} transits, eight years of Lane traffic ending in 2176, signed at the bottom by a lieutenant who had never had a finding argued with. The Directorate's standing figure for the Lane was {fmt(ROOK_NULL_RATE, 3)} — five losses per thousand transits — and the question the Directorate asked was whether the Lane was running worse than its posted figure.
+
+**Hypotheses.** $H_0$ — the Lane's true loss rate is exactly {fmt(ROOK_NULL_RATE, 3)}. $H_a$ — it is greater than {fmt(ROOK_NULL_RATE, 3)}. One-sided, because a Lane running *better* than its posted figure required no action from anybody.
+
+**Conditions at the null.** $n p_0$ = {fmtInt(ROOK_2176.transits)} × {fmt(ROOK_NULL_RATE, 3)} = {fmt(rookCount, 1)}, and $n(1 - p_0)$ = {fmt(rookFailures, 1)}. Both clear 10, the first of them by {fmt(rookCount - 10, 1)}.
+
+**The statistic.** {fmtInt(ROOK_2176.losses)} in {fmtInt(ROOK_2176.transits)} is a sample rate of {fmt(rookRate, 5)} — {fmtPct(rookRate, 3)} against a posted {fmtPct(ROOK_NULL_RATE, 1)}.
+
+<Formula tex={rookTex} terms={{ '\\hat p': 'the rate the eight years actually logged', 'p_0': 'the Directorate’s standing figure', '\\sqrt{p_0(1-p_0)/n}': 'the standard error under H₀ — computed at p₀, because the test lives inside H₀' }} label="Eight years of Lane traffic, standardized" />
+
+**The p-value.** One tail, upper, because that is the side the alternative named.
+
+<Formula tex={rookTailTex} terms={{ 'P(Z \\ge z)': 'the share of eight-year records a Lane running at exactly p₀ would send back at least this far above it' }} label="The area beyond the statistic" />
+
+And here is the sentence that went in the report, and it was the right one: *if the Lane's true loss rate were exactly {fmt(ROOK_NULL_RATE, 3)}, then {fmtPct(rook.pValue, 1)} of all eight-year records of {fmtInt(ROOK_2176.transits)} transits would show a loss rate at least as far above {fmt(ROOK_NULL_RATE, 3)} as this one does.* Nearly half of them. The record was as ordinary as a record can be.
+
+Note what the sentence does **not** say, and what the lieutenant who wrote it did not say either: that the Lane's rate *was* {fmt(ROOK_NULL_RATE, 3)}. A p-value of {fmtP(rook.pValue)} is the absence of a finding. It is entirely consistent with a true rate of {fmt(ROOK_NULL_RATE, 3)}, and just as consistent with {fmt(rookRate, 4)}, and — this is the part that costs something — with a rate twice the posted figure on one class of hull and the posted figure on all the others, averaged out across {fmtInt(ROOK_2176.transits)} transits that nobody had thought to split by owner.
+
+The arithmetic in that report is correct. It is still correct now. What it could not do, because nobody asked it to, was look at a column that was not in the file.
+
+**The same case, two ways.** The archive console below runs that report both ways: the normal tail, and ten thousand simulated eight-year records built at exactly {fmt(ROOK_NULL_RATE, 3)}. Toggle between them. The two agree to within what ten thousand runs can resolve — as they must, because the curve is a description of the thing the simulation is sampling from — and the sides toggle shows what the reviewer's objection would have cost: read two-sided, the same statistic returns {fmtP(rookTwoSided)}.
+</Briefing.Worked>
+<Briefing.Caution>
+*"There is a {fmtP(rook.pValue)} probability that $H_0$ is true."* The commonest error in the unit and the one a hostile reader reaches for first. $H_0$ was assumed in order to compute the number; the number cannot then be a probability for it. $H_0$ is either true of the Lane or it is not, and no sample turns a fact into a probability.
+
+*"There is a {fmtP(rook.pValue)} probability the result is due to chance."* Under $H_0$ the result is due to chance with probability one — chance is the only mechanism the model contains. What the p-value reports is how often chance alone would produce a departure at least this large. The difference sounds like pedantry until somebody reads the sentence back to you and asks which of the two you meant.
+
+*"So there is a {fmt(1 - rook.pValue, 4)} probability that $H_a$ is true."* Both {fmtP(rook.pValue)} and {fmt(1 - rook.pValue, 4)} are computed inside the world where $H_0$ holds. The complement of a conditional probability is conditional on the same thing. Neither is a probability for a hypothesis, and nothing in this procedure ever produces one.
+
+*"The probability of getting exactly this result is {fmtP(rook.pValue)}."* A p-value is an area, never a point. The probability of any exact sample proportion is very close to zero; the tail is the whole point, and "at least as extreme" is the phrase that says so.
+
+*A one-tailed area quoted under a two-sided alternative.* Not a misreading of what p means — a misreading of which p was asked for. The alternative was fixed before the data, and it decides how many tails get counted. Choose the side after seeing the sample and you are running a two-sided procedure while printing a one-sided number; the false-alarm rate on the page is half the real one.
+
+*A simulated p-value of zero.* It does not mean the probability is zero. It means the simulation ran out of resolution: ten thousand runs cannot distinguish 1 in 50,000 from 1 in 500,000, and both come back as "none of ours". Report the floor — *fewer than 1 in 10,000* — and, where the conditions allow, take the number from the model.
+</Briefing.Caution>
+</Briefing>
+
+<PValueVisualiser mode="one-prop" label="ARCHIVE · THE 2176 REPORT" />
+
+Now the Lane's own case, as it stands on the board this morning: {fmtInt(PERRINE_LOSSES)} losses in {fmtInt(PERRINE_TRANSITS)} transits whose policies name {PERRINE_HOLDINGS}, against {fmtInt(OTHER_LOSSES)} in {fmtInt(OTHER_TRANSITS)} for every other beneficiary — pooled under $H_0$ at a single common rate of {fmt(POOLED_RATE, 4)}, one-sided, dated and signed before the arithmetic.
+
+<BeneficiaryTwoWay />
+
+The console below is the same instrument pointed at that table. It is the first time in this commission that a standardized statistic and a tail area have existed at all. Run it both ways before you answer anything: the normal model the conditions licensed in 6-03, and ten thousand seasons of Lane traffic built at the pooled rate and counted one at a time.
+
+<PValueVisualiser mode="two-prop" />
+
+<Drill generator="act-6/p-from-z" count={1} />
+<Drill generator="act-6/interpret-p-value" count={1} />
+<Drill generator="act-6/simulated-p" count={1} />
+<Drill generator="act-6/forbidden-sentence" count={1} />
+<Drill generator="act-6/one-vs-two-tails" count={1} />
+<Drill generator="act-6/p-value-shading" count={1} />
+
+<MissionBeat id="act-6-04-statistic" kind="numeric" label="HOW MANY STANDARD ERRORS"
+  prompt={`Under H₀ both beneficiary classes run at the pooled rate p̂c = ${fmt(POOLED_RATE, 4)}, and the sampling distribution of p̂₁ − p̂₂ is centred at zero with that pooled standard error. Compute the standardized test statistic for ${fmtInt(PERRINE_LOSSES)} losses in ${fmtInt(PERRINE_TRANSITS)} transits against ${fmtInt(OTHER_LOSSES)} in ${fmtInt(OTHER_TRANSITS)}. Give it to two decimal places.`}
+  answer={PERRINE_TEST.statistic}
+  answerKind="testStat"
+  hint="Estimate minus null value, over the standard error under H₀. The estimate is p̂₁ − p̂₂; the null value is 0; the SE is √(p̂c(1 − p̂c)(1/n₁ + 1/n₂)) — pooled, because the null says there is one rate and every transit in the Ledger is evidence about it." >
+  <Success>
+  <Dialogue speaker="xo" aside="She writes the number on the board herself, under the hypotheses, and puts the date beside it.">
+  That is a distance, not a verdict. It says the gap between these two classes is that many standard errors out on a curve the null drew. Whether that is far is the next question and it is not the same question.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has two versions of the standard error written side by side and has just found which one he used.">
+  Yes, sir. That's — yes. I used each class's own rate in the standard error. That is the interval's SE. The test is running inside the null and the null says there is one rate, so it is p-hat-c in both terms or the curve I am measuring against is not the null's curve.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-04-pvalue" kind="numeric" label="THE AREA BEYOND IT"
+  prompt={`The alternative was written before the data and it points up: Hₐ says the Perrine-beneficiary loss rate is greater. On the standard normal curve H₀ predicts, what is the area at least as far above zero as the statistic you just computed? Give the p-value to four decimal places.`}
+  answer={PERRINE_TEST.pValue}
+  answerKind="pValue"
+  allowInequality
+  hint="One tail, upper, because that is what the alternative counts as evidence. P(Z ≥ z) on the standard normal — and read it back as a sentence about seasons before you move on." >
+  <Success>
+  <Dialogue speaker="comms" aside="He is not part of this and says it from the board without turning round, in the flat voice he uses for lag." lag="Ceres, local">
+  For the file, sir: anything we send from this berth reaches Valhalla twenty-four minutes later. I mention it because that number on your screen is going to be in a transmission before the watch turns, and once it is sent there are forty-eight minutes in which nobody can take it back.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has doubled it, and he is looking at the hypotheses on the board above the working.">
+  Yes, sir. That's — yes. I doubled it out of habit. Two-sided is a decision we did not make — we wrote the direction down two days ago with the reason beside it. Doubling now would be paying a penalty for a choice we did not take.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-04-sentence" kind="interpretation" label="THE SENTENCE THAT SURVIVES"
+  prompt={`Ferrier has her hand over the numbers again. Interpret that p-value in context: one or two sentences, saying what assumption it is computed under, what it is the probability of, and about what. Do not state a conclusion and do not mention a significance level — that is tomorrow's argument. This is the p-value and nothing else.`}
+  hint="Four things, and a hostile reader checks for each: the assumption you are working under, the words “at least as extreme”, the word probability, and the number. Then say what was measured and for whom. If the sentence would still make sense with the word “Lane” removed, it is not in context yet."
+  {...laneRubric}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it twice, which she does not usually do, and then reads it a third time out loud in somebody else's voice — flat, hostile, pausing in the wrong places — and it still holds.">
+  That one goes in. Not because it is careful — because there is nothing in it to take hold of. Every clause in that sentence is a thing we actually did.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She hands it back and puts her finger under the clause that does the damage.">
+  Read that back to me as though you wanted it to fail. You have written a probability about the Lane. The number is a probability about seasons — about what this many transits would do if the two rates were the same. Put the assumption at the front where a reader cannot lose it, and put "at least as extreme" in, because without it you have described one exact outcome and the probability of one exact outcome is nothing at all.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-6-04-statistic", "act-6-04-pvalue", "act-6-04-sentence"]}>
+
+<Scene stamp="MET 137/09:15" location="Bridge · alongside, Ceres" condensed="Eight in ten thousand. The normal model and ten thousand simulated seasons agree to the third figure and cannot agree past it, because a simulation of ten thousand runs cannot resolve anything finer than one in ten thousand. Ferrier makes Ebele write both numbers into the file rather than the smaller one. What has been established is that a gap this size is rare under the null; what has not been established is a decision, a conclusion, by whom, or why.">
+
+So the number exists, and it is {fmtP(PERRINE_TEST.pValue)}. Read as a frequency: about {fmtInt(inTenThousand)} seasons in ten thousand. About one in {fmtInt(oneInHowMany)}.
+
+Ebele runs it the other way before anybody asks him to, which is the habit Ferrier has been trying to build in him for two months. Ten thousand seasons of Lane traffic, {fmtInt(PERRINE_TRANSITS)} transits and {fmtInt(OTHER_TRANSITS)} transits, both classes held at exactly {fmt(POOLED_RATE, 4)}, the statistic recomputed each time and nothing in the machine that knows which hull belongs to whom. Then he counts the seasons that came out at least as lopsided as the real one.
+
+{fmtInt(simRuns)} of them.
+
+<Dialogue speaker="analyst" aside="He has the two numbers side by side to five places, which is more places than either of them deserves, and he is not apologising for the gap between them.">
+So — the curve says {fmt(PERRINE_TEST.pValue, 5)} and the ten thousand seasons say {fmt(simP, 5)}, and they disagree in the fifth place. They are supposed to. The simulation cannot count in units finer than one season in ten thousand — that is {fmt(simFloor, 5)}, and every simulated p-value is a whole number of seasons divided by ten thousand. It could give me {fmtInt(simRuns)} or it could give me {fmtInt(simRuns + 1)}. It could not give me {fmt(PERRINE_TEST.pValue, 5)} if the universe insisted.
+
+They are not two estimates of different things, sir. The curve is a *description* of the machine the simulation is running. The only reason to run both is that if they disagreed by a lot, the description would be the thing at fault, and out here in the tail the description is at its worst.
+</Dialogue>
+
+They do not disagree by a lot. Ferrier has him write both into the file anyway, in the same line, with the number of runs beside the simulated one.
+
+<Dialogue speaker="xo" aside="She is writing the file header while she says it and does not look up.">
+Two numbers and the method for each. Not the smaller one. The first analyst at Valhalla who wants this dead will ask which of the two we chose and why, and the answer "we did not choose, they are both on the page" ends that line of questioning in one sentence. Never give a hostile reader a decision you did not have to make.
+</Dialogue>
+
+What is established at 09:15 on MET 137 is one thing and one thing only: **a gap this size is rare in a world where the two beneficiary classes are lost at the same rate** — about {fmtInt(inTenThousand)} seasons in ten thousand, by two methods that agree as closely as two methods of that kind can.
+
+What is not established is everything else. There is no decision, because nobody has fixed a significance level and written down what it costs to be wrong; that is tomorrow. There is no conclusion in context, because the sentence on the board is about seasons and a conclusion has to be about hulls. There is nothing about *who*, and nothing about *why*, and the file contains no evidence bearing on either and will not acquire any by being stared at.
+
+And there is one more thing the number does not say, which Ferrier says out loud at the end of the watch because somebody has to.
+
+<Dialogue speaker="xo" aside="She turns the board off at the panel. The struck sentence is still legible under the new one, which is the point of striking rather than wiping.">
+Rare under the null is not the same as impossible under the null. {fmtInt(inTenThousand)} in ten thousand is a real number of real seasons. Somewhere there is a Lane with nothing wrong with it at all that threw a season exactly like ours, and the officer who wrote that report was wrong in perfectly good faith. We might be that officer. Everything we do from here has to be built so that we would still be defensible if we were.
+</Dialogue>
+
+</Scene>
+
+<Decided id={DECISION_IDS.register} is="renn">
+
+Renn asks, through the consulate link and without being told the number, whether it is under one in a thousand. Ferrier does not answer her. The adjuster laughs once and says that she has been an adjuster for nineteen years and can read a silence.
+
+</Decided>
+
+<Decided id={DECISION_IDS.register} is="okafor">
+
+Okafor-Reyes sends the request log he promised, unasked, with the file reference on the face of it. Nobody outside his office has asked for the beneficiary column since 2178. He does not ask what the number is.
+
+</Decided>
+
+<LogEntry
+  title="The p-value: a probability about data, computed under H₀"
+  concept="A p-value is the probability — computed by assuming H₀ is true — of obtaining a statistic at least as extreme as the one observed, where 'at least as extreme' is decided by the alternative and fixed before the data. It is therefore a statement about what data the null world produces, never a probability that H₀ is true, never the probability that a result is 'due to chance' (under H₀ chance is the only mechanism, with certainty), and never 1 − p as the probability of Hₐ. The same number can be obtained two ways: as a tail area under the model the conditions licensed, or by building the null explicitly, simulating many runs of it and counting the runs at least as extreme. The two agree to within the simulation's resolution, which is its floor: N runs cannot report a probability smaller than 1/N, so a simulated p of zero means 'finer than this simulation can see', not 'impossible'."
+  formula="P = P\big(\text{statistic at least as extreme} \mid H_0\big) \qquad P = P(Z \ge z),\ P(Z \le z),\ 2P(Z \ge |z|) \qquad P_{\text{sim}} = \frac{\#\{\text{runs at least as extreme}\}}{N}"
+  mistake="“There is a small chance the difference is due to chance.” The sentence quietly turns a probability about data into a probability about the world. Its close relatives — “the probability that H₀ is true” and “1 − p is the probability that Hₐ is true” — make the same move: the p-value conditions ON the hypothesis and can never assign one a probability. The second habitual error is dropping “at least as extreme”, which reduces the sentence to a claim about one exact outcome, whose probability is essentially zero."
+  tags={['p-value', 'at least as extreme', 'null distribution', 'simulation', 'one-sided', 'two-sided', 'interpretation in context', 'misconceptions', '6.5']}
+/>
+
+</Gated>

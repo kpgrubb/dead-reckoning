@@ -8,7 +8,7 @@ objectives:
   - "Define a discrete random variable and represent its probability distribution as a table or histogram"
   - "Compute P(X = k), P(X ≤ k) and P(X > k) from a probability distribution and interpret them in context"
   - "Distinguish discrete from continuous random variables and describe probability for a continuous variable as area under a density"
-prereqs: ["act-4-02"]
+prereqs: ["act-4-04"]
 est_minutes: 25
 calc_briefing: "density-vs-mass"
 summary: "The Chief's load budget, as two random variables: a table of hours that has to sum to one and does not, and a temperature whose most likely value has probability zero. Then the profile for both windows, and what each one costs."
@@ -28,12 +28,16 @@ import {
   coldHoursRV,
   heatFor,
   metStamp,
+  sinkAt,
 } from '@/instruments/act-4/data'
 import { DistributionEditor } from '@/instruments/act-4/DistributionEditor'
 import { KeyTable, SinkReadout } from '@/instruments/act-4/_ui'
 import { ProfileEcho } from '@/instruments/act-4/story'
 
 export const heat = heatFor('act-4-05')
+/** The two scenes after the beat, stamped and read off the ledger rather than off the header. */
+export const decisionAt = heat.at + 250 / 1440
+export const logAt = heat.at + 5 / 24
 /** Ebele's first table: the same shape with four hundredths too much on the mode. */
 export const badTotal = COLD_HOURS_PROBS_BAD.reduce((a, b) => a + b, 0)
 export const badIndex = COLD_HOURS_PROBS_BAD.findIndex((p, i) => Math.abs(p - COLD_HOURS_PROBS[i]) > 1e-9)
@@ -248,7 +252,7 @@ Widen the interval and the probability grows: within one standard deviation of n
 
 <Gated by="act-4-05-saturate">
 
-<Scene stamp="MET 087/16:10" location={`Engineering deck · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="The risk term goes on the heat plan in pencil and the Chief asks for the decision that has been sitting under the ruled line all afternoon: which profile the ship flies in both Watch windows. Watch is the full passive suite and sixty-four hours of cellar; Quiet is a hundred and eight hours and a suite that can find a hull but not hold it.">
+<Scene stamp={metStamp(decisionAt)} location={`Engineering deck · Quiet, cellar ${fmt(sinkAt(decisionAt), 0)}%`} condensed="The risk term goes on the heat plan in pencil and the Chief asks for the decision that has been sitting under the ruled line all afternoon: which profile the ship flies in both Watch windows. Watch is the full passive suite and sixty-four hours of cellar; Quiet is a hundred and eight hours and a suite that can find a hull but not hold it.">
 
 The number goes on the plan beside the Watch line, and Sandoval draws a box round it, because a risk term that is not boxed gets read as a footnote.
 
@@ -287,7 +291,7 @@ Ferrier says nothing at all, which from her is a whole paragraph: the decision i
   </Outcome>
 </MissionBeat>
 
-<Scene stamp="MET 087/17:00" location="Engineering deck" condensed="The plan goes to the log with the profile, the endurance and the risk term on the same page. What the table cannot yet say is what a window costs on average — the next question, and the one the Chief actually asked.">
+<Scene stamp={metStamp(logAt)} location={`Engineering deck · Quiet, cellar ${fmt(sinkAt(logAt), 0)}%`} condensed="The plan goes to the log with the profile, the endurance and the risk term on the same page. What the table cannot yet say is what a window costs on average — the next question, and the one the Chief actually asked.">
 
 The plan goes into the log at the top of the hour with three things on the same page: the profile, the endurance it buys and the probability that the crossing wants more hours than the cellar holds.
 

@@ -36,12 +36,15 @@ import {
   heatFor,
   lossOwnerCounts,
   metStamp,
+  sinkAt,
 } from '@/instruments/act-4/data'
 import { IndependenceChecker } from '@/instruments/act-4/IndependenceChecker'
 import { SinkReadout } from '@/instruments/act-4/_ui'
 import { independenceInContext } from '@/lib/problems/generators/act-4/_rubrics'
 
 export const heat = heatFor('act-4-04')
+/** The closing scene, two hours and twenty minutes later — its sink comes off the ledger, not off the header. */
+export const closeAt = heat.at + 140 / 1440
 // The consecutive-sweep 2×2: the previous entry's detection against this entry's.
 export const pairs = twoWay(consecutiveCounts, { rows: [...CONSECUTIVE_ROWS], cols: [...CONSECUTIVE_COLS] })
 export const afterDetection = pairs.rowConditional[0][0]
@@ -263,7 +266,7 @@ Adding the two margins without subtracting would count the {fmtInt(pairs.table[0
 
 <Gated by={["act-4-04-conditional", "act-4-04-marginal", "act-4-04-verdict"]}>
 
-<Scene stamp="MET 086/14:20" location={`Sensor bay · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="The finding goes in the file scoped to the Ledger: loss and owner class do not appear independent in these 2,612 records. Ferrier makes Ebele write 'in this register' and explains why the stronger sentence has to wait. Oyelaran's correction matters for a different reason — the binomial waiting two modules ahead needs trials that really are independent, and the ship's own sweeps are not.">
+<Scene stamp={metStamp(closeAt)} location={`Sensor bay · Quiet, cellar ${fmt(sinkAt(closeAt), 0)}%`} condensed="The finding goes in the file scoped to the Ledger: loss and owner class do not appear independent in these 2,612 records. Ferrier makes Ebele write 'in this register' and explains why the stronger sentence has to wait. Oyelaran's correction matters for a different reason — the binomial waiting two modules ahead needs trials that really are independent, and the ship's own sweeps are not.">
 
 Ebele writes it twice. The first draft says *losses depend on owner*. The second says *in this register, loss and owner class do not appear independent* — and he adds the two rates and the two denominators after it without being asked, which is the part Ferrier was waiting for.
 

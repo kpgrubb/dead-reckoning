@@ -235,7 +235,7 @@ Now the finding, which is why anyone ran it. Chance alone scatters {fmtInt(CERES
   hint={`A simulated probability is a count over a run size, and the console gives you both: the runs that came out at ${OBSERVED_CLUSTER} or above, and the ${fmtInt(CLUSTER_RUNS)} runs they came out of. Divide the first by the second.`}>
   <Success>
   <Dialogue speaker="analyst" aside="He writes it on the board under his three lines of model, and he writes the denominator the same size as the numerator.">
-  So — {fmtInt(clusterAtLeastObservedCount)} of {fmtInt(CLUSTER_RUNS)}, sir. {fmt(P_CLUSTER_SIMULATED, 4)}. Not two per cent. {inAHundred(P_CLUSTER_SIMULATED)} runs, out of ten thousand, and the standard error on ten thousand is about {fmt(clusterSe, 4)} — so the fourth decimal is real and the fifth is not. — I would have put *two per cent* in a Board paper. They'd have asked of how many, and I would have had to tell them I didn't write it down.
+  So — {fmtInt(clusterAtLeastObservedCount)} of {fmtInt(CLUSTER_RUNS)}, sir. {fmt(P_CLUSTER_SIMULATED, 4)}. Not two per cent — {inAHundred(P_CLUSTER_SIMULATED)}, counted out of ten thousand, and the standard error on ten thousand is about {fmt(clusterSe, 4)} — so the fourth decimal is real and the fifth is not. — I would have put *two per cent* in a Board paper. They'd have asked of how many, and I would have had to tell them I didn't write it down.
   </Dialogue>
   </Success>
   <Failure>
