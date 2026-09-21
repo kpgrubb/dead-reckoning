@@ -51,13 +51,25 @@ export function CheckpointRunner({ spec }: { spec: CheckpointSpec }) {
   const [confirming, setConfirming] = useState(false)
   const uid = useId()
 
-  const problems = useMemo(() => buildCheckpointProblems(spec, learnerSeed, attemptNo), [spec, learnerSeed, attemptNo])
+  /**
+   * The attempt index the CURRENT run's items were generated from, frozen when the run begins.
+   * Submitting appends to `record.attempts`, which bumps `attemptNo`; without this freeze the
+   * post-submit review would re-render with the NEXT attempt's parameters while showing the marks,
+   * answer keys and worked solutions of the attempt that was actually graded.
+   */
+  const [runAttempt, setRunAttempt] = useState(attemptNo)
+  // A retry (or a fresh attempt after someone else's submit) resyncs while the run is idle.
+  useEffect(() => {
+    if (!started && !outcome && runAttempt !== attemptNo) setRunAttempt(attemptNo)
+  }, [started, outcome, runAttempt, attemptNo])
+
+  const problems = useMemo(() => buildCheckpointProblems(spec, learnerSeed, runAttempt), [spec, learnerSeed, runAttempt])
   const threshold = spec.threshold ?? 0.8
 
   // Persist the in-progress attempt.
   useEffect(() => {
-    if (started && !outcome) saveDraft(act, learnerSeed, attemptNo, responses)
-  }, [act, learnerSeed, attemptNo, responses, started, outcome])
+    if (started && !outcome) saveDraft(act, learnerSeed, runAttempt, responses)
+  }, [act, learnerSeed, runAttempt, responses, started, outcome])
 
   const answered = spec.items.filter((it) => isAnswered(problems[it.id].answer, responses[it.id] ?? null)).length
   const total = spec.items.length
@@ -78,6 +90,7 @@ export function CheckpointRunner({ spec }: { spec: CheckpointSpec }) {
     submit()
   }
   const begin = () => {
+    setRunAttempt(attemptNo) // freeze this run's parameters before any submit bumps the count
     setStarted(true)
     setResumed(false)
     setResponses({})

@@ -13,7 +13,20 @@ import type { ForbiddenPhrase, InterpretationAnswer, RubricGroup, RubricPhrase }
 export type Shape = 'symmetric' | 'skewRight' | 'skewLeft' | 'bimodal' | 'uniform'
 
 const PROVES: ForbiddenPhrase = { phrase: 'prove', label: 'Claims proof', why: 'A description of data never proves anything about the process that produced it.' }
-const CAUSES: ForbiddenPhrase = { phrase: 'cause', label: 'Claims causation', why: 'A distribution describes what was recorded; it does not say why.' }
+/**
+ * Claims causation. A RegExp rather than the token phrase 'cause', because the Register's own name
+ * for its classification column is the **cause code** (act-1-02 is titled "Cause Codes"): a learner
+ * who writes "the cause codes differ by office" is describing a variable, not claiming causation.
+ * The lookahead exempts that phrase; the lookbehind keeps negated forms legitimate ("the table does
+ * not show that the office caused the loss" — normalizeText has already collapsed every negation
+ * idiom to the token "not"), scoped to the clause so a negation in an earlier clause cannot excuse a
+ * causal claim in this one.
+ */
+const CAUSES: ForbiddenPhrase = {
+  phrase: /(?<!\bnot\b[^.,;:]{0,40})\bcaus(?:e|es|ed|ing|ation|al)\b(?!\s+codes?\b)/,
+  label: 'Claims causation',
+  why: 'A distribution describes what was recorded; it does not say why one variable moved another. (Naming the Register\'s cause codes is fine — claiming one variable caused another is not.)',
+}
 
 const SHAPE_PHRASINGS: Record<Shape, RubricPhrase[]> = {
   symmetric: ['symmetric', 'bell', 'mound', 'unimodal', 'single peak', 'one peak', 'not skew', 'roughly normal'],

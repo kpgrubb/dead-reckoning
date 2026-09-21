@@ -47,6 +47,20 @@ describe('compareCategorical', () => {
     const counts = 'Uruk coded 19 losses as unknown and Ceres coded 3 as unknown, so Uruk has more unknown codes than Ceres.'
     expect(gradeInterpretation(c, counts).correct).toBe(false)
   })
+  it('lets the learner name the Register\'s cause codes without tripping the causation rule', () => {
+    const named = 'The cause codes differ by office: 83% of the losses the Uruk office classified carry the unknown code, against 38% of the Ceres office\'s — a much larger share of that code at Uruk.'
+    const r = gradeInterpretation(c, named)
+    expect(r.forbidden ?? []).toEqual([])
+    expect(r.correct).toBe(true)
+    const negated = 'Uruk\'s 83% unknown against Ceres\'s 38% is a difference in the share of that code between the offices; the table does not show that the office caused the loss.'
+    expect((gradeInterpretation(c, negated).forbidden ?? [])).toEqual([])
+  })
+  it('still flags a real causal claim', () => {
+    const causal = 'Uruk coded 83% of its losses unknown and Ceres 38%, because the Uruk office causes more unknown classifications.'
+    const r = gradeInterpretation(c, causal)
+    expect(r.correct).toBe(false)
+    expect(r.forbidden?.some((f) => f.label === 'Claims causation')).toBe(true)
+  })
 })
 
 describe('zScoreInterpretation', () => {

@@ -1,0 +1,30 @@
+import { it } from 'vitest'
+import { allMarks, arrivedAges, arrivedValues, fleetModel, harpagia, harpagiaTail, harpagiaZ, lossMarks, lostAges, lostValues, RATED_SPREAD_PCT, ratioPct, honestRatios, REGISTER_META } from '@/instruments/act-1/data'
+import { fmt, iqr, mean, median, normal, percentileRank, sd, zScore, linearTransformSummary } from '@/lib/stats'
+
+it('probe', () => {
+  const p = (l: string, v: unknown) => console.log(l, v)
+  p('lossMarks median', median(lossMarks))
+  p('lossMarks iqr', iqr(lossMarks))
+  p('allMarks median', median(allMarks))
+  p('allMarks iqr', iqr(allMarks))
+  p('lostAges median/iqr', [median(lostAges), iqr(lostAges), mean(lostAges), sd(lostAges)])
+  p('arrivedAges median/iqr', [median(arrivedAges), iqr(arrivedAges), mean(arrivedAges), sd(arrivedAges)])
+  p('lostValues median/iqr', [median(lostValues), iqr(lostValues), mean(lostValues)])
+  p('arrivedValues median/iqr', [median(arrivedValues), iqr(arrivedValues), mean(arrivedValues)])
+  p('fleetModel', fleetModel)
+  p('harpagia', harpagia)
+  p('harpagiaZ', harpagiaZ)
+  p('harpagiaTail', harpagiaTail)
+  p('oyelaran z', zScore(harpagia.ratio_pct, 100, RATED_SPREAD_PCT))
+  p('ratioPct mean/sd', [mean(ratioPct), sd(ratioPct)])
+  p('honest mean/sd', [mean(honestRatios), sd(honestRatios)])
+  p('percentileRank harpagia', percentileRank(ratioPct, harpagia.ratio_pct))
+  p('emp rule 1/2/3', [normal.between(fleetModel.mean - fleetModel.sd, fleetModel.mean + fleetModel.sd, fleetModel.mean, fleetModel.sd), normal.between(fleetModel.mean - 2 * fleetModel.sd, fleetModel.mean + 2 * fleetModel.sd, fleetModel.mean, fleetModel.sd)])
+  p('tonnes transform', linearTransformSummary({ mean: fleetModel.mean, sd: fleetModel.sd }, 19400 / 100, -19400))
+  p('meta', REGISTER_META)
+  p('lostmarks min/max', [Math.min(...lossMarks), Math.max(...lossMarks)])
+  p('fmt tail 4', fmt(harpagiaTail, 4))
+  p('1/tail', 1 / harpagiaTail)
+  p('sandoval 9pct of 20000', 0.09 * 20000)
+})

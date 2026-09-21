@@ -16,7 +16,7 @@
  */
 import { defineGenerator, drawScatter, listNumbers, numericAnswer, pickContext, retry } from '@/lib/problems/generate'
 import { residualInterpretation } from '@/lib/problems/rubrics'
-import { correlation, linearRegression, max, mean, min, sd } from '@/lib/stats'
+import { correlation, linearRegression, mean, min, sd } from '@/lib/stats'
 import { fmt, round } from '@/lib/stats/format'
 import type { Rng } from '@/lib/rng'
 
@@ -278,7 +278,10 @@ function diagnose(xs: number[], es: number[]): Diag {
   for (let m = 3; m <= 10 && m < sorted.length - 6; m++) {
     const rest = sorted.slice(m)
     const sr = sd(rest)
-    if (sr > 0 && sorted[m - 1] > 3 * sr && sorted[m] < 2.5 * sr && Math.abs(min(rest)) < 3 * sr) {
+    const mr = mean(rest)
+    // A knot is a clean break: the m-th residual stands 3 SDs above the rest's own centre, the
+    // (m+1)-th does not, and nothing below the band reaches as far the other way.
+    if (sr > 0 && sorted[m - 1] - mr > 3 * sr && sorted[m] - mr < 2.8 * sr && mr - min(rest) < 3.2 * sr) {
       knot = m
       break
     }
@@ -290,11 +293,11 @@ function patternHolds(p: Pattern, d: Diag): boolean {
   if (!Number.isFinite(d.curv) || !Number.isFinite(d.trend) || !Number.isFinite(d.fanRatio)) return false
   switch (p) {
     case 'flat':
-      return Math.abs(d.curv) < 0.3 && Math.abs(d.trend) < 0.25 && d.fanRatio > 0.55 && d.fanRatio < 1.8 && d.knot === 0
+      return Math.abs(d.curv) < 0.3 && Math.abs(d.trend) < 0.25 && d.fanRatio > 0.55 && d.fanRatio < 1.8 && d.knot < 4
     case 'curve':
-      return Math.abs(d.curv) > 0.7 && Math.abs(d.trend) < 0.35 && d.knot === 0
+      return Math.abs(d.curv) > 0.7 && Math.abs(d.trend) < 0.35 && d.knot < 4
     case 'fan':
-      return d.fanRatio > 2.4 && Math.abs(d.curv) < 0.35 && Math.abs(d.trend) < 0.3 && d.knot === 0
+      return d.fanRatio > 2.4 && Math.abs(d.curv) < 0.35 && Math.abs(d.trend) < 0.3 && d.knot < 4
     case 'cluster':
       return d.knot >= 4 && d.knot <= 8 && Math.abs(d.curv) < 0.35 && Math.abs(d.trend) < 0.3 && d.fanRatio > 0.4 && d.fanRatio < 2.2
   }
@@ -325,7 +328,6 @@ export const residualPlotRead = defineGenerator({
         const span = xhi - xlo
         const xs: number[] = []
         for (let i = 0; i < n; i++) xs.push(round(r.uniform(xlo, xhi), ctx.round))
-        const xm = mean(xs)
         const s0 = ctx.noise
         let es: number[] = []
         if (pattern === 'flat') es = xs.map(() => r.normal(0, s0))
@@ -337,14 +339,20 @@ export const residualPlotRead = defineGenerator({
           })
         } else if (pattern === 'fan') es = xs.map((x) => r.normal(0, s0 * (0.3 + 1.7 * ((x - xlo) / span))))
         else {
-          es = xs.map(() => r.normal(0, s0))
+          // A tight band (truncated so nothing in it masquerades as part of the knot) plus a knot.
+          es = xs.map(() => {
+            let z: number
+            do z = r.normal()
+            while (Math.abs(z) > 2.2)
+            return z * s0
+          })
           const m = r.int(4, 7)
-          for (const i of r.sample([...Array(n).keys()], m)) es[i] = Math.abs(es[i]) + r.uniform(3.8, 5.6) * s0
+          for (const i of r.sample([...Array(n).keys()], m)) es[i] = Math.abs(es[i]) + r.uniform(4.2, 6) * s0
         }
         // Centre the residuals: a least-squares fit leaves them summing to zero.
         const em = mean(es)
         es = es.map((e) => round(e - em, Math.max(2, ctx.round + 1)))
-        return { xs, es, d: diagnose(xs, es), xm }
+        return { xs, es, d: diagnose(xs, es) }
       },
       (g) => patternHolds(pattern, g.d) && PLOT_ORDER.every((p) => p === pattern || !patternHolds(p, g.d)),
     )
@@ -479,8 +487,3 @@ export const fanOrNot = defineGenerator({
     }
   },
 })
-
-/** Range of the drawn residuals — kept for the audit trail of the plot item. */
-export function residualSpan(es: number[]): [number, number] {
-  return [min(es), max(es)]
-}

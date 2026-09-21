@@ -192,7 +192,12 @@ describe('DS-01 · the Register (2,200 records, 31 losses)', () => {
     expect(minor).toHaveLength(2169)
     expect(mean(minor.map((x) => x.mark))).toBeGreaterThan(6.3)
     expect(mean(minor.map((x) => x.mark))).toBeLessThan(6.7)
-    expect(minor.filter((x) => x.mark < 4)).length
+    // "Spread along the Lane": marks 1–12 roughly uniform, so about 3/11 of the minor records sit below mark 4.
+    const below4 = minor.filter((x) => x.mark < 4).length
+    expect(below4 / minor.length).toBeGreaterThan(0.22)
+    expect(below4 / minor.length).toBeLessThan(0.32)
+    expect(Math.min(...minor.map((x) => x.mark))).toBeLessThan(1.2)
+    expect(Math.max(...minor.map((x) => x.mark))).toBeGreaterThan(11.8)
     const lossDay = new Map(losses.map((l) => [l.hull, l.day]))
     for (const x of minor) {
       const ld = lossDay.get(x.hull)

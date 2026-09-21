@@ -1,0 +1,39 @@
+import { RiemannArea } from '@/instruments/act-1/RiemannArea'
+
+Ebele offers this one at the sensor bay door, on a slate, unasked. You do not need it to work the watch. It is here because the curve on the sensor display is doing something you already know how to do, under a name you were taught in a different room.
+
+A normal model is a **density**: a curve whose height $f(x)$ is not a probability. Probability is the **area** the curve encloses over an interval — and area under a curve is the definite integral.
+
+<Formula
+  tex="P(a \le X \le b) = \int_a^b f(x)\,\mathrm{d}x"
+  terms={{ 'f(x)': 'the density — the height of the curve at x, never itself a probability', 'a, b': 'the two cutoffs bounding the interval', '\\int_a^b': 'the area the curve encloses between them' }}
+  label="Probability is a definite integral of the density"
+/>
+
+**Where the integral comes from.** Cut $[a, b]$ into $n$ strips of width $\Delta x = (b - a)/n$. Over one strip the curve barely moves, so a rectangle of that width and the curve's height at the strip's midpoint is close to the area over it. Add them:
+
+$$\sum_{i=1}^{n} f(x_i)\,\Delta x \;\xrightarrow[\;n \to \infty\;]{}\; \int_a^b f(x)\,\mathrm{d}x$$
+
+That sum is a Riemann sum, and the integral is its limit. Nothing new is introduced at the limit; the rectangles simply stop being wrong. Eight of them get the third decimal; two hundred get the sixth.
+
+**Why a single value has no probability.** Ask for the area over one point rather than an interval. Then $a = b$, every rectangle has width zero, and the sum is zero however many you take:
+
+<Formula
+  tex="P(X = x) = \int_x^x f(t)\,\mathrm{d}t = 0"
+  terms={{ 'x': 'one exact value on the axis', '\\int_x^x': 'an interval of width zero — no area, at any height' }}
+  label="A density assigns no probability to a point"
+/>
+
+So for a continuous model $P(X \ge x)$ and $P(X > x)$ are the same number, and "at most" and "less than" agree. The height $f(x)$ can be anything — it can exceed 1 — because it is probability *per unit of x*, and only multiplying it by a width turns it into probability at all. A signature of exactly 109.2 percent has probability zero; a signature of 109.2 percent *or hotter* does not.
+
+**And the total is one.** Over the whole axis the hull is somewhere:
+
+$$\int_{-\infty}^{\infty} f(x)\,\mathrm{d}x = 1$$
+
+which is why an upper tail and everything below it must add to 1, and why you may compute either one and subtract.
+
+Add rectangles below and watch the midpoint sum close on the exact area. Then collapse the interval end onto its start: the width goes to zero, and the area goes with it.
+
+<RiemannArea />
+
+**Why this matters here.** Every number the normal model returns this watch — the proportion of honest hulls above the flagged ratio, the 68, the 95, the 99.7 — is one of these integrals, evaluated for you. Knowing that it is an area and not a height is the difference between reporting a probability and reporting the height of a curve, which is not a probability and never was.

@@ -1,0 +1,175 @@
+---
+id: act-1-06
+act: 1
+title: "Lost and Arrived"
+kind: module
+ap_topics: ["1.9"]
+objectives:
+  - "Put two groups on one scale with parallel boxplots, a back-to-back stemplot or histograms sharing an axis"
+  - "Compare two distributions on shape, centre, variability and unusual features — in one sentence, with comparative language"
+  - "Choose a baseline group that can actually answer the question being asked"
+  - "Read a comparison without the two standing errors: two separate descriptions, and a box whose size is read as a count"
+prereqs: ["act-1-05"]
+est_minutes: 25
+calc_briefing: null
+summary: "Thirty-one hulls against the Lane, on three variables — once Ferrier has thrown out the baseline that cannot answer the question, and once Ebele stops writing two paragraphs where one sentence belongs."
+---
+
+import { fmt, fmtInt, iqr, mean, median, sd } from '@/lib/stats'
+import { allMarks, arrivedAges, arrivedValues, lossMarks, lostAges, lostValues, REGISTER_META } from '@/instruments/act-1/data'
+import { ComparativeDisplay } from '@/instruments/act-1/ComparativeDisplay'
+import { compareDistributions } from '@/lib/problems/generators/act-1/_rubrics'
+
+export const ageGap = median(arrivedAges) - median(lostAges)
+export const valueGap = median(arrivedValues) - median(lostValues)
+
+<Scene stamp="MET 023/09:40" location="Wardroom · 0.165 AU from Callisto, 4 mgee" condensed="Twenty-three days out, Ebele lays out the obvious comparison — the 31 lost hulls against the ones that arrived, on mark, hull age and cargo value. Ferrier asks one question, what an arrived hull's mark at last contact is, and the answer is twelve, every time: arrived cannot say anything about where. The honest baseline for where is the Board's own flat file of all 2,200 incidents. Ferrante wants the base rate before the patient, and asks what these people take.">
+
+The wardroom is the only compartment aboard with a table long enough to lay three displays side by side, so this is where the comparison gets built. Twenty-three days. Callisto is a hundred and sixty-five thousandths of an astronomical unit astern, forty-four kilometres a second and opening; a minute and twenty-two seconds of light each way, which makes a question and its answer the better part of three minutes apart. Nobody has asked Valhalla anything since the preliminary went into draft.
+
+Ebele has been at this since the afternoon watch. Three variables, two groups. Mark at last contact. Hull age. Declared cargo value. The thirty-one against the ones that arrived, because the Transit Ledger carries all three columns for every transit the Lane has ever completed, and the Register carries them for every transit it did not.
+
+"So it's the obvious comparison, sir. Lost against arrived. Whatever is different about the ones that didn't make it is in one of those three columns or it isn't in the file at all."
+
+Ferrier is at the far end of the table with a cup she has not drunk from. She does not look at the displays. She asks him one question, which is what an arrived hull's mark at last contact is.
+
+He starts to answer with a number and stops on the first syllable of it.
+
+"Twelve," he says. Then, differently: "It's twelve. All of them. That's what arrived *means*."
+
+A group with no variation in the variable. Two thousand five hundred and eighty-one hulls whose last contact was the Ceres beacon, stacked on one tick of the axis, against thirty-one scattered along the corridor — and a comparison between those two things would be arithmetic performed on a definition. Ask *where does this happen* and the arrived hulls have nothing to say, because *arrived* is the answer to a different question.
+
+"Then what do I put against them?"
+
+"What the Lane does," Ferrier says. "Every incident the Authority logged, of every severity, all of them, on the same axis. Cargo nets, dropouts, diversions, debris. Things happen where the ships are, and the ships are all along it. That is the shape of an ordinary six years." She turns her cup a quarter turn and leaves it. "You have had that display since the first morning. It is the Board's own page."
+
+Ferrante has come in for the coffee and stayed for the argument, which is his habit. He has been awake as long as Ebele has and, unlike Ebele, knows it.
+
+"Base rate first," he says. "Every diagnosis I have ever got wrong, I got wrong because I looked at the patient before I looked at how often the thing happens in people who are fine. You have thirty-one hulls that are not fine. Before you tell me what is unusual about them, put up what usual looks like, and make the two the same size on the page."
+
+Age and value keep their baseline: for *those*, an arrived transit is a real comparison group, because an arrived hull has an age and a manifest just as a lost one does. Ebele builds both. He gets halfway through reading them out before Ferrante interrupts with the only question he has asked all morning.
+
+"Pirates take the valuable ones," the surgeon says. "That is what makes them pirates. So — what do these people take?"
+
+Ebele writes the answers up. He writes them the way he was taught to write a lab report: one paragraph for the lost hulls, shape and centre and spread; a second paragraph, immediately below, with the same four things for the other group. Two tidy paragraphs that between them say nothing at all about how the groups differ, because no sentence in either of them contains the other group.
+
+Ferrier reads both, hands the slate back, and tells him to do it again in one sentence.
+
+</Scene>
+
+<Dialogue speaker="analyst" aside="He has the slate back and has not started writing.">
+So the second paragraph is doing the comparing in the reader's head instead of on the page. If they don't hold the first one in memory while they read the second, there isn't a comparison anywhere in the document.
+</Dialogue>
+
+<Dialogue speaker="xo">
+There is no comparison in the document. There are two descriptions in the same document, which is what every report the Board ignores looks like. One sentence, Ensign, with *than* in it. If you cannot get both groups into one sentence, you have not compared them — you have listed them.
+</Dialogue>
+
+<Briefing title="One sentence, with both groups in it" topics={["1.9"]}>
+<Briefing.Intuition>
+Comparing two distributions uses the same four headings as describing one — **shape, centre, variability, unusual features** — but every clause must be **comparative**. Not "A is centred at 40 and B is centred at 62", but "A is centred *lower than* B, 40 against 62". The word doing the work is *than*, or *versus*, or *while*; without one of them you have written two descriptions and left the reader to do the comparison.
+
+Three displays put two groups on one scale, and all three share an axis on purpose:
+
+- **Parallel boxplots** — two boxes on one axis. Best for centre and spread, and the only one that reads well when the groups are wildly different in size. It hides shape: a box cannot show you two peaks.
+- **Back-to-back stemplot** — one stem down the middle, leaves growing left and right. It shows every value, so it is only usable for small groups; a large group must be subsampled, and the subsample must be declared.
+- **Histograms on a shared axis and a shared bin width** — the only one that shows shape honestly. Change either the axis or the bin width between the two panels and you have drawn a comparison of your own choices.
+
+Groups of very different size are compared on **shape, centre and spread — never on bar height or count**. Thirty-one hulls beside two thousand two hundred records will always look like a rounding error in counts, and that says nothing about where they sit.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula
+  tex="\Delta_{\text{centre}} = \text{median}_A - \text{median}_B \qquad\text{and}\qquad \text{IQR}_A \;\text{against}\; \text{IQR}_B"
+  terms={{ '\\Delta_{\\text{centre}}': 'how much higher A sits than B, in the variable’s own units', '\\text{IQR}': 'interquartile range — the width of the middle half of a group', 'A, B': 'the two groups, both named, both with their n' }}
+  label="The two numbers every comparison carries"
+/>
+
+A complete comparison, in order: **shape** (both), **centre** with both values and a comparative word, **variability** with both values, **unusual features** (outliers, gaps, clusters), and the **context** — what was measured, on whom, in what units.
+</Briefing.Definition>
+<Briefing.Worked>
+Take the variable that is *not* the question: **hull age**, the {fmtInt(lostAges.length)} lost hulls against the {fmtInt(arrivedAges.length)} arrived transits.
+
+Medians: {fmt(median(lostAges), 1)} years lost, {fmt(median(arrivedAges), 1)} years arrived — a difference of {fmt(Math.abs(ageGap), 1)} years. IQRs: {fmt(iqr(lostAges), 1)} years against {fmt(iqr(arrivedAges), 1)}. Means {fmt(mean(lostAges), 1)} and {fmt(mean(arrivedAges), 1)}, SDs {fmt(sd(lostAges), 1)} and {fmt(sd(arrivedAges), 1)}.
+
+The sentence: *the lost hulls are about as old as the hulls that arrived (median {fmt(median(lostAges), 1)} years against {fmt(median(arrivedAges), 1)}), and about as variable in age (IQR {fmt(iqr(lostAges), 1)} against {fmt(iqr(arrivedAges), 1)} years); both distributions are roughly symmetric with no outliers.*
+
+That is a complete comparison and its finding is **no difference** — the gap between the centres is {fmt(Math.abs(ageGap) / iqr(lostAges), 2)} of a single IQR, which is nothing. A comparison that comes out flat is a result, and it is reported in the same words as one that does not. It rules out the tidiest explanation anybody had: that whoever is losing hulls is losing old ones.
+</Briefing.Worked>
+<Briefing.Caution>
+*Two descriptions instead of a comparison.* "The Deimos office's cases have a median of 41 days and an IQR of 12. The Pallas office's cases have a median of 63 days and an IQR of 26." Both sentences are true; neither is a comparison, and an AP reader scores the pair as one description. Fix it by forcing both groups into one clause and putting *than* between them.
+
+*Reading a box's size as a count.* A wide box means a large IQR — the middle half of that group is spread out. It does not mean more individuals. Two boxplots drawn from 31 values and from 2,200 values can be the same width, or the small group can be the wider one. The only place a count lives on a boxplot is the label, which is why every group on a comparative display carries its n.
+
+*Comparing bar heights across groups of different size.* On two histograms of 31 and {fmtInt(REGISTER_META.records)} records, every bar in the second is taller. Compare where the mass sits and how wide it is spread, not how tall the bars are — or draw both as relative frequencies.
+</Briefing.Caution>
+</Briefing>
+
+<ComparativeDisplay />
+
+<Dialogue speaker="medic" aside="He has the cargo-value panel up and is reading the two medians off it, one after the other.">
+There it is. The Lane's median declared cargo is {fmt(median(arrivedValues), 1)} million; the thirty-one were carrying {fmt(median(lostValues), 1)}. Whoever is taking these hulls is taking the cheap ones — by a factor of better than two, and the middle half of the losses does not even reach the Lane's middle. That is not what piracy looks like. Pirates have overheads.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="She writes nothing down.">
+It is what the two medians say. It is not yet a finding, because we have one number against one number and no idea how either of them varies from year to year. Put it in the preliminary as a comparison and let the reader decide how much it is worth.
+</Dialogue>
+
+<Drill generator="act-1/right-baseline" count={1} />
+<Drill generator="act-1/display-for-comparison" count={1} />
+<Drill generator="act-1/read-parallel-boxplots" count={1} />
+<Drill generator="act-1/compare-boxplots" count={1} />
+<Drill generator="act-1/comparative-sentence" count={1} />
+
+<MissionBeat id="act-1-06-compare" kind="interpretation" label="THE COMPARISON"
+  prompt={`Set the panel's variable to **Lane mark**. Group A is *the lost hulls* (${fmtInt(lossMarks.length)}); the baseline, group B, is *all Register incidents* — every one of the ${fmtInt(allMarks.length)} records, because an arrived hull's last contact is Mark 12 by definition and can say nothing about where.\n\nWrite the comparison Ferrier will accept: **one sentence, with *than* in it**. Name both groups and the variable, compare the centres and cite both medians, compare the variability and cite both IQRs, and say something about the shape of each. Read the numbers off the panel's summary table.`}
+  hint="Centre first: which group sits later along the Lane, and by how much? Then spread: one group's middle half is a fraction of a mark wide, the other's is most of the corridor. Then shape: a tight pile against a flat spread. Every clause needs both groups in it."
+  {...compareDistributions({ groupA: 'the lost hulls', groupB: 'all Register incidents', variable: 'mark at last contact', units: 'Lane marks', centerA: median(lossMarks), centerB: median(allMarks), spreadA: iqr(lossMarks), spreadB: iqr(allMarks), shapeNote: 'The losses pile tightly at Mark 9 to 10 with a few low outliers, while all incidents are spread almost uniformly from Mark 1 to 12.' })}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it once, at the speed she reads a fix.">
+  That is a comparison. It has both groups, both numbers and a word between them, and a hostile reader gets no further than the medians before they have to argue with the file. Put it at the head of the section.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="To Ebele, who drafted it. She does not raise her voice.">
+  That is two descriptions, Ensign, not a comparison. Both groups in one clause, both medians in it, both IQRs, and *than* doing the work between them. Say it back to me before you type it.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by="act-1-06-compare">
+
+<Scene stamp="MET 023/11:15" location="Wardroom · 0.165 AU from Callisto, 4 mgee" condensed="The comparison goes into the preliminary: the losses sit later along the Lane and in a far narrower band than incidents in general, and they carry cheaper cargo than the Lane does — while hull age says nothing at all. Three findings, none of them proof; Ferrier logs all three as comparisons and refuses to let anyone call them a pattern.">
+
+Three comparisons on the table, and the wardroom has gone quiet in the particular way it does when nobody wants to be the one to say the next sentence.
+
+Where: the thirty-one sit late on the corridor and sit *tight* — the middle half of them inside a fraction of a mark, against a baseline whose middle half is most of the Lane. Ordinary incidents happen everywhere because ships are everywhere. These did not.
+
+What they were carrying: {fmt(median(lostValues), 1)} million against the Lane's {fmt(median(arrivedValues), 1)}, a gap of {fmt(valueGap, 1)} million in the medians, with the losses' whole box below the baseline's. The cheap ones.
+
+How old they were: nothing. {fmt(median(lostAges), 1)} years against {fmt(median(arrivedAges), 1)}, two distributions you could swap without noticing.
+
+"Write all three," Ferrier says. "Including the one that found nothing. The age comparison is the most valuable thing on this table, because it is the only one that closes a door."
+
+Ebele wants to say the word. You can see him arrive at it and decline it twice.
+
+"It's not a pattern yet, sir. It's two comparisons that came out the same direction and one that came out flat. Clustering late, and cheap. Either one on its own is a coincidence you'd expect to see somewhere in three variables."
+
+"Both of them together?" Ferrante asks.
+
+"Still a coincidence," Ferrier says. "A more interesting one. We have thirty-one hulls, one corridor and no second corridor to check it against, and the Board has a standing account of this file that says *piracy*, which the cargo values do not support and do not refute. What we have is a comparison. What we do not have is a mechanism, and until somebody produces one I will not have the word *pattern* in a document with the Captain's name at the bottom."
+
+She is right, and it costs something to agree with her. Down the table Ebele has the mark display back up, the tight pile against the flat baseline, and is looking at it the way Ferrier looked at the histogram eleven days ago — not at what it shows, but at what would have to be true for it to look like that.
+
+Out on the hull, the wings are still out and the Lane is still empty, and somewhere ahead of you at Mark 9 a stretch of corridor that ought to be no more remarkable than any other has thirty-one hulls buried in it.
+
+</Scene>
+
+<LogEntry
+  title="A comparison is one sentence with *than* in it"
+  concept="To compare two distributions, address shape, centre, variability and unusual features for both groups on a shared scale — and make every clause comparative, citing both values and naming both groups, the variable and the units. A comparison that comes out flat is a finding too, and is written the same way."
+  formula="\Delta_{\text{centre}} = \text{median}_A - \text{median}_B, \qquad \text{IQR}_A \;\text{vs}\; \text{IQR}_B, \qquad \text{both groups in one clause}"
+  mistake="Writing two separate descriptions — a paragraph for each group — and leaving the reader to do the comparing. The other one: reading a wider box as more data. Box width is spread; the count lives in the label."
+  tags={['comparing distributions', 'parallel boxplots', 'back-to-back stemplot', 'shared axis', 'comparative language', 'baseline', '1.9']}
+/>
+
+</Gated>

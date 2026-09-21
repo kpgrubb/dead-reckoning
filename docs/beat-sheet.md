@@ -188,7 +188,7 @@ Block format: header line (id · title · minutes · AP topics · calc briefing)
 **Pressure.** The yard wants numbers; the Board wants a ship it can announce; the sink's design figures have never been tested with sixteen people breathing in her.
 **Investigative question.** What does "cold" cost, and can the ship's own numbers be trusted before anyone else's?
 **Closing turn.** MET 9: the Board's tasking arrives with a one-page summary of the Incident File — a mean (Mark 6.5, "spread along the Lane") and a conclusion. You ask for the records. 2,200 of them. To know whether the summary is honest you need the shape, not the centre.
-**No checkpoint.** The Prologue ends on the departure burn (MET 10/03:00).
+**Checkpoint — `act-0-checkpoint` "Release" (10 min).** *Amended after the Act 0 build (orchestrator decision).* Originally specified as "no checkpoint"; the Prologue now closes with a short 10-item release read-through at MET 10/02:30 — Ferrier checking the shakedown report before it goes to Adlinda under your name. It still ends on the departure burn: the `onPass` text is the torch lighting at MET 10/03:00. Rationale: it teaches the checkpoint format on low stakes before Act I's real one, and gives the Prologue's three modules an assessment. Prologue total 70 min; course total 31 h 15 min (still inside the 25–35 h contract).
 
 #### act-0-01 · Shakedown — 20 min · AP 1.1 · calc: —
 Crew: xo, engineer, sensors (background) · MET 0/06:00–2/12:00 · Adlinda slip → Jovian space, under tug then 3 mgee.
@@ -1157,7 +1157,7 @@ Every open question from the bible (§14), the curriculum map (§8), and every c
 
 | Act | Modules | Teaching min | Checkpoint min | Act total |
 |---|---|---|---|---|
-| Prologue · Shakedown | 3 | 60 | — | 60 |
+| Prologue · Shakedown | 3 | 60 | 10 | 70 |
 | I · Signatures | 7 + cp | 185 | 20 | 205 |
 | II · Manifests | 6 + cp | 175 | 20 | 195 |
 | III · Testimony | 5 + cp | 145 | 20 | 165 |
@@ -1168,7 +1168,7 @@ Every open question from the bible (§14), the curriculum map (§8), and every c
 | VIII · Kettle | 4 + cp | 115 | 20 | 135 |
 | IX · Intent | 4 + cp | 115 | 25 | 140 |
 | Epilogue · Provident | 2 | 40 | — | 40 |
-| **Total** | **70** (61 teaching + 9 checkpoints) | **1,665** | **200** | **1,865 min = 31 h 05 min** |
+| **Total** | **71** (61 teaching + 10 checkpoints) | **1,665** | **210** | **1,875 min = 31 h 15 min** |
 
 Inside the 25–35 h contract with ~4 h headroom either side. Module minutes are the map's; nothing here changes them.
 
