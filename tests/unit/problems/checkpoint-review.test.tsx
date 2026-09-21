@@ -5,12 +5,15 @@
  * memoise its generated items on that count, so after submit the review re-rendered with the NEXT
  * attempt's parameters while the CONFIRMED/MISSED marks, answer keys and worked solutions came from
  * the attempt just graded — items appeared to change under a correct mark. Reported by Act 0.
+ *
+ * The assertions compare the *rendered* item text across the submit boundary rather than matching
+ * generator prompts (whose Markdown/KaTeX does not survive rendering as a literal substring).
  */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { CheckpointRunner } from '@/components/Checkpoint'
-import { buildCheckpointProblems, type CheckpointSpec } from '@/lib/problems/checkpoints'
+import type { CheckpointSpec } from '@/lib/problems/checkpoints'
 import { useProgress } from '@/store/progress'
 
 const spec: CheckpointSpec = {
@@ -26,6 +29,15 @@ const spec: CheckpointSpec = {
   est_minutes: 5,
 }
 
+/**
+ * Visible text of the first checkpoint item, minus its heading and per-item state word
+ * (OPEN → ANSWERED → CONFIRMED/MISSED changes across the submit boundary and is not the question).
+ */
+function itemOneText(): string {
+  const raw = (screen.getByRole('region', { name: /Item 1 of 2/ }).textContent ?? '').replace(/\s+/g, ' ').trim()
+  return raw.replace(/^Item \d+ of \d+[^A-Za-z]*(?:OPEN|ANSWERED|CONFIRMED|MISSED)/, '').trim()
+}
+
 describe('<CheckpointRunner> post-submit review', () => {
   beforeEach(() => {
     useProgress.getState().resetAll()
@@ -33,31 +45,28 @@ describe('<CheckpointRunner> post-submit review', () => {
   })
 
   it('keeps the graded attempt on screen after submit, and reseeds only on retry', () => {
-    const learnerSeed = useProgress.getState().learnerSeed
-    const attempt0 = buildCheckpointProblems(spec, learnerSeed, 0)
-    const attempt1 = buildCheckpointProblems(spec, learnerSeed, 1)
-    // The generators must actually differ between attempts, or this test proves nothing.
-    expect(attempt1.q1.prompt).not.toBe(attempt0.q1.prompt)
-
     render(
       <MemoryRouter>
         <CheckpointRunner spec={spec} />
       </MemoryRouter>,
     )
     fireEvent.click(screen.getByRole('button', { name: 'BEGIN' }))
-    expect(screen.getByText(attempt0.q1.prompt.split('\n')[0].slice(0, 40), { exact: false })).toBeInTheDocument()
+    const during = itemOneText()
+    expect(during).not.toHaveLength(0)
 
     fireEvent.change(screen.getByLabelText('Answer to item 1'), { target: { value: '5' } })
     fireEvent.click(screen.getByRole('button', { name: 'SUBMIT CHECKPOINT' }))
     fireEvent.click(screen.getByRole('button', { name: /SUBMIT ANYWAY/i }))
 
-    // Still the graded attempt's items — not attempt 1's.
-    expect(screen.getByText(attempt0.q1.prompt.split('\n')[0].slice(0, 40), { exact: false })).toBeInTheDocument()
-    expect(screen.queryByText(attempt1.q1.prompt.split('\n')[0].slice(0, 40), { exact: false })).toBeNull()
+    // The graded attempt is still the one on screen: the question text is unchanged, and the
+    // review has added a verdict to it.
+    const after = itemOneText()
+    expect(after).toContain(during)
+    expect(screen.getByRole('region', { name: /Item 1 of 2/ }).textContent).toMatch(/CONFIRMED|MISSED/)
     expect(useProgress.getState().checkpoints['act-0'].attempts).toHaveLength(1)
 
-    // Retry advances to the next attempt's parameters.
+    // Retry draws fresh parameters.
     fireEvent.click(screen.getByRole('button', { name: /RETRY/ }))
-    expect(screen.getByText(attempt1.q1.prompt.split('\n')[0].slice(0, 40), { exact: false })).toBeInTheDocument()
+    expect(itemOneText()).not.toBe(during)
   })
 })

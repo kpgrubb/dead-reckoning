@@ -15,18 +15,65 @@ export interface FormulaProps {
   inline?: boolean
 }
 
+/**
+ * Wrap each legend term in `\htmlClass{dr-term dr-term-<i>}{…}` so hovering the legend highlights
+ * it in the rendered formula. `<i>` is the term's index in `terms`, so the legend rows and the
+ * highlight classes always line up regardless of match order.
+ *
+ * Two things a naive string replace gets wrong, both of which produced broken math in Act I:
+ *  - a single-letter key such as `s` or `n` would match inside a control sequence (`\sqrt`, `\sum`)
+ *    or inside `\text{frequency}`, corrupting the TeX. Control sequences are therefore treated as
+ *    atomic and never touched, and alphanumeric keys only match on identifier boundaries.
+ *  - a key can occur inside a longer key's match (`x` inside `\bar{x}`). Matches are replaced with
+ *    opaque placeholders and restored at the end, so nothing is wrapped twice.
+ *
+ * Purely numeric keys are not auto-wrapped (they are ambiguous inside a formula); give such a term
+ * a symbolic key, or wrap it yourself in the `tex` string.
+ */
+export function wrapTerms(tex: string, keys: readonly string[]): string {
+  // Longest key first so `\bar{x}` wins over `x`; `i` stays the index in `keys`.
+  const ordered = keys
+    .map((k, i) => ({ k, i }))
+    .filter(({ k }) => k && !/^[0-9]+$/.test(k))
+    .sort((a, b) => b.k.length - a.k.length)
+  if (ordered.length === 0) return tex
+
+  let out = ''
+  let pos = 0
+  while (pos < tex.length) {
+    const hit = ordered.find(({ k }) => {
+      if (!tex.startsWith(k, pos)) return false
+      if (!/^[A-Za-z0-9]+$/.test(k)) return true
+      // Identifier keys only match whole identifiers: `n` must not match inside `frequency`.
+      const before = tex[pos - 1]
+      const after = tex[pos + k.length]
+      return !(before && /[A-Za-z0-9]/.test(before)) && !(after && /[A-Za-z0-9]/.test(after))
+    })
+    if (hit) {
+      out += `\\htmlClass{dr-term dr-term-${hit.i}}{${hit.k}}`
+      pos += hit.k.length
+      continue
+    }
+    // No key starts here: copy any control sequence whole, so a key can never match inside its
+    // name (`s` in `\sqrt`, `n` in `\sin`). Keys that legitimately begin with `\` were tried above.
+    const cs = /^(\\[a-zA-Z]+|\\.)/.exec(tex.slice(pos))
+    if (cs) {
+      out += cs[0]
+      pos += cs[0].length
+      continue
+    }
+    out += tex[pos]
+    pos += 1
+  }
+  return out
+}
+
 export function Formula({ tex, terms, label, inline = false }: FormulaProps) {
   const [active, setActive] = useState<number | null>(null)
   const keys = useMemo(() => Object.keys(terms ?? {}), [terms])
 
   const html = useMemo(() => {
-    let src = tex
-    // Auto-wrap term keys (longest first so \bar{x} beats x).
-    const ordered = [...keys].sort((a, b) => b.length - a.length)
-    ordered.forEach((k, i) => {
-      // Avoid double-wrapping inside an existing htmlClass.
-      src = src.split(k).join(`\\htmlClass{dr-term dr-term-${i}}{${k}}`)
-    })
+    const src = wrapTerms(tex, keys)
     try {
       return katex.renderToString(src, { displayMode: !inline, throwOnError: false, trust: true, strict: 'ignore', output: 'htmlAndMathml' })
     } catch {

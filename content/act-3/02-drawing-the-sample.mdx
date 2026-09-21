@@ -1,0 +1,233 @@
+---
+id: act-3-02
+act: 3
+title: "Drawing the Sample"
+kind: module
+ap_topics: ["3.3"]
+objectives:
+  - "Implement a simple random sample, and stratified, cluster and systematic samples, from a stated frame using random digits"
+  - "Explain the strengths and the costs of each design against a stated goal"
+  - "Distinguish stratified from cluster sampling by what varies inside the groups and what varies between them"
+prereqs: ["act-3-01"]
+est_minutes: 30
+calc_briefing: null
+summary: "Two hundred and sixty masters, one comms officer and twenty-nine days. Every design on the table is honest; they are not the same price and they do not buy the same thing."
+---
+
+import { fmt, fmtInt, fmtPct } from '@/lib/stats'
+import { CLUSTER_K, CONVOYS, DESIGN_OPTIONS, FRAME_MIX, FRAME_N, SRS_N, STRATUM_N, SULCUS_OPTIONS, SYSTEMATIC_STEP, expectedLinkMinutes } from '@/instruments/act-3/data'
+import { SamplingSimulator } from '@/instruments/act-3/SamplingSimulator'
+import { Decided, DECISION_IDS } from '@/instruments/act-3/story'
+import { designJustificationRubric } from '@/instruments/act-3/beats'
+
+export const stratifiedN = 3 * STRATUM_N
+export const clusterN = Math.round((FRAME_N * CLUSTER_K) / CONVOYS.length)
+export const systematicN = Math.round(FRAME_N / SYSTEMATIC_STEP)
+export const convoySize = FRAME_N / CONVOYS.length
+
+export const srsHours = expectedLinkMinutes('srs', SRS_N) / 60
+export const stratHours = expectedLinkMinutes('stratified', stratifiedN) / 60
+export const clusterHours = expectedLinkMinutes('cluster', clusterN) / 60
+
+export const expectedPerrine = (SRS_N * FRAME_MIX.Perrine) / FRAME_N
+export const expectedIndependent = (SRS_N * FRAME_MIX.independent) / FRAME_N
+
+export const yard = { lot: 600, lineA: 480, lineB: 90, lineC: 30, sample: 60, perStratum: 20, crates: 24, crateSize: 25, cratesDrawn: 3 }
+export const yardExpectedC = (yard.sample * yard.lineC) / yard.lot
+export const yardMissC = Array.from({ length: yard.sample }, (_, j) => (yard.lot - yard.lineC - j) / (yard.lot - j)).reduce((a, b) => a * b, 1)
+export const yardOddsC = 1 / yardMissC
+export const yardCrateN = yard.cratesDrawn * yard.crateSize
+
+<Scene stamp="MET 57/07:40" location="Bridge · intel terminal · braking at 4 mgee · 0.68 AU from Callisto" condensed="Three days on, the Lane schedule is up on the plot: 260 masters in transit, sorted by owner class and by convoy. Three designs are on the table and none of them is wrong — a simple random sample, a stratified draw by owner class, a cluster of whole convoys. Ebele has run each of them a thousand times against a known fleet answer; Solberg has costed each in link hours; Ferrier declines to choose, because choosing is not her job this morning.">
+
+The schedule comes down the relay at 0530 and Ebele has it on the plot by the time you reach the bridge: {fmtInt(FRAME_N)} masters in transit on the Lane this morning, every one of them with a mark, a convoy number and a registry hull number against their name. Perrine {fmtInt(FRAME_MIX.Perrine)}. Mercantile {fmtInt(FRAME_MIX.Mercantile)}. Independent {fmtInt(FRAME_MIX.independent)}. It is the list from yesterday's third circle, and today it is a working document.
+
+"So this is a frame, sir," Ebele says, and he says it the way a man says a word he has decided to own. "Everyone on it can be raised. Nobody who isn't on it can. It is the whole list and it is the only list."
+
+Solberg has the lag on the board — fifteen minutes twenty seconds to Callisto, each way — and the tight-beam windows shaded under the schedule, one narrow band per hull, each about a day wide and none of them coming back.
+
+Three designs are drawn up on the second panel, and the thing you notice first is that they cost different amounts of the only resource this ship has left.
+
+"Simple random sample," Ebele says. "{fmtInt(SRS_N)} masters out of {fmtInt(FRAME_N)}, drawn by digits, every master equally likely and every possible set of {fmtInt(SRS_N)} equally likely. Cleanest thing there is. {fmt(srsHours, 1)} hours of link."
+
+"Stratified by owner class. {fmtInt(STRATUM_N)} Perrine, {fmtInt(STRATUM_N)} Mercantile, {fmtInt(STRATUM_N)} independent, drawn at random inside each class. {fmtInt(stratifiedN)} contacts, {fmt(stratHours, 1)} hours. More link time than the simple random sample and I can tell you before we start exactly how many Sulcus masters are in it."
+
+"Cluster by convoy. {fmtInt(CLUSTER_K)} convoys out of {fmtInt(CONVOYS.length)}, drawn at random, and then every master in them — about {fmtInt(clusterN)} masters, because a convoy runs about {fmt(convoySize, 1)} hulls. And because a convoy shares one beam and one acquisition, that is {fmt(clusterHours, 1)} hours." He lets that sit. "Less than half the simple random sample, sir, for more masters."
+
+Ferrier, who has been reading the convoy manifest and not the panel: "Say what the cheap one costs."
+
+"It's — " He stops. Restarts. "Masters in a convoy have sailed the same weeks, at the same marks, past the same things. If a convoy saw something, most of that convoy saw it. If it didn't, none of them did. So {fmtInt(clusterN)} masters in {fmtInt(CLUSTER_K)} convoys are not {fmtInt(clusterN)} independent answers. They're nearer {fmtInt(CLUSTER_K)}."
+
+"Then that is the sentence you will be defending in six weeks," Ferrier says. "Write it now, while it is cheap."
+
+He has run all three a thousand times each against a fleet whose answer he already knows, and the three stacks of estimates are sitting on the terminal waiting for somebody to look at them properly. Nobody on this bridge is going to choose for you.
+
+</Scene>
+
+<Dialogue speaker="comms" aside="He has the contact schedule open against the twenty-five-light-second corridor, hull by hull, window by window.">
+Sir, for the record: I do not care which design. I care how many acquisitions. A contact is fifty-five minutes plus or minus fifteen, and that is one master, once. A convoy is fifty-five minutes for the first hull and about twenty for each hull after it, because the beam is already pointed and the master is already listening. I will build whichever schedule you name by the end of this watch. I cannot build one that raises a master who has already gone past.
+</Dialogue>
+
+<Briefing title="Four ways to draw a list, and what each one buys" topics={["3.3"]}>
+<Briefing.Intuition>
+Every design here is a **probability sample**: each unit's chance of selection is known and nobody's chance is zero. That is what makes an estimate's error calculable. Everything else is a trade between *link time* and *what the estimate is protected against*.
+
+**Simple random sample (SRS).** Every set of $n$ units from the frame is equally likely. Not merely "everyone equally likely" — that is a weaker property that stratified and systematic samples also have. The SRS is the reference design: no structure, no assumptions, and no guarantees about who turns up.
+
+**Stratified.** Split the frame into **strata** — groups you expect to be *internally alike and different from each other* — then draw an independent random sample inside every stratum. You are guaranteed every stratum's share. Because the between-stratum differences are removed from the sampling error, the estimate is **tighter** than an SRS of the same size, and the more the strata differ, the more you gain.
+
+**Cluster.** Split the frame into **clusters** — groups each of which should be a *small copy of the whole*, internally varied — then draw whole clusters at random and take every unit in them. It is cheap when units cluster physically. It is **wider** than an SRS of the same size whenever members of a cluster resemble each other, because then each cluster is closer to one observation than to seven.
+
+The two look identical on a diagram and are opposites in intent:
+
+| | groups differ | inside a group | you sample |
+|---|---|---|---|
+| **Stratified** | a lot (that is why you split) | alike | some of *every* group |
+| **Cluster** | ideally not at all | varied (a miniature of the frame) | *all* of some groups |
+
+**Systematic.** Order the frame by something unrelated to the response, pick a random start in $1..k$, then take every $k$th unit. On this schedule, every {fmtInt(SYSTEMATIC_STEP)}th registry hull number is about {fmtInt(systematicN)} masters — and only {fmtInt(SYSTEMATIC_STEP)} possible samples in the entire design, one per start. Cheap and tidy, and safe exactly as long as the ordering carries no periodicity that lines up with $k$.
+
+The one rule under all four: **random means a device, not a judgement.** Digits, a generator, a logged seed. A person choosing "at random" from a list chooses hulls whose names they like, and the selection is then unrepeatable and unanalysable.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\text{SRS of size } n \text{ from } N: \quad \Pr(\text{any particular set}) = \binom{N}{n}^{-1}" terms={{ 'N': 'units in the frame', 'n': 'units drawn' }} label="What makes a sample simple random" />
+
+<Formula tex="\text{stratify when } \sigma^2_{\text{between}} \text{ is large}; \qquad \text{cluster when } \sigma^2_{\text{within}} \text{ is large}" terms={{ '\\sigma^2_{\\text{between}}': 'variation between the groups', '\\sigma^2_{\\text{within}}': 'variation inside each group' }} label="Which grouping you want" />
+
+<Formula tex="\text{expected count from a stratum in an SRS} = n\cdot\frac{N_h}{N}" terms={{ 'N_h': 'size of stratum h in the frame', 'n': 'sample size' }} label="What an SRS gives you on average — and only on average" />
+</Briefing.Definition>
+<Briefing.Worked>
+Take an acceptance sample at Adlinda, the kind you signed off for years. A lot of {fmtInt(yard.lot)} coil fittings arrives from three production lines: line A {fmtInt(yard.lineA)}, line B {fmtInt(yard.lineB)}, line C {fmtInt(yard.lineC)} — and line C is the new line, three months old, and the one the yard is actually worried about.
+
+Draw an **SRS of {fmtInt(yard.sample)}**. Every fitting has the same chance, {fmtPct(yard.sample / yard.lot, 0)}, and the expected number from line C is {fmtInt(yard.sample)} × {fmtInt(yard.lineC)} ÷ {fmtInt(yard.lot)} = **{fmt(yardExpectedC, 1)}**. Expected is not guaranteed. The chance that an SRS of {fmtInt(yard.sample)} contains *no* line-C fitting at all is {fmtPct(yardMissC, 1)} — about one acceptance sample in {fmt(yardOddsC, 0)}. A design that answers the yard's question nineteen times in twenty is not an inspection regime.
+
+**Stratify** instead: {fmtInt(yard.perStratum)} drawn at random from each line, {fmtInt(3 * yard.perStratum)} in all. Line C's share of the sample is now {fmtPct(yard.perStratum / (3 * yard.perStratum), 0)} instead of an expected {fmtPct(yard.lineC / yard.lot, 0)}, it is certain rather than expected, and you can report a defect rate *for line C* with {fmtInt(yard.perStratum)} fittings behind it. The price is that the three lines are three separate draws and three separate tallies, and the estimate for the lot as a whole must be reweighted back to {fmtInt(yard.lineA)} : {fmtInt(yard.lineB)} : {fmtInt(yard.lineC)} or it is not a lot estimate at all.
+
+**Cluster** instead: the lot arrives in {fmtInt(yard.crates)} crates of {fmtInt(yard.crateSize)}. Open {fmtInt(yard.cratesDrawn)} crates chosen by digits and inspect every fitting in them — {fmtInt(yardCrateN)} fittings, for three crate-openings instead of {fmtInt(yard.sample)} rummages through the pallet. Cheapest by a distance. And each crate was packed off one line in one shift, so {fmtInt(yardCrateN)} fittings from {fmtInt(yard.cratesDrawn)} crates carry nearer {fmtInt(yard.cratesDrawn)} crates' worth of information about the lot. That is the trade, in a warehouse and on a shipping lane: **clusters are cheap because their members are alike, and their members being alike is exactly the cost.**
+</Briefing.Worked>
+<Briefing.Caution>
+*"Stratified means I split them into groups."* Splitting is not the design. A stratified sample draws **at random inside every stratum** and includes all of them; taking whichever groups are convenient, or leaving one out because it is hard to reach, is not stratification and has no error you can compute. Sampling only some of the strata is a cluster sample with the clusters chosen badly.
+
+*"Random means haphazard."* Pointing at a list, taking every hull whose master you have spoken to before, or "just grabbing a spread" is not randomization: the selection probabilities are unknown, so no estimate from it has a standard error. Randomization is a physical procedure — digits read off a table two at a time, out-of-range and repeats discarded, the seed logged — and its whole value is that somebody else could repeat it and audit you.
+</Briefing.Caution>
+</Briefing>
+
+<SamplingSimulator />
+
+<Drill generator="act-3/identify-method" count={2} />
+<Drill generator="act-3/srs-random-digits" count={1} />
+<Drill generator="act-3/stratify-or-cluster" count={1} />
+<Drill generator="act-3/design-justification" count={1} />
+<Drill generator="act-3/sampling-cost" count={1} />
+
+<MissionBeat id="act-3-02-design" kind="decision" label="THE DESIGN"
+  prompt={`The frame is ${fmtInt(FRAME_N)} masters. Solberg has ${fmt(srsHours, 1)}, ${fmt(stratHours, 1)} and ${fmt(clusterHours, 1)} hours of link against the three schedules and twenty-six days before torch-off. Every one of these is a probability sample and every one of them is defensible. Your call, Captain.`}
+  options={[DESIGN_OPTIONS.srs, DESIGN_OPTIONS.stratified, DESIGN_OPTIONS.cluster]}>
+  <Outcome option={0}>
+  <Dialogue speaker="analyst" aside="He is already generating the digits, and reading the seed out loud so Solberg can log it.">
+  {fmtInt(SRS_N)} masters, sir, drawn from the whole schedule, every set of {fmtInt(SRS_N)} equally likely. On average the draw gives us about {fmt(expectedPerrine, 0)} Perrine and about {fmt(expectedIndependent, 0)} independents, but I want it on the record that those are averages and this is one draw.
+  </Dialogue>
+  <Dialogue speaker="comms">
+  {fmtInt(SRS_N)} acquisitions, sir. {fmt(srsHours, 1)} hours of link at fifty-five minutes a master, spread over the windows as they come. That fits inside the days we have with the margin I would want.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="analyst" aside="He splits the schedule into three lists before he draws anything, and draws three times.">
+  Three strata, {fmtInt(STRATUM_N)} from each, drawn independently. {fmtInt(stratifiedN)} masters. It costs us five more contacts than the simple random sample and it buys a thing the simple random sample cannot promise: {fmtInt(STRATUM_N)} Perrine masters on the list before we start, whatever the digits do. And when I report the Lane figure I have to weight the three classes back to {fmtInt(FRAME_MIX.Perrine)}, {fmtInt(FRAME_MIX.Mercantile)}, {fmtInt(FRAME_MIX.independent)}, or it isn't a Lane figure.
+  </Dialogue>
+  <Dialogue speaker="comms">
+  {fmtInt(stratifiedN)} acquisitions. {fmt(stratHours, 1)} hours. That is the most expensive schedule on the board, sir, and it is the one I can build tightest, because I know the class of every master before I plan the window.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={2}>
+  <Dialogue speaker="analyst" aside="He draws six convoy numbers, reads them back, and starts counting hulls.">
+  {fmtInt(CLUSTER_K)} convoys out of {fmtInt(CONVOYS.length)}, every master in them — about {fmtInt(clusterN)} masters for {fmt(clusterHours, 1)} hours. Most masters, least time. I'll say the rest of it now so that I have said it: the masters inside a convoy have seen the same Lane, so this sample will be wider than its size suggests, and when we put an interval on anything I will have to explain why it is not the interval a sample of {fmtInt(clusterN)} would give.
+  </Dialogue>
+  <Dialogue speaker="comms">
+  {fmtInt(CLUSTER_K)} acquisitions and the rest are follow-ons on a beam already pointed. {fmt(clusterHours, 1)} hours, sir. Less than half of any other schedule on this board. I will note that the whole survey then rests on {fmtInt(CLUSTER_K)} pointings, and if two of them fail we have lost a third of it.
+  </Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<MissionBeat id="act-3-02-justify" kind="interpretation" label="WHY THIS ONE"
+  prompt="Ferrier wants the design defended in the method section before the first master is raised — not after somebody at Valhalla asks. Name the design you have just ordered, say what it buys for this question, and state what it costs in link time and what it gives up."
+  hint="Three things and an admission. The method by name; who it guarantees you reach or how tight it makes the estimate; the hours of Solberg's link it spends; and the honest sentence about what the cheaper or the cleaner design would have done better."
+  {...designJustificationRubric()}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it, marks nothing, and puts it at the front of the method section.">
+  Good. That paragraph is worth more than the estimate, because in six weeks the estimate will be argued about and this will be the only part of the file nobody can move.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Assuming the design is sound — and it is — that is still not a justification. Name it. Say what it protects the number from. Say what it costs the Lieutenant. And say the thing it does worse than the design you did not pick, because the reviewer will find that sentence whether or not you write it.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-3-02-sulcus" kind="decision" label="THE SULCUS MASTERS"
+  prompt="Perrine hulls — every one of them a Sulcus Freight hull — are on the schedule and on the draw. Ebele's estimate is that most of them will not answer a Compact warship at all, and that a contact spent on one is a contact not spent on a master who will talk. Include them in the contact schedule, or take them off it."
+  options={[SULCUS_OPTIONS.include, SULCUS_OPTIONS.exclude]}>
+  <Outcome option={0}>
+  <Dialogue speaker="xo" aside="She has argued the other side already this morning, out loud, and lost to herself.">
+  Then the silence goes in the file as a number, with the count contacted beside it. A master who does not answer is not a missing row, Ensign. It is a row that says *did not answer*, and it is evidence about the design and possibly about the master.
+  </Dialogue>
+  <Dialogue speaker="comms">
+  Understood, sir. Every Perrine master in the draw gets a raise, a repeat and a logged non-answer with the timestamp. It will cost the same fifty-five minutes as a master who talks for an hour.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="xo" aside="She logs it in her own hand and reads the entry back to you before she closes it.">
+  Then the report describes the masters who were willing to be asked, and it says so in the first line of the method, and it does not say *Lane masters* anywhere. I am recording that I asked and that you decided. Not because I disagree. Because a reviewer in a year will want to know whether anybody thought about it.
+  </Dialogue>
+  <Dialogue speaker="analyst">
+  Cleaner numbers, sir. Every contact is an answer and the response rate is a hundred percent by construction. I'll write the exclusion into the frame definition rather than the results, so nobody reads it as a finding.
+  </Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<Gated by={["act-3-02-justify"]}>
+
+<Scene stamp="MET 57/16:10" location="Bridge · comms station · braking at 4 mgee · 0.68 AU from Callisto" condensed="Solberg builds the contact schedule against the corridor's geometry: twenty-five light-seconds wide, a quarter-minute round trip to a master in the same slice, one day-long window per hull and no second pass. The instrument is built. Nothing has been asked yet.">
+
+The contact schedule goes up at the end of the afternoon watch and it does not look like a survey. It looks like a gunnery plot: a column of hulls, a column of windows, and a diagonal of shaded bars walking down the page as the Lane slides past.
+
+<Dialogue speaker="comms" aside="He has the corridor cross-section on the auxiliary panel, a band twenty-five light-seconds across with Nightjar a point inside it.">
+Sir. The geometry, for the method section. The corridor is twenty-five light-seconds wide where we are. A master in our slice of it is under half a minute away and I can work a return with him in near-conversation. A master a day ahead is not in the corridor with us in any useful sense, and I cannot raise him at all until the schedule brings him past. Each hull is one window, about a day, and the window does not repeat. I have laid the draw into the windows in the order the Lane hands them to us, not in the order the digits produced them, and the order does not affect the sample, only my sleep.
+</Dialogue>
+
+<Decided id={DECISION_IDS.design} is="srs">
+
+Ebele's digits are logged, the seed is in the file, and the draw is a column of {fmtInt(SRS_N)} hull numbers with no pattern in it that anybody will ever find, which is the point of it.
+
+</Decided>
+
+<Decided id={DECISION_IDS.design} is="stratified">
+
+Ebele's three draws are logged separately, three seeds, three lists, and he has written the reweighting into the method section before a single master has been raised, because he will not remember why the three lists were not one list in five weeks' time.
+
+</Decided>
+
+<Decided id={DECISION_IDS.design} is="cluster">
+
+Ebele's {fmtInt(CLUSTER_K)} convoy numbers are logged, and underneath them, in his own hand, is the sentence Ferrier made him write this morning: *masters in a convoy have sailed the same Lane, so this is nearer {fmtInt(CLUSTER_K)} answers than {fmtInt(clusterN)}, and every interval in this report must say so.*
+
+</Decided>
+
+Ferrier reads the schedule end to end and signs it.
+
+"No findings today," she says. "We built a thing that can find out. Tomorrow it starts costing people time, and every one of them is a working master who owes us nothing."
+
+The first window opens at 0410.
+
+</Scene>
+
+<LogEntry
+  title="Stratify to guarantee; cluster to save"
+  concept="A probability sample gives every unit in the frame a known, non-zero chance of selection, and that is what makes its error calculable: an SRS makes every set of n equally likely, a stratified sample draws at random inside every stratum and so is tighter than an SRS when the strata differ, a cluster sample takes whole naturally occurring groups and so is cheaper but wider when members of a group resemble each other, and a systematic sample takes every kth unit from a random start and has only k possible samples. Stratify when the variation is between the groups; cluster when the variation is inside them."
+  formula="\Pr(\text{a given set of } n) = \binom{N}{n}^{-1}; \qquad E[\text{stratum } h \text{ in an SRS}] = n\cdot\frac{N_h}{N}"
+  mistake="Sampling only some of the strata — taking the two owner classes that answer and calling it stratified. Stratification requires a random draw inside every stratum; leaving one out is a cluster sample with the clusters chosen for convenience, and it estimates nothing about the class you dropped."
+  tags={['SRS', 'stratified', 'cluster', 'systematic', 'random digits', 'sampling design', 'cost', '3.3']}
+/>
+
+</Gated>

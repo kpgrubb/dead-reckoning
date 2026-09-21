@@ -15,11 +15,10 @@ summary: "The Authority's headline came from whoever answered a notice at Ceres.
 ---
 
 import { fmt, fmtInt, fmtPct } from '@/lib/stats'
-import { ASGARD_2176, CERES_N, CERES_Q4, CERES_SURVEY, COST, FRAME_MIX, FRAME_N, LANE_FRAME, POPULATION, POPULATION_N, STATUS_LABEL, countBy, ownerMix } from '@/instruments/act-3/data'
+import { ASGARD_2176, CERES_N, CERES_Q4, CERES_SURVEY, COST, FRAME_N, LANE_FRAME, POPULATION, POPULATION_N, STATUS_LABEL, countBy } from '@/instruments/act-3/data'
 import { FrameExplorer } from '@/instruments/act-3/FrameExplorer'
 import { frameQuestionRubric } from '@/instruments/act-3/beats'
 
-export const frameMix = ownerMix(LANE_FRAME)
 export const unreachable = POPULATION.filter((m) => !m.inLaneFrame)
 export const unreachableStatus = countBy(unreachable, (m) => m.status)
 export const UNREACHABLE_ORDER = ['docked-ceres', 'docked-uruk', 'laid-up', 'lost']
@@ -28,8 +27,6 @@ export const ceresFrame = CERES_SURVEY.frame
 export const ceresOnLane = CERES_SURVEY.respondents.filter((m) => m.inLaneFrame).length
 export const ceresOffLane = CERES_SURVEY.respondents.filter((m) => !m.inLaneFrame).length
 export const frameCoverage = ceresOnLane / LANE_FRAME.length
-export const ceresPerrineShare = CERES_SURVEY.mix.Perrine / CERES_SURVEY.n
-export const framePerrineShare = FRAME_MIX.Perrine / FRAME_N
 export const doubleCeres = 2 * CERES_N
 
 export const contactHours = (COST.contactMin * FRAME_N) / 60
@@ -148,7 +145,7 @@ Write the scope honestly and it reads: *{fmtPct(feederYes, 0)} of responding mas
   hint="The population is set by the sentence the Board wrote, not by the data. Then ask the only question that finds a frame: who could physically have been asked?">
   <Success>
   <Dialogue speaker="analyst" aside="He labels the third circle last, the one that touches neither of the others, and sits looking at it.">
-  So the outer circle is the Lane and the middle one is the dock office, and they overlap, but not the way the caption assumes — {fmtInt(ceresOnLane)} of the {fmtInt(CERES_SURVEY.n)} are masters who are on the schedule now, out of {fmtInt(FRAME_N)}. That's {fmtPct(frameCoverage, 0)} coverage of the corridor. And the third circle is everyone who was never going to be asked: {UNREACHABLE_ORDER.map((s) => `${fmtInt(unreachableStatus[s])} ${STATUS_LABEL[s]}`).join('; ')}.
+  So the outer circle is the Lane and the middle one is the dock office, and they overlap, but not the way the caption assumes — {fmtInt(ceresOnLane)} of the {fmtInt(CERES_SURVEY.n)} are masters who are on the schedule now, out of {fmtInt(FRAME_N)}. That's {fmtPct(frameCoverage, 0)} coverage of the corridor. And the third circle is everyone who was never going to be asked: of the {fmtInt(POPULATION_N)} masters working this Close Season, {UNREACHABLE_ORDER.map((s) => `${fmtInt(unreachableStatus[s])} ${STATUS_LABEL[s]}`).join('; ')}.
   </Dialogue>
   </Success>
   <Failure>
@@ -193,7 +190,7 @@ Sir. One master, raised on tight-beam and worked through a return: fifty-five mi
 </Dialogue>
 
 <Dialogue speaker="comms" aside="He does the arithmetic on the board rather than say it, then says it.">
-All {fmtInt(FRAME_N)} of them would be {fmt(contactHours, 0)} hours. That is {fmt(contactDays, 1)} days of continuous link, and we have {fmtInt(29)} days before torch-off, and I sleep. I would like it recorded that I raised the sleeping.
+All {fmtInt(FRAME_N)} of them would be {fmt(contactHours, 0)} hours. That is {fmt(contactDays, 1)} days of continuous link, and we have twenty-nine days before torch-off, and I sleep. I would like it recorded that I raised the sleeping.
 </Dialogue>
 
 Ferrier does not smile, which on the third day of a passage is the same as smiling.
