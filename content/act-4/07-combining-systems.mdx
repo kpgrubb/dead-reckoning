@@ -203,7 +203,7 @@ So those two together draw {fmt(pairSum.mean, 0)} ± **{fmt(pairSum.sd, 2)}** kW
 
 {fmt(pairDiff.mean, 0)} ± **{fmt(pairDiff.sd, 2)}** kW. Compare that with the sum's spread on the same pair of variances: they are the *same rule*. Subtracting the variances instead would give {fmt(pairDiffWrong, 2)} kW — a gap quoted as more certain than the numbers it was built from, which is impossible and is nevertheless what half of all margin sheets say.
 
-**Now the unit conversion**, because a cellar is not measured in kilowatts. This hull's sink holds {fmtInt(SINK_CAPACITY_GJ)} GJ, so one kilowatt held for one hour fills {fmt(fillRate, 5)} percent of it: $Y = aX$ with $a = {fmt(fillRate, 5)}$ and no offset at all.
+**Now the unit conversion**, because a cellar is not measured in kilowatts. This hull's sink holds {fmtInt(SINK_CAPACITY_GJ)} GJ, so one kilowatt held for one hour fills {fmt(fillRate, 5)} percent of it: $Y = aX$ with $a$ = {fmt(fillRate, 5)} and no offset at all.
 
 <Formula tex={transformTex} label="Kilowatts into percent of the cellar per hour" />
 

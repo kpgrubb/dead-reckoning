@@ -1,0 +1,290 @@
+---
+id: act-6-06
+act: 6
+title: "Paid in Hulls, Paid in People"
+kind: module
+ap_topics: ["6.7"]
+objectives:
+  - "Define Type I and Type II errors for a stated test and describe the consequence of each one in context"
+  - "Define power as 1 − β and explain how sample size, significance level and the size of the true difference each move it"
+  - "Choose a significance level by weighing the consequences of the two errors, and record the reason before the data are read"
+prereqs: ["act-6-05"]
+est_minutes: 30
+calc_briefing: null
+summary: "Off the record in the wardroom, Ferrante prices both errors: a career and a Service scandal against the next nineteen hulls. You set α, and you write down why."
+---
+
+import { fmt, fmtInt, fmtPct } from '@/lib/stats'
+import {
+  ALTERNATIVE_COMPARABLE,
+  ALTERNATIVE_DOUBLING,
+  ALPHA_OPTIONS,
+  OTHER_LOSSES,
+  OTHER_TRANSITS,
+  PERRINE_HOLDINGS,
+  PERRINE_LOSSES,
+  PERRINE_TRANSITS,
+  POOLED_RATE,
+  POWER_AT_01,
+  POWER_AT_05,
+  POWER_COMPARABLE_01,
+  POWER_COMPARABLE_05,
+  corridorPower,
+} from '@/instruments/act-6/data'
+import { PowerExplorer } from '@/instruments/act-6/PowerExplorer'
+import { typeIandIIRubric } from '@/lib/problems/generators/act-6/power'
+
+export const themisN = 300
+export const themisP0 = 0.12
+export const themisPA = 0.16
+export const themisSmallPA = 0.14
+export const themis05 = corridorPower({ p0: themisP0, pA: themisPA, n: themisN, alpha: 0.05 })
+export const themis01 = corridorPower({ p0: themisP0, pA: themisPA, n: themisN, alpha: 0.01 })
+export const themisBig = corridorPower({ p0: themisP0, pA: themisPA, n: 4 * themisN, alpha: 0.01 })
+export const themisSmallEffect = corridorPower({ p0: themisP0, pA: themisSmallPA, n: themisN, alpha: 0.05 })
+export const themisSe0 = Math.sqrt((themisP0 * (1 - themisP0)) / themisN)
+export const themisSeA = Math.sqrt((themisPA * (1 - themisPA)) / themisN)
+export const themisCutoffTex = `\\hat p^\\star = p_0 + z^\\star\\sqrt{\\frac{p_0(1 - p_0)}{n}} = ${fmt(themisP0, 2)} + 1.645 \\times ${fmt(themisSe0, 5)} = ${fmt(themis05.rejectAbove, 5)}`
+export const themisPowerTex = `\\text{power} = P\\left(Z > \\frac{${fmt(themis05.rejectAbove, 5)} - ${fmt(themisPA, 2)}}{${fmt(themisSeA, 5)}}\\right) = P(Z > ${fmt((themis05.rejectAbove - themisPA) / themisSeA, 3)}) = ${fmt(themis05.power, 3)}`
+export const powerGap = POWER_AT_05.power - POWER_AT_01.power
+export const doublingText = `${fmt(ALTERNATIVE_DOUBLING.p1, 3)} against ${fmt(ALTERNATIVE_DOUBLING.p2, 3)}`
+export const comparableText = `${fmt(ALTERNATIVE_COMPARABLE.p1, 3)} against ${fmt(ALTERNATIVE_COMPARABLE.p2, 3)}`
+export const errorsRubric = typeIandIIRubric({
+  nullInWords: 'Perrine-beneficiary hulls and every other hull on the Lane are lost at the same rate',
+  altInWords: 'Perrine-beneficiary hulls are lost at a higher rate',
+  typeIConsequence:
+    'this ship accuses an insurer and a pension fund of something that is not happening, the accusation lands on a Martian adjuster’s desk and becomes a Service scandal, and the officer who signed it does not command again',
+  typeIIConsequence: 'the diversions go on unreported, and the next nineteen hulls are lost the way the first nineteen were',
+  parameter: 'loss rate per transit',
+  population: 'transits on the Hundred-Day Lane',
+})
+export const alphaOptions = [
+  `Set α = 0.05 and sign it. It is the level every reviewer in the Service reads without comment, it catches the difference this ship specified before the test ${fmtPct(POWER_AT_05.power, 0)} of the time, and one false alarm in twenty is a rate the Compact has lived with for a century.`,
+  `Set α = 0.01 and sign it. A false-alarm rate of one in a hundred is a number that survives being read aloud in a panelled room, and this finding will be read aloud in a panelled room. The power against the difference we specified falls to ${fmtPct(POWER_AT_01.power, 0)}.`,
+]
+
+<Scene stamp="MET 140/01:20" location="Wardroom, deck one · alongside at Ceres, watch below" condensed="Off the record, after midnight, Ferrante prices both errors in the second person. Reject a true null and the accusation lands on a Martian adjuster's desk as a Service scandal and the officer who signed it never commands again. Fail to reject a false one and the next nineteen hulls go the way of the first nineteen. He will not tell you which is worse; he tells you what each costs and asks what you are going to write down. Ferrier makes the procedural point: α is a decision, it is made now, and it is made in ink.">
+
+The wardroom at one in the morning smells of the coffee somebody made at eight. Ferrante has the door shut, which on this ship means the conversation is not happening, and he has brought two cups and a folder he does not open.
+
+He looks at you for a while before he says anything, which is a habit and also a diagnosis.
+
+<Dialogue speaker="medic" aside="He has not sat down. He puts one cup in front of you and keeps the other, and he does not drink from it." >
+You have not slept since the register came aboard. Your hands are steady and your speech is fine and neither of those things is evidence of anything at this hour — I would expect both from a man about to make a bad call, and so would you. That is not why I am here. I am here because you are going to sign something tomorrow and there is a number in it that nobody has made you look at yet.
+</Dialogue>
+
+He turns the folder round without opening it.
+
+<Dialogue speaker="medic" aside="Second person, flat, the way he reads a chart. He is not building to anything.">
+Two ways to be wrong. Take them one at a time and do not average them.
+
+The first: there is nothing in the Lane, the beneficiary column is a coincidence of who insures what, and you send the accusation anyway. Then a Compact corvette has accused a Martian syndicate and the fund that pays your pension of arranging the deaths of thirty-one crews. Tharsis has counsel on retainer. It goes to an adjuster's desk on Mars inside a month and to a hearing inside a year, and what the hearing is about is not the Lane any more — it is the Service, and whether a ship like this one should exist. You do not command again. Neither does Ferrier. That is the first way.
+
+The second: it is all real, exactly as you think it is, and the test comes back short and you write *insufficient evidence* and file it. Then nothing happens. The Lane keeps running. Four hundred and thirty-five transits a year, the same beneficiary on the same policies, and the next nineteen hulls go the way the first nineteen went — over the course of about six years, at the rate this thing has been operating. That is the second way.
+</Dialogue>
+
+You ask him the question everybody asks, which is which one is worse.
+
+<Dialogue speaker="medic" aside="He answers it the way he answers every moral question, which is clinically, and it is not evasion.">
+That is not a question I can answer and it is not a question with an answer. I can tell you what each costs and I have. What I can tell you is the thing people get wrong about the second one, and they get it wrong because it is comfortable: a test that comes back short is not a test that found nothing there. It is a test that did not have the reach. Those two outcomes look identical on the page, and the page is all anybody will ever see.
+</Dialogue>
+
+Ferrier has been in the corner of the wardroom the whole time with her coat still on, and she does not soften it.
+
+<Dialogue speaker="xo" aside="She has the brief in front of her and a pen she has not used yet." >
+The Board will not ask you which error you were more afraid of. It will ask what significance level you set and when you set it. Those are two different questions and only the second one is dangerous. Set it now, tonight, before we read anything else, and write the reason beside it. A level set after the p-value is not a level. Say it back to me.
+</Dialogue>
+
+</Scene>
+
+<Briefing title="Two ways to be wrong, and the price of each" topics={["6.7"]}>
+<Briefing.Intuition>
+A significance test is a decision rule, and a decision rule run honestly still makes mistakes. Not carelessness — mistakes the procedure *will* make at a rate you can compute in advance and, in one case, choose.
+
+There are exactly two, because there are two ways the world can be and two things the test can say.
+
+|  | $H_0$ is true | $H_0$ is false |
+|---|---|---|
+| **reject $H_0$** | **Type I error** — probability $\alpha$ | correct — probability **power** |
+| **fail to reject** | correct | **Type II error** — probability $\beta$ |
+
+**A Type I error is a false alarm.** The world is quiet and you say it is not. Its probability is $\alpha$, and $\alpha$ is not discovered, measured or estimated — it is *set*, by whoever writes the test, before the data arrive. That is the whole reason the number is interesting. It is the one error rate in the procedure that is a decision.
+
+**A Type II error is a miss.** Something is there and the test does not report it. Its probability is $\beta$, and $\beta$ is not set by anybody. It falls out of three things: how strict you made the cutoff, how much data you have, and how big the thing you are trying to see actually is. You can influence it. You cannot name it.
+
+**Power is $1 - \beta$** — the probability that the test *does* report a difference that is genuinely there. And the sentence that matters here is the one nobody says out loud: power is a property of the test **and** a specific alternative **and** the sample sizes. "What is the power of this test" is never a complete question. Power against *what*?
+
+Three things move it, and it is worth knowing which of the three costs money.
+
+- **Sample size.** More data narrows both sampling distributions, so the same real difference sits further apart in standard errors and power rises. This is the only lever that improves both error rates at once, and it is the only one that cannot be pulled by making a decision — it costs seasons.
+- **The significance level.** Lowering $\alpha$ slides the cutoff away from the null, which is exactly what it is for, and drags power down behind it. Fewer false alarms, more misses, always, in that proportion. There is no setting of $\alpha$ that reduces both.
+- **The size of the true difference.** A test can have excellent power against a difference you would call an emergency and almost none against one half that size. Nothing about the test changed; the target moved.
+
+Which brings the argument back to $\alpha$. Because $\alpha$ is a choice and $\beta$ is a consequence, setting $\alpha$ is not a statement about how careful you intend to be — both settings are careful. It is a statement about **which of the two mistakes you would rather make**, and it is only defensible if it was made before the data, with the two consequences written down beside it.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\alpha = P(\text{reject } H_0 \mid H_0 \text{ true})" terms={{ '\\alpha': 'the significance level: the Type I error rate, chosen in advance', 'H_0': 'the null hypothesis — no effect, no difference' }} label="Type I error — a false alarm" />
+
+<Formula tex="\beta = P(\text{fail to reject } H_0 \mid H_0 \text{ false})" terms={{ '\\beta': 'the Type II error rate — not chosen, but consequent', '\\text{fail to reject}': 'the test comes back short and nothing is reported' }} label="Type II error — a miss" />
+
+<Formula tex="\text{power} = 1 - \beta = P(\text{reject } H_0 \mid \text{a specific alternative is true})" terms={{ '\\text{power}': 'the chance of catching what is there — always against a stated alternative', '1 - \\beta': 'the complement of the miss rate, NOT of the false-alarm rate' }} label="Power" />
+
+<Formula tex="\hat p^\star = p_0 + z^\star \sqrt{\frac{p_0(1 - p_0)}{n}} \qquad \text{power} = P\left(Z > \frac{\hat p^\star - p_A}{\sqrt{p_A(1 - p_A)/n}}\right)" terms={{ '\\hat p^\\star': 'the cutoff: how extreme the estimate must be before the test rejects — computed under H₀', 'z^\\star': 'the critical value for the chosen α', 'p_A': 'the specific alternative the power is measured against' }} label="Computing power: the cutoff under H₀, the area under Hₐ" />
+</Briefing.Definition>
+<Briefing.Worked>
+The Themis Reach survey office, 2182, and a review that was planned properly and then not funded.
+
+The Reach posts a hold rate of {fmt(themisP0, 2)} — the proportion of arrivals held at the mark — and three masters have complained that the real figure is worse. The office proposes a review of {fmtInt(themisN)} arrivals, testing H₀: p = {fmt(themisP0, 2)} against Hₐ: p greater than {fmt(themisP0, 2)}, and before it commits the berth-time it asks the only sensible question: *if the true rate really were {fmt(themisPA, 2)}, would this review find it?*
+
+**The cutoff, under $H_0$.** At $\alpha = 0.05$, one-sided, with a critical value of 1.645:
+
+<Formula tex={themisCutoffTex} terms={{ 'p_0': 'the posted rate — the null value', 'n': 'arrivals in the review' }} label="How high the sample rate has to come before the office rejects" />
+
+**The area beyond it, under $H_a$.** If the true rate is really {fmt(themisPA, 2)}, the sample proportion is centred there with standard error {fmt(themisSeA, 5)}, so
+
+<Formula tex={themisPowerTex} terms={{ 'p_A': 'the alternative the power is measured against' }} label="Power against a true rate of 0.16" />
+
+**Power {fmt(themis05.power, 3)}**, and therefore β = {fmt(themis05.beta, 3)}. Run this review on a Reach where the hold rate really is {fmt(themisPA, 2)} and it comes back with nothing about one time in three. That is the number the office wrote in the proposal, and it is the reason the proposal asked for more arrivals than anybody thought it needed.
+
+Now move each lever in turn and watch what it costs.
+
+- **Tighten $\alpha$ to 0.01** and hold everything else: power falls from {fmt(themis05.power, 3)} to **{fmt(themis01.power, 3)}**. Nothing about the Reach changed. The office simply made its own test harder to trigger, and paid {fmt(themis05.power - themis01.power, 2)} of detection rate for it.
+- **Quadruple the review** to {fmtInt(4 * themisN)} arrivals, at the *stricter* $\alpha = 0.01$: power **{fmt(themisBig.power, 3)}**. More data buys back everything the stricter level cost and a good deal more — which is why the honest answer to "we need to be more rigorous" is usually "then we need a bigger file", not "then we need a smaller α".
+- **Halve the difference** you are looking for — a true rate of {fmt(themisSmallPA, 2)} instead of {fmt(themisPA, 2)} — at the original $\alpha = 0.05$: power **{fmt(themisSmallEffect.power, 3)}**. The same review, the same level, the same arithmetic, and it is now very nearly blind. The test did not get worse. The target got smaller.
+
+The Reach did not get its funding. The review was run on the arrivals the office already had, it came back short, and the file was closed with the words *no evidence of an elevated hold rate*. Which was true, and which meant nothing, and which is the sentence this module exists to make you suspicious of.
+</Briefing.Worked>
+<Briefing.Caution>
+*"A Type I error is always the worse error."* It is worse in a courtroom, where the whole procedure is built around the cost of convicting the innocent, and the vocabulary of statistics was borrowed from there. It is not worse in a pressure-seal inspection, where a false alarm costs a week and a pallet of stock and a miss costs a compartment with people in it. Neither error is automatically the expensive one. Naming both prices, in context, is the entire analysis; anything less is a definition.
+
+*"Power = 1 − α."* The most common error in the topic, and the most expensive, because it makes the whole calculation look unnecessary. $\alpha$ and $\beta$ are computed on **different sampling distributions** — $\alpha$ is a tail of the one $H_0$ predicts, $\beta$ is a tail of the one the alternative predicts — so there is no reason at all for them to be complements, and they are not. In the Reach review, $1 - \alpha = 0.95$ and the power was {fmt(themis05.power, 3)}. The sum that *is* 1 is $\beta + \text{power}$, because those two share a condition.
+
+*"A smaller α is free, or at least cheap."* It is neither. It is a purchase, and the currency is power. Every point of false-alarm rate you buy back is paid for in misses, and the exchange rate depends on how big the difference is: against a large difference the stricter level costs little, against a small one it can cost everything. Quote the price when you quote the level.
+
+*"We failed to reject, so H₀ is true."* A Type II error is by definition the case where $H_0$ is false and the test did not say so. Failing to reject leaves $H_0$ standing as an unrefuted possibility; it never establishes it — and a low-powered test that missed a real difference produces exactly the same page as a corridor where nothing is wrong. Which is why *no evidence of an effect* and *evidence of no effect* are different sentences, and only one of them is ever available.
+</Briefing.Caution>
+</Briefing>
+
+<PowerExplorer />
+
+<Drill generator="act-6/type-i-ii" count={1} />
+<Drill generator="act-6/power-value" count={1} />
+<Drill generator="act-6/power-drivers" count={1} />
+<Drill generator="act-6/power-not-one-minus-alpha" count={1} />
+<Drill generator="act-6/error-consequences" count={1} />
+<Drill generator="act-6/choose-alpha" count={1} />
+
+<MissionBeat id="act-6-06-errors" kind="interpretation" label="BOTH WAYS TO BE WRONG"
+  prompt={`This ship's test is H₀: p₁ = p₂ against Hₐ: p₁ > p₂, where p₁ and p₂ are the true loss rates per transit for hulls whose policies name ${PERRINE_HOLDINGS} and for hulls naming any other beneficiary, on ${fmtInt(PERRINE_LOSSES)} of ${fmtInt(PERRINE_TRANSITS)} against ${fmtInt(OTHER_LOSSES)} of ${fmtInt(OTHER_TRANSITS)}. If we reject, the accusation goes to Valhalla over your name.\n\nDescribe the Type I error and the Type II error for this test, in context, and state what each one costs. Four things: what each error is in terms of these two hypotheses, and what each one does — to this ship, and to the Lane.`}
+  hint="Type I: H₀ is true and we reject it anyway. Type II: H₀ is false and we do not. Then attach the price to each, and remember that nothing at all happens unless we reject — so the cost of the miss is the cost of nothing happening."
+  {...errorsRubric}>
+  <Success>
+  <Dialogue speaker="medic" aside="He reads it once and puts it back on the table the right way up for you, not for him.">
+  Both of them, with the price attached, and you did not tell me which one you were more afraid of. Good. The ledger goes in the file. Whatever happens at the hearing, somebody will be able to show that this ship knew what it was risking in both directions before it risked anything.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She hands it back and puts a fingernail under the place where it stops.">
+  You have the definitions. Anybody has the definitions. What is missing is what they cost, and the cost is the only part of this that is about the Lane rather than about statistics. A false alarm does what, to whom? A miss does what, to whom? Two sentences. Say it back to me.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-06-power-05" kind="numeric" label="WHAT 0.05 CAN SEE"
+  prompt={`Before this ship read anything, it wrote down the difference it would consider worth finding: a loss rate of ${fmt(ALTERNATIVE_DOUBLING.p1, 3)} among Perrine-beneficiary hulls against ${fmt(ALTERNATIVE_DOUBLING.p2, 3)} among everyone else — a tripling, near enough, of a very small number. The comparison stands on ${fmtInt(PERRINE_TRANSITS)} transits against ${fmtInt(OTHER_TRANSITS)}.\n\nAt the conventional α = 0.05, one-sided, what is the power of this test against that alternative? Give it to two decimal places.`}
+  answer={POWER_AT_05.power}
+  answerKind="proportion"
+  digits={2}
+  tolerance={0.02}
+  hint="Two steps on two different distributions. The cutoff first: how big a difference p̂₁ − p̂₂ would this test have to see before it rejects? That is z* times the POOLED standard error, computed at the common rate the alternative implies. Then the area beyond that cutoff on the alternative's own distribution, which is centred at 0.021 − 0.007 and has the UNPOOLED standard error.">
+  <Success>
+  <Dialogue speaker="xo" aside="She writes it in the margin of the brief, next to the level, and underlines the pair rather than the number.">
+  So at the conventional level, against the thing we said we were looking for, this test finds it nine times in ten. That is worth knowing and it is worth writing down, because in a year somebody is going to ask whether we would have found it if it were there, and the answer is a number and not an opinion.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has both standard errors up and has used the same one twice.">
+  So — yes, sir. That's — yes. I used the unpooled one for the cutoff as well, and the cutoff is a property of the test, and the test lives under the null. Pooled for where the line is, unpooled for how much of the alternative is past it.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-06-power-01" kind="numeric" label="WHAT 0.01 CAN SEE"
+  prompt={`Now the same test, the same ${fmtInt(PERRINE_TRANSITS)} and ${fmtInt(OTHER_TRANSITS)} transits, the same pre-specified alternative of ${fmt(ALTERNATIVE_DOUBLING.p1, 3)} against ${fmt(ALTERNATIVE_DOUBLING.p2, 3)} — at α = 0.01 instead.\n\nWhat is the power now? Give it to two decimal places.`}
+  answer={POWER_AT_01.power}
+  answerKind="proportion"
+  digits={2}
+  tolerance={0.02}
+  hint="Nothing about the Lane changes. The alternative is where it was, the transits are what they were. One number moves: the critical value, from 1.645 to 2.326, which slides the cutoff further out — and takes a slice of the alternative's distribution with it.">
+  <Success>
+  <Dialogue speaker="medic" aside="He does the subtraction himself, out loud, and then does not say anything for a moment.">
+  So the stricter level costs {fmtPct(powerGap, 0)} of the chance of catching it. Say that plainly, because it is the sentence the arithmetic is for: at the tighter level, if this is real, we fail to report it about one time in four instead of one time in ten. That is not an abstraction. It is a number of hulls.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She does not take the stylus.">
+  You have answered 0.99, which is one minus the level. Power is one minus beta, and beta lives on the other curve entirely. If power were one minus alpha, a strict enough test would be certain to find anything, and you already know that is the opposite of true.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-06-alpha" kind="decision" label="SET IT AND SIGN IT"
+  prompt={`One line in the brief, and Ferrier wants it tonight, before anybody reads another number. What significance level does this accusation go out at?`}
+  options={alphaOptions}>
+  <Outcome option={0}>
+  <Dialogue speaker="medic" aside="He writes the level on the folder he never opened, and the power beside it, and slides the folder to Ferrier.">
+  Then the file says this: one finding in twenty from a quiet Lane would look like this one, and against the difference we named we catch it {fmtPct(POWER_AT_05.power, 0)} of the time. You have chosen the miss as the error you are less willing to make. That is a defensible choice and it is the choice I would expect from a man who has read the beneficiary column. Put the reason in the brief in your own words, and do not let anybody call it the default.
+  </Dialogue>
+  <Dialogue speaker="engineer" aside="From the hatch, on her way aft, without stopping.">
+  One in twenty, Skipper. Twenty accusations and one of them wrong. We have made one accusation.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="medic" aside="He writes the level on the folder, and the power beside it, and leaves the folder shut.">
+  Then the file says this: one finding in a hundred from a quiet Lane would look like this one, and it costs us {fmtPct(powerGap, 0)} of our reach. You have chosen the false alarm as the error you are less willing to make, and you have paid for it in hulls that you will never be able to count. That is also defensible. It is the choice that survives a hearing, and a hearing is coming.
+  </Dialogue>
+  <Dialogue speaker="engineer" aside="From the hatch, on her way aft, without stopping.">
+  One in a hundred, Skipper. You will be able to say that number in a room full of people who want you to be wrong, and it will hold.
+  </Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<Gated by={["act-6-06-errors", "act-6-06-power-05", "act-6-06-power-01"]}>
+
+<Scene stamp="MET 140/05:50" location="Main deck, frame 14 · alongside at Ceres, morning watch" condensed="Before dawn, Sandoval is at the cellar gauge with the wings out for the first time in fifty-seven days. She reads the power figures back without comment, says one sentence about which errors are paid in which currency, and goes back to the gauge. The ledger is closed: the two errors named, both priced, the level set and dated. Nothing new is proven. What the module has done is put a price on the loss that has not happened yet.">
+
+The morning watch on a docked ship is the quietest thing in the solar system. Sandoval is at frame fourteen with the cellar gauge open and both radiators out, dumping fifty-seven days of stored heat into Ceres orbit where anyone can see it, which is the single most conspicuous thing *Nightjar* has done since she was laid down.
+
+She has the night's page in her free hand. She has clearly read it.
+
+<Dialogue speaker="engineer" aside="She does not look up from the gauge. Her thumb is on the needle, the way it always is." >
+Sink temperature two-eighty-one Kelvin, plus or minus four, and falling about a degree an hour. Wings will be in by the forenoon.
+</Dialogue>
+
+She turns the page over and puts it on the deck plate under her boot so the draught does not take it.
+
+<Dialogue speaker="engineer" aside="Flat, in the same voice as the gauge reading, and she goes straight back to the gauge afterwards. She does not explain it and nobody asks her to.">
+Some errors are paid in hulls, Captain, and some are paid in people. You have just written down which one you would rather make. You are going to find out which one you made.
+</Dialogue>
+
+The needle does what needles do. She notes it, closes the gauge, and goes aft.
+
+What exists at the end of this watch is a ledger, and the ledger is the whole of what this module produced. Nothing new has been proven about the Lane. The rate is what it was at {fmt(POOLED_RATE, 4)} pooled, the statistic is what it was, the conclusion signed off at the end of yesterday's watch has not moved a digit. What is new is a page that says, in advance and in ink, what each of the two mistakes costs and how often this particular test makes each of them.
+
+Against the difference this ship named before it looked — {doublingText} — the test sees what is there {fmtPct(POWER_AT_05.power, 0)} of the time at the conventional level and {fmtPct(POWER_AT_01.power, 0)} of the time at the strict one.
+
+Against the difference the Board will offer instead — {comparableText}, which its counsel will call *consistent with comparable corridors* — the test sees it {fmtPct(POWER_COMPARABLE_05.power, 0)} of the time at {fmt(ALPHA_OPTIONS[0], 2)} and {fmtPct(POWER_COMPARABLE_01.power, 0)} of the time at {fmt(ALPHA_OPTIONS[1], 2)}. Read that pair twice. Against a difference that size, on {fmtInt(PERRINE_TRANSITS + OTHER_TRANSITS)} transits, this Lane is blind, and no choice of level repairs it. If the Board wants to argue that the gap is small, the honest reply is not that the gap is large — it is that a Lane this quiet could never have told the difference, and the Board knows it.
+
+None of which is a finding. It is a price list, written the night before the thing is sent, which is the only night it can honestly be written.
+
+</Scene>
+
+<LogEntry
+  title="Two errors, two prices, and the number you set yourself"
+  concept="A test can be wrong in exactly two ways: a Type I error rejects a true H₀ — a false alarm, at a rate α that you choose in advance — and a Type II error fails to reject a false one, a miss, at a rate β that nobody chooses. Power is 1 − β: the probability the test reports a difference that is genuinely there, always measured against a specific alternative, so 'the power of this test' is never a complete phrase. Three things move power — more data raises it, a smaller α lowers it, and a smaller true difference lowers it — and only the first improves both error rates at once, because there is one cutoff and it cannot be in two places. Setting α is therefore not a statement about rigour but a statement about which of the two mistakes you would rather make, and it is only defensible if it was made, with its reason, before the data were read."
+  formula="\alpha = P(\text{reject } H_0 \mid H_0 \text{ true}) \qquad \beta = P(\text{fail to reject} \mid H_0 \text{ false}) \qquad \text{power} = 1 - \beta"
+  mistake="Power = 1 − α. The two are areas under different sampling distributions — α under the null's, β and power under the alternative's — and are unrelated. The companion error is reading a test that came back short as evidence that H₀ is true, when it is exactly what a real difference looks like through an underpowered test."
+  tags={['Type I error', 'Type II error', 'power', 'beta', 'significance level', 'alpha', 'effect size', 'sample size', 'consequences', '6.7']}
+/>
+
+</Gated>

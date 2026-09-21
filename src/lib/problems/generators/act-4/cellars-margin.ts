@@ -210,7 +210,7 @@ export const sdOfSum = defineGenerator({
         `Square each SD to get a variance column: ${varianceNumbers} ${ctx.unitSquared}. Add that column, then take the square root.`,
         `$\\sqrt{${varianceNumbers}}$, to two decimal places.`,
       ],
-      solution: `Variances add for independent random variables:\n\n${tableMd(budgetColumns(ctx), budgetRows(ctx, set))}\n\n$$\\sigma^2_{\\text{total}} = ${varianceList} = ${fmt(set.total.variance, 0)}\\ \\text{${ctx.unitSquared}}$$\n\n$$\\sigma_{\\text{total}} = \\sqrt{${fmt(set.total.variance, 0)}} = ${fmt(set.total.sd, 4)}$$\n\nThe SD of ${ctx.total} is **${fmt(set.total.sd, 2)} ${ctx.unit}**, around a mean of ${fmt(set.total.mean, 0)} ${ctx.unit}.`,
+      solution: `Variances add for independent random variables:\n\n${tableMd(budgetColumns(ctx), budgetRows(ctx, set))}\n\n$$\\sigma^2_{\\text{total}} = ${varianceList} = ${fmt(set.total.variance, 0)}\\ \\text{${ctx.unit}}^2$$\n\n$$\\sigma_{\\text{total}} = \\sqrt{${fmt(set.total.variance, 0)}} = ${fmt(set.total.sd, 4)}$$\n\nThe SD of ${ctx.total} is **${fmt(set.total.sd, 2)} ${ctx.unit}**, around a mean of ${fmt(set.total.mean, 0)} ${ctx.unit}.`,
       misconception: `Adding the standard deviations gives ${fmt(set.naive, 0)} ${ctx.unit}, which is the spread you would get only if all ${k} ${ctx.componentWord} ran high together. Independence is exactly the assumption that they do not, and the square root of the summed variances is what independence buys you.`,
     }
   },
@@ -336,7 +336,7 @@ export const sdOfDifference = defineGenerator({
         `$\\sigma_D^2 = ${draw.aSd}^2 + ${draw.bSd}^2 = ${fmt(D.variance, 0)}$ ${ctx.unitSquared}. Take the square root.`,
         `$\\sqrt{${fmt(D.variance, 0)}}$, to two decimal places.`,
       ],
-      solution: `$$\\mu_D = ${draw.aMean} - ${draw.bMean} = ${fmt(D.mean, 0)}\\ \\text{${ctx.unit}}$$\n\n$$\\sigma_D^2 = \\sigma_A^2 + \\sigma_B^2 = ${draw.aSd}^2 + ${draw.bSd}^2 = ${fmt(D.variance, 0)}\\ \\text{${ctx.unitSquared}}$$\n\n$$\\sigma_D = \\sqrt{${fmt(D.variance, 0)}} = ${fmt(D.sd, 4)}$$\n\n${ctx.diffName.charAt(0).toUpperCase()}${ctx.diffName.slice(1)} has mean ${fmt(D.mean, 0)} ${ctx.unit} and standard deviation **${fmt(D.sd, 2)} ${ctx.unit}**. Subtracting two uncertain numbers does not cancel their uncertainties; it piles them up.`,
+      solution: `$$\\mu_D = ${draw.aMean} - ${draw.bMean} = ${fmt(D.mean, 0)}\\ \\text{${ctx.unit}}$$\n\n$$\\sigma_D^2 = \\sigma_A^2 + \\sigma_B^2 = ${draw.aSd}^2 + ${draw.bSd}^2 = ${fmt(D.variance, 0)}\\ \\text{${ctx.unit}}^2$$\n\n$$\\sigma_D = \\sqrt{${fmt(D.variance, 0)}} = ${fmt(D.sd, 4)}$$\n\n${ctx.diffName.charAt(0).toUpperCase()}${ctx.diffName.slice(1)} has mean ${fmt(D.mean, 0)} ${ctx.unit} and standard deviation **${fmt(D.sd, 2)} ${ctx.unit}**. Subtracting two uncertain numbers does not cancel their uncertainties; it piles them up.`,
       misconception: `The variance of a difference does **not** subtract. Writing ${wrong} treats uncertainty as if it could be cancelled by a minus sign. Both quantities wobble, and both wobbles show up in the gap between them — which is why a margin is always less certain than either figure that made it.`,
     }
   },

@@ -281,10 +281,7 @@ export function typeIandIIRubric({ nullInWords, altInWords, typeIConsequence, ty
       polarity: 'any',
       feedback: `A Type II error is failing to reject H₀ when H₀ is false — reporting nothing although ${altInWords}.`,
     },
-    contextGroup('Prices the Type II error in context', [typeIIConsequence], {
-      minMatches: 2,
-      feedback: `Say what the miss costs here: ${typeIIConsequence}.`,
-    }),
+    priceGroup('Prices the Type II error in context', typeIIConsequence, `Say what the miss costs here: ${typeIIConsequence}.`),
     contextGroup('Names the context (what is measured, and for whom)', [parameter, population], {
       minMatches: 2,
       feedback: `Say what and whom: the ${parameter} of ${population}.`,
@@ -413,6 +410,8 @@ export const powerValue = defineGenerator({
           d.n * (1 - d.p0) >= 10 &&
           d.res.power > 0.15 &&
           d.res.power < 0.96 &&
+          /* Never let the answer coincide with 1 − α, the misconception this module is about. */
+          Math.abs(d.res.power - (1 - alpha)) > 0.02 &&
           !reservedCount(d.n) &&
           !reservedRate(d.p0) &&
           !reservedRate(d.pA),
@@ -446,6 +445,7 @@ export const powerValue = defineGenerator({
         d.p1 < 0.6 &&
         d.res.power > 0.15 &&
         d.res.power < 0.96 &&
+        Math.abs(d.res.power - (1 - alpha)) > 0.02 &&
         Math.min(d.n1, d.n2) * Math.min(d.res.pooled, 1 - d.res.pooled) >= 10 &&
         ![d.n1, d.n2].some(reservedCount) &&
         ![d.p1, d.p2, d.res.pooled].some(reservedRate),

@@ -7,10 +7,12 @@
  */
 import { describe, expect, it } from 'vitest'
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { fmt, fmtP, reject } from '@/lib/stats'
+import { fmt, fmtP, onePropTest, pValueZ, reject, twoPropInterval, twoPropTest } from '@/lib/stats'
 import { gradeInterpretation } from '@/lib/problems/rubric'
 import { AGENCY_FORBIDDEN, conclusionInContextRubric } from '@/lib/problems/generators/act-6/conclusion'
-import { DIFFERENCE_INTERVAL, PERRINE_TEST, differenceInterval } from './data'
+import { DIFFERENCE_INTERVAL, PERRINE_TEST, ROOK_2176, differenceInterval, simulateNullZ, simulatedPValue } from './data'
+import { HYPOTHESIS_CASES } from './HypothesisConsole'
+import { ROOK_NULL_RATE } from './PValueVisualiser'
 import { DecisionConsole } from './DecisionConsole'
 
 /** Text of the value cell of the <Readout> whose label is exactly `label`. */
@@ -202,5 +204,64 @@ describe('<DecisionConsole> (act-6-05)', () => {
     fireEvent.click(screen.getByRole('button', { name: /^the true fault rate is greater than/ }))
     fireEvent.click(screen.getByRole('button', { name: /^per run, among hulls fitted with the older scrubber$/ }))
     expect(readout('verdict')).toBe('WOULD STAND')
+  })
+})
+
+/**
+ * The two Briefing worked examples are written in the MDX, so nothing else pins them. Both are
+ * quoted in prose that asserts a direction ("nearly half of them", "fail to reject", "contains
+ * zero"), and if a number moved the prose would be wrong while the page still built.
+ */
+describe('Briefing worked examples (act-6-04 and act-6-05)', () => {
+  it('act-6-04: the 2176 Asgard report is 13 in 2,580 against 0.005, with a p-value near a half', () => {
+    const rook = onePropTest({ x: ROOK_2176.losses, n: ROOK_2176.transits, p0: ROOK_NULL_RATE, alt: 'greater', random: true })
+    expect(ROOK_2176.losses).toBe(13)
+    expect(ROOK_2176.transits).toBe(2580)
+    expect(ROOK_NULL_RATE).toBe(0.005)
+    // The module says the record was "as ordinary as a record can be": z near zero, p near 0.5.
+    expect(Math.abs(rook.statistic)).toBeLessThan(0.15)
+    expect(rook.pValue!).toBeGreaterThan(0.4)
+    expect(rook.pValue!).toBeLessThan(0.5)
+    // Large Counts at p₀ passes, and the module quotes the clearance.
+    expect(ROOK_2176.transits * ROOK_NULL_RATE).toBeGreaterThan(10)
+    // And the two-sided reading is exactly twice the one-sided one.
+    expect(pValueZ(rook.statistic, 'two-sided')).toBeCloseTo(2 * rook.pValue!, 12)
+  })
+
+  it('act-6-04: the Lane reconciliation is eight in ten thousand, by both routes', () => {
+    const simP = simulatedPValue(simulateNullZ('lane', 10_000), PERRINE_TEST.statistic)
+    expect(Math.round(PERRINE_TEST.pValue! * 10_000)).toBe(8)
+    expect(Math.round(simP * 10_000)).toBe(8)
+    // They agree to three decimals and cannot agree to five — the simulation's floor is 1/10,000.
+    expect(Math.abs(simP - PERRINE_TEST.pValue!)).toBeLessThan(0.0005)
+    expect(fmt(simP, 5)).not.toBe(fmt(PERRINE_TEST.pValue!, 5))
+  })
+
+  it('act-6-05: the Themis Reach review fails to reject at 0.05, and both intervals contain zero', () => {
+    const c = HYPOTHESIS_CASES.themis
+    const test = twoPropTest({ x1: c.x1, n1: c.n1, x2: c.x2, n2: c.n2, alt: 'greater', random: true })
+    expect(reject(test.pValue!, 0.05)).toBe(false)
+    expect(test.pValue!).toBeGreaterThan(0.05)
+    // The sample rates do differ — the point of the example is that the difference is not resolvable.
+    expect(c.x1 / c.n1).toBeGreaterThan(c.x2 / c.n2)
+
+    const ci95 = twoPropInterval({ x1: c.x1, n1: c.n1, x2: c.x2, n2: c.n2, confidence: 0.95, random: true }).ci as [number, number]
+    const ci90 = twoPropInterval({ x1: c.x1, n1: c.n1, x2: c.x2, n2: c.n2, confidence: 0.9, random: true }).ci as [number, number]
+    expect(ci95[0]).toBeLessThan(0)
+    expect(ci95[1]).toBeGreaterThan(0)
+    expect(ci90[0]).toBeLessThan(0)
+    expect(ci90[1]).toBeGreaterThan(0)
+    expect(ci90[1] - ci90[0]).toBeLessThan(ci95[1] - ci95[0])
+    // Duality on the worked case: the two-sided test at 0.05 keeps H₀, as the 95 % interval says.
+    const twoSided = twoPropTest({ x1: c.x1, n1: c.n1, x2: c.x2, n2: c.n2, alt: 'two-sided', random: true })
+    expect(reject(twoSided.pValue!, 0.05)).toBe(false)
+  })
+
+  it('act-6-05: the Lane conclusion rejects at the conventional level, and flips below the p-value', () => {
+    expect(reject(PERRINE_TEST.pValue!, 0.05)).toBe(true)
+    expect(reject(PERRINE_TEST.pValue!, 0.001)).toBe(true)
+    expect(reject(PERRINE_TEST.pValue!, 0.0005)).toBe(false)
+    // The clue the module earns, and the difference it is about.
+    expect(DIFFERENCE_INTERVAL.ci![0]).toBeGreaterThan(0)
   })
 })

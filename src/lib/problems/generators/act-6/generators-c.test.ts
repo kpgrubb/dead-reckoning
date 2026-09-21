@@ -37,9 +37,13 @@ const SEEDS = 200
 
 /**
  * The Lane's own headline counts. A drill that prints one of these as a whole number has borrowed a
- * mission beat; the lookarounds keep 0.0900 and 1,712-as-part-of-a-longer-number out of it.
+ * mission beat; the lookarounds keep 0.2612 and 1,712-inside-a-longer-number out of it. 900 is not
+ * in the text list — a solution may legitimately print "10 × 90 = 900" — so it is checked on the
+ * drawn counts instead, below.
  */
-const RESERVED_TEXT = [/(?<![\d.,])2,?612(?![\d.])/, /(?<![\d.,])1,?712(?![\d.])/, /(?<![\d.,])900(?![\d.])/, /(?<![\d.,])0\.0008(?![\d])/]
+const RESERVED_TEXT = [/(?<![\d.,])2,?612(?![\d.])/, /(?<![\d.,])1,?712(?![\d.])/]
+/** The counts a drill may never DRAW. */
+const RESERVED_COUNTS = [19, 31, 900, 1712, 2612]
 
 function allText(p: ProblemInstance): string {
   const a = p.answer
@@ -86,6 +90,21 @@ describe('act-6-06 / act-6-07 drill generators', () => {
       }
     })
   }
+
+  it('never draws one of the Lane’s own counts (19, 31, 900, 1,712, 2,612)', () => {
+    for (const g of [twoPropIntervalDrill, differenceConditions, orderOfSubtraction, differenceMargin]) {
+      for (let seed = 0; seed < SEEDS; seed++) {
+        const p = g.generate(new Rng(seed))
+        for (const row of tableRows(p.data)) {
+          for (const cell of row.slice(1)) {
+            const v = num(cell)
+            if (!Number.isInteger(v)) continue
+            expect(RESERVED_COUNTS, `${g.id} seed ${seed} drew ${v}`).not.toContain(v)
+          }
+        }
+      }
+    }
+  })
 
   it('no numeric drill answer reproduces the Lane’s z ≈ 3.16 or its p ≈ 0.0008', () => {
     for (const g of ALL) {
