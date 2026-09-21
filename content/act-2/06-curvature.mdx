@@ -1,0 +1,277 @@
+---
+id: act-2-06
+act: 2
+title: "Root Law"
+kind: module
+ap_topics: ["2.9"]
+objectives:
+  - "Recognise a departure from linearity in a scatter and its residual plot, and choose a log, power or log–log transformation that straightens it"
+  - "Compare candidate models by their residual plots rather than by r² alone, and back-transform a prediction into the units the report is written in"
+  - "Read the slope of a log–log model as an exponent, and say when no transformation is needed at all"
+prereqs: ["act-2-05"]
+est_minutes: 30
+calc_briefing: "logs-and-linearization"
+summary: "Ebele reaches for a log transform on a smear that does not need one. Then the Ledger produces a curve that does — six years of crossings, bowed — and straightening it changes who the residuals are about."
+---
+
+import { fmt, fmtInt, correlation, mean, min, max, transformedRegression } from '@/lib/stats'
+import { ledgerSample, manifest, t9LogLogFit, meanDaysResidual, fuelOnDeclaredFit, fuelOnRequiredFit } from '@/instruments/act-2/data'
+import { TransformConsole } from '@/instruments/act-2/TransformConsole'
+
+export const laneX = ledgerSample.map((t) => t.laneLengthAU)
+export const t9Y = ledgerSample.map((t) => t.t9)
+export const MODELS = ['none', 'logy', 'logx', 'loglog']
+export const MODEL_NAMES = ['raw — a straight line in the original variables', 'log y on raw x — an exponential model', 'raw y on log x', 'log y on log x — a power model']
+export const fits = MODELS.map((m) => transformedRegression(laneX, t9Y, m, { base: 10 }))
+export const bows = fits.map((f) => {
+  const xm = mean(f.tx)
+  return Math.abs(correlation(f.residuals, f.tx.map((v) => (v - xm) * (v - xm))))
+})
+export const flattest = bows.indexOf(min(bows))
+export const t9Min = min(t9Y)
+export const t9Max = max(t9Y)
+export const laneMin = min(laneX)
+export const laneMax = max(laneX)
+export const lostCount = ledgerSample.filter((t) => t.laterLost).length
+
+export const relay = [
+  { range: 22, power: 812 },
+  { range: 38, power: 284 },
+  { range: 61, power: 105 },
+  { range: 95, power: 45.8 },
+  { range: 140, power: 19.9 },
+  { range: 210, power: 9.31 },
+  { range: 300, power: 4.38 },
+  { range: 390, power: 2.58 },
+]
+export const relayX = relay.map((r) => r.range)
+export const relayY = relay.map((r) => r.power)
+export const relayRaw = transformedRegression(relayX, relayY, 'none', { base: 10 })
+export const relayLog = transformedRegression(relayX, relayY, 'loglog', { base: 10 })
+export const relayBow = correlation(
+  relayRaw.residuals,
+  relayX.map((v) => (v - mean(relayX)) * (v - mean(relayX))),
+)
+
+<Scene stamp="MET 044/06:30" location="Engineering deck · the sink vault · 1.14 AU from Callisto, 4 mgee" condensed="Ebele plots fuel loaded against declared mass, finds a smear rather than a line, and reaches for a log transform. Sandoval stops him: the Bureau does not load fuel per tonne, it loads fuel per tonne for the profile plotted that month, and the file carries the Bureau's own required-fuel column. Against that column the smear is a straight line and the transform was a cure for a disease the data did not have. Then the Ledger's transit times against Lane length — six years of crossings — come up bowed, and that curve is real.">
+
+Two days to turnover and the ship has settled into the part of a long burn where nothing is scheduled. Sandoval has the vault open again — she opens it the way other people check a watch — and Ebele has brought the terminal down because down here nobody asks him what he is doing every twenty minutes.
+
+He is on fuel. It is the obvious next column: four hundred and twelve certificates, each with a declared mass and a tonnage of propellant loaded against it, and if a hull is carrying more than she says, she has to have burned for it.
+
+The plot is a disappointment. Fuel loaded against declared mass is a smear — a cloud with a direction and no spine, $r^2$ = {fmt(fuelOnDeclaredFit.r2, 2)}, and a band so wide you could hide a Sulcus hull in it sideways. He looks at it for a minute and then does the thing he has been taught to do to a smear.
+
+"So — log it, sir. Log the fuel, or log both. Something in here is multiplicative and I can straighten—"
+
+"Ensign." Sandoval does not look up from the gauge. "What do you think the Bureau does when it certifies fuel?"
+
+He stops. It is a real question and he does not have it.
+
+The Bureau does not load fuel per tonne of ship. It loads fuel per tonne of ship *for the profile plotted that month* — and the profile is a crossing of the Lane, and the Lane is a different length in a different month. A hull certified in a close season is being fuelled for a shorter crossing than the identical hull certified three years later at the far end of the cycle. Two hulls with the same declared mass, two different honest fuel loads, and the difference is not error and not fraud. It is orbital mechanics, sitting in the file as scatter.
+
+And the Bureau, being a bureau, has a column for it. *Required fuel*: the Lane-standard load for that mass on that departure's own plotted profile, computed and signed with everything else. It has been in the extract since MET 30, three columns to the right, unexamined, because nobody thought to ask what the Bureau thought it was fuelling.
+
+Plot fuel loaded against required fuel and the smear becomes a line. {fmt(100 * fuelOnRequiredFit.r2, 0)} percent of the variation, a band you could not hide a launch in, and a slope near one — which is what "the Lane loads what the Lane requires" looks like when it is written as a number.
+
+No transformation. The residuals of the raw fit against the right column are flat, and a transform applied to that would have been a cure for a disease the data did not have — and would have cost him the one thing the plot is good for, which is that a slope of one in tonnes per tonne is a sentence anybody can read.
+
+There are points above that line. A small number of them, high, together. He colours by later-lost and they change colour, all of them at once, exactly as they did on the residual plot two days ago, and he says nothing this time because he has learned that much. You have him note the column, the count and the date, and leave it. It is a second finding on a file that already carries one, and a report that arrives with two findings gets half the attention of a report that arrives with one.
+
+Then Sandoval puts the Ledger up, because she has been waiting for him to be finished.
+
+Six years of the Lane Authority's crossings: {fmtInt(ledgerSample.length)} transits, each with the Lane length at its departure and the time it took to reach the Mark 9 region. From {fmt(laneMin, 1)} to {fmt(laneMax, 1)} AU as the geometry opens and closes; from {fmt(t9Min, 0)} days to {fmt(t9Max, 0)} — two months to nearly four.
+
+It is not a line. It is a bow: it climbs fast at the short end, and it keeps climbing, and it flattens, and a straight line laid through it sits above the data at both ends and below them through the middle. Ebele fits the straight line anyway, because he wants to see the residuals, and the residuals are a smile drawn across the plot from one end to the other.
+
+<Dialogue speaker="analyst" aside="Reading the residual plot, not the scatter. He has at least learned where to look.">
+The residuals bend, so the model is wrong — not the data. A straight line through this says every long-season crossing is slow and every mid-season crossing is fast, and that isn't about the ships at all. That's about the plot I chose.
+</Dialogue>
+
+<Dialogue speaker="engineer" aside="She wipes her hands and comes over, which means she is going to say something she has been saving.">
+It's a brachistochrone, Ensign. Flip at the midpoint, burn all the way, and the time goes as the square root of the distance — that's not statistics, that's the drive. So it's a power law, and a power law has an exponent, and the Lane's is a half whether anybody fits it or not.
+</Dialogue>
+
+<Dialogue speaker="engineer" aside="Now to you.">
+Which is why I want it fitted, Skipper. If we log both axes and the exponent comes out where the physics says it should, then the line is the Lane and the leftovers are the hulls. And I would like to know which hulls.
+</Dialogue>
+
+</Scene>
+
+<Briefing title="Departures from linearity" topics={["2.9"]}>
+<Briefing.Intuition>
+A residual plot that bends has told you the model is the wrong **shape**. There are two honest responses: fit a different shape, or change the variables until a straight line is the right shape for them. The second is usually easier to defend, because everything you already know about slopes, residuals and $s$ carries over to the new variables unchanged.
+
+Logarithms do the work, because they trade multiplication for addition.
+
+- **A power law**, $y = a x^{b}$ — anything where doubling $x$ multiplies $y$ by a fixed factor. Take logs of both sides: $\log y = \log a + b\log x$. Plot $\log y$ against $\log x$ and it is a line, with **slope $b$: the exponent itself**. This is the family physical laws mostly live in, and the fitted slope is a measurement of the law.
+- **An exponential law**, $y = a\cdot 10^{\,bx}$ — anything that grows or decays by a fixed factor per unit of $x$. $\log y = \log a + bx$: log the response only, and plot against raw $x$.
+- **Log $x$ alone**, $y = a + b\log x$ — a response that rises fast and then flattens without ever bending back.
+
+Which transformation straightens the data tells you which family the law belongs to, and that is information, not bookkeeping.
+
+**Choosing between models.** Fit the candidates, and compare them on their **residual plots** first. r² is a poor referee here: a bowed cloud still rises from left to right, so a wrong-shaped model over a strong relationship posts a large r² without deserving one, and the four candidates will often sit within a hundredth of each other. The residual plot is the diagnostic that can actually fail. The model to keep is the one whose residuals have nothing left to say — a flat band, no bend, no fan.
+
+**Reading and reporting.** Two disciplines, both easy to lose. A slope fitted on a log scale is *not* a rate in the original units: on log–log it is an exponent, and on log-$y$ it is a multiplicative factor of $10^{b}$ per unit of $x$. And a prediction from a log model comes out as a logarithm, so it is **back-transformed** — raised as a power of ten — before it goes anywhere near a report.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="y = a x^{b} \;\Longleftrightarrow\; \log y = \log a + b \log x" terms={{ b: 'the exponent — and the slope of the line on log–log axes', a: 'the multiplier; its logarithm is the intercept', y: 'the response, on the original scale' }} label="Power model: straighten with log–log" />
+
+<Formula tex="y = a\cdot 10^{\,bx} \;\Longleftrightarrow\; \log_{10} y = \log_{10} a + b x" terms={{ b: 'the log₁₀ change in the response per unit of x — a factor of 10^b', a: 'the response at x = 0' }} label="Exponential model: straighten with log y" />
+
+<Formula tex="\hat{y} = 10^{\,\hat{a} + \hat{b}\log_{10} x}" terms={{ '\\hat{y}': 'the prediction, back-transformed into the units of the response', '10^{(\\cdot)}': 'undoing the log — without it the prediction is a logarithm, not a quantity' }} label="Back-transforming a prediction" />
+</Briefing.Definition>
+<Briefing.Worked>
+Solberg's link budget, {relay.length} relay passes: the power the receiver saw (nW) against the range to the relay (Mm).
+
+{relay.map((r) => `${fmt(r.range, 0)} Mm / ${fmt(r.power, 2)} nW`).join(' · ')}
+
+A straight line through the raw pairs gets $r^2$ = {fmt(relayRaw.r2, 4)} — high enough that a careless report would stop there. Its residuals do not stop there. Their correlation with $(x-\bar{x})^2$ is {fmt(relayBow, 2)}: they run {relayBow > 0 ? 'positive at both ends of the range and negative through the middle' : 'negative at both ends of the range and positive through the middle'} — the signature of a curve being described by a line.
+
+Log both axes and fit again:
+
+<Formula tex={`\\log_{10}\\hat{y} = ${fmt(relayLog.fit.intercept, 4)} ${relayLog.fit.slope < 0 ? '-' : '+'} ${fmt(Math.abs(relayLog.fit.slope), 4)}\\log_{10}x`} label="The same passes, on log–log axes" />
+
+$r^2$ = {fmt(relayLog.r2, 5)}, and the residuals are flat. The slope is {fmt(relayLog.fit.slope, 3)} — which is not "{fmt(relayLog.fit.slope, 3)} nW per Mm", a sentence with no meaning. It is an **exponent**: received power is proportional to range to the power {fmt(relayLog.fit.slope, 3)}, near enough to −2, and the inverse-square law has fallen out of eight rows of a comms log.
+
+Predict at 250 Mm. The line gives a logarithm first:
+
+<Formula tex={`\\log_{10}\\hat{y} = ${fmt(relayLog.fit.intercept, 4)} ${relayLog.fit.slope < 0 ? '-' : '+'} ${fmt(Math.abs(relayLog.fit.slope), 4)}\\log_{10}(250) = ${fmt(relayLog.fit.intercept + relayLog.fit.slope * Math.log10(250), 4)}`} label="Evaluate on the fitted scale" />
+
+<Formula tex={`\\hat{y} = 10^{${fmt(relayLog.fit.intercept + relayLog.fit.slope * Math.log10(250), 4)}} = ${fmt(relayLog.predict(250), 2)}\\ \\text{nW}`} label="Back-transform before reporting" />
+
+{fmt(relayLog.predict(250), 2)} nW. The number in the middle — {fmt(relayLog.fit.intercept + relayLog.fit.slope * Math.log10(250), 4)} — is a logarithm of nanowatts and belongs in no report ever written.
+</Briefing.Worked>
+<Briefing.Caution>
+*"r² is high, so the model is fine."* r² measures how much of the variation a line accounts for, not whether a line was the right shape. The raw fit above reaches {fmt(relayRaw.r2, 3)} and is wrong. Look at the residual plot; it is the only one of the two that can fail.
+
+*Reading a log-scale slope in raw units.* On log–log the slope is an exponent; on log-$y$ it is a factor of $10^{b}$ per unit of $x$. "Per Mm" and "per tonne" are sentences about a straight line in the original variables, and the original variables are bowed — which is why the transformation was made.
+
+*Reporting the transformed prediction.* A log model predicts a logarithm. Raise it as a power of ten before it goes in the file; a prediction in log-days is not a prediction in days.
+
+*Transforming by reflex.* A transformation is a remedy. If the raw residuals are already a flat band there is no disease, and logging the axes only costs you a slope the reader could have used.
+</Briefing.Caution>
+</Briefing>
+
+<TransformConsole />
+
+<CalcBriefing topic="logs-and-linearization" />
+
+<Drill generator="act-2/choose-transform" count={1} />
+<Drill generator="act-2/back-transform" count={2} />
+<Drill generator="act-2/loglog-exponent" count={1} />
+<Drill generator="act-2/no-transform-needed" count={1} />
+<Drill generator="act-2/log-slope-units" count={1} />
+
+<MissionBeat id="act-2-06-model" kind="choice" label="WHICH SHAPE IS THE RIGHT SHAPE"
+  options={MODEL_NAMES} correct={flattest}
+  feedback={bows.map((b, i) => (i === flattest ? null : `Its residuals still bend: the curvature diagnostic for that fit is ${fmt(b, 2)}, against ${fmt(bows[flattest], 2)} for the model that straightens these data. r² = ${fmt(fits[i].r2, 4)} — high, and not the question.`))}
+  hint="On the console, step through the four models and watch the lower panel, not the upper one. Three of them leave a bow in the residuals; one does not."
+  prompt={`The Ledger sample: ${fmtInt(ledgerSample.length)} crossings, time to the Mark 9 region against Lane length at departure. Fit all four models on the console and read the **residual** panel for each.\n\nWhich model leaves residuals with nothing left to say?`}>
+  <Success>
+  <Dialogue speaker="analyst">
+  So — the bow is gone, sir. Flat band, no bend, no fan, both ends the same width. Whatever is left in there is not about the geometry any more.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="She reaches over him and steps the toggle herself.">
+  You are reading the top panel, Ensign. The top panel is a cloud with a line in it and every one of these four has a good-looking one. Read the bottom. Three of them keep the bow — it just moves around the plot — and one of them puts it away. And do not tell me which has the best r-squared. I did not ask.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-2-06-slope" kind="numeric" label="THE EXPONENT THE FILE GIVES"
+  answer={t9LogLogFit.fit.slope} answerKind="other" digits={4}
+  hint="Set MODEL to log–log and read the fitted slope from the MODEL readout — the exponent on x in the power model it prints."
+  prompt={`Sandoval says the drive makes the exponent a half. The file has not been asked.\n\nWith the console on **log–log**, what is the fitted **slope** — the exponent of the power law — across the ${fmtInt(ledgerSample.length)} crossings? Four decimal places, as the console prints it.`}>
+  <Success>
+  <Dialogue speaker="engineer" aside="She looks at it for a moment longer than she needs to.">
+  There it is. Not a half — a half is what the geometry would give you if every master flew the plot they filed, and they don't, quite. But that is a half measured off six years of somebody else's paperwork, Skipper, and I have seen a yard fail to get that close with a test stand.
+  </Dialogue>
+  <Dialogue speaker="analyst">
+  And it is a slope, sir, so it comes with the usual sentence — except the sentence is about an exponent. Doubling the Lane length multiplies the predicted crossing by about two to the power of that. Not "plus so many days per AU."
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer">
+  That is a number off the wrong panel, or off the raw fit, or it is the half I told you to expect and I told you not to take my word for it. Log–log, Skipper. Read the slope the console prints, to four places, and let the file disagree with the physics by as much as it likes.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-2-06-predict" kind="numeric" label="PUT IT BACK IN DAYS"
+  answer={t9LogLogFit.predict(4)} answerKind="other" digits={1} units="d"
+  hint="Set PREDICT AT x = 4.0 on the console. The readout is back-transformed for you; if you are working it by hand, evaluate the line in logs and then raise ten to it."
+  prompt={`A hull departs on a plot that makes the Lane 4.0 AU at her departure. Using the log–log fit, what **time to the Mark 9 region** does the model predict for her?\n\nAnswer in **days**, to one decimal place — the units the report is written in, not the units the line was fitted in.`}>
+  <Success>
+  <Dialogue speaker="analyst">
+  In days, sir. Not the logarithm — I had the logarithm written in the draft for about a minute.
+  </Dialogue>
+  <Dialogue speaker="xo" aside="From the ladder. Nobody heard her arrive, again.">
+  Everyone does. It is why the annex prints the model and the prediction on the same line: a reader who sees one can check the other.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer">
+  Skipper — that is a logarithm of days, or it is the fit read on the wrong scale. The line predicts a log; you raise ten to it before you write it down. One decimal, in days.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-2-06-residual" kind="numeric" label="AND NOW THE LEFTOVERS"
+  answer={meanDaysResidual((t) => t.laterLost)} answerKind="other" digits={2} units="d"
+  hint="Colour the console by later-lost with the log–log model selected and read the mean residual in days for the coloured group. Residuals in days, not in logs — the readout does the back-transform."
+  prompt={`The geometry is out of the plot now; what is left is the hulls. Of the ${fmtInt(ledgerSample.length)} crossings, ${fmtInt(lostCount)} belong to hulls later recorded as losses.\n\nOn the log–log fit, what is their **mean residual in days** — actual time to Mark 9 minus predicted? Two decimal places, and keep the sign.`}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He checks the other group before he says anything, which is new.">
+  And everybody else is on zero, sir. Not near zero — on it, to a tenth of a day, which is what a fitted line does to the group it was fitted to. It is only that one set that sits late.
+  </Dialogue>
+  <Dialogue speaker="engineer">
+  Heavy and slow. A ship that is heavy is slow, Skipper, if her drive is the same drive — that is not a coincidence, that is the same fact arriving twice.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Read it off the fit that works, Captain, and in days. On the straight-line fit those hulls are buried in a residual plot that is already bent, and the number you get is a mixture of the hull and the season — which is exactly what the transformation was for.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-2-06-model", "act-2-06-slope", "act-2-06-predict", "act-2-06-residual"]}>
+
+<Scene stamp="MET 044/09:15" location="Engineering deck · the sink vault" condensed="Straightened, the Ledger says the nineteen were slow as well as heavy — late by days against a line that fits everyone else to a tenth of a day. Sandoval does the arithmetic on the mass instead: eight percent of twenty thousand tonnes is sixteen hundred tonnes, and that is not a clerical error. The report is drafted for turnover.">
+
+So the file says two things now, and they are the same thing said twice.
+
+They departed heavier than their certificates — six to thirteen percent of declared mass, measured against a line that agrees to a tonne per tonne and a typical miss of six hundred tonnes. And they crossed slower than the Lane's own geometry says a hull on that plot should cross, by days, against a curve that fits every other crossing in six years to a tenth of a day.
+
+A hull that is carrying mass she has not declared is a hull whose drive is pushing more ship than her profile assumed. Same thrust, more mass, less acceleration, a longer crossing. The second finding is the first one seen from the other end of the physics, arriving through a different office's paperwork, with nobody in either office in a position to have arranged the agreement.
+
+Ebele wants to write that down immediately and in those words. You make him write the narrower version: that the flagged hulls' mean residual on the fitted power model is positive and the remainder's is not, that the figure is descriptive, that no test has been run and none will be run this Act. He writes *a mean is not a p-value* on the card and looks pleased with himself, and it is the first thing he has been pleased with himself about that was actually earned.
+
+Sandoval is not doing the transit arithmetic. She has been doing the other one since the residual plot, on the back of the same napkin, and she turns it over now.
+
+</Scene>
+
+<Dialogue speaker="engineer" aside="The napkin has the mass calculation on it in block capitals.">
+Eight percent of twenty thousand tonnes is sixteen hundred tonnes. That's not a clerical error, Skipper. That's a cargo.
+</Dialogue>
+
+<Dialogue speaker="engineer">
+Sixteen hundred tonnes has to be loaded. It has to be paid for, and stowed, and it has to have somewhere to go — and a hull that's carrying it burns fuel to move it, which I can see in a column, and arrives late, which you have just shown me in a curve. Nobody hides a cargo. They hide where it went.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="She has the draft on the slate, and one hand flat on it.">
+Which is more than the report says, and more than the report will say. Nineteen hulls departed heavier than certified. That sentence, and the displays under it, and the Chief's signature on the mass. Turnover is in two days and the Board gets it at forty-eight.
+</Dialogue>
+
+The fuel column stays out of it. It is a second finding, it is thinner than the first, and a report with one finding is read once and answered; a report with two is read for the weaker one. Ebele files it with the date, the column name and the hull count, and it sits in the annex nobody sends, waiting for a ship's analyst with six weeks of state vectors and nothing else to do — which is a long way off, and will matter.
+
+<LogEntry
+  title="Transform until the residuals have nothing left to say"
+  concept="A bow in a residual plot means the model is the wrong shape, and taking logs is how a curved law is made straight: $\log y$ against $\log x$ straightens a power law $y = ax^b$ and its slope **is** the exponent $b$; $\log y$ against raw $x$ straightens an exponential law and its slope is a factor of $10^b$ per unit of $x$. Candidate models are judged on their residual plots, not on r² — a wrong-shaped line over a strong relationship still posts a large r² — and a prediction from a log model is back-transformed into the response's own units before it is reported."
+  formula="y = a x^{b} \iff \log y = \log a + b\log x, \qquad \hat{y} = 10^{\hat{a} + \hat{b}\log_{10}x}"
+  mistake="Reading a log-scale slope in raw units — “so many days per AU” — when it is an exponent; and its twin, reporting the model's output while it is still a logarithm."
+  tags={['transformation', 'log-log', 'power-model', 'residual-plot', 'back-transform', '2.9']}
+/>
+
+</Gated>

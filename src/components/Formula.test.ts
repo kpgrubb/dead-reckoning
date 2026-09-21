@@ -1,3 +1,4 @@
+﻿import katex from 'katex'
 import { describe, expect, it } from 'vitest'
 import { wrapTerms } from './Formula'
 
@@ -38,5 +39,27 @@ describe('wrapTerms', () => {
 
   it('is a no-op with no terms', () => {
     expect(wrapTerms('\\alpha + \\beta', [])).toBe('\\alpha + \\beta')
+  })
+
+  it('braces the substitution so a term in a superscript still parses', () => {
+    // `^\htmlClass{â€¦}{m}` is a KaTeX parse error: a superscript takes one token.
+    const out = wrapTerms('(1-\\pi)^m', ['m'])
+    expect(out).toContain('^{\\htmlClass')
+    expect(() => katex.renderToString(out, { throwOnError: true, trust: true, strict: 'ignore' })).not.toThrow()
+  })
+
+  it('renders a range of real formulas without a KaTeX error', () => {
+    const cases: [string, string[]][] = [
+      ['s = \\sqrt{\\frac{\\sum (x_i - \\bar{x})^2}{n - 1}}', ['s', 'n', '\\bar{x}', 'x_i']],
+      ['\\hat{p} \\pm z^* \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}', ['\\hat{p}', 'n', 'z^*']],
+      ['P(A \\cup B) = P(A) + P(B) - P(A \\cap B)', ['P', 'A', 'B']],
+      ['E(X) = \\sum_{k=1}^{\\infty} k\\,(1-p)^{k-1}p', ['p', 'k', 'X']],
+      ['\\binom{N}{n} \\text{ subsets, } F \\subseteq S', ['N', 'n', 'F', 'S']],
+      ['\\chi^2 = \\sum \\frac{(O - E)^2}{E}', ['O', 'E']],
+    ]
+    for (const [tex, keys] of cases) {
+      const out = wrapTerms(tex, keys)
+      expect(() => katex.renderToString(out, { throwOnError: true, trust: true, strict: 'ignore' }), tex).not.toThrow()
+    }
   })
 })

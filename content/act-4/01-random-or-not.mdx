@@ -1,0 +1,305 @@
+---
+id: act-4-01
+act: 4
+title: "Spring of '82"
+kind: module
+ap_topics: ["4.1", "4.2"]
+objectives:
+  - "Say what “random” means in the long run and why short runs of a random process show streaks and clumps"
+  - "Design and carry out a simulation to estimate a probability, stating the model, one trial and the statistic before it runs"
+  - "Interpret a simulated probability in context, reporting the count, the run size and the model it is a probability under"
+prereqs: ["act-3-checkpoint"]
+est_minutes: 25
+calc_briefing: null
+summary: "The torch is out and the cellar is filling. Three hours into the cold, Ebele stacks ten thousand imaginary six-year periods against the Register's worst month, and reports two percent as though he had computed it."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct } from '@/lib/stats'
+import { rng } from '@/lib/rng'
+import {
+  CLUSTER_RUNS,
+  CLUSTER_HULLS,
+  CLUSTER_WINDOW_DAYS,
+  LOSS_TOTAL,
+  OBSERVED_CLUSTER,
+  P_CLUSTER_SIMULATED,
+  PURGE_COUNT,
+  QUIET_MEASURED_HOURS,
+  REGISTER_RECORDS,
+  REGISTER_SPAN_DAYS,
+  TORCH_OFF,
+  TORCH_OFF_PCT,
+  WATCH_WORKING_HOURS,
+  heatFor,
+  lossDates,
+  metStamp,
+  simulateCluster,
+} from '@/instruments/act-4/data'
+import { ClusterSimulator } from '@/instruments/act-4/ClusterSimulator'
+import { SinkLedgerPanel } from '@/instruments/act-4/SinkLedgerPanel'
+import { KeyTable, Note, SinkReadout, inAHundred } from '@/instruments/act-4/_ui'
+
+export const heat = heatFor('act-4-01')
+
+/** The tightest window in the Register, located from the loss dates themselves — not asserted. */
+export const dayIndex = (iso) => Math.round((Date.parse(iso + 'T00:00:00Z') - Date.UTC(2178, 0, 1)) / 86400000)
+export const clusterWindow = (() => {
+  const sorted = [...lossDates].sort()
+  let best = []
+  for (const start of sorted) {
+    const run = sorted.filter((d) => dayIndex(d) >= dayIndex(start) && dayIndex(d) - dayIndex(start) <= CLUSTER_WINDOW_DAYS)
+    if (run.length > best.length) best = run
+  }
+  return best
+})()
+export const clusterFrom = clusterWindow[0]
+export const clusterTo = clusterWindow[clusterWindow.length - 1]
+export const clusterSpan = dayIndex(clusterTo) - dayIndex(clusterFrom)
+export const asDate = (iso) => new Date(iso + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+export const hullList = CLUSTER_HULLS.map((h) => `*${h}*`).join(', ')
+export const registerYears = REGISTER_SPAN_DAYS / 365.25
+
+/**
+ * The Briefing's worked study — a different file, a different question, run twice at two run sizes so
+ * the estimate can be seen to wander. Ceres receiving office: 26 reweighs over a 180-day season, six
+ * of them inside one ten-day stretch. Every number below is simulated at load from the same engine
+ * the instrument uses.
+ */
+export const CERES = { reweighs: 26, seasonDays: 180, windowDays: 10, observed: 6 }
+export const ceresStudy = (runs, key) => {
+  const r = rng('act-4-01', 'worked', key)
+  const stats = []
+  for (let i = 0; i < runs; i++) stats.push(simulateCluster(r, CERES.reweighs, CERES.seasonDays, CERES.windowDays))
+  const counts = new Map()
+  for (const s of stats) counts.set(s, (counts.get(s) ?? 0) + 1)
+  return {
+    runs,
+    distribution: [...counts.entries()].sort((a, b) => a[0] - b[0]).map(([value, count]) => ({ value, count })),
+    atOrAbove: stats.filter((s) => s >= CERES.observed).length,
+    mean: stats.reduce((a, b) => a + b, 0) / runs,
+  }
+}
+export const ceresFirst = ceresStudy(200, 'first-pass')
+export const ceresFull = ceresStudy(2000, 'full')
+export const ceresPFirst = ceresFirst.atOrAbove / ceresFirst.runs
+export const ceresP = ceresFull.atOrAbove / ceresFull.runs
+export const ceresSeFirst = Math.sqrt((ceresPFirst * (1 - ceresPFirst)) / ceresFirst.runs)
+export const ceresSe = Math.sqrt((ceresP * (1 - ceresP)) / ceresFull.runs)
+
+<Scene stamp={metStamp(heat.at)} location={`Sensor bay · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed={`Three hours after the torch goes out, Nightjar is a cold rock drifting through the brightest sky on the Lane. Sandoval puts the heat plan on the board: ${PURGE_COUNT} purges in twenty-three days, two Watch windows, and a cellar that only ever fills. Everything the ship does from here is bought with lithium.`}>
+
+The torch went out at {metStamp(TORCH_OFF)} and nothing has happened since, which is what the plan says should happen.
+
+Wings folded flat against the hull. Parasol out, four hundred square metres of it, holding the sun off a skin the Chief has walked down to a hundred and twenty kelvin over nine hours. Sixty tonnes of lithium in the cellar amidships, at {fmtInt(TORCH_OFF_PCT)} per cent of what it can hold, warming by a fraction of a degree an hour because sixteen people and a computer cannot help producing heat and there is nowhere in vacuum to put it.
+
+Forty plumes in the Eyes at once. The Ceres approach is the brightest sky on the Lane and you are drifting through the middle of it at {fmt(0.42, 2)} AU, on a heliocentric fall that holds the Mark 9 geometry for twelve days without a gram of reaction mass.
+
+Sandoval has the heat plan up on the engineering board and will not leave until somebody has looked at it properly.
+
+<Dialogue speaker="engineer" aside="She does not use a pointer. She puts a thumbnail on the trace where she wants you to look and leaves it there until you have.">
+Twenty-three days, Skipper. That is the whole of it. The cellar takes {fmt(78, 0)} gigajoules and on Quiet we put in about a fifth of a per cent an hour, so Quiet runs {fmtInt(QUIET_MEASURED_HOURS)} hours before I am in trouble. On Watch it is {fmtInt(WATCH_WORKING_HOURS)}, and the {fmtInt(WATCH_WORKING_HOURS)} is my number, not the yard's. — When it fills, we purge: two point six hours with the radiators out, and for two point six hours this ship is a lamp. {fmtInt(PURGE_COUNT)} of those in the plan. I want each one to be a decision somebody made, not a thing that happened to us.
+</Dialogue>
+
+Nobody at Kettle can see you from {fmt(0.3, 1)} AU. That is not the problem and never was. The problem is that the Lane's own traffic comes past, close pass by close pass, week after week, and a freighter's navigation suite is not a naval aperture but it is not blind either.
+
+The cellar is the budget. Everything else in this Act is arithmetic about how to spend it.
+
+</Scene>
+
+<SinkLedgerPanel />
+
+<Scene stamp={metStamp(heat.at + 1 / 48)} location={`Intel terminal · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed={`Ebele has spent three days on a question Ferrier asked in Act I: what do thirty-one random losses look like? He simulates loss dates as uniform over six years, records the largest thirty-day cluster from each run, and stacks ${fmtInt(CLUSTER_RUNS)} of them. The Register's tightest cluster is ${OBSERVED_CLUSTER} hulls in ${clusterSpan} days, and Ebele reports the result as "two percent" as though he had computed it rather than estimated it.`}>
+
+Ebele has been at the intel terminal since before the torch went out and has the particular stillness of a man who has been waiting three days to be asked a question.
+
+He is answering one Ferrier asked in the wardroom at MET 11, in the first week, when the mark axis was still a list: *thirty-one losses in six years — is that a pattern or is that a Tuesday?*
+
+"So I built the model first, sir, in words, before I wrote anything." He has it on the board in his own handwriting, three lines, and the handwriting is not good. "Model: thirty-one losses fall at random across the Register's six years — each date equally likely, no date affecting any other. That is chance alone, and it is the only thing I assume. One trial: scatter {fmtInt(LOSS_TOTAL)} dates uniformly across all {fmtInt(REGISTER_SPAN_DAYS)} days, then walk a {CLUSTER_WINDOW_DAYS}-day window across them and record the most that fall inside it at once. Statistic: that number. One integer per trial."
+
+"And the real file," you say.
+
+"{OBSERVED_CLUSTER}." He brings it up. "{asDate(clusterFrom)} to {asDate(clusterTo)}. {clusterSpan} days. {hullList}. Five hulls, all of them lost inside one month, in a file that averages a loss every ten weeks."
+
+Ferrier reads the five names without expression. She has read them before.
+
+"Then I ran it," Ebele says, and gets faster, the way he does. "{fmtInt(CLUSTER_RUNS)} trials. Stacked the statistic. And a cluster of five or more comes up — it's about two percent, sir. Two percent. That's the answer."
+
+You let it sit for a moment, because the number may well be right and the sentence is not.
+
+"Two percent of what, Ensign."
+
+"Of — of the time. Under the model."
+
+"Two percent is a figure with two decimal places hiding behind it, and you have just given me neither. You did not compute that number. You estimated it, out of a finite number of imaginary six-year periods that you generated on a terminal in a cold ship. So give me the estimate the way it was made."
+
+<Dialogue speaker="xo" aside="She does not look up from the five names. She has the Register's paper copy open at the spring of '82 and a finger on the fourth one.">
+The count and the run size, Ensign. Not the percentage. If the Board reads *two per cent* they will ask two per cent of how many, and if the answer is "of a hundred" the paper is worthless and if the answer is "of ten thousand" it is evidence. — The arithmetic is the same either way. The sentence is not.
+</Dialogue>
+
+</Scene>
+
+<Briefing title="What random looks like, and how to ask it a question" topics={["4.1", "4.2"]}>
+<Briefing.Intuition>
+**The long run is the only run that is flat.** A probability is what a relative frequency settles to as the number of trials grows without bound — the law of large numbers, and it is a statement about *infinity*, not about your afternoon. Over ten thousand sweeps a detection rate of six per cent shows up as six per cent. Over twelve sweeps it shows up as nothing at all, or as four in a row, and both are ordinary.
+
+Two errors follow from forgetting that, and they point in opposite directions.
+
+- **The gambler's fallacy.** Nine clean sweeps in a row, so the tenth is "due". It is not. Independent trials have no memory and keep no accounts. The long-run rate is reached by *swamping* an early run with thousands of later trials, never by correcting it.
+- **"Random means evenly spread."** A uniform scatter of dates is not a regular scatter of dates. It has gaps and it has clumps, and a file with neither would be the strange one. Evenly spaced is the *opposite* of random; it is a pattern, and building it into a model builds the answer in with it.
+
+So an eye cannot judge a clump. Only a model can — which is the second idea.
+
+**A simulation is an argument with three parts stated before any code runs.**
+
+1. **The model.** What chance alone is assumed to do, and *nothing else*. This is where simulations are usually lost. If the observation was "five losses in one month", the model must not fix the count at five, must not use the month the data pointed at, and must not space the dates evenly. It carries the assumption you are testing, not the result you observed.
+2. **One trial.** One repetition of the *whole* process that produced the observation. If the statistic is a property of a six-year file, one trial is a whole six-year file — not one loss, not one month.
+3. **The statistic.** The single number recorded from each trial, and it must be the quantity the question asked about. "The largest cluster anywhere in the period" and "the number of losses inside the window the data pointed at" are different statistics, and only the first one is honest, because the second has already looked at the answer.
+
+Then repeat the trial many times, stack the statistic into a distribution, and locate the observed value in it. The **simulated probability** is the share of trials at or beyond the observed value.
+
+**And it is an estimate.** Run the same model twice and you get two different numbers. That is not a defect; it is the only honest property of the method, and it is why a simulated probability is reported as a *count out of a run size* and never as a bare percentage. A hundred runs locates a probability to within a couple of percentage points. Ten thousand locates it to within a tenth of one. The model did not change. The precision did — and the reader cannot tell which they have been handed unless you say.
+
+Last, and it is the part the Board will attack: a small simulated probability says the observation is **rare under the model**. It does not say the model is false, and it certainly does not say what is true instead. It says: *chance alone is a poor explanation of this.* What the better explanation is, the simulation has no opinion about at all.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula
+  tex="\hat{p}_n = \frac{\text{count of } A \text{ in } n \text{ trials}}{n} \;\longrightarrow\; P(A) \quad \text{as } n \to \infty"
+  terms={{ '\\hat{p}_n': 'the relative frequency after n trials — what you can see', 'P(A)': 'the probability — what the relative frequency settles to', n: 'number of trials' }}
+  label="Probability as a long-run relative frequency (the law of large numbers)"
+/>
+
+<Formula
+  tex="\hat{P}(\text{statistic} \ge t) = \frac{\#\{\text{runs with statistic} \ge t\}}{N}"
+  terms={{ t: 'the observed value of the statistic', N: 'how many trials were run — always reported with the estimate' }}
+  label="A simulated probability: a count over a run size"
+/>
+
+<Formula
+  tex="\mathrm{SE}(\hat{p}) \approx \sqrt{\frac{\hat{p}\,(1 - \hat{p})}{N}}"
+  terms={{ '\\mathrm{SE}(\\hat{p})': 'how far the estimate typically moves if the study is re-run', '\\hat{p}': 'the simulated estimate' }}
+  label="How much precision N buys — quadruple the runs to halve the wobble"
+/>
+</Briefing.Definition>
+<Briefing.Worked>
+Not the Register. A file nobody is arguing about, so the method can be watched without anybody's career attached to it.
+
+The Ceres receiving office reweighs arrivals whose manifest looks wrong. Over one {fmtInt(CERES.seasonDays)}-day season it logged {fmtInt(CERES.reweighs)} reweighs, and {fmtInt(CERES.observed)} of them fell inside a single {fmtInt(CERES.windowDays)}-day stretch. A clerk has written *unusual concentration* in the margin.
+
+**The model:** {fmtInt(CERES.reweighs)} reweigh dates scattered uniformly at random across the {fmtInt(CERES.seasonDays)} days. **One trial:** draw all {fmtInt(CERES.reweighs)} dates, walk a {fmtInt(CERES.windowDays)}-day window across them, record the largest number inside it. **The statistic:** that largest cluster.
+
+Ebele's first pass was {fmtInt(ceresFirst.runs)} runs:
+
+<KeyTable
+  columns={[`largest ${CERES.windowDays}-day cluster`, `runs (of ${fmtInt(ceresFirst.runs)})`]}
+  rows={ceresFirst.distribution.map((d) => [d.value, fmtInt(d.count)])}
+  caption={`${fmtInt(ceresFirst.runs)} simulated seasons. Mean largest cluster ${fmt(ceresFirst.mean, 2)}.`}
+  ariaLabel="Distribution of the largest ten-day cluster over 200 simulated seasons"
+/>
+
+{fmtInt(ceresFirst.atOrAbove)} of those {fmtInt(ceresFirst.runs)} seasons produced a cluster of {fmtInt(CERES.observed)} or more, so $\hat{P} = {fmtInt(ceresFirst.atOrAbove)}/{fmtInt(ceresFirst.runs)} = {fmt(ceresPFirst, 4)}$ — and the standard error on {fmtInt(ceresFirst.runs)} runs is about {fmt(ceresSeFirst, 4)}, which is to say the third decimal place of that number is decoration.
+
+Re-run the *same model* with {fmtInt(ceresFull.runs)} trials and the estimate moves:
+
+$$\hat{P}(\text{largest } {CERES.windowDays}\text{-day cluster} \ge {CERES.observed}) = \frac{ {fmtInt(ceresFull.atOrAbove)} }{ {fmtInt(ceresFull.runs)} } = {fmt(ceresP, 4)}$$
+
+with a standard error of about {fmt(ceresSe, 4)}. Neither run is wrong. **{fmt(ceresPFirst, 3)} off {fmtInt(ceresFirst.runs)} runs and {fmt(ceresP, 3)} off {fmtInt(ceresFull.runs)} runs are two different claims**, and a reader who is handed only "about twenty percent" cannot tell them apart.
+
+And the finding, which is the point of running it at all: chance alone scatters {fmtInt(CERES.reweighs)} reweighs into a {fmtInt(CERES.windowDays)}-day clump of {fmtInt(CERES.observed)} or more {inAHundred(ceresP)} seasons. The mean largest cluster under pure chance is {fmt(ceresFull.mean, 2)}. The clerk's *unusual concentration* is what a random season looks like about one time in five. **There is nothing to investigate at Ceres.** That is a real result, it took {fmtInt(ceresFull.runs)} imaginary seasons to get, and it is the same machine you are about to point at the Register.
+</Briefing.Worked>
+<Briefing.Caution>
+*The gambler's fallacy.* "Nine quiet transits, so one is owed." Nothing is owed. Each trial carries the same probability it always did, and the sentence "the run has to break sooner or later" is true about the long run and false about the next trial — which is exactly the trade the fallacy makes.
+
+*"Random means evenly spread."* Clumping is not evidence against randomness; clumping is what randomness produces at short range. When you eyeball a file and a stretch of it looks crowded, you have learned nothing yet. A cluster only becomes information after a model has told you how often chance makes one that size — and the model is allowed to surprise you in the other direction, as Ceres just did.
+
+*A simulated estimate reported as exact.* {fmt(ceresP, 4)} looks like a computed probability. It is a count of {fmtInt(ceresFull.atOrAbove)} out of {fmtInt(ceresFull.runs)} imaginary seasons and it would come out differently tomorrow. Report the count and the run size, every time: a simulated probability carries its run size the way a measurement carries its instrument.
+
+*Rare under the model read as "the model is false" — or worse, as "my explanation is true".* A simulation prices the observation under chance alone. It does not nominate a replacement, and it cannot distinguish between the four explanations you have not thought of.
+</Briefing.Caution>
+</Briefing>
+
+<SinkReadout sinkPct={heat.sinkPct} stamp={metStamp(heat.at)} profile="Quiet" />
+
+<ClusterSimulator />
+
+<Drill generator="act-4/simulation-design" count={1} />
+<Drill generator="act-4/read-simulated-distribution" count={2} />
+<Drill generator="act-4/streaks" count={1} />
+<Drill generator="act-4/interpret-simulated-probability" count={1} />
+
+<MissionBeat id="act-4-01-cluster" kind="numeric" label="THE CLUSTER" answer={P_CLUSTER_SIMULATED} tolerance={0.002} digits={4}
+  prompt={`The logged study is on the console: ${fmtInt(LOSS_TOTAL)} losses scattered uniformly across the Register's ${fmtInt(REGISTER_SPAN_DAYS)} days, the largest ${CLUSTER_WINDOW_DAYS}-day cluster recorded from each run, ${fmtInt(CLUSTER_RUNS)} runs. Under that model, estimate the probability that the largest ${CLUSTER_WINDOW_DAYS}-day cluster comes out at ${OBSERVED_CLUSTER} or more. Report a proportion, not a percentage.`}
+  hint={`A simulated probability is a count over a run size, and the console gives you both: the runs at or above ${OBSERVED_CLUSTER}, and the ${fmtInt(CLUSTER_RUNS)} runs they came out of. It is not the figure the Ensign rounded to.`}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes it on the board under his three lines of model, and he writes the denominator the same size as the numerator.">
+  So — {fmtInt(clusterAtLeastObservedCount)} of {fmtInt(CLUSTER_RUNS)}, sir. {fmt(P_CLUSTER_SIMULATED, 4)}. Not two per cent. {inAHundred(P_CLUSTER_SIMULATED)} runs out of ten thousand, and the standard error on ten thousand is about {fmt(Math.sqrt((P_CLUSTER_SIMULATED * (1 - P_CLUSTER_SIMULATED)) / CLUSTER_RUNS), 4)}, so the fourth decimal is real and the fifth is not. — I would have put *two per cent* in a Board paper. They'd have asked of how many and I would have had to say I didn't write it down.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="Flat, once, without moving the Register off her knee.">
+  Exact is a word for things you computed, Ensign. That is not the figure on the console and it is not the figure the console can support. Take the number of runs that came out at {OBSERVED_CLUSTER} or above, divide it by the number of runs, and read what it says — not what you expected it to say.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by="act-4-01-cluster">
+
+<MissionBeat id="act-4-01-interpretation" kind="choice" label="THE SENTENCE"
+  prompt="The finding goes into the file in one sentence and Ferrier will sign it. Which sentence is the one you would sign?"
+  options={[
+    `Under a model in which the ${fmtInt(LOSS_TOTAL)} losses fall at random across the Register's six years, ${fmtInt(clusterAtLeastObservedCount)} of ${fmtInt(CLUSTER_RUNS)} simulated periods produced a ${CLUSTER_WINDOW_DAYS}-day cluster of ${OBSERVED_CLUSTER} or more — an estimated probability of ${fmt(P_CLUSTER_SIMULATED, 4)} from ${fmtInt(CLUSTER_RUNS)} runs. Chance alone is a poor explanation of the spring of 2182.`,
+    `The probability that the spring 2182 cluster was produced by chance is ${fmt(P_CLUSTER_SIMULATED, 4)}.`,
+    `${fmtPct(P_CLUSTER_SIMULATED, 2)} of the Register's losses fall inside a ${CLUSTER_WINDOW_DAYS}-day window.`,
+    `The simulation shows that the ${OBSERVED_CLUSTER} losses of spring 2182 were not random, with a probability of error of ${fmt(P_CLUSTER_SIMULATED, 4)}.`,
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    'The simulation computed the probability of a cluster this tight GIVEN chance. This sentence reverses the conditioning and reports the probability of chance GIVEN the cluster, which is a different quantity the study never estimated — and it drops the run size, so a reader cannot tell a hundred trials from ten thousand.',
+    'That is a fact about where the losses sit, not about the simulation. The statistic stacked was the largest cluster in a whole six-year period, one integer per run; this sentence describes a share of the thirty-one losses and is not what the study measured.',
+    'A rare result under a model is not a disproof of the model, and a simulated probability is not a "probability of error". The study says chance alone explains the cluster poorly. What explains it well, the study has no opinion about at all.',
+  ]}>
+  <Success>
+  <Dialogue speaker="xo" aside="She writes it into the file herself and puts the run size in the same sentence as the estimate rather than in a footnote, which is deliberate.">
+  That sentence survives a hostile reader. It names the model, it gives the count and the denominator, it says *estimated*, and it stops before the part we cannot support. — File it as a finding, not a conclusion. The conclusion is somebody else's and it is not due yet.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has all four sentences on the board now and is striking them out one at a time, which is the exercise Ferrier wanted.">
+  No — sir, I see it. The study answers one question: *how often does chance do this?* Every other sentence up there answers a different one and uses my number to do it. Chance given the cluster. A share of the losses. Proof. None of those came out of ten thousand runs of anything.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+</Gated>
+
+<Gated by={["act-4-01-cluster", "act-4-01-interpretation"]}>
+
+<Scene stamp={metStamp(heat.at + 3 / 24)} location={`Wardroom · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="The finding goes in the file with its run size attached: under chance alone the spring of 2182 is rare, and rare under a model is not a cause. Ferrier logs what it does and does not say. What the Register will not tell you is why — and the ship is cold, drifting, and twenty-three days from anything.">
+
+Ferrier files it at the end of the watch and reads back what it does not say, which takes longer than what it does.
+
+It does not say the five hulls were attacked. It does not say they were connected. It does not say the Register is wrong about any one of them. {REGISTER_RECORDS && ''}What it says is that the office which coded all thirty-one of these *unknown* was, in the spring of 2182, coding them at four times its own average rate, and that a file of {fmtInt(REGISTER_RECORDS)} records scattered by chance alone produces that bunching {inAHundred(P_CLUSTER_SIMULATED)} times in ten thousand tries.
+
+{hullList}. {asDate(clusterFrom)} to {asDate(clusterTo)}.
+
+<Dialogue speaker="analyst" aside="He has stopped being fast. He is looking at the five names in the order they were lost, which is not the order he filed them in.">
+So the thing I keep coming back to, sir, is that I can price it and I still cannot read it. {fmt(P_CLUSTER_SIMULATED, 4)} tells me chance is a bad explanation. It does not tell me one single thing about what a good one would be. — Four of these were inside eleven days of each other. I don't have a method for *four*.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="She closes the paper Register and squares it on the table before she answers, because she is choosing how much to say.">
+Then you are in exactly the right place, Ensign, which is knowing precisely how ignorant you are. Write down the date range and leave it alone. — We are cold, we are drifting, and we are {fmt((0.42), 2)} AU from Ceres in the busiest sky on the Lane. Whatever spring 2182 was, the only way this ship finds out is by sitting very still in traffic for three weeks and watching, and the Chief will tell you to the hour what that costs.
+</Dialogue>
+
+The cellar reads {fmt(heat.sinkPct, 0)} per cent and climbing at a fifth of a per cent an hour. Nothing has happened. Something is going to.
+
+</Scene>
+
+<LogEntry
+  title="A simulation estimates; say how many runs"
+  concept="Probability is what a relative frequency settles to in the long run, which is why short runs show streaks and clumps and no eye can judge whether a clump is unusual. A simulation answers that question by stating a chance-alone model, defining one trial as a whole repetition of the process, recording a single statistic from each trial, and stacking many of them — the simulated probability is then the count of trials at or beyond the observed value divided by the number of trials run, and because it is an estimate it must be reported with that run size attached."
+  formula="\hat{P}(\text{statistic} \ge t) = \frac{\#\{\text{runs with statistic} \ge t\}}{N}, \qquad \mathrm{SE}(\hat{p}) \approx \sqrt{\hat{p}(1-\hat{p})/N}"
+  mistake="Reading a short run as a pattern, or a pattern as a short run — the gambler's fallacy on one side and “random means evenly spread” on the other. The third relative is quoting a simulated estimate as an exact probability: without the run size a reader cannot tell a hundred trials from ten thousand, and the two are different claims."
+  tags={['randomness', 'law of large numbers', 'streaks', "gambler's fallacy", 'simulation design', 'simulated probability', 'run size', '4.1', '4.2']}
+/>
+
+</Gated>

@@ -50,7 +50,10 @@ export function wrapTerms(tex: string, keys: readonly string[]): string {
       return !(before && /[A-Za-z0-9]/.test(before)) && !(after && /[A-Za-z0-9]/.test(after))
     })
     if (hit) {
-      out += `\\htmlClass{dr-term dr-term-${hit.i}}{${hit.k}}`
+      // Braced: a bare `^\htmlClass{…}{m}` is a KaTeX parse error, because a superscript takes a
+      // single token. `{…}` is a group and is harmless everywhere else, so brace unconditionally
+      // rather than making authors write `^{m}` defensively.
+      out += `{\\htmlClass{dr-term dr-term-${hit.i}}{${hit.k}}}`
       pos += hit.k.length
       continue
     }

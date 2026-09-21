@@ -42,7 +42,6 @@ export const crdAssignment = randomAssignment(rng('act-3-04-page', 'crd'), half)
 export const crdImbalance = ownerImbalance(crdAssignment)
 export const blockAssignment = blockedAssignment(rng('act-3-04-page', 'blocked'))
 export const blockImbalance = ownerImbalance(blockAssignment)
-
 /** The Lane's working loss rate per transit — the planning figure, not a measurement. */
 export const lossRate = 0.01
 export const seeOneLoss = binomial.atLeast(1, BOARD_TRIAL.length, lossRate)

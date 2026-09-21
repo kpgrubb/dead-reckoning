@@ -1,15 +1,15 @@
-﻿/**
- * act-4-02 Â· The Sweep Log â€” drills. AP 4.3â€“4.4: sample space, event, probability as long-run
+/**
+ * act-4-02 · The Sweep Log — drills. AP 4.3–4.4: sample space, event, probability as long-run
  * relative frequency; the complement rule; mutually exclusive events and the addition rule;
  * probabilities read off a two-way table, including the general addition rule.
  *
- *   act-4/complement-rule      numeric  1 âˆ’ P(none): "at least one" over k trials, or a table's complement
+ *   act-4/complement-rule      numeric  1 − P(none): "at least one" over k trials, or a table's complement
  *   act-4/addition-exclusive   numeric  the addition rule over a drawn, mutually exclusive sample space
  *   act-4/two-way-probability  numeric  joint, marginal and "or" probabilities (overlap subtracted)
  *   act-4/sample-space         choice   a complete, mutually exclusive sample space for a described process
  *
- * Every table and rate is drawn fresh. The Act's own sweep log â€” 164 detections in 1,400 entries,
- * 151 of them thermal or optical â€” is act-4-02's mission beat and never appears here.
+ * Every table and rate is drawn fresh. The Act's own sweep log — 164 detections in 1,400 entries,
+ * 151 of them thermal or optical — is act-4-02's mission beat and never appears here.
  */
 import { defineGenerator, drawTwoWay, numericAnswer, pickContext, retry, tableMd, tableSpec, type TwoWayDraw } from '@/lib/problems/generate'
 import type { Rng } from '@/lib/rng'
@@ -27,7 +27,7 @@ function reserved(p: number): boolean {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Sample spaces â€” four or five mutually exclusive outcomes of one repeatable in-world process
+// Sample spaces — four or five mutually exclusive outcomes of one repeatable in-world process
 // ---------------------------------------------------------------------------------------------
 
 interface SpaceCtx {
@@ -84,7 +84,7 @@ const SPACES: SpaceCtx[] = [
     weights: [66, 15, 9, 7, 3],
   },
   {
-    frame: "One watch of the Eyes on the Callistoâ€“Ganymede local lane logs {n} contacts, each classified against the Compact's class table under exactly one heading.",
+    frame: "One watch of the Eyes on the Callisto–Ganymede local lane logs {n} contacts, each classified against the Compact's class table under exactly one heading.",
     trial: 'one contact',
     unit: 'contacts',
     variable: 'contact class',
@@ -111,7 +111,7 @@ function spaceRows(ctx: SpaceCtx, d: SpaceDraw): (string | number)[][] {
 }
 
 // ---------------------------------------------------------------------------------------------
-// 1. Numeric â€” the complement rule (checkpoint q2)
+// 1. Numeric — the complement rule (checkpoint q2)
 // ---------------------------------------------------------------------------------------------
 
 interface TrialCtx {
@@ -125,7 +125,7 @@ interface TrialCtx {
 
 const TRIALS: TrialCtx[] = [
   {
-    frame: 'The Lane plot shows {k} scheduled close passes of the loiter point in the window ahead. Each passing hullâ€™s nav sensors would pick up a cold *Nightjar* with probability {p}, and the passes are different hulls on scheduled tracks, so they are independent.',
+    frame: 'The Lane plot shows {k} scheduled close passes of the loiter point in the window ahead. Each passing hull’s nav sensors would pick up a cold *Nightjar* with probability {p}, and the passes are different hulls on scheduled tracks, so they are independent.',
     event: 'a detection',
     trials: 'passes',
   },
@@ -135,7 +135,7 @@ const TRIALS: TrialCtx[] = [
     trials: 'sweeps',
   },
   {
-    frame: 'The Bureau will audit {k} of the yardâ€™s certifications this quarter. Each audit turns up a discrepancy with probability {p}, independently of the others.',
+    frame: 'The Bureau will audit {k} of the yard’s certifications this quarter. Each audit turns up a discrepancy with probability {p}, independently of the others.',
     event: 'a discrepancy',
     trials: 'audits',
   },
@@ -186,8 +186,8 @@ export const complementRule = defineGenerator({
           `$P(\\text{${ctx.outcomes[i]}}) = ${c}/${d.total}$. The complement is one minus that.`,
           `$1 - ${c}/${d.total}$, to three decimals.`,
         ],
-        solution: `$$P(\\text{not ${ctx.outcomes[i]}}) = 1 - P(\\text{${ctx.outcomes[i]}}) = 1 - \\frac{${c}}{${d.total}} = ${fmt(p, 4)}$$\n\nThe probability is **${fmt(p, 3)}**. Adding the other ${ctx.outcomes.length - 1} outcomes gives the same number â€” the complement is just the short way, and it stays short however many outcomes there are.`,
-        misconception: `Adding the other outcomes and slipping one â€” or subtracting the *count* instead of the probability. $1 - ${c}$ is not a probability.`,
+        solution: `$$P(\\text{not ${ctx.outcomes[i]}}) = 1 - P(\\text{${ctx.outcomes[i]}}) = 1 - \\frac{${c}}{${d.total}} = ${fmt(p, 4)}$$\n\nThe probability is **${fmt(p, 3)}**. Adding the other ${ctx.outcomes.length - 1} outcomes gives the same number — the complement is just the short way, and it stays short however many outcomes there are.`,
+        misconception: `Adding the other outcomes and slipping one — or subtracting the *count* instead of the probability. $1 - ${c}$ is not a probability.`,
       }
     }
 
@@ -207,7 +207,7 @@ export const complementRule = defineGenerator({
       prompt: `${ctx.frame.replace('{k}', String(k)).replace('{p}', fmt(p, 2))}\n\nWhat is the probability of **at least one** ${ctx.event} across the ${k} ${ctx.trials}? Report a proportion to three decimal places.`,
       answer: numericAnswer(atLeastOne, 'proportion', { digits: 3 }),
       hints: [
-        '"At least one" is the complement of "none". Compute the probability that every trial misses, then subtract from 1 â€” do not add the per-trial probabilities.',
+        '"At least one" is the complement of "none". Compute the probability that every trial misses, then subtract from 1 — do not add the per-trial probabilities.',
         `Each of the ${k} ${ctx.trials} misses with probability $1 - ${fmt(p, 2)} = ${fmt(1 - p, 2)}$, and they are independent, so all ${k} miss with probability $${fmt(1 - p, 2)}^{${k}}$.`,
         `$1 - ${fmt(1 - p, 2)}^{${k}}$, to three decimals.`,
       ],
@@ -218,7 +218,7 @@ export const complementRule = defineGenerator({
 })
 
 // ---------------------------------------------------------------------------------------------
-// 2. Numeric â€” the addition rule over mutually exclusive outcomes
+// 2. Numeric — the addition rule over mutually exclusive outcomes
 // ---------------------------------------------------------------------------------------------
 
 export const additionExclusive = defineGenerator({
@@ -257,7 +257,7 @@ export const additionExclusive = defineGenerator({
       data: tableSpec(columns, rows),
       answer: numericAnswer(p, 'proportion', { digits: 3 }),
       hints: [
-        'Two events are mutually exclusive when they cannot both happen on the same trial. When they are, the probability of "one or the other" is the sum of their probabilities â€” nothing is counted twice, because nothing is in both.',
+        'Two events are mutually exclusive when they cannot both happen on the same trial. When they are, the probability of "one or the other" is the sum of their probabilities — nothing is counted twice, because nothing is in both.',
         `Each ${ctx.trial} carries exactly one ${ctx.variable}, so these outcomes cannot overlap: ${names.map((nm, i) => `${nm} ${counts[i]}`).join(', ')}, out of ${d.total}.`,
         `$(${counts.join(' + ')}) / ${d.total}$, to three decimals.`,
       ],
@@ -269,7 +269,7 @@ export const additionExclusive = defineGenerator({
 })
 
 // ---------------------------------------------------------------------------------------------
-// 3. Numeric â€” joint, marginal and "or" off a two-way table
+// 3. Numeric — joint, marginal and "or" off a two-way table
 // ---------------------------------------------------------------------------------------------
 
 interface TableCtx {
@@ -388,20 +388,20 @@ export const twoWayProbability = defineGenerator({
       hints:
         kind === 'or'
           ? [
-              `Being ${row} and being ${col} are **not** mutually exclusive â€” ${c} of these ${ctx.unit} are both. The general addition rule subtracts the overlap once, because adding the row total and the column total counts it twice.`,
+              `Being ${row} and being ${col} are **not** mutually exclusive — ${c} of these ${ctx.unit} are both. The general addition rule subtracts the overlap once, because adding the row total and the column total counts it twice.`,
               `Row total for ${row}: ${rt}. Column total for ${col}: ${ct}. The cell where they meet: ${c}. Grand total: ${n}.`,
               `$(${rt} + ${ct} - ${c}) / ${n}$, to three decimals.`,
             ]
           : [
               kind === 'joint'
-                ? 'A joint probability is one cell over the grand total â€” the share of everybody that is both things at once.'
+                ? 'A joint probability is one cell over the grand total — the share of everybody that is both things at once.'
                 : 'A marginal probability is one row or column total over the grand total: one variable only, the other ignored.',
               `Numerator: ${numerator}. Denominator: the grand total, ${n}.`,
               `$${numerator} / ${n}$, to three decimals.`,
             ],
       solution:
         kind === 'or'
-          ? `${row} and ${col} can happen together â€” ${c} of the ${n} ${ctx.unit} are both â€” so the plain addition rule would count that cell twice. Subtract it once:\n\n$$${tex} = ${fmt(p, 4)}$$\n\nThe probability is **${fmt(p, 3)}**.`
+          ? `${row} and ${col} can happen together — ${c} of the ${n} ${ctx.unit} are both — so the plain addition rule would count that cell twice. Subtract it once:\n\n$$${tex} = ${fmt(p, 4)}$$\n\nThe probability is **${fmt(p, 3)}**.`
           : `$$${tex} = ${fmt(p, 4)}$$\n\nThe probability is **${fmt(p, 3)}**.`,
       misconception:
         kind === 'or'
@@ -412,7 +412,7 @@ export const twoWayProbability = defineGenerator({
 })
 
 // ---------------------------------------------------------------------------------------------
-// 4. Choice â€” a complete, mutually exclusive sample space
+// 4. Choice — a complete, mutually exclusive sample space
 // ---------------------------------------------------------------------------------------------
 
 interface SampleSpaceCtx {
@@ -431,7 +431,7 @@ const SAMPLE_SPACES: SampleSpaceCtx[] = [
     process: 'One scheduled sweep of a sector by the Eyes. Each entry in the log records whether the sweep detected anything and, if it did, which single mode resolved it.',
     correct: ['thermal detection', 'optical detection', 'RF detection', 'no detection'],
     overlapping: ['thermal detection', 'optical detection', 'RF detection', 'any detection', 'no detection'],
-    overlappingWhy: '"Any detection" is not a fifth outcome â€” it is the union of the first three. Outcomes of a sample space must be mutually exclusive, and a sweep resolved by thermal would belong to two of these at once.',
+    overlappingWhy: '"Any detection" is not a fifth outcome — it is the union of the first three. Outcomes of a sample space must be mutually exclusive, and a sweep resolved by thermal would belong to two of these at once.',
     incomplete: ['thermal detection', 'optical detection', 'RF detection'],
     incompleteWhy: 'A sample space must cover every possible result. Most sweeps detect nothing at all, and if that outcome is missing the probabilities cannot sum to 1.',
     notOutcomes: ['the sweep detects something', 'the sweep is a re-sweep', 'the sink is above 50 percent', 'the sector is 1 to 6'],
@@ -453,7 +453,7 @@ const SAMPLE_SPACES: SampleSpaceCtx[] = [
     overlapping: ['the hull detects *Nightjar*', 'the hull does not detect *Nightjar*', 'the hull detects *Nightjar* while she is purging'],
     overlappingWhy: 'The third entry is a special case of the first, not a separate result. A pass that detects a purging ship belongs to two of these at once, so they are not mutually exclusive.',
     incomplete: ['the hull detects *Nightjar* while she is cold', 'the hull detects *Nightjar* while she is purging'],
-    incompleteWhy: 'The overwhelmingly commonest result â€” the hull sees nothing â€” is missing, so these two cannot account for every pass.',
+    incompleteWhy: 'The overwhelmingly commonest result — the hull sees nothing — is missing, so these two cannot account for every pass.',
     notOutcomes: ['the hull detects *Nightjar*', 'the hull is Perrine-flagged', 'the pass is inside 2.6 million kilometres', '*Nightjar* is purging'],
     notOutcomesWhy: 'Four things that can all be true of the same pass. A sample space needs outcomes of one variable, exactly one of which happens per trial.',
   },
@@ -489,7 +489,7 @@ export const sampleSpace = defineGenerator({
     const shuffled = rng.shuffle(cands)
     const correct = shuffled.findIndex((o) => o.correct)
     return {
-      prompt: `${ctx.process}\n\nWhich of these is a correct **sample space** for that process â€” a list of results that are mutually exclusive and cover every case, so that exactly one of them happens on every trial?`,
+      prompt: `${ctx.process}\n\nWhich of these is a correct **sample space** for that process — a list of results that are mutually exclusive and cover every case, so that exactly one of them happens on every trial?`,
       answer: { type: 'choice', options: shuffled.map((o) => o.text), correct, feedback: shuffled.map((o) => o.why) },
       hints: [
         'A sample space has two properties, and both must hold: no trial can land in two of the listed results, and no trial can land outside all of them.',
@@ -497,7 +497,7 @@ export const sampleSpace = defineGenerator({
       ],
       solution: `**${setText(ctx.correct)}**\n\nExactly one of these happens on every trial, and nothing else can happen, so their probabilities sum to 1 and the addition rule applies to any combination of them with no correction.\n\n- ${ctx.overlappingWhy}\n- ${ctx.incompleteWhy}\n- ${ctx.notOutcomesWhy}`,
       misconception:
-        'Listing a union alongside its own parts â€” "thermal, optical, RF, any detection" â€” or listing several variables about one trial as if they were the results of one. Both break the property that makes the addition rule safe.',
+        'Listing a union alongside its own parts — "thermal, optical, RF, any detection" — or listing several variables about one trial as if they were the results of one. Both break the property that makes the addition rule safe.',
     }
   },
 })

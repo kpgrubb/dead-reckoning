@@ -30,7 +30,6 @@ export const tindrUnescorted = [2, 3, 3, 4]
 export const tindrExact = exactRandomization(tindrEscorted, tindrUnescorted)
 export const tindrExtreme = Math.round(tindrExact.pLess * tindrExact.count)
 export const tindrWays = choose(tindrEscorted.length + tindrUnescorted.length, tindrEscorted.length)
-
 /** The Lane's working loss rate per transit — a planning figure, not a measurement. */
 export const lossRate = 0.01
 /** A mid-sized trial, for the comparison in the worked example. */
@@ -196,7 +195,7 @@ And a trial cannot see what it cannot generate. If the event you care about happ
 
 <Formula tex="p_{\text{one-sided}} = \frac{\#\left\{\, i \,:\, d_i \le d_{\text{obs}} \,\right\}}{\binom{n}{k}}, \qquad p_{\text{two-sided}} = \frac{\#\left\{\, i \,:\, |d_i| \ge |d_{\text{obs}}| \,\right\}}{\binom{n}{k}}" terms={{ 'd_i': 'the difference produced by relabelling i', n: 'units in the trial', k: 'units assigned to the treatment' }} label="The exact randomization p-value" />
 
-<Formula tex="P(\text{at least one loss in } m \text{ transits}) = 1 - (1 - \pi)^m" terms={{ '\\pi': 'probability a single transit ends in a loss', m: 'transits in the trial' }} label="What a trial is able to see at all" />
+<Formula tex="P(\text{at least one loss in } m \text{ transits}) = 1 - (1 - \pi)^{m}" terms={{ '\\pi': 'probability a single transit ends in a loss', m: 'transits in the trial' }} label="What a trial is able to see at all" />
 </Briefing.Definition>
 <Briefing.Worked>
 *Tindr*'s beacon trial, 2181, run on the Themis Reach by an officer who is now retired and who did it properly.
