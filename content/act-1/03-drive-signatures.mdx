@@ -97,7 +97,7 @@ Then describe it, and describe it in this order — **shape, centre, spread, unu
 4. **Unusual features.** Outliers, gaps, clusters — named, with their values.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="\text{bar height}_j = \#\{\, x_i : e_j \le x_i \lt e_{j+1} \,\}, \qquad e_{j+1} - e_j = w" terms={{ 'w': 'the bin width — the analyst’s decision, not the data’s', 'e_j': 'the jth bin edge, so the jth bar covers the values from e_j up to e_{j+1}' }} label="What one histogram bar counts" />
+<Formula tex="\text{bar height}_j = \#\{\, x_i : e_j \le x_i \lt e_{j+1} \,\}, \qquad e_{j+1} - e_j = w" terms={{ 'e_j': 'the jth bin edge — the jth bar covers everything from that edge up to the next one', 'w': 'the bin width: the analyst’s decision, not the data’s' }} label="What one histogram bar counts" />
 
 A relative-frequency histogram divides each bar by $n$; the shape is identical and only the vertical axis changes. Neither version is readable without its bin width stated.
 </Briefing.Definition>

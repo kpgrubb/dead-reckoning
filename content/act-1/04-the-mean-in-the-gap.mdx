@@ -78,7 +78,9 @@ The **standard deviation** $s$ is the typical distance of an observation from th
 So the rule: **symmetric with nothing stranded — mean and standard deviation. A long tail or an outlier — median and IQR.** And a shape with two piles in it earns neither, because a centre is only a centre if there is one.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i \qquad s = \sqrt{\frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n - 1}}" terms={{ '\\bar{x}': 'sample mean — the balance point', 's': 'sample standard deviation — a typical distance from the mean, in the units of the variable', 'n - 1': 'degrees of freedom: one is spent estimating the mean from the same sample' }} label="Mean and standard deviation" />
+<Formula tex="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i" terms={{ '\\bar{x}': 'sample mean — the balance point of every observation' }} label="The mean" />
+
+<Formula tex="s = \sqrt{\frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n - 1}}" terms={{ 'n - 1': 'degrees of freedom: one is spent estimating the mean from the same sample' }} label="The sample standard deviation — a typical distance from the mean, in the units of the variable" />
 
 <Formula tex="\text{IQR} = Q_3 - Q_1 \qquad \text{range} = x_{\max} - x_{\min}" terms={{ 'Q_1': 'median of the lower half of the sorted values', 'Q_3': 'median of the upper half' }} label="Two spreads, one resistant and one not" />
 </Briefing.Definition>
