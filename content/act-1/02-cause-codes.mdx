@@ -1,0 +1,215 @@
+---
+id: act-1-02
+act: 1
+title: "Cause Codes"
+kind: module
+ap_topics: ["1.4"]
+objectives:
+  - "Build bar charts of counts and of relative frequencies for a categorical variable, and say when a pie chart is legitimate"
+  - "Identify how a denominator, a truncated baseline, a rescaled bar or an area encoding distorts a categorical display"
+  - "Compare two categorical distributions from groups of different size using relative frequencies, in context"
+prereqs: ["act-1-01"]
+est_minutes: 20
+calc_briefing: null
+summary: "The Board's bar chart is honest about its numbers and dishonest about its denominator. Ebele fixes it, then overcorrects twice, and both charts come down."
+---
+
+import { countBy, fmt, fmtInt, fmtPct } from '@/lib/stats'
+import { losses, register, REGISTER_META } from '@/instruments/act-1/data'
+import { DisplayIntegrityPanel } from '@/instruments/act-1/DisplayIntegrityPanel'
+import { compareCategorical } from '@/lib/problems/generators/act-1/_rubrics'
+
+export const lossClasses = countBy(losses.map((l) => l.classification), ['unknown', 'accident', 'piracy'])
+export const unknownCount = losses.filter((l) => l.classification === 'unknown').length
+export const piracyCount = losses.filter((l) => l.classification === 'piracy').length
+export const accidentCount = losses.filter((l) => l.classification === 'accident').length
+export const unknownOfLosses = unknownCount / losses.length
+export const unknownOfRecords = unknownCount / register.length
+
+export const uruk = losses.filter((l) => l.office === 'Uruk')
+export const ceres = losses.filter((l) => l.office === 'Ceres')
+export const urukUnknown = uruk.filter((l) => l.classification === 'unknown').length / uruk.length
+export const ceresUnknown = ceres.filter((l) => l.classification === 'unknown').length / ceres.length
+
+export const asgard = { transits: 2580, lost: 13 }
+
+export const marsBeltCodes = [
+  ...Array.from({ length: 22 }, () => 'accident'),
+  ...Array.from({ length: 13 }, () => 'piracy'),
+  ...Array.from({ length: 11 }, () => 'unknown'),
+]
+export const marsBelt = countBy(marsBeltCodes, ['accident', 'piracy', 'unknown'])
+export const marsBeltTotal = marsBeltCodes.length
+export const mbBaseline = 0.2
+export const mbTrueRatio = marsBelt[0].relFreq / marsBelt[2].relFreq
+export const mbDrawnRatio = (marsBelt[0].relFreq - mbBaseline) / (marsBelt[2].relFreq - mbBaseline)
+
+<Scene stamp="MET 13/08:40" location="Bridge · intel terminal · 0.009 AU from Callisto, 4 mgee" condensed="A day on and four seconds out, the Board's summary page goes up beside Ebele's own work: a bar chart of incident classifications over the whole file, with unknown a sliver at the end of it. He restores the denominator to the losses and the sliver stops being a sliver. Then he draws the same thing as a pie, and then again with the axis starting at sixty percent, and you make him take both down.">
+
+Four seconds to Callisto this morning, and the Jovian system has gone from a set of objects to a smear with a bright core in it. Ten kilometres a second and climbing. Sandoval has the wings out and says the sink is at eleven percent, plus or minus one, and will stay there as long as nobody asks the ship to be clever.
+
+The Board's summary page is still on the terminal's second panel, because you told Ebele to leave it there. It is a good-looking page. Somebody in Lane Operations cared about it.
+
+</Scene>
+
+<Scene variant="transmission" stamp="Attachment B" location="Admiralty Board · Directorate of Lane Operations · summary page 2" condensed="The Board's page: a bar chart titled Incident classifications, 2178–84, drawn over every record in the file, with four tall bars for advisories, dropouts and faults and unknown a sliver at the end.">
+
+**LANE INCIDENT FILE 2178–84 · SUMMARY · PAGE 2**
+
+*Figure 2. Incident classifications, 2178–84.* Bar chart. Four tall bars — debris advisory, profile-deviation advisory, transponder dropout, medical diversion — and, at the right-hand end of the axis, three short ones: accident, piracy, unknown. The caption reads: *It is noted that incidents attributable to unknown cause represent {fmtPct(unknownOfRecords, 1)} of records logged. The incidence of unresolved classification is not material.*
+
+</Scene>
+
+<Scene stamp="MET 13/09:10" location="Bridge · intel terminal · 0.009 AU from Callisto, 4 mgee" condensed="Ebele changes the denominator from all 2,200 records to the 31 losses and the unknown bar stops being a sliver. Then he draws it as a pie, then again with the axis starting at sixty percent to make the point louder, and both come down. Ferrier: the honest chart is the one that survives the Board's staff.">
+
+Ebele has had the page beside his own tables since yesterday afternoon and he has worked out what is wrong with it, which is more than the drafting officer did.
+
+"So the bars are right, sir. I checked every one against the file. Debris advisories, profile deviations, dropouts, diversions — the counts are exactly what the Authority logged. And *unknown* is a sliver, because it's a sliver of two thousand two hundred records, and most of those records are somebody's cargo net coming loose."
+
+He changes one control. The denominator goes from every record in the file to the thirty-one losses, and the chart redraws itself, and the sliver is not a sliver any more. It is the tallest bar on the axis by a distance, and it did not move; the floor under it did.
+
+Nobody says anything for a moment. Then Ebele, who is twenty-three and has just found something, does the thing you were waiting for.
+
+He turns it into a pie. It is a perfectly legitimate pie — three mutually exclusive codes, every loss in exactly one of them, the slices sum to the whole — and it is also, on a bridge, three angles that nobody can compare by eye. Then, because the pie has not made his point loudly enough, he redraws it as bars with the value axis starting at sixty percent, and the *unknown* bar becomes a tower and the other two become stubs, and he sits back from it looking pleased.
+
+You tell him to take both down.
+
+Not because either is a lie in the sense a court would recognise. The pie's angles are correct. The truncated chart's numbers are printed on its own axis, correctly labelled, and anyone who reads the labels will not be fooled. That is the whole defence, and it is the defence the Board's page could also make, word for word, and you have just spent a morning explaining why it is not good enough.
+
+"If we send a chart whose bars are three times each other when the numbers are not," you tell him, "then the first person at Valhalla who notices will be right, and everything under it will be read as though we did it on purpose. Including the part that is true."
+
+</Scene>
+
+<Dialogue speaker="xo" aside="She has both of his charts up on the plot, side by side, and is not looking at either of them.">
+The honest chart is the one that survives the Board's staff. They will start at the axis, then the denominator, then the caption, and only then the bars — and they will be right to. Give them a chart with nothing in it to find, Ensign, and then the only thing left for them to argue with is the number.
+</Dialogue>
+
+<Briefing title="A chart's denominator is its first claim" topics={["1.4"]}>
+<Briefing.Intuition>
+A **bar chart** shows one categorical variable: one bar per category, bars separated, order chosen by you. Its bars may be **counts** (how many) or **relative frequencies** (what share). Nothing else about it is free.
+
+Four decisions sit under every bar chart, and each one is a claim:
+
+1. **The denominator.** Which individuals are on the axis at all. A bar that is a sliver of every record in a file may be the tallest bar among the losses; nothing in the world changes between the two pictures.
+2. **The baseline.** A bar chart's promise is that length is proportional to quantity. That promise holds only if the value axis starts at zero. Start it near the shortest bar and the *ratios* of the bars become an artefact of where you put the floor; the ordering and the labelled differences survive, the ratios do not.
+3. **The scale.** Counts answer "how many"; relative frequencies answer "what share". Two groups of different size can only be compared on the second.
+4. **The area.** A bar encodes its value in *one* dimension. Scale its width to the value as well and the ink grows as the square, and the reader's eye reads ink.
+
+A **pie chart** is legitimate when its slices are mutually exclusive categories of one variable that between them account for exactly one whole, and when the question is about shares of that whole. It is never the right display for comparing two groups: two pies are two wholes, and their slices are not on a common axis. To compare two groups, put **relative frequencies side by side**, bar against bar, with both groups' totals written where the reader can see them.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\text{bar height}_k = n_k \quad\text{(counts)} \qquad\text{or}\qquad \frac{n_k}{n} \quad\text{(relative frequency)}" terms={{ 'n_k': 'count in category k', 'n': 'the denominator — the individuals the chart is about' }} label="What a bar is" />
+
+With a value axis truncated at $b$, a bar of value $v$ is drawn at length $v - b$, so two bars are drawn in the ratio
+
+<Formula tex="\frac{v_1 - b}{v_2 - b} \neq \frac{v_1}{v_2} \quad \text{unless } b = 0" terms={{ 'b': 'the baseline of the value axis', 'v_i': 'the value of bar i' }} label="Why the baseline must be zero" />
+</Briefing.Definition>
+<Briefing.Worked>
+Your own 2176 return from the cutter *Asgard*: {fmtInt(asgard.lost)} losses in {fmtInt(asgard.transits)} transits. Charted against transits, the loss bar stands at {fmtPct(asgard.lost / asgard.transits, 2)} — a hairline. That bar is honest and it answers a real question, *how often does a transit end in silence*. It cannot answer *how are the losses classified*, because for that question the denominator is {fmtInt(asgard.lost)}, and every bar on the chart grows by a factor of {fmt(asgard.transits / asgard.lost, 0)}.
+
+Take the Mars–Belt corridor's file, 2170–76: {marsBeltTotal} losses, {marsBelt.map((r) => `${r.value} ${r.count}`).join(', ')}. As relative frequencies of the {marsBeltTotal}: {marsBelt.map((r) => `${r.value} ${fmt(r.relFreq, 3)}`).join(', ')}, summing to {fmt(marsBelt.reduce((s, r) => s + r.relFreq, 0), 3)}.
+
+Now truncate. *Accident* at {fmt(marsBelt[0].relFreq, 3)} is {fmt(mbTrueRatio, 2)} times *unknown* at {fmt(marsBelt[2].relFreq, 3)} — the honest chart draws one bar twice the other. Start the value axis at {fmtPct(mbBaseline, 0)} instead of zero and the drawn lengths become {fmt(marsBelt[0].relFreq - mbBaseline, 3)} against {fmt(marsBelt[2].relFreq - mbBaseline, 3)}: a height ratio of **{fmt(mbDrawnRatio, 1)}**. Same file, same three numbers, same correct axis labels, and a picture that says something more than three times louder than the data does.
+</Briefing.Worked>
+<Briefing.Caution>
+*A pie for data that are not parts of one whole.* Two offices' *unknown* shares are two numbers from two different denominators; they do not partition anything and they need not sum to one, so they are not slices. Neither are quantities measured on a scale — hull ages have no slices — and neither is a time series, where a pie throws away the ordering the trend lives in.
+
+*A truncated axis read as a proportional difference.* "Nearly three times the height" is a statement about the drawing. The only defence against it is to read the axis first, every time, before the bars — which is exactly what the Board's staff will do to anything you send them.
+</Briefing.Caution>
+</Briefing>
+
+<DisplayIntegrityPanel />
+
+<Drill generator="act-1/display-distortion" count={2} />
+<Drill generator="act-1/honest-relative-frequency" count={1} />
+<Drill generator="act-1/chart-choice" count={1} />
+<Drill generator="act-1/compare-categorical" count={1} />
+
+<MissionBeat id="act-1-02-unknown" kind="numeric" answer={unknownOfLosses} answerKind="proportion" digits={3} label="THE HONEST BAR"
+  prompt={`Restore the denominator the Board's figure should have used. Of the ${losses.length} losses — not the ${fmtInt(REGISTER_META.records)} records — what relative frequency carries the code *unknown*? Give a proportion to three decimal places.`}
+  hint="Set the panel's denominator to the losses and the scale to relative frequency. The count on the unknown bar does not change; only what it is divided by does.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He puts the two versions of the same bar side by side, with both denominators written under them.">
+  Same bar, sir. Same records in it. One page calls it not material and the other calls it most of what happened, and neither of them is arithmetic — they're two different questions with the same numerator.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst">
+  Yes, sir. That's — yes. I divided by the file again. The question says *of the losses*, so the losses are the denominator and every other record comes off the axis before I count anything.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-1-02-distortion" kind="choice" label="WHAT THE PAGE CLAIMS"
+  prompt="Figure 2 on the Board's summary page charts classification over every record in the file. Its counts are all correct. Which statement does the figure, **as drawn**, misrepresent?"
+  options={[
+    'That a freighter lost on the Lane is rarely classified *unknown*.',
+    'That the Lane Authority files far more advisories than losses.',
+    'That thousands of incident records were logged on the Lane between 2178 and 2184.',
+    'That *unknown* is a small share of everything the Lane Authority writes down.',
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    'True, and honestly drawn: the file really is mostly advisories. That claim survives the change of denominator intact.',
+    'True. The page is honest about how many records it holds, and the bar chart shows it.',
+    'True — of every record the Authority files, *unknown* is about one in a hundred. The figure represents that correctly. The trouble is that it is not the question anybody reads the page to answer.',
+  ]}
+  hint="Three of these statements stay true when you swap the denominator from all records to the losses. One of them does not.">
+  <Success>
+  <Dialogue speaker="xo">
+  Then the page is not false. It answers a question nobody asked and lets the reader believe it answered the other one. Log it that way, in those words, and do not use the word *misleading* where the Board can read it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She takes the page down to its caption and leaves only that on the plot.">
+  Test each one twice, Captain: once with two thousand two hundred records under it and once with thirty-one. The statement that changes its truth value when the denominator changes is the one the figure is getting away with.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-1-02-compare" kind="interpretation" label="TWO OFFICES, ONE CODE"
+  prompt="The preliminary needs two sentences that would survive the Board's staff. Using the side-by-side panel, compare the **Uruk** office and the **Ceres** office on how often each coded a loss *unknown*. The two offices classified very different numbers of losses, so compare shares: cite both percentages, name both offices, and say which classification you are talking about."
+  hint="Each office's own row total is its denominator. One sentence with both percentages and the word *than* in it; then one sentence saying what the difference is about — the classification, not the caseload."
+  {...compareCategorical({ groupA: 'the Uruk office', groupB: 'the Ceres office', category: 'unknown', propA: urukUnknown, propB: ceresUnknown, variable: 'classification' })}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes it into the preliminary under a heading of its own, with both totals in the margin.">
+  Both denominators on the page, sir. If anyone at Valhalla wants to argue with it, they'll have to argue with the file.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She reads it back once, flatly, and hands it to you.">
+  That is two descriptions, or it is counts. Different-sized offices are compared on shares and on nothing else. One sentence, both percentages, the word *than*, and the name of the code in it.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-1-02-unknown", "act-1-02-distortion", "act-1-02-compare"]}>
+
+<Scene stamp="MET 13/11:05" location="Bridge · intel terminal · 0.009 AU from Callisto, 4 mgee" condensed="The official story is piracy. The official codes are four piracy and twenty-two unknown out of thirty-one. The story and the ledger disagree, and nothing in the file explains which of them is wrong — only that the Board's own paperwork does not support the Board's own account.">
+
+Ebele redraws Figure 2 the way it should have been drawn: two panels, both with the axis at zero, both labelled with their denominator. All {fmtInt(register.length)} records on the left, where *unknown* is {fmtPct(unknownOfRecords, 1)} and the caption's word *immaterial* is defensible. The {losses.length} losses on the right, where it is {fmtPct(unknownOfLosses, 0)} and the word is not.
+
+Then he does something you did not ask for, and it is the first thing he has done on this bridge that makes Ferrier put her stylus down.
+
+He goes back through the Board's own tasking signal and the Directorate's covering note and the three Lane Operations bulletins the Authority has issued since 2181, and he counts what the *prose* says. Interdiction. Hostile action against Compact-flagged shipping. Recommendations on escort economics. The word that appears, over and over, in the sentences human beings wrote about this corridor, is *piracy*.
+
+And the file the same organisation keeps codes {piracyCount} of the {losses.length} that way. Another {accidentCount} it calls accident. The rest — the great majority — it calls nothing at all.
+
+"The story and the ledger disagree, sir," he says. "Not by a little."
+
+Ferrier: "The data says the codes. The prose says something the codes do not. That is two statements by one institution, and we can prove one of them exists." She looks at you, not at him. "We are not in a position to say which is wrong. We are in a position to say that both are on the record, and that we noticed."
+
+You have three displays now that would survive Valhalla, and a preliminary that is beginning to have a spine. What you do not have is anything about *where* — and the mark axis is still sitting there with thirty-one marks on it, waiting for somebody to say what shape they are in.
+
+</Scene>
+
+<LogEntry
+  title="A chart's denominator is its first claim"
+  concept="A bar chart of a categorical variable makes four claims before it shows a single bar: which individuals are on the axis (the denominator), where the value axis starts (the baseline must be zero for length to mean quantity), whether the bars are counts or shares, and whether any second dimension has been scaled as well. A pie is legitimate only when its slices are mutually exclusive parts of exactly one whole and the question is about shares of that whole — never for comparing two groups, which is what side-by-side relative-frequency bars are for."
+  formula="\frac{v_1 - b}{v_2 - b} \neq \frac{v_1}{v_2} \quad (b \neq 0), \qquad \text{compare groups with } \frac{n_{ik}}{n_i}, \text{ never } n_{ik}"
+  mistake="Comparing counts across groups of different size. A taller bar over a bigger caseload is not a higher rate, and without each group's total on the page no reader can tell the difference."
+  tags={['bar chart', 'pie chart', 'relative frequency', 'denominator', 'truncated axis', 'comparing groups', '1.4']}
+/>
+
+</Gated>

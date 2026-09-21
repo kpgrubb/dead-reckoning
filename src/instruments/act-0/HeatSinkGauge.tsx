@@ -80,6 +80,12 @@ export function HeatSinkGauge({ initialProfile = 'Quiet', initialHours = 40, sta
     setRuns((prev) => [...prev, ...batch])
   }
   const onReset = () => setRuns([])
+  /** A new profile is a different physics: the old runs would pollute the run-to-run spread and the ghosts. */
+  const onProfileChange = (next: ProfileName) => {
+    if (next === profile) return
+    setProfile(next)
+    setRuns([])
+  }
 
   const current = runs.length > 0 ? runs[runs.length - 1] : null
   const proj = current ? projectRun(current.samples, current.hours, current.startPct) : null
@@ -116,7 +122,7 @@ export function HeatSinkGauge({ initialProfile = 'Quiet', initialHours = 40, sta
 
   const controls = (
     <div className="dr-controls">
-      <Segmented<ProfileName> label="Cold profile" value={profile} options={PROFILE_ORDER.map((n) => ({ value: n, label: `${n} · ${PROFILES[n].loadKw} kW` }))} onChange={setProfile} />
+      <Segmented<ProfileName> label="Cold profile" value={profile} options={PROFILE_ORDER.map((n) => ({ value: n, label: `${n} · ${PROFILES[n].loadKw} kW` }))} onChange={onProfileChange} />
       <Slider label="Cold window" value={hours} min={4} max={120} step={1} units="h" onChange={setHours} />
     </div>
   )

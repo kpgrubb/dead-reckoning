@@ -1,0 +1,195 @@
+---
+id: act-0-03
+act: 0
+title: "Tasking"
+kind: module
+ap_topics: ["1.1", "1.3"]
+objectives:
+  - "Read a frequency table and compute relative frequencies with the right denominator"
+  - "State what population the Register describes and what it does not"
+  - "Pose the mission question as a statistical question"
+prereqs: ["act-0-02"]
+est_minutes: 20
+calc_briefing: null
+summary: "Valhalla, forty-one seconds out. The Board's tasking arrives with one page: a mean, a table and a conclusion. You ask for the records."
+---
+
+import { fmt } from '@/lib/stats'
+import { register, losses, registerSummary } from '@/instruments/act-0/data'
+import { RegisterBrowser } from '@/instruments/act-0/RegisterBrowser'
+
+export const asgardReport = { transits: 2580, lost: 13 }
+
+<Scene stamp="MET 8/14:00" location="Jovian space · 0.9 light-seconds from Valhalla" condensed="The Board's tasking arrives, forty-one seconds out, signed by Ashby-Hale personally: observe and assess the Lane's incident pattern, reporting through the Directorate of Lane Operations. Ferrante clears the crew. Ebele's first brief is the Incident File as one summary page.">
+
+Solberg announces it the way he announces everything. "Valhalla. Forty-one seconds out. Timestamp is genuine." Then he reads it, verbatim, without inflection, because that is the rule he keeps for himself.
+
+</Scene>
+
+<Dialogue speaker="admiralty" lag="41 s" aside="Transmission, Admiralty Board, Valhalla. Read aloud by Solberg.">
+The Board directs that CSV *Nightjar* proceed to the Jovian–Ceres Transit Lane and observe and assess the incident pattern recorded thereon since 2178. It is noted that the pattern has been found consistent with comparable corridors. Reporting will be through the Directorate of Lane Operations. Signed for the Board — Ashby-Hale, Rear Admiral, Director of Lane Operations.
+</Dialogue>
+
+<Dialogue speaker="ashbyhale" lag="41 s" aside="A second line, personal, after the signature block.">
+Good hunting, Anselm.
+</Dialogue>
+
+<Scene stamp="MET 8/16:00 → 9/09:00" location="Sick bay · then the intel terminal" condensed="Ferrante clears sixteen people for a hundred-day transit with the reservations he always has. Ebele's brief: 31 hulls, six years, mean mark 6.5, spread along the Lane, a table of classifications. You ask for the file. It is 2,200 records. He offers a summary by morning; you tell him you want the records, and while they load you have him compute what fraction of the summary's rows are losses.">
+
+Ferrante's fitness board takes two hours and clears sixteen people for a hundred-day transit. He states his reservations once each, plainly: one rating who has not slept properly since the slip; one officer — he does not say which — who has not eaten a full meal since the Watch run; and you, who he says look like a man who has been handed a ship by a friend and is waiting to learn what it costs. "That's not a medical finding," he says. "It's a base rate. Most of them do." He signs.
+
+Ebele's first brief is at 09:00 the next morning, at the intel terminal, one page on the display. He has had the tasking for nineteen hours and has slept, he says, for some of them.
+
+The page is the Board's. *Lane Incident File, 2178–84. Thirty-one hulls lost in six years. Mean mark at incident: 6.5. Incidents distributed along the Lane consistent with comparable corridors.* Beneath it a table of classifications, a bar chart, and the finding. Ebele has read it the way a good analyst reads a page he did not write: he can tell you what every line says, and he has not yet asked what any of them means.
+
+You ask him what the mean of 6.5 is a mean *of*.
+
+"So — mark at incident, sir. The Lane's twelve marks; 6.5 is halfway. Spread along the Lane, like it says."
+
+You ask him how many rows went into it.
+
+He does not know. He asks the terminal. It takes four minutes to come back, because the file is at Valhalla and the file is not one page. It is two thousand two hundred records: every entry the Lane Authority has logged on the corridor in six years, from its two classifying offices — losses, yes, and transponder dropouts, debris advisories, profile-deviation warnings, medical diversions. Every severity. Six years of paperwork, and a mean taken over all of it.
+
+"I can have a summary by the morning, sir."
+
+You tell him you have a summary. It is one page and it is on the display. You want the records.
+
+While the file loads — the relay is slow and the Authority's export format was designed by someone who did not want it exported — you give him the first question, because it is the only honest one to ask before the shape of anything is known. Of the rows the Board's mean was taken over, what fraction are actually losses? And what are the rest?
+
+</Scene>
+
+<Dialogue speaker="xo" aside="From the plot, not turning round.">
+Assuming the file is complete. Assuming both offices logged the same kinds of thing. We don't know either. Say what it is before you say what it shows.
+</Dialogue>
+
+<Briefing title="A table and its denominator" topics={["1.1", "1.3"]}>
+<Briefing.Intuition>
+A **frequency table** counts how many individuals fall in each category of one categorical variable. Divide each count by the total and you have **relative frequencies** — proportions that sum to one. The table is honest exactly as far as its **denominator** is: change what goes in the total and every proportion moves, whether or not anything in the world has.
+
+Then the harder question: what **population** does the table describe? A table describes the individuals whose rows went into it — no more. The Register's rows are *incidents as recorded and classified by the Lane Authority's two offices*. That is what any table built from it speaks for. It does not speak for hulls, or for transits, or for the Lane: a transit that filed nothing has no row. The Register is not the population. It is a recorded sample of a reporting process, and the process has two offices in it.
+
+A **count** and a **proportion** answer different questions. *Thirty-one* says how many. *One point four percent* says how many per hundred of some denominator — and is meaningless until you have said which.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\text{relative frequency of category } k = \frac{n_k}{n}" terms={{ 'n_k': 'count of individuals in category k', 'n': 'total individuals in the table — the denominator' }} label="Relative frequency" />
+
+The relative frequencies of every category of one variable sum to 1. A **population** is every individual a question is about; a **sample** is the subset actually recorded. The population a table describes is the set of rows it was built from — after every filter.
+</Briefing.Definition>
+<Briefing.Worked>
+Your own 2176 patrol report from the cutter *Asgard* — the one the Board prefers to forget — was a frequency table with two rows. Transits observed on the Lane, 2168–76: {asgardReport.transits.toLocaleString('en-US')}. Of those, lost: {asgardReport.lost}; arrived: {(asgardReport.transits - asgardReport.lost).toLocaleString('en-US')}.
+
+Relative frequency of a loss: {asgardReport.lost} ÷ {asgardReport.transits.toLocaleString('en-US')} = **{fmt(asgardReport.lost / asgardReport.transits, 4)}**, about {fmt((100 * asgardReport.lost) / asgardReport.transits, 2)} per hundred transits. Arrived: {fmt((asgardReport.transits - asgardReport.lost) / asgardReport.transits, 4)}. The two sum to one. The denominator was *transits observed by one cutter over eight years* — and the report said so in its first line, because a proportion without its denominator is a rumour.
+</Briefing.Worked>
+<Briefing.Caution>
+*"The Register is the population — it's everything that happened on the Lane."* It is everything two offices wrote down. And on the *Asgard* page above, *"{asgardReport.lost} hulls"* and *"{fmt((100 * asgardReport.lost) / asgardReport.transits, 2)} percent of transits"* are one fact in two forms; treating a count as a share, or a share as a count, is how a summary page hides how few or how many a number really is.
+</Briefing.Caution>
+</Briefing>
+
+<RegisterBrowser />
+
+<Drill generator="act-0/relative-frequency-filtered" count={2} />
+<Drill generator="act-0/count-vs-proportion" count={1} />
+<Drill generator="act-0/population-described" count={1} />
+<Drill generator="act-0/denominator-filter" count={1} />
+<Drill generator="act-0/percent-to-count" count={1} />
+
+<MissionBeat id="act-0-03-loss-fraction" kind="numeric" answer={registerSummary.lossFraction} answerKind="proportion" label="THE SUMMARY'S ROWS"
+  prompt={`The Board's mean of 6.5 was taken over every record in the file — ${registerSummary.total.toLocaleString('en-US')} rows. Using the Register browser, tabulate severity over the whole file: what fraction of the rows are **losses**? Give a proportion to three decimal places.`}
+  hint="No filter. Tabulate severity. The denominator is every record the mean was taken over.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He has the frequency table on the display and is looking at the Total row rather than the loss row.">
+  So the mean's over two thousand two hundred rows and the losses are — that. That's not a distribution of losses along the Lane, sir. That's a distribution of paperwork along the Lane, with the losses in it somewhere.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst">
+  Yes, sir. That's — yes. I filtered before I counted, so the total wasn't the file, it was the filter. Denominator first. All rows, then severity.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-0-03-population" kind="choice" label="THE OTHER NINETY-EIGHT PERCENT"
+  prompt="The losses are a small fraction of the file. What population do the **other** records — the ones the Board's mean was mostly taken over — describe?"
+  options={[
+    'Every hull that completed a Lane transit safely, 2178–84',
+    'All transits the Lane carried in six years, whether or not anything was reported',
+    'Minor incidents the Lane Authority logged on the Lane — transponder dropouts, debris and profile-deviation advisories, medical diversions — as recorded by its two offices',
+    'The 31 lost hulls, classified by cause',
+  ]}
+  correct={2}
+  feedback={[
+    'An arrival is not an incident. A hull that completed its transit without filing anything has no row in the Register.',
+    'The Register is not the Lane. Only transits with a logged incident appear in it; the rest are absent, not zero.',
+    null,
+    'The 31 losses are the small fraction you just computed; the question is about everything else in the file.',
+  ]}
+  hint="Ask what a row is. Every row in the file is one recorded incident; the losses are the rows whose severity is loss.">
+  <Success>
+  <Dialogue speaker="xo">
+  Then the Board's page describes two thousand incidents of every kind and calls it the Lane. Noted. Assuming the file is complete.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She turns from the plot for this one.">
+  The data says what it recorded, Captain — not what happened. Say what a row is, and then say what the rows are not.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-0-03-loss-fraction", "act-0-03-population"]}>
+
+<Scene stamp="MET 9/11:00" location="Intel terminal · the file loading" condensed="The summary page's mean is taken over 2,200 records of every severity; the 31 losses are 1.4 percent of it. To know whether the summary is honest you need the shape of the thing, not its centre — and that needs the records. One decision remains before the burn: the reporting line.">
+
+Ebele writes it at the top of the page, above the Board's own heading, in the register the Service teaches: *Mean of 6.5 computed over {registerSummary.total.toLocaleString('en-US')} Authority records of all severities; losses {losses.length} of {register.length.toLocaleString('en-US')} ({fmt(100 * registerSummary.lossFraction, 1)} %).* He looks at it for a while. Then he adds, in smaller type, what the other {fmt(100 * (1 - registerSummary.lossFraction), 1)} percent are.
+
+"It's not wrong, sir," he says. "The page. Six point five is the mean of what it says it's the mean of."
+
+Ferrier: "It's the mean of a file. The question is what thirty-one losses look like on that axis, and the page doesn't say, because it never looked."
+
+You do not yet know the shape of the thirty-one. You know that a centre computed over two thousand advisories cannot tell you, and that the only way to find out is to have the records and look at them — every column, every row, before anyone draws anything. That is Act I's work, and it begins the moment the file finishes loading.
+
+There is one more thing on the tasking, and it is not statistical. The Board directs that *Nightjar* report through the Directorate of Lane Operations — Ashby-Hale's own office — rather than through the Flag Secretary, which is the channel every naval assessment in your thirty-four years has used. Ferrier has noticed. She has said nothing. She is waiting for you to.
+
+</Scene>
+
+<MissionBeat id="act-0-03-line" kind="decision" label="THE REPORTING LINE"
+  prompt="The tasking routes your reports through the Directorate of Lane Operations, not the Flag Secretary. Callisto is forty-one seconds away for three more hours. Your call."
+  options={[
+    'Accept the tasking as written. Report through Lane Operations.',
+    'Query the reporting line: ask the Board, on the record, why the assessment bypasses the Flag Secretary.',
+  ]}>
+  <Outcome option={0}>
+  <Dialogue speaker="xo" aside="She logs the tasking as received.">
+  Logged as written. I want it noted I asked whether you'd query it, and that you didn't. Not a criticism, Captain. A timestamp.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="admiralty" lag="41 s · reply at 12:03" aside="Solberg reads it twice, the second time for the timestamp.">
+  It is noted that the commanding officer has queried the reporting line. The line is correct. The Board directs that CSV *Nightjar* proceed as tasked.
+  </Dialogue>
+  <Dialogue speaker="xo">
+  "The line is correct." Logged, with the query and the reply. It is unusual for a naval assessment to bypass the Flag Secretary, and it is now on the record that we asked. Someone will read that one day.
+  </Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<Gated by="act-0-03-line">
+
+<Scene stamp="MET 10/03:00" location="Jovian space · departure burn, 4 milligee" condensed="At 03:00 the torch lights and there is down again. Seventy-three days to the Mark 9 region. The file has finished loading.">
+
+At 03:00 the torch lights at four milligee and the deck becomes a floor. Sandoval reads the reactor up in the flat voice she uses for things going right. Solberg counts Callisto out: forty-one seconds now; a minute by tomorrow; the Board will get further away every day, and so will its answers.
+
+Seventy-three days to the Mark 9 region, at the inner end of the Hundred-Day Lane, where the Authority's two offices logged most of what the file contains. Two thousand two hundred records, on the intel terminal, finished loading at 02:50. Ebele has not opened them yet. He is waiting to be told what to look at first, and the answer — every column, and what kind of thing each one is, before any chart — is the first thing you will tell him when there is down.
+
+</Scene>
+
+<LogEntry
+  title="A table is only as honest as its denominator"
+  concept="A frequency table counts individuals by category; relative frequencies divide those counts by the table's total, and every one of them moves when the denominator does. A table describes exactly the rows that went into it — the Register describes incidents as two offices recorded them, not the Lane's hulls or transits."
+  formula="\text{relative frequency}_k = \frac{n_k}{n}, \qquad \sum_k \frac{n_k}{n} = 1"
+  mistake="Reading a count as a proportion, or a proportion as a count — “1.4 %” and “31 of 2,200” are one fact, and neither means anything until the denominator is named."
+  tags={['frequency table', 'relative frequency', 'denominator', 'population', 'sample', 'the Register', '1.1', '1.3']}
+/>
+
+</Gated>
+</Gated>

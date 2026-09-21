@@ -111,7 +111,7 @@ export const countVsProportion = defineGenerator({
       answer: { type: 'choice', options: shuffled.map((c) => c.text), correct, feedback: shuffled.map((c) => c.why) },
       hints: ['A count is a number of records; a proportion is a count divided by a total.', 'The denominator is the total the percentage was taken over — everything in the view, not just the losses.'],
       solution: `**${shuffled[correct].text}.** The count behind it is ${k} losses out of ${n.toLocaleString('en-US')} records: $${k}/${n} = ${fmt(k / n, 4)}$, i.e. ${fmt(pct, 1)} %.`,
-      misconception: 'Reading a percentage as a count (“1.4 losses”) or a count as a share confuses two different questions; always name the denominator.',
+      misconception: `Reading a percentage as a count (“${fmt(pct, 1)} losses”) or a count as a share confuses two different questions; always name the denominator.`,
     }
   },
 })
@@ -230,7 +230,7 @@ export const percentToCount = defineGenerator({
       answer: numericAnswer(k, 'count'),
       hints: ['A percentage of N records is N × (percentage ÷ 100), rounded to a whole record.', `${n} × ${fmt(pct / 100, 3)}.`],
       solution: `$$${n.toLocaleString('en-US')} \\times \\frac{${fmt(pct, 1)}}{100} = ${fmt((n * pct) / 100, 1)} \\approx ${k}$$\n\nThat is **${k} records**. A page that quotes ${fmt(pct, 1)} % without the ${n.toLocaleString('en-US')} has hidden how few that is.`,
-      misconception: 'A percentage is not a count. The same 1.4 % is 31 records of 2,200 and 3 of 220; the denominator decides.',
+      misconception: `A percentage is not a count. The same ${fmt(pct, 1)} % is ${k} records of ${n.toLocaleString('en-US')} and a tenth of that in a view a tenth the size; the denominator decides.`,
     }
   },
 })

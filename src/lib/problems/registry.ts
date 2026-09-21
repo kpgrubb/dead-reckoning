@@ -2,11 +2,14 @@
  * Generator registry. Any file under generators/**\/*.ts that exports one or more
  * ProblemGenerator objects (named, default, or arrays) is auto-registered by id.
  * Prefer `defineGenerator` from ./generate so definitions are validated at registration.
+ *
+ * Test files that live beside the generators (`*.test.ts` / `*.test.tsx`) are excluded: the glob is
+ * eager, so including them would pull Vitest's runtime into the app bundle and throw at start-up.
  */
 import { Rng } from '@/lib/rng'
 import type { ProblemGenerator, ProblemInstance } from './types'
 
-const modules = import.meta.glob<Record<string, unknown>>('./generators/**/*.ts', { eager: true })
+const modules = import.meta.glob<Record<string, unknown>>(['./generators/**/*.ts', './generators/**/*.tsx', '!./generators/**/*.test.ts', '!./generators/**/*.test.tsx'], { eager: true })
 
 function isGenerator(v: unknown): v is ProblemGenerator {
   return !!v && typeof v === 'object' && typeof (v as ProblemGenerator).generate === 'function' && typeof (v as ProblemGenerator).id === 'string'

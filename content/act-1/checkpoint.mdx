@@ -13,8 +13,7 @@ calc_briefing: null
 summary: "The preliminary goes out under your name. Ferrier reads every display first, and strikes the ones that would not survive the Board's staff."
 ---
 
-import { fmt, median, iqr, mean } from '@/lib/stats'
-import { losses, timeToSilence, lossMarks, REGISTER_META } from '@/instruments/act-1/data'
+import { losses, timeToSilence } from '@/instruments/act-1/data'
 import { CheckpointGate } from '@/instruments/act-1/CheckpointGate'
 
 export const gradual = timeToSilence.filter((t) => t >= 1).length

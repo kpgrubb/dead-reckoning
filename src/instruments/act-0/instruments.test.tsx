@@ -50,6 +50,18 @@ describe('<HeatSinkGauge>', () => {
     expect(readoutValue('RUNS')).toBe('11')
   })
 
+  it('clears the run history when the cold profile changes', () => {
+    render(<HeatSinkGauge />)
+    fireEvent.click(screen.getByRole('button', { name: 'RUN COLD' }))
+    fireEvent.click(screen.getByRole('button', { name: 'RUN ×10' }))
+    expect(readoutValue('RUNS')).toBe('11')
+    fireEvent.click(screen.getByRole('radio', { name: /^Watch/ }))
+    // A different profile is different physics: the Quiet runs must not pollute the run-to-run spread.
+    expect(screen.queryByText('RUN TO RUN')).toBeNull()
+    expect(readoutValue('PROJECTED ENDURANCE')).toBe('—h')
+    expect(readoutValue('DESIGN ENDURANCE')).toBe('67.7h')
+  })
+
   it('projectRun projects endurance from a straight-line run', () => {
     const samples = Array.from({ length: 41 }, (_, h) => ({ h, pct: 4 + 2 * h }))
     const p = projectRun(samples, 40, 4)

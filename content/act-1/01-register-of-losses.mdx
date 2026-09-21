@@ -1,0 +1,194 @@
+---
+id: act-1-01
+act: 1
+title: "Register of Losses"
+kind: module
+ap_topics: ["1.1", "1.2", "1.3"]
+objectives:
+  - "Name the individuals and the variables of a data file before drawing anything from it"
+  - "Classify a Register column as categorical, quantitative discrete, quantitative continuous or an identifier — and recognise a coded number as a label"
+  - "Build frequency and relative-frequency tables for a categorical variable, choosing the denominator the question asks for"
+  - "State what the Register is a sample of, and what it is not"
+prereqs: ["act-0-checkpoint"]
+est_minutes: 25
+calc_briefing: null
+summary: "The file is aboard. Before any chart, every column gets a name and a type — and the thirty-one losses get a table of their own."
+---
+
+import { countBy, fmt, fmtInt, fmtPct } from '@/lib/stats'
+import { losses, register, REGISTER_META } from '@/instruments/act-1/data'
+import { RegisterBrowser } from '@/instruments/act-1/RegisterBrowser'
+
+export const lossClasses = countBy(losses.map((l) => l.classification), ['unknown', 'accident', 'piracy'])
+export const uruk = losses.filter((l) => l.office === 'Uruk')
+export const ceres = losses.filter((l) => l.office === 'Ceres')
+export const urukUnknown = uruk.filter((l) => l.classification === 'unknown').length / uruk.length
+export const ceresUnknown = ceres.filter((l) => l.classification === 'unknown').length / ceres.length
+export const ceresPiracy = ceres.filter((l) => l.classification === 'piracy').length
+
+export const marsBeltCodes = [
+  ...Array.from({ length: 22 }, () => 'accident'),
+  ...Array.from({ length: 13 }, () => 'piracy'),
+  ...Array.from({ length: 11 }, () => 'unknown'),
+]
+export const marsBelt = countBy(marsBeltCodes, ['accident', 'piracy', 'unknown'])
+export const marsBeltTotal = marsBeltCodes.length
+
+<Scene stamp="MET 12/09:00" location="Bridge · intel terminal · 0.005 AU from Callisto, 4 mgee" condensed="Twelve days out, the file is aboard and Ebele's first display is the Board's page redrawn: all 2,200 records, mark binned in threes, flat along the Lane. Before he draws anything else you make him say what an individual is and what kind of thing each column holds. He filters to the 31 losses and builds a frequency table of classification, then a second table by office — two rows that are not the same size.">
+
+Callisto is five thousandths of an astronomical unit astern and falling behind at eight kilometres a second. Three seconds of light. Close enough that the Board could still hold something like a conversation if it wanted one, and it does not. Under four milligee the deck has a faint down to it, enough that coffee sits in a cup and a dropped stylus lands somewhere predictable. Through the bridge's one honest window the Jovian system is a bright smear astern, the moons already lost in the glare of the thing they orbit.
+
+Ebele has a display up when you come onto the bridge, which is earlier than you asked for and exactly what you expected. It is a histogram. Two thousand two hundred records, mark along the bottom from one to twelve, binned in threes: four bars, all about the same height, flat as a deck plate.
+
+"So — the whole file, sir. Every record. It's spread along the Lane, like the page said."
+
+It is the Board's page. He has redrawn it from the raw file, honestly, with more decimal places, and arrived at the same picture, and he cannot see yet that this is the problem rather than the confirmation. You do not tell him. You ask him something else.
+
+You ask him what an individual is, in this file.
+
+He starts to answer and stops. Then: "A row. One record. One — incident, as the Authority logged it." Good. What does each row have on it? He reads them off: a record id, a date, a hull name, an owner and an owner class, a severity, a nature, a mark, a classifying office. He is fast and complete and he does not once say what kind of thing any of them is.
+
+So you make him. Column by column, out loud, before a single further chart. `record_id` names the row and summarising it would be a kind of madness. `hull` names the ship. `classification` is a code an office wrote down — accident, piracy, unknown — with no order and no arithmetic; "piracy" is not more than "accident" and the two do not average. `mark_last` is a position on a hundred-day corridor, and 9.35 is a real place you could stand. `time_to_silence` is elapsed hours on a continuum. `office` is Uruk or Ceres.
+
+He gets office wrong, briefly. The export writes it as 01 and 02, and he has the terminal take a mean of it before he hears himself.
+
+"Yes, sir. That's — yes. It came through as a number, so I treated it as one. Office one point four. That's not anything."
+
+Then you have him filter. Severity equals loss: thirty-one rows out of two thousand two hundred, and for the first time this morning the display is small enough to read. He builds a frequency table of `classification` over those thirty-one — three codes, three counts, {lossClasses.map((r) => `*${r.value}* ${r.count}`).join(', ')} — and sits back from it the way people do when a number is larger than they were expecting.
+
+Then, because you tell him to, he builds a second table: the same thirty-one, broken out by which office classified them. Two rows. They are not the same size, and they are not the same shape, and he says so twice before he says anything else.
+
+</Scene>
+
+<Dialogue speaker="analyst" aside="He has both tables side by side and is looking from one to the other.">
+So the code isn't a measurement, it's a finding. Somebody decided each of these. And the two offices didn't decide the same way — not even close, sir, and I haven't worked out the shares yet.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="From the plot. She has not looked at the tables.">
+Then work them out before you say it again. Counts across two rows of different length tell you nothing. And say what the file is a sample of, Ensign, because it is not the Lane.
+</Dialogue>
+
+<Briefing title="Individuals, variables, and a table that stands for a process" topics={["1.1", "1.2", "1.3"]}>
+<Briefing.Intuition>
+Before any display: an **individual** is the thing one row describes. A **variable** is something recorded about each individual, and it takes one of a few kinds.
+
+A **categorical** variable places the individual in a group — `classification`, `office`, `owner_class`. A **quantitative** variable measures it, and is either **discrete** (a count: dropouts filed in a year) or **continuous** (a measurement on a scale: `mark_last`, `time_to_silence`, `hull_age`). An **identifier** — `record_id`, `hull` — names the individual and is not a variable at all: no summary of it means anything.
+
+The trap is a category written with digits. Office 01 and office 02 are two names. Severity coded 1, 2, 3 is three names. You can compute their mean, and the mean will be a number, and the number will be about nothing.
+
+For a categorical variable a **frequency table** gives the count in each category; dividing each count by the total gives **relative frequencies**, which sum to 1 across the categories of one variable. Which total is the whole question. A share *among all thirty-one losses* and a share *among the losses one office classified* are different numbers answering different questions, and only the second is about that office.
+
+And the last thing, which is not arithmetic: the Register's individuals are *incidents as recorded and classified by two offices*. It is a recorded sample of a reporting process. Every row in it passed through somebody's judgement on the way in, and every row that is not in it was somebody's judgement too.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\text{relative frequency of category } k = \frac{n_k}{n}, \qquad \sum_k \frac{n_k}{n} = 1" terms={{ 'n_k': 'count of individuals in category k', 'n': 'the denominator — every individual the table describes, after every filter' }} label="Relative frequency" />
+
+A **conditional** relative frequency restricts the denominator to one group: the share of category $k$ among the individuals in row $i$ is $n_{ik} / n_{i}$, where $n_i$ is that row's total.
+</Briefing.Definition>
+<Briefing.Worked>
+The Lane Authority's sister file for the Mars–Belt corridor, 2170–76, records {marsBeltTotal} losses with the same three codes: {marsBelt.map((r) => `${r.value} ${r.count}`).join(', ')}.
+
+Relative frequencies, each count over {marsBeltTotal}: {marsBelt.map((r) => `${r.value} ${fmt(r.relFreq, 3)}`).join(', ')}. They sum to {fmt(marsBelt.reduce((s, r) => s + r.relFreq, 0), 3)}, as the relative frequencies of one variable's categories always do — which is the cheapest check there is on a table. In the Mars–Belt file *accident* carries {fmtPct(marsBelt[0].relFreq, 0)} of the losses and *unknown* {fmtPct(marsBelt[2].relFreq, 0)}: a corridor whose offices mostly reached a finding.
+</Briefing.Worked>
+<Briefing.Caution>
+Two errors, and the Service's own reports commit both.
+
+*A coded number treated as a measurement.* The export ships `office` as 01 and 02 and `severity` as 1, 2, 3. A mean of 1.4 is arithmetic performed on names. Ask whether the digits could be swapped without losing anything; if they could, the variable is categorical.
+
+*Relative frequencies that do not sum to one.* When they miss, a row has been dropped or the denominator has changed under you — a filter left on, a category with no records omitted from the table, a "not classified" row quietly deleted. Add them up every time. The sum is a free audit of the denominator.
+</Briefing.Caution>
+</Briefing>
+
+<RegisterBrowser />
+
+<Drill generator="act-1/population-sample" count={1} />
+<Drill generator="act-1/variable-types" count={1} />
+<Drill generator="act-1/relative-frequency" count={1} />
+<Drill generator="act-1/board-filter" count={1} />
+<Drill generator="act-1/parameter-statistic" count={1} />
+
+<MissionBeat id="act-1-01-uruk" kind="numeric" answer={urukUnknown} answerKind="proportion" digits={3} label="URUK'S ROW"
+  prompt="Filter the Register to the 31 losses and open the office by classification table. Of the losses the **Uruk** office classified, what relative frequency carries the code *unknown*? Give a proportion to three decimal places."
+  hint="This is a conditional relative frequency. The denominator is the number of losses Uruk classified — its row total — not 31.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He reads it off his own table and then reads it again.">
+  So more than four in every five that office touched, sir, and it found nothing. That is not a rate of anything happening on the Lane. That is a rate of one office writing *unknown*.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst">
+  Yes, sir. That's — yes. I divided by thirty-one. That's the share of *all* the losses that are Uruk and unknown, which is a different sentence. Row total as the denominator. Uruk's own row, then the unknown cell in it.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-1-01-ceres" kind="numeric" answer={ceresUnknown} answerKind="proportion" digits={3} label="CERES'S ROW"
+  prompt="Now the other row. Of the losses the **Ceres** office classified, what relative frequency carries the code *unknown*? Give a proportion to three decimal places."
+  hint="Same method, other row. Ceres classified far fewer losses than Uruk — which is exactly why the two counts cannot be compared and the two shares can.">
+  <Success>
+  <Dialogue speaker="xo" aside="She has come across from the plot for this.">
+  Two offices, one corridor, one code, and those two numbers. The data says they classify differently. It does not yet say why, and I want that said out loud before anyone writes it down.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Wrong denominator, Captain, or the wrong row. Ceres classified a small number of these; its share of *unknown* is that office's unknown count over that office's total. Say it back to me and put it in again.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-1-01-sample" kind="choice" label="WHAT THE FILE IS"
+  prompt={`Ferrier wants it on the log before either number is used in a sentence. The Register — all ${fmtInt(REGISTER_META.records)} rows of it — is a sample of **what**?`}
+  options={[
+    'Every freighter that transited the Hundred-Day Lane between 2178 and 2184.',
+    'Incidents on the Lane as recorded and classified by the Lane Authority’s two offices, 2178–84.',
+    'Every loss that occurred on the Lane in six years, whether or not anyone reported it.',
+    'The Lane itself — the corridor’s true rates of accident, piracy and unknown cause.',
+  ]}
+  correct={1}
+  feedback={[
+    'A transit with nothing to report leaves no row. Arrivals are absent from the Register, not counted in it.',
+    null,
+    'Only the losses somebody filed and somebody classified are here. A hull lost with nothing logged leaves no row, and nothing in the file can tell you how many of those there are.',
+    'That is the parameter you would like to hold. What you hold is a file, and every number in it passed through an office first.',
+  ]}
+  hint="Ask what one row is, and then ask who had to act for the row to exist at all.">
+  <Success>
+  <Dialogue speaker="xo">
+  Logged. Two thousand two hundred records of a reporting process, with two offices inside it. Everything we say from here carries that sentence with it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She does not raise her voice. She gets more precise.">
+  The file is not the Lane, Captain. It is what two offices wrote down about the Lane. Name the process and the sample follows.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-1-01-uruk", "act-1-01-ceres", "act-1-01-sample"]}>
+
+<Scene stamp="MET 12/11:20" location="Bridge · intel terminal · 0.005 AU from Callisto, 4 mgee" condensed="Uruk classified 23 of the 31 and coded 19 of its 23 unknown; Ceres coded none of its 8 as piracy. Two offices' habits, nothing more — yet. Ferrier will not let the classification table be used until somebody shows her what thirty-one ordinary accidents would look like on the mark axis, and the module ends with that unanswered.">
+
+Ebele writes the two tables up properly, with denominators in the headings, the way the Service teaches and almost nobody does. The Uruk office classified {uruk.length} of the {losses.length} and coded {uruk.filter((l) => l.classification === 'unknown').length} of its {uruk.length} *unknown* — {fmtPct(urukUnknown, 0)} of everything it touched. The Ceres office classified {ceres.length}, coded {ceres.filter((l) => l.classification === 'unknown').length} of them *unknown*, and coded {ceresPiracy === 0 ? 'none of them' : String(ceresPiracy)} *piracy*.
+
+"It could be the hulls," he says, to himself more than to you. "Uruk takes the Compact flags. Sulcus Freight is Compact-flagged. Maybe those are just the ones where nothing gets found."
+
+That is the correct instinct and you tell him so. Two offices with different caseloads will produce different tables for reasons that have nothing to do with anything being wrong: different hulls, different evidence, different cutters, different standards for calling a finding a finding. What you have is two rows and a difference between them. What you do not have is a reason.
+
+Ferrier has the histogram back up — his first one, the flat four-bar picture of all {fmtInt(register.length)} records — and beside it the same axis with only the thirty-one on it. She does not comment on the second one. She is looking at it the way she looks at a fix she does not trust.
+
+"Before you put the classification table in anything with my name under it," she says, "I want the other thing. Thirty-one hulls lost to ordinary accidents over six years on a hundred-day corridor — accidents happen where the ship is, and the ship is everywhere along it. Show me what thirty-one random accidents look like on that axis. Then show me these."
+
+Ebele says he can have it by the afternoon watch. Nobody answers him, because the answer is not a thing you can assert; it is a shape, and the shape is not on any display on this bridge yet. The mark axis sits there with thirty-one marks on it, and nobody on the bridge has yet said out loud what is wrong with where they are.
+
+</Scene>
+
+<LogEntry
+  title="Know your individuals before you draw"
+  concept="An individual is what one row describes and a variable is what is recorded about it — categorical (a label, even when written with digits), quantitative discrete (a count), quantitative continuous (a measurement), or an identifier that names the row and summarises to nothing. A frequency table counts a categorical variable's categories and relative frequencies divide by a denominator you choose: the whole file, or one office's row, which are different questions with different answers."
+  formula="\text{relative frequency}_k = \frac{n_k}{n}, \qquad \text{conditional: } \frac{n_{ik}}{n_i}, \qquad \sum_k \frac{n_k}{n} = 1"
+  mistake="Treating a coded variable as a measurement — averaging office codes 01 and 02 to 1.4, or calling a severity of 3 three times a severity of 1. If the digits could be swapped without losing anything, the variable is categorical."
+  tags={['individuals', 'variables', 'categorical', 'quantitative', 'frequency table', 'relative frequency', 'conditional', 'sample', '1.1', '1.2', '1.3']}
+/>
+
+</Gated>

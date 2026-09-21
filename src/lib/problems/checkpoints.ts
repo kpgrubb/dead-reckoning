@@ -40,7 +40,8 @@ export interface CheckpointSpec {
   est_minutes: number
 }
 
-const modules = import.meta.glob<Record<string, unknown>>('./checkpoints/*.ts', { eager: true })
+// Eager glob: `*.test.ts` beside the specs is excluded so Vitest's runtime never reaches the app bundle.
+const modules = import.meta.glob<Record<string, unknown>>(['./checkpoints/*.ts', '!./checkpoints/*.test.ts'], { eager: true })
 
 function isSpec(v: unknown): v is CheckpointSpec {
   return !!v && typeof v === 'object' && Array.isArray((v as CheckpointSpec).items) && typeof (v as CheckpointSpec).act === 'string'
