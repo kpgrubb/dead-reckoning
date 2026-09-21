@@ -9,6 +9,28 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
+## Live site
+
+**https://kpgrubb.github.io/dead-reckoning/**
+
+Deploy the current working tree with:
+
+```bash
+npm run deploy      # builds, then force-pushes dist/ to the gh-pages branch
+```
+
+Pages serves from the `gh-pages` branch. Deploys are manual because the `gh` CLI token lacks the `workflow` scope, so `.github/workflows/` cannot be pushed. To switch to build-on-push instead:
+
+```bash
+gh auth refresh -s workflow
+mkdir -p .github/workflows && mv scripts/github-pages-workflow.yml.txt .github/workflows/deploy.yml
+git add .github && git commit -m "Deploy via Actions" && git push
+```
+
+Then set Pages' source to "GitHub Actions" in the repo settings. That workflow also typechecks and runs the unit suite before publishing.
+
+**Testing note:** modules unlock in order. To jump around, turn off *Settings → Lock modules until prerequisites are complete*.
+
 ## Build & host
 
 ```bash
