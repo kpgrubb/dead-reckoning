@@ -1,0 +1,219 @@
+---
+id: act-5-02
+act: 5
+title: "One in Seven"
+kind: module
+ap_topics: ["5.2"]
+objectives:
+  - "Calculate probabilities and percentiles for a normal distribution with given parameters, in both directions"
+  - "Assess whether a normal model is reasonable for a distribution from a dotplot, histogram or normal probability plot"
+  - "Interpret a normal-model probability in context as a long-run proportion of a population"
+prereqs: ["act-1-07", "act-5-01"]
+est_minutes: 25
+calc_briefing: "integral-as-accumulation"
+summary: "The Ledger's honest transits run late by days, not hours, and for reasons that have nothing to do with cargo. Draw the line only one honest hull in a hundred crosses, and then see how many of the nineteen are standing on the wrong side of it."
+---
+
+import { fmt, fmtInt, fmtPct, normal, skewness } from '@/lib/stats'
+import { DELAY_CUTOFF_1PCT, EXPECTED_ABOVE_CUTOFF, LANE_DELAY_MEAN, LANE_DELAY_SD, NINETEEN_ABOVE_CUTOFF, NINETEEN_MEAN_DELAY, NINETEEN_N, P_HONEST_AS_LATE, honestDelays } from '@/instruments/act-5/data'
+import { fleetModel } from '@/instruments/act-1/data'
+import { DelayNormalExplorer } from '@/instruments/act-5/DelayNormalExplorer'
+// The Briefing's worked case is Act I's drive-signature model — the fleet's own sixty contacts, run
+// in both directions — so neither figure this module's beats ask for is printed before the beats.
+export const fleetTail = normal.sf(102, fleetModel.mean, fleetModel.sd)
+export const fleetZ102 = (102 - fleetModel.mean) / fleetModel.sd
+export const fleetCut5 = normal.isf(0.05, fleetModel.mean, fleetModel.sd)
+export const fleetZ5 = normal.standardQuantile(0.95)
+export const fleetP90 = normal.quantile(0.9, fleetModel.mean, fleetModel.sd)
+export const fleetZ90 = normal.standardQuantile(0.9)
+export const laneSkew = skewness(honestDelays)
+export const oneInHowMany = Math.round(1 / P_HONEST_AS_LATE)
+
+<Scene stamp="MET 112/07:05" location="Bridge · coasting cold in the Mark 9 region · 0.4 AU from Ceres" condensed={`Two days after the Board's appendix, Ebele brings the Ledger's delay column to the bridge. Mark-9 delay — actual minus scheduled against the nominal 3.00-mgee plot — is spread over days, not hours, and honestly so: hulls file their own acceleration inside the Lane's 2.7 to 3.3 mgee band, and a slow filing saves propellant. The nineteen average ${fmt(NINETEEN_MEAN_DELAY, 2)} days late. The question is where the line goes that only one honest transit in a hundred crosses, and how many of the nineteen are past it.`}>
+
+Ebele has the delay column up on the plot at seven in the morning, which means he did not sleep, which Ferrier notices and files and does not mention yet.
+
+The column is one number per transit, and it is not a time of arrival. It is *actual minus scheduled time to Mark 9 against the nominal plot* — the Authority's three-point-zero-zero-milligee reference, the same reference for every hull in the corridor, so that a Tessera hauling volatiles and a Mk 3 hauling nothing are measured against the same clock. A hull that makes the nominal plot exactly reads zero. A hull that arrives two days after the reference says it should reads two.
+
+Across the Ledger's honest transits — {fmtInt(honestDelays.length)} of them — the column has a mean of {fmt(LANE_DELAY_MEAN, 3)} days and a standard deviation of **{fmt(LANE_DELAY_SD, 2)} days**.
+
+"So that is the thing that stopped me sleeping, sir," Ebele says. "Days. Not hours. I expected hours."
+
+You ask him why it is days, and he has the answer, because he went and found it before he came to the bridge, which is the habit Ferrier has been trying to build in him since Ceres.
+
+The Lane permits a hull to file anywhere between 2.7 and 3.3 milligee. The plot is drawn at 3.00. A hull that files 2.9 is not late, cheating or slow — it is flying the profile it declared, and against a 3.00 reference it comes in about a day and a quarter behind, every single run, for the whole life of the hull. And owners file slow on purpose: a tenth of a milligee off the reference is propellant that stays in the tank, and propellant is the only thing on a freighter that is worth more than cargo.
+
+"So the spread is mostly *filing*, sir. It is the same hull being the same amount slow forever. On top of that there is run noise — traffic, a hold-off at a junction, a master who wants to arrive in daylight — and that part is small. Add the two and you get" — he taps the display — "{fmt(LANE_DELAY_SD, 2)} days of honest spread, and a centre sitting on the plot. Nobody is doing anything wrong and the column is two and three quarter days wide."
+
+<Dialogue speaker="xo" aside="She is reading the nineteen's file, not the plot.">
+Then give me the line. The delay above which only one honest transit in a hundred falls — not a hundred hulls, a hundred transits. And then tell me how many of the nineteen are standing on the far side of it.
+</Dialogue>
+
+<Dialogue speaker="analyst" aside="He has the nineteen's own delays on the second pane, and he says the number without being asked, because it is an input and not a conclusion.">
+So the nineteen average {fmt(NINETEEN_MEAN_DELAY, 2)} days late, sir, against a Lane that averages {fmt(LANE_DELAY_MEAN, 2)}. That is the whole of the thing I have. And I want the other number too, before anybody else asks for it: what share of honest transits are *at least* as late as their average. If a hostile reviewer can answer that and I cannot, we lose the room.
+</Dialogue>
+
+<Dialogue speaker="comms" aside="He has the Lane Register's Mark 9 check-in file open on the comms board, and he has read all nineteen of them." lag="Register extract · Ceres office · received MET 111/22:14, lag 19 min 04 s">
+Sir — I have their check-ins. Every one of the nineteen reported at Mark 9, to the second, and the Register carries a late-check-in advisory against each of them. I would not put weight on that. It is the same advisory the Register files against any hull that runs slow, and it files a great many of them.
+</Dialogue>
+
+</Scene>
+
+<Briefing title="The model, both directions" topics={["5.2"]}>
+<Briefing.Intuition>
+A normal model is a **density**. Its height is not a probability; the **area** it encloses over an interval is. Every question in this module is a question about that area, asked in one of two directions.
+
+**Forwards — value in, area out.** You hold a cutoff and you want the share of the population beyond it. Standardise, then read the tail: $P(X \ge x) = P\!\left(Z \ge \frac{x-\mu}{\sigma}\right)$. The answer is a **long-run proportion** of a population, not a forecast about the hull whose file is open in front of you. That hull's delay is already known, and a known quantity has no probability left in it.
+
+**Backwards — area in, value out.** You hold a share and you want the cutoff that produces it. This is the **inverse normal**, and it is how a threshold gets set instead of guessed: find the $z$ with the required area below it, then undo the standardising, $x = \mu + z\sigma$. A **percentile** is the same request in different words — the 99th percentile is the value with 99 percent of the model below it.
+
+Get the direction and the tail right before you touch a number. *"Only one in a hundred above the line"* means one percent **above**, which is ninety-nine percent **below**, which is the 99th percentile. The commonest wreck in this topic is running the inverse on the wrong tail and reporting a cutoff from the bottom of the distribution with perfect arithmetic.
+
+**And the model has to be earned.** Before quoting any of these areas, look at the data. A **dotplot** or **histogram** shows symmetry and strandings; a **normal probability plot** — each sorted value against the $z$ a normal model would put it at — shows a straight line when the model fits and a bend at the ends when it does not. Read it like a residual plot: straight is good, and the middle of any plot looks straight, so look at the ends.
+
+A cutoff is not a list of suspects. A line drawn at the 99th percentile is crossed by one percent of *honest* transits — that is the definition of the line, not a failure of it — so in any group of a couple of dozen honest hulls you should expect to find the occasional one above it, and finding one tells you nothing you did not know before you drew the line.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="P(X \ge x) = 1 - F(x) = 1 - \Phi\!\left(\frac{x - \mu}{\sigma}\right)" terms={{ 'F(x)': 'the cumulative area up to x — the running total of the density', '\\Phi': 'the standard normal cumulative area, the proportion below a z', '\\mu, \\sigma': 'the centre and spread of the model, in the units of the variable' }} label="Forwards: a value becomes a proportion" />
+
+<Formula tex="x_q = F^{-1}(q) = \mu + z_q\,\sigma, \qquad z_q = \Phi^{-1}(q)" terms={{ 'q': 'the area required BELOW the cutoff', 'x_q': 'the q-th percentile — the value with q of the model below it', 'z_q': 'the standard-normal value with area q below it' }} label="Backwards: a proportion becomes a value" />
+
+For a continuous model a single point has no area, so $P(X \ge x)$ and $P(X > x)$ are the same number, and "at least that late" and "later than that" are the same request.
+</Briefing.Definition>
+<Briefing.Worked>
+Act I's drive signatures, run in both directions. The honest model built from the fleet's own sixty contacts — the flagged one set aside — is centred on {fmt(fleetModel.mean, 1)} percent of class-table expectation with a standard deviation of {fmt(fleetModel.sd, 2)}.
+
+**Forwards.** What share of honest hulls run at or above 102 percent of expectation?
+
+<Formula tex={`z = \\frac{102 - ${fmt(fleetModel.mean, 1)}}{${fmt(fleetModel.sd, 2)}} = ${fmt(fleetZ102, 3)}, \\qquad P(X \\ge 102) = ${fmt(fleetTail, 4)}`} terms={{ 'z': 'how many spreads above the fleet’s centre 102 percent sits' }} label="Value in, area out" />
+
+Read it in words before it goes anywhere: about {fmtInt(Math.round(100 * fleetTail))} out of every 100 honest hulls burn at least that hot. That is a statement about the fleet, and it is the reason nobody opened a file on a hull at 102.
+
+**Backwards.** Now the Bureau wants a flag line: the ratio only 5 percent of honest hulls exceed. Five percent above means 95 percent below, so the area that goes into the inverse is 0.95, not 0.05:
+
+<Formula tex={`z^\\star = \\Phi^{-1}(0.95) = ${fmt(fleetZ5, 4)}, \\qquad x = ${fmt(fleetModel.mean, 1)} + ${fmt(fleetZ5, 4)} \\times ${fmt(fleetModel.sd, 2)} = ${fmt(fleetCut5, 3)}`} terms={{ 'z^\\star': 'the standard-normal cutoff with 95 percent of the area below it', 'x': 'the ratio, in percent of expectation, that 5 percent of honest hulls exceed' }} label="Area in, value out" />
+
+So the line goes at **{fmt(fleetCut5, 2)} percent of expectation** — and one honest hull in twenty crosses it by doing nothing but flying the Lane. Ask for the 90th percentile instead and the same machinery returns {fmt(fleetP90, 2)} percent, at $z = {fmt(fleetZ90, 3)}$: a smaller area below, a smaller $z$, a lower line. Every one of these is the same integral, evaluated once forwards and once backwards.
+
+**The check nobody skips.** All of that is worth exactly what the model is worth. The sixty contacts were plotted before any area was quoted from them, and they were symmetric about their centre with nothing stranded in either tail. Had they been skewed, the arithmetic would have run just as smoothly and the tail would have been a lie — normal-model areas fail hardest in precisely the tail you most want to quote.
+</Briefing.Worked>
+<Briefing.Caution>
+*"The Central Limit Theorem makes the population normal."* It does not touch the population at all. It is a statement about the sampling distribution of $\bar{x}$, and it leaves the individual transits exactly as skewed as it found them. Whether a normal model fits *these values* is a question only a plot of those values can answer, and $n$ does not answer it at any size.
+
+*A normal model on a skewed variable, quoted without saying so.* The arithmetic never complains. A right-skewed variable pushed through a normal model returns a tail area that can be wrong by an order of magnitude in the far tail — which is the only part of the curve anybody ever puts in a brief. Look at the probability plot first, say in the brief what you looked at, and if it bends, say that instead.
+
+*Judging a group by whether its members are extreme.* A percentile line is crossed by that percent of honest units by construction. Finding one or two hulls above a 1 percent line in a group of twenty is not evidence about the group; it is arithmetic about the line. If there is a case to be made about a group, it is not made one hull at a time.
+</Briefing.Caution>
+</Briefing>
+
+<DelayNormalExplorer />
+
+The panel opens in **AREA → CUTOFF**, which is the direction Ferrier asked for: put the tail area in the field, read the cutoff off the *cutoff delay* readout, and check the *z-score of the cutoff* against what you expected. The **TAIL** control decides whether the area you typed sits above the line or below it — set it wrong and the arithmetic will be perfect and the answer will come from the wrong end of the Lane.
+
+Then switch **MODE** to *CUTOFF → AREA* and go the other way. Drag the handle on the axis (or focus it and press ← / →) to the nineteen's average, which is drawn on the curve as a dashed line, and read two things: the *area above the cutoff*, and beside it **that is one honest transit in** — the same number said as a rate rather than a proportion.
+
+The side panel is the check the Briefing insists on. It plots the honest delays against the $z$ a normal model would put each of them at; read *r · straightness of the plot* and *skewness of the variable* and take the **verdict** readout as the finding, not as a decoration. Then flip **VARIABLE** to *squared delay* and watch the same panel bend. Both variables come from the same {fmtInt(honestDelays.length)} transits. Only one of them is entitled to a normal model.
+
+<CalcBriefing topic="integral-as-accumulation" />
+
+<Drill generator="act-5/inverse-normal-cutoff" count={1} />
+<Drill generator="act-5/normal-tail-probability" count={1} />
+<Drill generator="act-5/normal-between" count={1} />
+<Drill generator="act-5/how-many-clear-the-cutoff" count={1} />
+<Drill generator="act-5/assess-normality" count={1} />
+<Drill generator="act-5/interpret-normal-probability" count={1} />
+
+<MissionBeat id="act-5-02-cutoff" kind="numeric" answer={DELAY_CUTOFF_1PCT} answerKind="other" digits={2} units="d" label="THE LINE"
+  prompt={`Model the Lane's honest Mark-9 delay as normal with mean ${fmt(LANE_DELAY_MEAN, 4)} d and standard deviation ${fmt(LANE_DELAY_SD, 4)} d — the panel's locked μ and σ, measured from all ${fmtInt(honestDelays.length)} honest transits in the Ledger. Ferrier wants the line drawn: **the Mark-9 delay above which only one honest transit in a hundred falls.** Give it in days, to two decimal places.`}
+  hint="One in a hundred above the line means ninety-nine in a hundred below it, so the area that goes into the inverse normal is 0.99 — the 99th percentile. Find the z with that area below it, then x = μ + zσ. On the panel: AREA → CUTOFF, tail above, area 0.01.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He draws it on the plot as a single vertical line and does not put anything else on the display yet.">
+  So that is the Authority's own late line, sir, if the Authority ever drew one. One honest transit in a hundred crosses it every year by filing slow and flying what it filed.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She writes the two areas on the slate, one above the other, and waits.">
+  You have used the area you were given instead of the area you need. One percent above the line is ninety-nine percent below it, and the inverse normal always takes the area *below*. Then the sign of the z follows, and the line lands above the mean, where a late cutoff belongs. Two decimals.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-5-02-as-late" kind="numeric" answer={P_HONEST_AS_LATE} answerKind="proportion" digits={3} label="HOW ORDINARY"
+  prompt={`Now the direction the reviewer will ask for. The nineteen diverted transits average **${fmt(NINETEEN_MEAN_DELAY, 2)} d** behind the nominal plot — that figure is given to you; it is the input, not the answer. Under the same normal model of honest Lane transits, what **proportion of honest Lane transits arrive at Mark 9 at least as late as the nineteen's average**? Give a proportion to three decimal places.`}
+  hint="Value in, area out. Standardise the nineteen's average against the honest model's μ and σ, then take the area in the upper tail — 'at least as late' is above the cutoff, not below it. On the panel: MODE to CUTOFF → AREA, tail above, cutoff on the dashed line.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He reads the second readout off the panel and repeats it as a rate, because that is the form a reviewer will use against him.">
+  Roughly one honest transit in {fmtInt(oneInHowMany)} is that late or later, sir. One in {fmtInt(oneInHowMany)}. There is nothing remarkable about a single hull sitting where the nineteen sit on average — that is the finding, and I would rather we published it than had it read to us.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  You have the area below the line, not above it. *At least as late* is the upper tail. Subtract from one, or set the panel's tail control to above, and give me three decimals — the size of that number is the entire point of computing it.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-5-02-how-many" kind="choice" label="WHAT IT LICENSES"
+  prompt={`Put the 1 percent line from the first beat on the display and count how many of the nineteen sit above it. Then say what that count licenses, on its own, in a brief that a hostile reviewer will read.`}
+  options={[
+    `${NINETEEN_ABOVE_CUTOFF === 1 ? 'One' : fmtInt(NINETEEN_ABOVE_CUTOFF)} of the nineteen ${NINETEEN_ABOVE_CUTOFF === 1 ? 'clears' : 'clear'} the 1 percent line — and on its own that licenses nothing: one or two hulls above a 1 percent cutoff in a group of nineteen is what honest variation produces.`,
+    `${NINETEEN_ABOVE_CUTOFF === 1 ? 'One' : fmtInt(NINETEEN_ABOVE_CUTOFF)} of the nineteen ${NINETEEN_ABOVE_CUTOFF === 1 ? 'clears' : 'clear'} the 1 percent line, so that hull was deliberately late.`,
+    `${NINETEEN_ABOVE_CUTOFF === 1 ? 'One' : fmtInt(NINETEEN_ABOVE_CUTOFF)} of the nineteen ${NINETEEN_ABOVE_CUTOFF === 1 ? 'clears' : 'clear'} the 1 percent line, and since the nineteen were flagged together, that puts all nineteen under suspicion.`,
+    'None of the nineteen clears the 1 percent line, so every one of them is an ordinary honest transit and the group has nothing in it.',
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    `That is the sentence the whole module exists to stop. A 1 percent line is crossed by 1 percent of honest transits by construction; in nineteen draws you would expect ${fmt(EXPECTED_ABOVE_CUTOFF, 2)} of them above it, so finding one is the line behaving normally, not a hull behaving badly. Lateness is not intent, and this model carries no information about intent at all.`,
+    'The count does not transfer. Being above a percentile line is a property of one transit, and a group does not inherit it — least of all a group assembled for other reasons. If there is a case about the nineteen, it has to be a statement about the nineteen, not about their worst member.',
+    `Count again on the display. At least one of them is above the line — which is exactly what a 1 percent cutoff does to a group of nineteen, where the expected number above is ${fmt(EXPECTED_ABOVE_CUTOFF, 2)}. "None above the line" would be slightly quieter than honesty, not louder.`,
+  ]}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes it into the draft in the negative, which is the form Ferrier has been training into him since Act III.">
+  So the finding is a negative one, sir, and I will file it as a negative. No individual hull among the nineteen is extraordinary. Anybody who wants to argue that from one late arrival is arguing against arithmetic.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She does not raise her voice.">
+  You have just proved a ship was late. We knew it was late; the Register has the check-in. What a 1 percent line buys you is the number of honest transits that cross it anyway, and in nineteen draws that number is not zero. Count what the line lets you say, and then say only that.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-5-02-cutoff", "act-5-02-as-late", "act-5-02-how-many"]}>
+
+<Scene stamp="MET 112/16:30" location="Bridge · coasting cold · 0.4 AU from Ceres" condensed={`The line goes at ${fmt(DELAY_CUTOFF_1PCT, 2)} days and about one honest transit in ${fmtInt(oneInHowMany)} is as late as the nineteen's average, so no single hull among them is evidence of anything. Ferrier makes the ship say that first, in writing, before anybody says it for them. The nineteen are individually unremarkable — which leaves their mean, and the mean is the next module's problem.`}>
+
+The line lands at **{fmt(DELAY_CUTOFF_1PCT, 2)} days**, and {NINETEEN_ABOVE_CUTOFF === 1 ? 'one' : fmtInt(NINETEEN_ABOVE_CUTOFF)} of the nineteen {NINETEEN_ABOVE_CUTOFF === 1 ? 'is' : 'are'} past it. In nineteen honest transits you would expect {fmt(EXPECTED_ABOVE_CUTOFF, 2)} above a one-percent line, so {NINETEEN_ABOVE_CUTOFF === 1 ? 'one' : fmtInt(NINETEEN_ABOVE_CUTOFF)} is the line doing its job. And {fmtPct(P_HONEST_AS_LATE, 1)} of honest transits — about one in {fmtInt(oneInHowMany)} — arrive at Mark 9 at least as late as the nineteen's average of {fmt(NINETEEN_MEAN_DELAY, 2)} days.
+
+Ebele puts all three numbers on one page and looks at them for a while without saying anything, which is new.
+
+"I had nineteen late ships this morning, sir," he says at last. "I have nineteen ordinary ships this afternoon and the same nineteen ships."
+
+<Dialogue speaker="xo" aside="She is already drafting, and she makes him write the sentence himself so that it is in his hand when it goes up.">
+Then no single one of them is evidence. Say that first, so nobody says it for you. Put it at the top of the page, above anything we compute afterwards, in the plainest words you own — because the first reviewer at Valhalla who finds it there stops looking for it, and the first one who does not find it uses it.
+</Dialogue>
+
+<Dialogue speaker="comms" aside="He files the Register extract alongside the draft with the check-in times attached, unedited." lag="Register extract · Ceres office · lag 19 min 04 s">
+For the file, sir: the Register holds all nineteen Mark 9 check-ins to the second, and a late-check-in advisory against each of them. So does it hold them for a great many hulls that were simply slow. On the paperwork the nineteen are indistinguishable from any other hull that files 2.9 and flies it.
+</Dialogue>
+
+Which is the shape of the thing, and Sandoval says it on her way through the bridge with a gauge in her hand and no interest in the plot at all: a hull carrying mass it has not declared cannot make the acceleration it filed, so it arrives late — and arriving late is the most ordinary thing on the Lane. The lie hides inside the ordinary. Whoever built this did not have to forge anything.
+
+The honest delays are as straight on the probability plot as a real sample gets — skewness {fmt(laneSkew, 3)} across {fmtInt(honestDelays.length)} transits — so the model is not the weak link. The weak link is what one hull can carry, and one hull can carry nothing.
+
+So the nineteen are individually unremarkable, and that fact is now on the record in the ship's own hand. What is left is the only thing the day did not touch: those {fmtInt(NINETEEN_N)} numbers have an **average**, and an average is a statistic, and a statistic has a sampling distribution of its own. Ferrier writes the next task on the board before she leaves the bridge, in five words, without a number in it.
+
+*How far can a mean wander?*
+
+</Scene>
+
+<LogEntry
+  title="The CDF accumulates area; the inverse reads it backwards"
+  concept="A normal-model probability is the area the density encloses beyond a cutoff — the cumulative function F run forwards, and it is read in context as a long-run proportion of a population, never as a chance for one unit whose value is already known. The inverse runs the same accumulation backwards: given the area q that must lie below, it returns the value at that percentile, which is how a threshold is set rather than guessed; and both directions are worth only what the normal model is worth, so the shape is checked on a dotplot or a probability plot before any area is quoted."
+  formula="P(X \ge x) = 1 - F(x) = 1 - \Phi\!\left(\tfrac{x-\mu}{\sigma}\right), \qquad x_q = F^{-1}(q) = \mu + z_q\sigma"
+  mistake="Judging a group by whether each member is extreme. A cutoff at the qth percentile is crossed by (1 − q) of honest units by construction, so a handful above the line in a group of twenty is the line behaving, not the group misbehaving; evidence about a group lives in the group's summary statistic. The near relative is running the inverse on the wrong tail — putting 0.01 into the machine where 0.99 belongs."
+  tags={['normal model', 'inverse normal', 'percentile', 'tail probability', 'long-run proportion', 'normal probability plot', 'assessing normality', '5.2']}
+/>
+
+</Gated>

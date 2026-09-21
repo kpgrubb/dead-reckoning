@@ -1,0 +1,133 @@
+---
+id: act-5-checkpoint
+act: 5
+title: "Checkpoint: Noise Floor"
+kind: checkpoint
+ap_topics: ["5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7", "5.8"]
+objectives:
+  - "State what a sampling distribution is a distribution of, and read bias and variability off a simulated one"
+  - "Describe the sampling distribution of a mean, a proportion, and a difference of either — centre, spread and conditions — and compute a probability from it"
+prereqs: ["act-5-04", "act-5-05"]
+est_minutes: 20
+calc_briefing: null
+summary: "The Chief has the torch on a forty-minute hold. Before Nightjar is seen on transponder, Ferrier wants the whole shape of honest variation, on the record."
+---
+
+import { PassGate } from '@/instruments/act-5/PassGate'
+import { fmt, fmtInt, fmtPct } from '@/lib/stats'
+import { BOARD_TABLE, LEDGER_N, ROOK_2176, SE_MEAN_19, rateOf } from '@/instruments/act-5/data'
+
+<Scene stamp="MET 118/04:40" location="Intel terminal · Mark 9 region · cold, coasting" condensed="MET 118. The Chief has the torch on a forty-minute hold because you asked for one. Ferrier turns the intel display to face you and wants the whole shape of honest variation said out loud before Nightjar goes on transponder and into Ceres.">
+
+Thirty-five days at the Mark 9 region, and the ship has learned the habits of a place with no down in it. The coffee bulbs live in a net. The wardroom table has a lip somebody welded on in the second week. Ferrante has a list of people whose sleep he does not like, and you are third on it.
+
+Sandoval has the torch on a hold because you asked for forty minutes and she did not ask what for. She wrote the hold in the log with a time against it, which is how she asks.
+
+The intel terminal has the whole Act on it. The Board's table, which is four numbers and a sentence. The Ledger, {fmtInt(LEDGER_N)} transits deep. The two cutters. The nineteen. Ebele has the machine up in one corner of the display, stacking something, because he has not stopped stacking things since MET 110 and nobody has told him to.
+
+Ferrier turns the display so it faces you, and then does not look at it again.
+
+</Scene>
+
+<Dialogue speaker="xo" aside="Both hands flat on the edge of the console. The display is behind her and she has stopped needing it.">
+Before you take this to Ceres, tell me what noise looks like. All of it. If you can't, you're about to accuse people with an anecdote.
+</Dialogue>
+
+<Dialogue speaker="xo">
+We are going to a port where the other side has an office. The first question anybody asks is not whether we are right. It is whether we know how wrong an honest answer can be. Say it back to me, in numbers, and then we can go.
+</Dialogue>
+
+<Checkpoint act="act-5" />
+
+<PassGate act="act-5">
+
+<Scene stamp="MET 118/05:12" location="Intel terminal" condensed="The brief holds. Thirty-one minutes remain on the torch hold, and the decision at the end of them is yours: Ceres now, or hold station in the hope of a second diversion.">
+
+There are thirty-one minutes left on the hold and one thing still open.
+
+Ceres is 0.4 AU off: fifteen days at fifteen milligee, a hundred and eighty-eight kilometres a second, and she arrives on fumes with a consular berth and a fuelling contract waiting. It also has the Authority's claims office, and an adjuster from Tharsis Mutual who has asked the consulate — in writing, which Solberg notes is unusual — to speak to the Compact's assessing officer.
+
+The other option is to stay. Two hundred and sixty-three kilometres a second in the tanks, ninety days of consumables, and a corridor down which a Perrine hull passes about three times a week — of which, on the six-year rate, about one passage in fifty is the thing you came to see. Watch long enough and the Lane may hand you a second diversion, witnessed, on your own sensors, with a plume vector on it.
+
+Ferrante's list has your name on it and Ferrier knows what the Chief's margin looks like after thirty-five days of purging on a schedule.
+
+</Scene>
+
+<Dialogue speaker="engineer" aside="She has the endurance card in her hand and does not read it, because she wrote it.">
+Ninety days of stores, Skipper, plus or minus a week depending on how honest the last inventory was. The cellar will do whatever you ask it to do for another month. After that I start telling you numbers you will not like, and I will tell you them early.
+</Dialogue>
+
+<Dialogue speaker="xo">
+And the other cost. Ceres approach control means transponder on. From the moment we key it, every hull on the Lane with a receiver knows where this ship is — and so does anyone standing off the Lane who has thought to listen. We have spent five weeks being a hole in the sky. We would be spending that.
+</Dialogue>
+
+<MissionBeat id="act-5-checkpoint-ceres" kind="decision" label="THE TORCH"
+  prompt="Thirty-one minutes on the hold. Ceres — fuel, the claims register, and an adjuster who has asked for you by office — or hold station in the Mark 9 region and wait for the Lane to hand you a second diversion?"
+  options={["Light the torch for Ceres", "Hold station for a second diversion"]}>
+  <Outcome option={0}>
+  <Dialogue speaker="xo">Ceres, then. Logged at 05:12, with the reason: the register with the beneficiaries on it is in a building there, and no amount of watching this corridor will put it on our display.</Dialogue>
+  <Dialogue speaker="engineer" aside="Already keying the spin-up. The reactor has been on Standby since the small hours, because she read the hold and drew her own conclusion.">Four minutes from Standby, Skipper. I brought her up at three because you asked for forty and nobody asks for forty minutes to do nothing.</Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="xo">We stay. Logged — and noted that the stores clock is running and that I said so. If the Lane gives us a second hull turning late, the file gets a witness it does not currently have.</Dialogue>
+  <Dialogue speaker="engineer" aside="She does not key the spin-up. She writes the extension in the log with a time against it.">Then I will want another look at the cellar on the eighth day, and you will not enjoy the conversation, and we will have it anyway.</Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<Gated by="act-5-checkpoint-ceres">
+
+<Scene stamp="MET 118/05:43" location="Bridge · transponder on · outbound for Ceres" condensed="The torch lights. Transponder on, and with it the end of five weeks of being a hole in the sky. The Act closes on what the Act proved and what it did not: the nineteen are not noise, but nothing has been tested yet, and the rate argument still depends on which baseline the Board is allowed to pick.">
+
+The torch lights and there is down again — fifteen milligee of it, pointed at Ceres, and after thirty-five days of coasting the deck has an opinion about which way the floor is. Somebody's stylus rolls the length of the wardroom table and stops against the welded lip.
+
+Solberg announces the transponder before he keys it, because you told him to announce it.
+
+</Scene>
+
+<Dialogue speaker="comms" aside="He reads the frequency and the hull code off the card, though he has known both since Callisto.">
+Transponder on, Captain, at 05:43. From this moment, every hull on the Lane with a receiver knows where we are. So does anybody standing off it who has thought to listen. Callisto is twenty-one minutes and thirty-six seconds away, one way, and will hear about it in twenty-one minutes and thirty-six seconds.
+</Dialogue>
+
+<Scene stamp="MET 118/06:10" location="Wardroom" condensed="Ebele wants to know whether the Act's work settled the rate question. It did not. What it settled is that a mean of nineteen is not noise — the composition argument, which does not depend on which baseline anyone chooses. The rate argument still does.">
+
+Ebele finds you in the wardroom with the draft and one question he has been carrying since the Board's table arrived, which he asks in the order he thinks it.
+
+</Scene>
+
+<Dialogue speaker="analyst" aside="He has the Board's table and the Ledger side by side on the slate and has been switching between them for an hour.">
+So — sir. If the Board gets to say the baseline is the Mars–Belt corridor, {fmtPct(rateOf(BOARD_TABLE.marsBelt), 2)}, then {fmtInt(BOARD_TABLE.lane.losses)} in {fmtInt(BOARD_TABLE.lane.transits)} is nothing at all. And if the baseline is your {fmtPct(rateOf(ROOK_2176), 2)} from 2176, it is a very long way out. Same Lane. Same file. The answer moves because they choose the question.
+</Dialogue>
+
+<Dialogue speaker="xo">
+It does. Which is why the rate is not the argument we are taking to Ceres. Write down the part that does not move.
+</Dialogue>
+
+<Scene stamp="MET 118/06:20" location="Wardroom" condensed="You write the sentence that closes the Act: the rate argument depends on which null the Board is allowed to choose; the composition argument does not. The nineteen are not noise. What is still missing is a hypothesis, a test, a p-value, and a sentence you would sign in front of a board of inquiry — which is what Ceres is for.">
+
+You write it in two lines, because two is what it takes.
+
+*A comparison of the Lane's loss rate against a baseline is only as good as the baseline, and the baseline is the Board's to choose. A comparison of one owner's hulls against everyone else's on the same corridor, in the same file, over the same six years, is not.*
+
+That is the whole of it. The composition argument — these hulls against those hulls, inside one Ledger — needs nobody's permission to pick a corridor, because the corridor is the same on both sides of the comparison.
+
+And against the only thing the Board's own file offers as a picture of honest variation, the nineteen do not fit inside it. A mean of nineteen honest transits has a standard deviation of {fmt(SE_MEAN_19, 2)} days. Theirs is not {fmt(SE_MEAN_19, 2)} days out. It is several times that, and there is no honest arrangement of the Lane in which that is ordinary.
+
+What you do not have is everything that turns a finding into a document the Service is obliged to answer. A hypothesis, stated before the arithmetic. A test with a name. A number that says how often chance alone would do this. And one sentence, in context, that you would sign with your hull number under it in front of a board of inquiry.
+
+Ceres has the register with the beneficiaries in it. Ceres has an adjuster who has paid somebody two point one billion and would like to know why the Compact navy is only now curious.
+
+Fifteen days.
+
+</Scene>
+
+<LogEntry
+  title="Act V — the noise floor"
+  concept="A sampling distribution is the distribution of a statistic over all samples of a given size: its centre says whether the statistic is biased, and its spread says how much two honest reports may differ — a spread that shrinks as 1/√n while bias does not shrink at all. The Lane's nineteen are each ordinary against the honest delay distribution, and about one honest transit in seven is as late as their average; but a mean of nineteen honest transits has a standard deviation of only σ/√19, and theirs sits several of those out, which is the difference between a suspicion and a finding."
+  formula="\mu_{\bar{x}} = \mu,\quad \sigma_{\bar{x}} = \frac{\sigma}{\sqrt{n}};\qquad \sigma_{\hat{p}} = \sqrt{\frac{p(1-p)}{n}};\qquad \sigma_{\hat{p}_1 - \hat{p}_2} = \sqrt{\frac{p(1-p)}{n_1} + \frac{p(1-p)}{n_2}},\quad \sigma_{\bar{x}_1 - \bar{x}_2} = \sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}"
+  mistake="Judging a group by whether each member of it is extreme. Nineteen individually unremarkable hulls can have a mean that no honest arrangement of the corridor produces — and the reverse trap, treating one extreme member as if it proved something about the group."
+  tags={['unit-5', 'checkpoint', 'sampling-distribution', 'bias', 'clt', 'standard-error', 'null-model']}
+/>
+
+</Gated>
+
+</PassGate>

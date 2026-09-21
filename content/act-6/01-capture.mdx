@@ -1,0 +1,191 @@
+---
+id: act-6-01
+act: 6
+title: "Capture"
+kind: module
+ap_topics: ["6.1", "6.2"]
+objectives:
+  - "Explain the logic of a confidence interval as a statistic plus or minus a margin of error, where the margin comes from the sampling distribution of the statistic"
+  - "Verify the conditions for a one-sample z-interval for a proportion — random, 10%, and Large Counts using the sample proportion — and state what each one means for a process rather than a fixed population"
+  - "Interpret a confidence level as the long-run capture rate of the method, and reject the reading that assigns a probability to one interval"
+prereqs: ["act-5-checkpoint"]
+est_minutes: 30
+calc_briefing: "tails-and-inverse-functions"
+summary: "Docked at Ceres with everything visible, Ebele writes the sentence the Board's counsel would love. Before a number goes up the chain, you make him run a hundred years of Lane traffic and count the intervals that miss."
+---
+
+import { fmt, fmtInt, fmtPct, onePropInterval } from '@/lib/stats'
+import { LANE_LOSSES, LANE_RATE, LANE_TRANSITS, ROOK_2176, TRANSITS_PER_YEAR, zStar } from '@/instruments/act-6/data'
+import { CaptureSimulator } from '@/instruments/act-6/CaptureSimulator'
+import { confidenceLevelRubric } from '@/lib/problems/generators/act-6/capture'
+
+export const laneArrivals = LANE_TRANSITS - LANE_LOSSES
+export const lightLagMin = 24
+export const tankKmS = 75
+export const plumesInSky = 40
+export const rook = onePropInterval({ x: ROOK_2176.losses, n: ROOK_2176.transits, confidence: 0.95, random: true })
+export const rookArrivals = ROOK_2176.transits - ROOK_2176.losses
+export const rookRate = ROOK_2176.losses / ROOK_2176.transits
+export const rookCi = rook.ci ?? [0, 0]
+export const intervalTex = `\\hat{p} \\pm z^\\star\\sqrt{\\frac{\\hat{p}(1 - \\hat{p})}{n}}`
+export const rookTex = `${fmt(rookRate, 5)} \\pm ${fmt(rook.criticalValue ?? 0, 3)} \\times ${fmt(rook.se, 5)} = ${fmt(rookRate, 5)} \\pm ${fmt(rook.marginOfError ?? 0, 5)}`
+export const levelRubric = confidenceLevelRubric({
+  level: 0.95,
+  population: 'all transits on the Hundred-Day Lane',
+  variable: 'ending in a loss',
+  parameter: 'loss rate per transit',
+  exemplar:
+    'If the Lane traffic were sampled repeatedly in the same way and a 95% confidence interval were built from each sample, about 95% of those intervals would contain the true loss rate per transit for all transits on the Hundred-Day Lane.',
+})
+
+<Scene stamp="MET 133/08:20" location="Intel terminal · CSV Nightjar · Compact consular berth, Ceres" condensed="Docked at Ceres with the transponder lit and forty plumes in the sky, Ebele has written the report's first sentence: the interval has a 95 per cent chance of containing the Lane's loss rate. Ferrier asks him which interval — the one on the screen, or the method. Before any number goes up the chain you make him show you what the level actually promises.">
+
+For a hundred and thirty-three days the hull has been the coldest object anybody could have looked at. This morning there is a docking collar on it, a fuel line into the port tank, and a transponder squawking your hull number to a traffic controller who has already read it aloud twice.
+
+Ceres approach handed you off at 06:40. There are {fmtInt(plumesInSky)} plumes on the plot and half of them are inside a light-second, which is close enough that Oyelaran has stopped calling them contacts and started calling them traffic. You arrived with {fmtInt(tankKmS)} km/s in the tanks and you are taking on more at the Compact consular berth, in the open, where anyone with a pair of eyes and a berth manifest can work out what a corvette of your class does not normally do at Ceres.
+
+Solberg has the lag written on the board above his station in his own hand: **{fmtInt(lightLagMin)} minutes to Valhalla, {fmtInt(2 * lightLagMin)} there and back.** Nothing you send this week gets an answer in less than forty-eight minutes, and every word of it is twenty-four minutes old when it lands.
+
+Ebele has been at the intel terminal since before the collar mated. He has the Transit Ledger up — {fmtInt(LANE_TRANSITS)} transits, {fmtInt(LANE_LOSSES)} of them losses, {fmtInt(laneArrivals)} hulls that came home — and he has written the first line of the report you will sign.
+
+He reads it out without being asked, because he is pleased with it.
+
+"So — the Lane's loss rate is {fmt(LANE_RATE, 4)} per transit, and the ninety-five per cent interval has a ninety-five per cent chance of containing the true rate. Sir."
+
+Ferrier does not look up from the fuel log.
+
+"Which interval?"
+
+"The — " He stops. You can watch him hear it. "The one on the screen."
+
+"That one is already built. It contains the rate or it does not, and neither of us is ever going to know which. So say again what has a ninety-five per cent chance."
+
+"Yes, sir. That's — yes." He turns back to the terminal and does not type anything for a while.
+
+It is not a small point and it is not a pedantic one. In seven days this ship is going to accuse an insurer's beneficiary of something, over a channel with {fmtInt(lightLagMin)} minutes of lag, to a Board that has lawyers. The first sentence they will come for is the one about confidence, because it is the one everybody gets wrong and because getting it wrong hands them a way to talk about your English instead of your arithmetic.
+
+So before any number goes up the chain, the discipline gets set. Ferrier walks him through what the interval needs before it is allowed to exist at all.
+
+**Random.** The Ledger is not a sample drawn from a list. It is a census of every transit the Authority logged. Ferrier makes him say what that leaves: that the {fmtInt(LANE_TRANSITS)} are the output of a process, that the condition is a statement about that process rather than about a draw, and that it has to be written down and defended rather than assumed.
+
+**Ten per cent.** Same answer from the other side. There is no fixed bin of transits being emptied — the Lane will go on producing transits long after this file closes, far more than ten times these {fmtInt(LANE_TRANSITS)}, so the draws behave as independent ones.
+
+**Large counts.** {fmtInt(LANE_LOSSES)} losses and {fmtInt(laneArrivals)} arrivals. Both past ten, the second by a margin nobody will query and the first by a margin somebody might.
+
+"Conditions hold," Ferrier says. "Now show the Captain what the ninety-five buys. Not the sentence. The thing the sentence is about."
+
+</Scene>
+
+<Dialogue speaker="xo" aside="She has finally put the fuel log down. Outside the port, a Ceres tug is holding station on a hull four times your size and doing it badly.">
+A hundred years of Lane traffic. The corridor runs about {fmtInt(TRANSITS_PER_YEAR)} transits in a year, so that is one season, one interval, a hundred times over — built the same way every time, from the same process at the same true rate. Then count the ones that miss. When you can tell me what the number on the counter is a property *of*, you may write the sentence.
+</Dialogue>
+
+<Briefing title="An interval is a statistic with its error bar; the level belongs to the method" topics={["6.1", "6.2"]}>
+<Briefing.Intuition>
+A point estimate is a number that refuses to admit it came from a sample. {fmt(LANE_RATE, 4)} is the Lane's rate *in this file*; run the Lane again for the same six years and the file would say something else, and the whole of Act V was about how much else.
+
+An interval is the estimate with that variability attached, and it is built out of one fact you already have. Over repeated samples of size $n$, the sample proportion $\hat p$ is centred on the true $p$ with standard deviation $\sqrt{p(1 - p)/n}$, and when the counts are large that distribution is close to Normal. So for the central $C$ of samples,
+
+$$\left|\hat p - p\right| \;<\; z^\star\sqrt{\frac{p(1 - p)}{n}}$$
+
+and now read that inequality from the other end. If $\hat p$ lands within a margin of $p$, then $p$ lies within the same margin of $\hat p$ — the distance between two numbers does not care which one you stand on. That single reversal is the entire logic of a confidence interval. The margin is borrowed from the sampling distribution; the interval is the statistic with the margin hung on either side; and the fraction of samples for which the inequality held becomes the fraction of intervals that capture.
+
+**statistic ± margin of error**, where the margin is a critical value times a standard error. Nothing else is going on.
+
+Three consequences worth having in your hands before the panel:
+
+- The level is a property of the **procedure**, measured over repetitions you did not perform. It is not a property of the interval on your screen, which is a finished object with no randomness left in it. The parameter does not move; the interval does, from sample to sample.
+- Because $p$ is unknown, the standard error is computed from $\hat p$ instead — which is why an interval's conditions are checked with the observed counts of successes and failures rather than with a hypothesised value.
+- Raising $C$ raises $z^\star$ and nothing else, so the interval gets **wider**. Wider is not better and it is not more precise; it is a wider claim, held more often. Precision is bought only with $n$, and only at the rate $1/\sqrt{n}$.
+
+The conditions are three, and each guards a different part of the machinery.
+
+1. **Random.** The data must come from a random sample, or — as here — from a process the analyst is prepared to state produced these units independently of what happened to them. A census of a process is still a sample *of the process*, and the condition is the sentence you are willing to sign about it.
+2. **10%, or independence.** Sampling without replacement from a fixed pool makes later draws depend on earlier ones. Keep $n$ to a tenth of the pool and the dependence is negligible. When the units come from an ongoing operation rather than a fixed pool, the condition reads: the process could produce far more than ten times these units.
+3. **Large Counts.** At least 10 successes and at least 10 failures, counted from the sample itself. This is what licenses the Normal model for $\hat p$, and it is the condition the panel will let you break on purpose.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={intervalTex} terms={{ '\\hat{p}': 'the sample proportion — successes over units', 'z^\\star': 'the critical value: the cutoff enclosing the central C of a standard normal', 'n': 'units in the sample', '\\sqrt{\\hat{p}(1 - \\hat{p})/n}': 'the standard error — the sampling distribution’s spread, estimated from the sample' }} label="One-sample z-interval for a proportion" />
+
+<Formula tex="z^\star = \Phi^{-1}\!\left(\frac{1 + C}{2}\right)" terms={{ C: 'the confidence level, as a proportion', '\\Phi^{-1}': 'the inverse of the standard normal CDF — area in, cutoff out' }} label="Where the critical value comes from" />
+</Briefing.Definition>
+<Briefing.Worked>
+Your own file, and not this one. The *Asgard* report of 2176: {fmtInt(ROOK_2176.losses)} losses in {fmtInt(ROOK_2176.transits)} Lane transits, 2168 to 2176, written by a lieutenant commander who is now sitting in this compartment.
+
+**Conditions.** The transits are the Lane's own traffic over eight years, and the report states in its second paragraph that the record is complete and that nothing about how a transit came to be flown was related to whether it was lost — that is the random condition, stated rather than assumed. The Lane goes on running, so the process behind it could produce far more than ten times these transits: {fmtInt(10 * ROOK_2176.transits)} of them, and it will. Counts: {fmtInt(ROOK_2176.losses)} losses and {fmtInt(rookArrivals)} arrivals, both at least 10 — the first of them narrowly, which the report should have said and did not.
+
+**The interval.** The sample proportion is {fmtInt(ROOK_2176.losses)} over {fmtInt(ROOK_2176.transits)}, or {fmt(rookRate, 5)}. Its standard error, $\sqrt{\hat p(1 - \hat p)/n}$, comes to {fmt(rook.se, 5)}, and at {fmtPct(0.95, 0)} the critical value is {fmt(zStar(0.95), 4)}.
+
+<Formula tex={rookTex} label="Asgard 2176 · statistic ± margin" />
+
+which gives an interval of **({fmt(rookCi[0], 5)}, {fmt(rookCi[1], 5)})** — about {fmt(100 * rookCi[0], 2)} to {fmt(100 * rookCi[1], 2)} losses per hundred transits.
+
+Notice what the margin costs. {fmtInt(ROOK_2176.transits)} transits, eight years of a corridor's whole life, and the answer is still a range more than {fmt(rookCi[1] / rookCi[0], 1)} times as wide at the top as at the bottom. Rare events are expensive to measure. That is not a failure of the method; it is the method telling you the truth about what eight years bought.
+</Briefing.Worked>
+<Briefing.Caution>
+*"There is a 95% probability that the true rate is in this interval."* The sentence the Board's counsel is waiting for. The true rate is a fixed number and the interval is already computed; one of them is inside the other, and the probability of that is 1 or 0. The {fmtPct(0.95, 0)} describes the method — the fraction of intervals it produces, over repetitions, that capture the parameter. Say **confident**, and say what you are confident *about*.
+
+*"95% of the transits fall in the interval."* The interval is a range of plausible values for one proportion, not a range of values for individual units. A transit is lost or it is not; it has no rate of its own to fall inside anything. The same error wearing a better suit is *"95% of future sample proportions would land in this interval"* — also false, because this interval is centred on the $\hat p$ you happened to draw, and future $\hat p$'s cluster around the parameter rather than around your draw.
+
+*"A wider interval is more precise."* Backwards. Width is imprecision. A {fmtPct(0.99, 0)} interval is wider than a {fmtPct(0.95, 0)} one because it is a weaker claim about where the parameter is, and it captures more often for exactly that reason. The only thing that buys confidence and precision at the same time is more data.
+</Briefing.Caution>
+</Briefing>
+
+<CaptureSimulator />
+
+<CalcBriefing topic="tails-and-inverse-functions" />
+
+<Drill generator="act-6/interval-conditions" count={1} />
+<Drill generator="act-6/critical-value" count={1} />
+<Drill generator="act-6/capture-count" count={1} />
+<Drill generator="act-6/confidence-width" count={1} />
+<Drill generator="act-6/what-the-level-is-not" count={1} />
+<Drill generator="act-6/interpret-confidence-level" count={1} />
+
+<MissionBeat id="act-6-01-level" kind="interpretation" label="WHAT THE NINETY-FIVE IS A PROPERTY OF"
+  prompt={`The report will say that the Lane's loss rate — ${fmtInt(LANE_LOSSES)} losses in ${fmtInt(LANE_TRANSITS)} transits, ${fmt(LANE_RATE, 4)} per transit — is estimated with ${fmtPct(0.95, 0)} confidence. Write the sentence that explains what the ${fmtPct(0.95, 0)} means, for a reader in a hearing room who did not build it. Do not quote the endpoints; that is tomorrow's argument. Interpret the **level**, in context, in two or three sentences.`}
+  hint="Say it about repetitions, not about the interval you have. Many samples of Lane traffic, drawn the same way; one interval built from each; and then the level is the share of THOSE intervals that contain the true loss rate per transit. Then delete every word that assigns a probability to the one on your screen."
+  {...levelRubric}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it twice, which she does not do for things she intends to change.">
+  That sentence survives a hostile reading, and it survives it because it never claims anything about the interval we have. Note what you gave up to get there: you cannot tell anybody how likely we are to be right this time. Nobody can. What we can tell them is how often the method is right, and that we used it properly.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She does not raise her voice. She turns the screen so the counter on the panel faces you.">
+  Which interval? Point at it. — If the sentence can be answered with "that one", it is the wrong sentence, because that one is finished and the rate is a fixed number and there is no chance left anywhere in the room. Put the repetitions back in. A hundred seasons, a hundred intervals, and the level is the share of them that cover the line. Then say it back to me without the word *chance* in it.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-6-01-level"]}>
+
+<Scene stamp="MET 133/22:05" location="Wardroom · CSV Nightjar · Compact consular berth, Ceres" condensed="Ebele logs the corrected sentence and the three conditions with their numbers beside them. Master Yevgenia Marsh comes aboard with a bottle and a grievance and asks the only question that matters to her. Ferrier files the discipline rather than a finding: no number leaves this ship without the sentence that says what it is a property of.">
+
+Ebele writes it into the appendix with the conditions above it and the numbers beside each one, which is the form Ferrier has been trying to get out of him since Act III. Random: a stated property of the process, not an assumption. Ten per cent: a process that will produce far more than {fmtInt(10 * LANE_TRANSITS)} transits. Large counts: {fmtInt(LANE_LOSSES)} and {fmtInt(laneArrivals)}, with a note that the first of them is the weak link and that a reviewer will find it.
+
+At 22:05 the watch officer passes up a name from the collar. Master Yevgenia Marsh, *Thessaly Dawn*, nine days on a Ceres berth waiting for a cargo that is not coming, carrying a bottle of something clear and a grievance she has been rehearsing since she saw your hull number on the traffic board.
+
+She puts the bottle on the wardroom table and does not sit.
+
+<Dialogue speaker="marsh" aside="She has a shipmaster's hands and a Ceres accent you could cut a fuel line with. She does not look at Ferrier once.">
+My brother went off the Lane in *Thessaly Ember* four years ago and the finding was two lines long. Two. I have read every word the Authority has ever written about that corridor and I can tell you which clerk wrote which one. So. A Compact corvette turns up at Ceres with its lights on and a fuel line in, and it is not escorting anything, and it is not carrying anything. What are you going to do?
+</Dialogue>
+
+You tell her the truth, which is that you do not know yet, and that anything you say before you know is worth less than nothing to her. She takes that better than a promise would have gone.
+
+What you have at MET 133 is not a finding. It is a rule about how findings get written, and it is the reason the rest of this week is worth doing: **the number on the counter was never about the interval. It was about the method that made it.** A hundred seasons, a hundred intervals, and the ones that missed were not mistakes — they were the price of the level, paid in advance and in public.
+
+Tomorrow you put an honest margin on the Lane's rate and find out what claim it can carry. Tonight the discipline is set, and the first sentence of the report no longer contains the word *chance*.
+
+</Scene>
+
+<LogEntry
+  title="Confidence is a property of the method, not of one interval"
+  concept="A confidence interval is a statistic plus or minus a margin of error, and the margin is borrowed from the sampling distribution of that statistic: for a proportion it is a critical value times the standard error estimated from the sample. The confidence level is the long-run capture rate of the procedure — the share of intervals it would produce, over many repeated samples drawn the same way, that contain the true parameter — and it says nothing about the one interval in front of you, which is already built and either contains the parameter or does not. Before any of it applies, three conditions must hold: random (for a census of a process, a stated property of that process), 10 per cent or independence (the process could produce far more than ten times these units), and Large Counts (at least ten successes and ten failures)."
+  formula="\hat{p} \pm z^\star\sqrt{\frac{\hat{p}(1 - \hat{p})}{n}}, \qquad z^\star = \Phi^{-1}\!\left(\frac{1 + C}{2}\right)"
+  mistake="Writing “there is a 95% chance the parameter is in this interval”. The parameter is fixed and the interval is computed; the probability is 1 or 0 and nobody will ever know which. The 95% belongs to the method, over repetitions — and the same error dressed up is “95% of the data fall in the interval”, which is a claim about individual units rather than about a parameter."
+  tags={['confidence interval', 'confidence level', 'capture rate', 'margin of error', 'critical value', 'one-proportion z-interval', 'conditions', 'random', '10% condition', 'large counts', '6.1', '6.2']}
+/>
+
+</Gated>

@@ -1,0 +1,221 @@
+---
+id: act-5-01
+act: 5
+title: "Why the Reports Disagree"
+kind: module
+ap_topics: ["5.1", "5.4"]
+objectives:
+  - "Distinguish a parameter from a statistic, and describe a sampling distribution as the distribution of a statistic over all samples of size n"
+  - "Identify from a simulated sampling distribution whether an estimator is unbiased, and describe how its variability changes with n"
+  - "Explain in context why two honest patrol reports differ, and put a size on the disagreement"
+prereqs: ["act-4-checkpoint"]
+est_minutes: 30
+calc_briefing: null
+summary: "The Board answers with two cutters whose loss rates are three to one apart. Neither of them is lying — and the number the Board built out of them is wrong before a single transit is counted."
+---
+
+import { binomial, fmt, fmtInt, fmtPct, samplingSdProportion } from '@/lib/stats'
+import { BOARD_TABLE, CUTTERS, LEDGER_N, rateOf } from '@/instruments/act-5/data'
+import { SamplingBuilder } from '@/instruments/act-5/SamplingBuilder'
+import { PATROL_N, PATROL_SD, cuttersDisagreeRubric } from '@/instruments/act-5/beats-a'
+// The Briefing's worked case is the Board's *other* corridor — Mars–Belt, a patrol of 600 — so no
+// figure the mission beats ask for is printed before the beats ask for it.
+export const marsRate = rateOf(BOARD_TABLE.marsBelt)
+export const marsPatrolN = 600
+export const marsExpected = marsPatrolN * marsRate
+export const marsSd = samplingSdProportion(marsRate, marsPatrolN)
+export const marsSdBig = samplingSdProportion(marsRate, 4 * marsPatrolN)
+export const marsLow = binomial.cdf(3, marsPatrolN, marsRate)
+export const marsHigh = binomial.atLeast(11, marsPatrolN, marsRate)
+// E[min of two independent p̂] = (1/n) Σ_{k ≥ 1} P(X ≥ k)², summed until the terms die (mean is 6.6).
+export const marsMinOfTwo = Array.from({ length: 60 }, (_, i) => binomial.atLeast(i + 1, marsPatrolN, marsRate) ** 2).reduce((a, b) => a + b, 0) / marsPatrolN
+export const marsMinBias = marsMinOfTwo - marsRate
+
+<Scene stamp="MET 110/09:40" location="Intel terminal · coasting cold in the Mark 9 region · 0.4 AU from Ceres" condensed="Valhalla answers the Act IV report with a table: the Lane at 31 losses in 2,612 transits, the Mars–Belt corridor at 46 in 4,180, and two Lane cutters whose observed rates are three to one apart. The Board's summary statistic is the lower of the two cutters' rates. Ebele builds a sampling machine on the Transit Ledger to find out whether two honest patrols can disagree that much.">
+
+The ship has been quiet for twenty-seven days and the quiet has stopped being a discipline and started being the weather. Post-purge, coasting, wings out, the reactor at station load. Two hundred and sixty-three kilometres a second of delta-v in the tanks and ninety days of consumables, and the torch does not light again until MET 118. Sandoval logs the cellar every four hours whether anybody asks or not.
+
+"Cellar is behaving, Skipper," she says on her way past the terminal, to nobody, with a slate under her arm. "Rejection is inside the figure I gave you at the purge, plus or minus a tenth of a point. If that changes you will hear it from me before you see it on a gauge."
+
+Solberg brings the signal at 09:40 because it arrived at 09:40. Callisto is twenty-one minutes and thirty-six seconds away at the speed of light, which means the Board wrote this a third of an hour ago and will not hear your reply for another third.
+
+<Dialogue speaker="comms" aside="He reads the whole of it, including the heading, because that is how he reads everything." lag="lag 21 min 36 s · Valhalla, Callisto relay">
+Signal from Valhalla, timestamped MET 110 slash 09 colon 18, received 21 minutes 36 seconds later. Reads, verbatim. *Reference: CX-1 preliminary, MET 104. It is noted that the vessel has advanced a hypothesis regarding departure mass on the Hundred-Day Lane. The Board directs attention to the comparative record, appended. Patrol data show no consistent anomaly. The vessel's diligence is noted and the Board will expect the same standard of evidence in any subsequent submission.* End of signal, sir. Table appended.
+</Dialogue>
+
+The appendix is four lines and it is the whole argument.
+
+- The Hundred-Day Lane: **{fmtInt(BOARD_TABLE.lane.losses)} losses in {fmtInt(BOARD_TABLE.lane.transits)} transits**, {fmtPct(rateOf(BOARD_TABLE.lane), 2)}
+- The {BOARD_TABLE.marsBelt.name}: **{fmtInt(BOARD_TABLE.marsBelt.losses)} losses in {fmtInt(BOARD_TABLE.marsBelt.transits)} transits**, {fmtPct(rateOf(BOARD_TABLE.marsBelt), 2)}
+- {CUTTERS.asgard.name}: **{fmtInt(CUTTERS.asgard.losses)} losses in {fmtInt(CUTTERS.asgard.transits)} observed transits**
+- {CUTTERS.tindr.name}: **{fmtInt(CUTTERS.tindr.losses)} losses in {fmtInt(CUTTERS.tindr.transits)} observed transits**
+
+*Summary statistic adopted: the lower of the two cutters' observed rates.*
+
+Ebele reads the last line twice and then goes to find the Ledger, which takes him the rest of the morning because the Authority files it by season.
+
+Three losses in four hundred and ten. One in three hundred and eighty. The two cutters were on the same corridor in the same years with the same orders, and one of them came home with a rate nearly three times the other's. Solberg, who has no opinion unless asked and is asked, offers one sentence: "Two officers wrote those, sir, and they both had to sign them."
+
+By fourteen hundred Ebele has built a machine. It draws four hundred transits out of the Ledger at random, counts how many of them were lost, writes the rate down as a dot, and does it again. Four hundred times. Six hundred. As many as you like. The dots pile up into a shape, and the Lane's own rate — the one the Board printed, taken over every row of the file — sits in the middle of the shape with a line through it.
+
+He turns the display round so you can see it.
+
+</Scene>
+
+<Dialogue speaker="analyst" aside="He is pleased with it, and he has named it wrong, and he does not know that yet.">
+So that is the sampling distribution, sir. It is the distribution of the sample — four hundred transits, drawn off the Ledger, and there is the spread of them.
+</Dialogue>
+
+You do not correct the arithmetic, because the arithmetic is right. You ask him what one dot is.
+
+<Dialogue speaker="analyst" aside="He looks at the display for longer than the question needs, which is how you know the answer is going to be the right one.">
+One dot is — one patrol. Four hundred transits, counted, and the rate they produced. So one dot has already eaten four hundred hulls. — Yes, sir. That's — yes. The distribution of the *sample* would be four hundred ones and zeroes and no shape worth drawing. This is a distribution of four hundred *statistics*, one per patrol. I built the right thing and I called it the wrong name, and the name is the part Valhalla would have read.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="She has been standing behind both of you for four minutes and has not sat down.">
+Say it back to me in the words you intend to file. — Good. Then the cutters are not lying, and that is the first half. Now show me what the Board is doing with them.
+</Dialogue>
+
+<Briefing title="A distribution of statistics, one per sample" topics={["5.1", "5.4"]}>
+<Briefing.Intuition>
+Three numbers, and the whole Act depends on keeping them apart.
+
+A **parameter** is a number about a **population**: the Lane's loss rate over every transit the Ledger holds. It is fixed. Nobody has to estimate it if they hold the whole file, and it does not wobble when you look at it again tomorrow.
+
+A **statistic** is the same kind of number computed from a **sample**: the rate a cutter observed in the transits she happened to watch. It is not fixed. Draw a different four hundred transits and you get a different number, from the same corridor, with nothing done wrong.
+
+The **sampling distribution** of a statistic is the distribution of that statistic **over all samples of size $n$** from the population. It is not a distribution of hulls. It is a distribution of *estimates*, one per sample — which is why one dot on Ebele's display has already swallowed four hundred transits, and why the display has a shape at all when a single sample of losses is nothing but ones and zeroes.
+
+Every sampling distribution has a **centre** and a **width**, and they are damaged by completely different things.
+
+- **Bias** is the distance from the centre of the sampling distribution to the parameter. It is a property of the *recipe* — which units can be drawn, and what arithmetic is done to them — and it is the same offset on every repetition. You cannot see it in one sample; you can only see it by stacking the statistic and looking at where the pile sits.
+- **Variability** is the width. It comes from the luck of the draw and from nothing else, and for a sample proportion it shrinks like $1/\sqrt{n}$: four times the transits, half the spread.
+
+Two honest patrols of the same corridor produce two draws from the same sampling distribution. They are *expected* to differ, and the sampling distribution says by how much. A reviewer who reads that difference as a disagreement about the facts has mistaken the width of the pile for a fact about the Lane.
+
+And a statistic can be honest in every input and wrong by construction. Take two patrols and report the **lower** of the two rates. Each patrol on its own is an unbiased estimate. The rule that picks between them throws away every draw that landed high — so the reported number sits below the truth far more often than above it, and the pile it builds is centred somewhere the Lane has never been.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\mu_{\hat p} = p, \qquad \sigma_{\hat p} = \sqrt{\frac{p(1-p)}{n}}" terms={{ '\\hat p': 'the sample proportion — one patrol’s observed loss rate, a statistic', 'p': 'the population proportion — the corridor’s own loss rate, a parameter', 'n': 'transits in the patrol' }} label="Centre and width of the sampling distribution of a sample proportion" />
+
+<Formula tex="\text{bias} = E[\,\text{statistic}\,] - \text{parameter}" terms={{ 'E[\\,\\text{statistic}\\,]': 'the centre of the sampling distribution — where the pile sits after infinitely many samples', '\\text{parameter}': 'the population value the statistic is aimed at' }} label="Bias is a statement about the centre, not about one sample" />
+
+An estimator is **unbiased** when that difference is zero — when the pile sits on the truth. It says nothing about how wide the pile is, and a wide unbiased estimator and a narrow biased one are different failures.
+</Briefing.Definition>
+<Briefing.Worked>
+The Board's own comparison corridor, worked the way the Board did not work it. The {BOARD_TABLE.marsBelt.name} file is complete: {fmtInt(BOARD_TABLE.marsBelt.losses)} losses in {fmtInt(BOARD_TABLE.marsBelt.transits)} transits, so its rate of **{fmt(marsRate, 5)}** — {fmtPct(marsRate, 2)} — is a *parameter*. There is nothing to estimate and nothing to wobble.
+
+Now put a cutter on it for {fmtInt(marsPatrolN)} transits. She expects {fmt(marsExpected, 1)} losses and she will not get {fmt(marsExpected, 1)} of anything, because losses come in whole hulls. The sampling distribution of her observed rate is centred on {fmt(marsRate, 5)} with
+
+<Formula tex={`\\sigma_{\\hat p} = \\sqrt{\\frac{${fmt(marsRate, 5)} \\times ${fmt(1 - marsRate, 5)}}{${marsPatrolN}}} = ${fmt(marsSd, 5)}`} terms={{ '\\sigma_{\\hat p}': 'how far one honest patrol’s rate typically lands from the corridor’s own' }} label="One patrol of 600 on the Mars–Belt corridor" />
+
+— {fmt(100 * marsSd, 2)} of a percentage point, on a corridor whose whole rate is {fmt(100 * marsRate, 2)} of one. So {fmtPct(marsLow, 1)} of honest patrols come home with three losses or fewer and report a corridor running at half its true rate, and {fmtPct(marsHigh, 1)} come home with eleven or more and report it running at nearly double. Both officers counted correctly. Neither of them saw the corridor.
+
+**Now the Board's rule.** Run two such patrols and report the lower of the two rates. Each patrol is unbiased; the *rule* is not. Summing over every way the smaller of two counts can fall,
+
+<Formula tex={`E[\\,\\text{lower of two}\\,] = ${fmt(marsMinOfTwo, 5)}, \\qquad \\text{bias} = ${fmt(marsMinOfTwo, 5)} - ${fmt(marsRate, 5)} = ${fmt(marsMinBias, 5)}`} terms={{ '\\text{bias}': 'the centre of the rule’s sampling distribution, minus the corridor’s own rate' }} label="The lower of two honest patrols, on a corridor whose rate is known" />
+
+The rule reports {fmtPct(marsMinOfTwo, 2)} for a corridor running at {fmtPct(marsRate, 2)} — low by {fmt(100 * Math.abs(marsMinBias), 2)} of a percentage point, which is {fmtPct(Math.abs(marsMinBias) / marsRate, 0)} of the thing being measured. It is low on average, it is low in the same direction every time, and it is low before anybody has counted a single transit, because the offset is in the sentence *take the lower of the two* and not in the data.
+
+And the offset does not answer to repetitions. Stack a hundred of these and the centre is roughly where it will end up; stack ten thousand and the centre is pinned to five decimals — in the same place. What repetitions buy is confidence about where the pile sits, never a move. Quadruple the patrol instead, to {fmtInt(4 * marsPatrolN)} transits, and the *honest* estimator's spread halves from {fmt(marsSd, 5)} to {fmt(marsSdBig, 5)} while its centre stays exactly on {fmt(marsRate, 5)}, where it has been the whole time.
+</Briefing.Worked>
+<Briefing.Caution>
+*The sampling distribution called the distribution of the sample.* The Ensign's error, made out loud, and the one that matters most here. A **sample** is made of transits: four hundred hulls, each lost or arrived. A **sampling distribution** is made of statistics: one number per sample, each of which has already consumed all four hundred. They have different units, different shapes and different widths, and only one of them tells you how far an estimate can land from the truth.
+
+*"Bias" used for random error.* Two honest patrols that differ are not evidence that either is biased. Bias is an offset in the **centre** of the sampling distribution, which no single sample displays and no pair of samples can show. A difference of about one standard deviation between two independent estimates is the machine running normally.
+
+*Larger $n$ as a cure for bias.* Sample size is the answer to variability and to nothing else. A method that drops the wrong units, or a rule that reports the smaller of two honest numbers, is aimed off-target; running it on more transits gives the same wrong aim with a tighter group, and tightness reads as authority. If you cannot say which direction a rule pushes, you cannot correct for it — you can only refuse to use it.
+</Briefing.Caution>
+</Briefing>
+
+<SamplingBuilder />
+
+Work it in three passes, in this order, and write down what moves each time.
+
+**One.** Leave the statistic on *loss rate of one patrol*, leave the patrol at four hundred transits, and run it. Both cutters are marked on the axis. Read *draws at or below Asgard* and *draws at or below Tindr* and find where each of them sits in the pile — not whether they are in it, but how far in.
+
+**Two.** Switch the statistic to *lower of two patrols' loss rates* and run it again. Watch the *bias · mean − truth* readout: it goes alert-toned only when the offset is more than three standard errors of the stack's own mean from zero, so the word *biased* is computed for you rather than eyeballed. Keep running. The centre does not drift back.
+
+**Three.** Push the *transits per patrol* slider up and run each setting. The *SD of the stack* falls away as $1/\sqrt{n}$. The Board's statistic is still sitting on the wrong side of the Lane's truth at every setting the slider offers, and no number of repetitions moves it.
+
+<Drill generator="act-5/parameter-or-statistic" count={1} />
+<Drill generator="act-5/what-one-dot-is" count={1} />
+<Drill generator="act-5/biased-or-unbiased" count={1} />
+<Drill generator="act-5/effect-of-n" count={1} />
+<Drill generator="act-5/bias-versus-variability" count={1} />
+<Drill generator="act-5/why-two-patrols-differ" count={1} />
+
+<MissionBeat id="act-5-01-disagree" kind="interpretation" label="THE CUTTERS' REPORTS"
+  prompt={`The reply to Valhalla needs a paragraph on the two cutters that a hostile reader cannot move. ${CUTTERS.asgard.name} logged ${fmtInt(CUTTERS.asgard.losses)} losses in ${fmtInt(CUTTERS.asgard.transits)} observed transits; ${CUTTERS.tindr.name} logged ${fmtInt(CUTTERS.tindr.losses)} in ${fmtInt(CUTTERS.tindr.transits)}. In three or four sentences, explain why two honest cutters report different Lane loss rates — what kind of number each of them wrote down, what the Lane's own rate is by comparison, and what the gap between them is. Then put a size on it: how far apart do honest patrols of about ${fmtInt(PATROL_N)} transits routinely land? Cite the number.`}
+  hint="Neither cutter can see the Lane; each of them can see a window of it. Name what each wrote down and name what the Lane's rate is. For the magnitude, take the Lane's own rate from the Board's table and work out the standard deviation of a patrol's loss rate at n = 400 — the builder prints it as SD of the stack."
+  {...cuttersDisagreeRubric()}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it once and hands it back without a mark on it.">
+  That paragraph costs Valhalla its first line. Not the estimate — the paragraph. File it ahead of anything we compute, so that nobody reads a cutter's number without it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She does not raise her voice. She points at the four hundred transits of one draw, and then at the pile.">
+  That's the sample. Where's the distribution? — You have told me what each cutter counted. Tell me what kind of number it is, tell me what the Lane's own rate is called, and then tell me how far apart two honest patrols of four hundred land. The last one is a number, Commander, and it is on the display in front of you.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-5-01-board-statistic" kind="choice" label="THE BOARD'S SUMMARY"
+  prompt={`The appendix adopts one summary statistic for the Lane: **the lower of the two cutters' observed rates**. Stack that statistic on the builder and read where the pile sits against the Lane's own ${fmtPct(rateOf(BOARD_TABLE.lane), 2)}. As an estimator of the Lane's loss rate, what is it?`}
+  options={[
+    'Unbiased. Both cutters counted honestly, and a rule built out of two honest counts inherits their honesty.',
+    'Biased low. The rule discards whichever honest patrol landed higher, so it centres below the Lane’s rate — and it centres there every time, because the offset is in the rule.',
+    'Biased high. Taking one of two patrol rates throws away information, and a statistic built on less information overstates a rare event.',
+    'Biased, but a longer patrol or more repetitions would fix it. The offset is a small-sample artefact.',
+  ]}
+  correct={1}
+  feedback={[
+    'Each patrol is unbiased on its own; the rule that chooses between them is not. Stack it and the pile sits on the wrong side of the truth and stays there — honest inputs, dishonest recipe.',
+    null,
+    'Wrong side. The minimum of two draws is below the average of the two whenever they differ at all, so the rule can only ever pull the reported rate down.',
+    'More repetitions narrow the stack; they do not move its centre. Run the builder to a thousand draws and the offset is pinned down more precisely in exactly the same place. Sample size buys precision, never aim.',
+  ]}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He puts the two stacks on one axis, the honest rate and the Board's rule, with the Lane's own value drawn through both.">
+  So the cutters are clean and the appendix is not, sir. Nobody at Valhalla falsified anything. They wrote down a rule, and the rule reports low on a corridor where every single input is correct. I can show that with the Lane's own file and nothing else.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Stack it and look at the centre, not the width. The rule reports whichever of two honest patrols came back quieter. Ask yourself which way that can possibly err — and then ask whether a bigger patrol changes the answer to that question.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-5-01-disagree", "act-5-01-board-statistic"]}>
+
+<Scene stamp="MET 110/18:20" location="Wardroom · coasting cold · 0.4 AU from Ceres" condensed="The reply goes out with two findings and no accusation: the cutters' reports are consistent with a single Lane rate, and the Board's adopted summary statistic is biased low by construction. What the Lane's rate actually is remains unmeasured. Rook remembers, and does not mention, a patrol report he wrote himself from a cutter twenty years ago.">
+
+Ferrier drafts it in four lines and makes Ebele read it aloud before she signs, because a sentence that cannot be read aloud on a bridge is a sentence with a hole in it.
+
+*Reference: Board appendix, MET 110. The two patrol records cited are consistent with a single Lane loss rate: {fmtInt(CUTTERS.asgard.losses)} in {fmtInt(CUTTERS.asgard.transits)} and {fmtInt(CUTTERS.tindr.losses)} in {fmtInt(CUTTERS.tindr.transits)} differ by less than the {fmt(PATROL_SD, 4)} that one honest patrol of {fmtInt(PATROL_N)} transits varies on its own. No inference adverse to either cutter is drawn or intended.*
+
+*The summary statistic adopted in the appendix — the lower of two observed rates — is biased low by construction. Simulated on the Authority's own Transit Ledger, all {fmtInt(LEDGER_N)} rows, it centres below the Ledger's rate at every patrol size tested. This vessel makes no claim as to the Lane's true rate, which neither the appendix nor this signal has measured.*
+
+"That last sentence is the one they will hate," Ebele says.
+
+"That last sentence is the one that survives," Ferrier says. "We have not accused anybody of anything. We have said that their instrument reads low and that we do not know the true value. There is no reply to it that is not an improvement."
+
+Solberg times the send and logs it: twenty-one minutes thirty-six seconds out, twenty-one and a half back if somebody at Valhalla answers the instant they finish reading, which nobody at Valhalla has ever done. Forty-three minutes, minimum, and then whatever the Flag Secretary's afternoon looks like.
+
+What you have is smaller than it feels and you make yourself say so. You have not shown that the Lane is dangerous. You have shown that two honest officers can hand you numbers three to one apart, and that the number the Board built out of them reads low whatever the Lane is doing. The corridor's own rate is still a thing nobody in this ship has measured, and the nineteen Perrine hulls are still nineteen separate files with nothing in them but lateness.
+
+You go back to your cabin at nineteen hundred and do not open the drawer, and the thing you do not open is a patrol report with your own name on the last page. *Asgard*, thirteen losses in two thousand five hundred and eighty transits, 2168 to 2176, half of one percent, and a young lieutenant's signature under a sentence about the Lane being ordinary. Ebele has never seen it. He has no reason to look for it, and you have not given him one.
+
+</Scene>
+
+<LogEntry
+  title="A sampling distribution is made of statistics"
+  concept="A parameter describes a population and is fixed; a statistic is computed from a sample and changes with every sample drawn. The sampling distribution of a statistic is the distribution of that statistic over all samples of size n — one value per sample, not one per observation — and it has a centre and a width: bias is the distance from that centre to the parameter and comes from the recipe, while variability is the width and comes only from the draw, shrinking as one over the square root of n."
+  formula="\mu_{\hat p} = p, \quad \sigma_{\hat p} = \sqrt{\tfrac{p(1-p)}{n}}, \qquad \text{bias} = E[\,\text{statistic}\,] - \text{parameter}"
+  mistake="Calling a sampling distribution the distribution of the sample. The sample is made of transits; the sampling distribution is made of statistics, one per sample of n transits — which is why its spread is the distance an estimate can land from the truth and the sample's spread is not."
+  tags={['parameter', 'statistic', 'sampling distribution', 'bias', 'variability', 'unbiased estimator', 'effect of n', '5.1', '5.4']}
+/>
+
+</Gated>

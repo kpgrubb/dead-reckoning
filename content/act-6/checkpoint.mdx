@@ -1,0 +1,122 @@
+---
+id: act-6-checkpoint
+act: 6
+title: "Checkpoint: Accusation"
+kind: checkpoint
+ap_topics: ["6.1", "6.2", "6.3", "6.4", "6.5", "6.6", "6.7", "6.8", "6.9", "6.10", "6.11"]
+objectives:
+  - "Defend every claim in the four-step brief — state, plan, do, conclude — against a reader whose job is to take it apart"
+  - "Write the three sentences a hearing would quote (the interval, the p-value, the conclusion) so that none of them claims more than the procedure paid for"
+prereqs: ["act-6-08"]
+est_minutes: 25
+calc_briefing: null
+summary: "Ferrier reads the brief as the Board's counsel will read it, before it goes out under your name and hull number."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct } from '@/lib/stats'
+import { DIFFERENCE_INTERVAL, LANE_TRANSITS, OTHER_LOSSES, OTHER_TRANSITS, PERRINE_HOLDINGS, PERRINE_LOSSES, PERRINE_TEST, PERRINE_TRANSITS, SMALLEST_EXPECTED_COUNT } from '@/instruments/act-6/data'
+import { ChosenAlpha, DECISION_IDS, Decided, PassGate } from '@/instruments/act-6/story'
+
+<Scene stamp="MET 140/09:20" location="Wardroom · Ceres, consular berth four · docked, transponder on" condensed="MET 140, berth four. The four-step brief is on the wardroom table with your name and hull number at the bottom of it. Ferrier reads it not as your executive officer but as the officer Valhalla will appoint to take it apart — every number, every condition, every sentence that survives being quoted without the clause after it.">
+
+The wardroom table has a berth under it for the first time in fifty-seven days, and nobody on this ship has adjusted to it. Ebele put his slate down at breakfast and it stayed where he put it, and he looked at it for a moment as though it had done something clever.
+
+The brief is in four parts, laid out the way Ferrier laid out Attachment D at MET 72: state, plan, do, conclude. One page each. Your name is at the bottom of the fourth page with the hull number under it, which is the part nobody has mentioned all morning.
+
+Ferrier turns it round so that it faces her, squares the corners, and does not pick it up.
+
+</Scene>
+
+<Dialogue speaker="xo" aside="She has read it twice since the middle watch and has said nothing about either reading.">
+I am not reading this as your executive officer. I am reading it as the officer they will appoint to take it apart, because that officer exists and is at Valhalla now, and has been given nothing to do for six years. Every number, every condition, every sentence that survives being quoted without the clause after it.
+</Dialogue>
+
+<Dialogue speaker="analyst" aside="He has the register, the Ledger and the working file open side by side and his hands flat on the table between them.">
+So — everything in it is in the file, sir. If a question comes back at me I can put my finger on where the number came from. That is the only part I am sure of.
+</Dialogue>
+
+<Checkpoint act="act-6" />
+
+<PassGate act="act-6">
+
+<Scene stamp="MET 140/22:40" location="Bridge · comms station · Ceres, berth four" condensed="The brief goes out at MET 140/22:40: 19 losses in 900 Perrine-beneficiary transits against 12 in 1,712, pooled z with a one-sided p, a difference interval of 0.4 to 2.4 points a transit, conditions stated including the narrow large-counts pass, and a scope that stops at the Lane and the Register snapshot. Solberg calls the lag: twenty-four minutes each way.">
+
+Solberg sends it at twenty-two forty because you tell him to send it at twenty-two forty, and not before, and he does not ask why. The reason is that you wanted to read the conclusion once more in an empty compartment, and he knows that without being told.
+
+*Of {fmtInt(LANE_TRANSITS)} Lane transits recorded in the Authority Transit Ledger between 2178 and the present, {fmtInt(PERRINE_TRANSITS)} were flown by hulls whose loss policies name {PERRINE_HOLDINGS} as beneficiary. Of those, {fmtInt(PERRINE_LOSSES)} were lost. Of the remaining {fmtInt(OTHER_TRANSITS)} transits, flown by hulls whose policies name other beneficiaries, {fmtInt(OTHER_LOSSES)} were lost.*
+
+*A two-proportion z-test, pooled under the null hypothesis of a common loss rate, one-sided, gives z = {fmt(PERRINE_TEST.statistic, 2)} and P = {fmtP(PERRINE_TEST.pValue)}. Conditions are stated in full at Annex A, including the smallest expected count under the null, which is {fmt(SMALLEST_EXPECTED_COUNT, 1)} and passes the large-counts requirement by less than one hull.*
+
+*A 95 percent confidence interval for the difference in loss rates, unpooled, is {fmtPct(DIFFERENCE_INTERVAL.ci[0], 1)} to {fmtPct(DIFFERENCE_INTERVAL.ci[1], 1)} percentage points a transit, Perrine-beneficiary minus all others.*
+
+*At <ChosenAlpha /> there is convincing evidence that hulls insured to the benefit of {PERRINE_HOLDINGS} are lost on the Hundred-Day Lane at a higher rate than hulls insured to the benefit of anyone else. This finding concerns transits recorded in the Ledger between 2178 and the Register snapshot of this year. It does not identify a cause, an agent, or an intention, and no part of it should be read as doing so.*
+
+Four claims, a scope, and a sentence at the end that says what the analysis cannot do. No adverbs. Nothing in it larger than what the procedure paid for.
+
+</Scene>
+
+<Dialogue speaker="comms" aside="He has the geometry on the board before you ask for it, the way he always does.">
+Away at twenty-two forty, Captain. Ceres to Valhalla is two point nine astronomical units tonight. That is twenty-four minutes out and twenty-four minutes back. There is no opinion about this before twenty-three oh four tomorrow, and I would not look for one before the day after.
+</Dialogue>
+
+<Scene variant="transmission" stamp="MET 141/02:10 · VALHALLA" condensed="The reply comes back three hours and thirty minutes after transmission — four minutes after it arrived. It is the first message in the commission signed by a man rather than by the Board, and it orders Nightjar to a tender for a sink refit and a briefing on the Board's transit-time analysis.">
+
+*Received. The Board will convene.*
+
+*Proceed to rendezvous with CSV* Halden Reach *for sink refit and resupply. Captain Ostrow will brief you on the Board's transit-time analysis, which addresses your concern.*
+
+*— Ashby-Hale, RADM*
+
+</Scene>
+
+<Dialogue speaker="comms" aside="He checks it twice against the board, then a third time against the consulate's own clock, and then he says it.">
+Captain. Transmission left us at twenty-two forty. Twenty-four minutes out puts it at Valhalla at twenty-three oh four. This reply is timestamped oh two oh six at their end and reached us at oh two ten.
+
+That is four minutes. Somebody read it, decided, drafted and signed in four minutes.
+</Dialogue>
+
+<Decided id={DECISION_IDS.flagSecretary} is="copy">
+<Dialogue speaker="comms" aside="He does not editorialise about it. He states the routing and lets it sit.">
+The Flag Secretary's office acknowledged separately, eleven minutes later. Commodore Maalouf. Two lines, unsigned at the bottom, which is not how a Flag Secretary's office acknowledges anything.
+</Dialogue>
+</Decided>
+
+<Decided id={DECISION_IDS.flagSecretary} is="no-copy">
+<Dialogue speaker="xo" aside="She says it once and does not repeat it.">
+It went to the Board and nowhere else. That was a defensible call and it means there is exactly one file on this, in one building, and we do not know whose desk it is on.
+</Dialogue>
+</Decided>
+
+<Scene stamp="MET 141/07:15" location="Wardroom · Ceres, consular berth four" condensed="Marsh comes aboard for the last time before Thessaly Dawn sails. Her brother's ship left Uruk High two days behind Nicholson Regio in the spring of 2182; both were classified at the same office; only one was ever called piracy. She wants to know what you are going to do, and the honest answer is that you have been ordered to a tender that the people you have just accused control.">
+
+Marsh comes aboard at seven with her bag already on her shoulder, because *Thessaly Dawn* has her berth slot at fourteen hundred tomorrow and a master who misses a Ceres slot waits eleven days for the next one.
+
+She does not sit down.
+
+"*Thessaly Ember* left Uruk High on the twenty-second of February, 2182. *Nicholson Regio* left on the twentieth. Two days apart, same office, same clerk for all I know." She puts a finger on the table, once, hard enough to be heard. "The Authority wrote *piracy* on my brother and *unknown* on theirs, and I have spent six years being told that is a distinction and not a decision."
+
+You tell her what the brief says, because she has earned the sentence and because it will be public eventually and better from you. You tell her what it does not say, which takes longer.
+
+<Dialogue speaker="marsh" aside="She listens to the whole thing, including the part about scope, and she does not interrupt once, which from her is a kind of courtesy nobody else aboard would recognise.">
+Right. So you have proved that somebody's ships die more than mine do. Fine. That is more than anyone's managed in six years and I will not pretend otherwise.
+
+Now. What are you going to do?
+</Dialogue>
+
+The order is already on the board behind her. *Halden Reach* is a forty-thousand-tonne Lane tender holding station a tenth of an astronomical unit sunward of the Ceres approach, and the Service does not have another one. Your sink goes into her hands for six days. Captain Ostrow, who outranks you, will brief you on an analysis of transit times that the Board says addresses your concern.
+
+Your concern was a rate. The analysis is about means, and it arrives before the Board has convened to consider the thing it answers.
+
+You tell Marsh you are going to go and read it.
+
+</Scene>
+
+<LogEntry
+  title="Act VI — the accusation, signed"
+  concept="A significance test asks one question: if the null hypothesis were true, how surprising would data at least this extreme be? The p-value answers it, the significance level decides what counts as surprising enough, and the conclusion is written in context as evidence — never as proof, and never about the samples. A confidence interval answers the other half of the question, the one a p-value never addresses: how big the difference is, with an honest margin, in units a hearing can act on. The test uses the pooled proportion because the null says there is one rate; the interval does not, because it is not assuming there is."
+  formula="z = \frac{\hat{p}_1 - \hat{p}_2}{\sqrt{\hat{p}_c(1-\hat{p}_c)\left(\frac{1}{n_1}+\frac{1}{n_2}\right)}}, \quad \hat{p}_c = \frac{x_1+x_2}{n_1+n_2} \qquad (\hat{p}_1 - \hat{p}_2) \pm z^\star\sqrt{\frac{\hat{p}_1(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2(1-\hat{p}_2)}{n_2}}"
+  mistake="Reading the p-value as the probability that the null hypothesis is true, or as the probability that the result is due to chance. It is neither. It is the probability of data at least this extreme computed under the assumption that the null is true — a statement about the data given the hypothesis, never about the hypothesis given the data."
+  tags={['unit-6', 'checkpoint', 'confidence interval', 'hypotheses', 'p-value', 'significance level', 'Type I error', 'Type II error', 'power', 'two-proportion z-test', 'scope of inference']}
+/>
+
+</PassGate>

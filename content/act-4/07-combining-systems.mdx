@@ -1,0 +1,321 @@
+---
+id: act-4-07
+act: 4
+title: "The Cellar's Margin"
+kind: module
+ap_topics: ["4.9"]
+objectives:
+  - "Calculate the mean and standard deviation of a linear transformation aX + b of a random variable"
+  - "Calculate the mean and standard deviation of sums and differences of independent random variables, using the rule that variances add"
+  - "Explain why independence is required for the variance rule and what changes — and what does not — for a difference"
+prereqs: ["act-4-06"]
+est_minutes: 30
+calc_briefing: null
+summary: "Twenty-four hours into the first window, the Chief's endurance figure turns out to be six loads with six spreads on them. Ebele adds the spreads. The yard's spec sheet averages them away. Sandoval names the rule and stops, and the margin is yours to compute."
+---
+
+import { differenceRV, fmt, fmtInt, fmtPct, linearTransformRV, sumRV } from '@/lib/stats'
+import {
+  NAIVE_SUM_OF_SDS_KW,
+  P_SEEN_PER_PASS_COLD,
+  P_SATURATE_BEFORE_60,
+  P_SATURATE_BEFORE_64,
+  SINK_CAPACITY_GJ,
+  WATCH_DESIGN_HOURS,
+  WATCH_DESIGN_SD_HOURS,
+  WATCH_IN_WRITING_HOURS,
+  WATCH_MEAN_KW,
+  WATCH_SD_KW,
+  WATCH_SUBSYSTEMS,
+  WATCH_WORKING_HOURS,
+  WINDOW_1,
+  YARD_MARGIN_KW,
+  enduranceHours,
+  heatFor,
+  hoursBetween,
+  loadForEndurance,
+  metStamp,
+  pctPerHour,
+} from '@/instruments/act-4/data'
+import { RandomVariableCombiner } from '@/instruments/act-4/RandomVariableCombiner'
+import { KeyTable, SinkReadout } from '@/instruments/act-4/_ui'
+import { LoiterEcho, LoiterFigure } from '@/instruments/act-4/story'
+
+export const heat = heatFor('act-4-07')
+export const hoursIn = hoursBetween(WINDOW_1.from, heat.at)
+export const hoursLeft = hoursBetween(heat.at, WINDOW_1.to)
+/** Moments from a mean and a spread — the only shape the sum and difference rules need. */
+export const mom = (m, s) => ({ mean: m, variance: s * s, sd: s })
+export const life = WATCH_SUBSYSTEMS.find((s) => s.id === 'life')
+export const computing = WATCH_SUBSYSTEMS.find((s) => s.id === 'computing')
+export const comms = WATCH_SUBSYSTEMS.find((s) => s.id === 'comms')
+export const cryo = WATCH_SUBSYSTEMS.find((s) => s.id === 'cryo')
+/** The Briefing's worked example: two of the six loads, never the total — the total is the beat. */
+export const pairSum = sumRV(mom(computing.meanKw, computing.sdKw), mom(cryo.meanKw, cryo.sdKw))
+export const pairNaive = computing.sdKw + cryo.sdKw
+export const pairDiff = differenceRV(mom(computing.meanKw, computing.sdKw), mom(comms.meanKw, comms.sdKw))
+export const pairDiffWrong = Math.sqrt(Math.abs(computing.sdKw * computing.sdKw - comms.sdKw * comms.sdKw))
+/** Kilowatts into percent of the cellar per hour: a linear transform with no offset. */
+export const fillRate = pctPerHour(1)
+export const pairRate = linearTransformRV(pairSum, fillRate, 0)
+export const sumTex = `\\mu_{X+Y} = ${fmtInt(computing.meanKw)} + ${fmtInt(cryo.meanKw)} = ${fmt(pairSum.mean, 0)} \\qquad \\sigma^2_{X+Y} = ${computing.sdKw}^2 + ${cryo.sdKw}^2 = ${fmt(pairSum.variance, 0)} \\qquad \\sigma_{X+Y} = \\sqrt{${fmt(pairSum.variance, 0)}} = ${fmt(pairSum.sd, 2)}`
+export const diffTex = `\\mu_{X-Y} = ${fmtInt(computing.meanKw)} - ${fmtInt(comms.meanKw)} = ${fmt(pairDiff.mean, 0)} \\qquad \\sigma^2_{X-Y} = ${computing.sdKw}^2 + ${comms.sdKw}^2 = ${fmt(pairDiff.variance, 0)} \\qquad \\sigma_{X-Y} = ${fmt(pairDiff.sd, 2)}`
+export const transformTex = `\\mu_{aX} = ${fmt(fillRate, 5)} \\times ${fmt(pairSum.mean, 0)} = ${fmt(pairRate.mean, 4)} \\qquad \\sigma_{aX} = |${fmt(fillRate, 5)}| \\times ${fmt(pairSum.sd, 2)} = ${fmt(pairRate.sd, 4)} \\qquad \\sigma^2_{aX} = ${fmt(fillRate, 5)}^2 \\times ${fmt(pairSum.variance, 0)} = ${fmt(pairRate.variance, 6)}`
+export const enduranceLoadTex = `\\frac{${fmtInt(SINK_CAPACITY_GJ)}\\ \\text{GJ}}{${WATCH_WORKING_HOURS}\\ \\text{h} \\times 3.6\\times 10^{-3}\\ \\text{GJ per kW-hour}} = ${fmt(loadForEndurance(WATCH_WORKING_HOURS), 1)}\\ \\text{kW}`
+/** The six loads as the Chief has them on paper: a mean and a spread, and no total she will sign. */
+export const loadRows = WATCH_SUBSYSTEMS.map((s) => [s.name, fmtInt(s.meanKw), `± ${fmtInt(s.sdKw)}`, s.note])
+export const filedRow = ['total, as the Ensign filed it', fmtInt(WATCH_MEAN_KW), `± ${fmtInt(NAIVE_SUM_OF_SDS_KW)}`, 'the six spreads added straight down the column']
+export const yardRow = ['total, as the yard certifies it', fmtInt(WATCH_MEAN_KW), `± ${fmtInt(YARD_MARGIN_KW)}`, 'as if six independent errors averaged one another away']
+/** The three margins on the board. The right one is not hard-coded: it is the one that is √Σσ². */
+export const MARGIN_VALUES = [NAIVE_SUM_OF_SDS_KW, WATCH_SD_KW, YARD_MARGIN_KW]
+export const MARGIN_OPTIONS = [
+  `${fmtInt(WATCH_MEAN_KW)} ± ${fmt(NAIVE_SUM_OF_SDS_KW, 1)} kW — the six standard deviations added down the column, as the Ensign filed it.`,
+  `${fmtInt(WATCH_MEAN_KW)} ± ${fmt(WATCH_SD_KW, 1)} kW — the square root of the summed variances.`,
+  `${fmtInt(WATCH_MEAN_KW)} ± ${fmt(YARD_MARGIN_KW, 1)} kW — the yard's certified figure off the spec sheet.`,
+]
+export const MARGIN_CORRECT = MARGIN_VALUES.indexOf(WATCH_SD_KW)
+export const MARGIN_FEEDBACK = [
+  `Too pessimistic. Adding the standard deviations describes a watch on which all six systems run high at the same moment, in the same direction. They are independent — that is what "independent" means — and the figure is the spread of a total that never happens.`,
+  null,
+  `Too generous, and too generous is the dangerous direction. The spec-sheet figure is what you would get if six independent errors cancelled one another almost perfectly. They do not cancel; their variances accumulate, and a hull gets operated on the number in the report.`,
+]
+
+<SinkReadout sinkPct={heat.sinkPct} stamp={metStamp(heat.at)} profile="Watch · window one" />
+
+<Scene stamp={metStamp(heat.at)} location={`Engineering deck · Watch, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="Twenty-four hours into the first window the cellar reads forty-two percent and Ebele finally asks where the Chief's sixty-four hours came from. It comes from six subsystem loads, each with a mean and a spread. He adds the spreads and files a total; the yard's spec sheet certifies a margin five times smaller. Sandoval names the rule — variances add, not sigmas, not sigmas over root six — and does not do the arithmetic.">
+
+Twenty-four hours in. The cellar reads {fmt(heat.sinkPct, 0)} percent and it has been climbing at a rate nobody on this deck has to look up any more, and there are {fmt(hoursLeft, 0)} hours of window left.
+
+<LoiterEcho
+  near={<>Out at the near point the Lane plot has been busy all watch — hulls coming inside identification range on schedule, every one of them a set of nav sensors pointed roughly this way — and the gauge has been the second thing on everybody's mind since the window opened.</>}
+  middle={<>The middle point has been quiet in the way the Chief likes: two hulls on the plot at range, the Eyes working through the pattern, and a gauge climbing at exactly the rate the plan said it would.</>}
+  far={<>Out at the far point there has been almost nothing on the plot, which is what the far point was bought for, and the gauge has been climbing slower than the plan allowed for.</>}
+/>
+
+Sandoval has the load schedule spread across the long table, and Ebele — who has been quiet for a day and a half, which for him is a symptom — finally asks the question he has been circling since the window opened.
+
+Where does {WATCH_WORKING_HOURS} come from?
+
+The design curve says {fmt(WATCH_DESIGN_HOURS, 1)} hours on a Watch profile. The Chief works to {WATCH_WORKING_HOURS}. She will put {WATCH_IN_WRITING_HOURS} in writing. Three numbers, one cellar, and every probability the ship computed yesterday hangs off the middle one.
+
+Sandoval turns the schedule round so he can read it.
+
+<Dialogue speaker="engineer" aside="She does not hand him a number. She hands him the sheet the number came out of.">
+Because the Watch load is not {fmtInt(WATCH_MEAN_KW)} kilowatts, Ensign. {fmtInt(WATCH_MEAN_KW)} is what it comes to on a good day when nothing is doing anything interesting. It is six systems, and every one of them is a random variable with a mean and a spread, and I have a hundred watches of metering on each.
+</Dialogue>
+
+<KeyTable
+  columns={['subsystem', 'mean kW', 'spread', 'what it is']}
+  rows={loadRows}
+  caption="The Watch-profile load budget, DS-05 — six independent loads, each metered on its own."
+  ariaLabel="The six Watch-profile subsystem loads with their means and standard deviations"
+/>
+
+Ebele has the column added before she has finished the sentence, which is his gift and his problem in one motion.
+
+<Dialogue speaker="analyst" aside="He adds the middle column, then the right-hand one, straight down, and writes the total at the bottom in the size he uses for findings.">
+So — {fmtInt(WATCH_MEAN_KW)} kilowatts, and the spreads come to {fmtInt(NAIVE_SUM_OF_SDS_KW)}. {fmtInt(WATCH_MEAN_KW)} plus or minus {fmtInt(NAIVE_SUM_OF_SDS_KW)}, Chief. — Which is *why*, isn't it. That is why the book says {WATCH_WORKING_HOURS} and not {fmt(WATCH_DESIGN_HOURS, 0)}. A load that can be forty-two kilowatts over is a cellar that empties a good deal sooner than the design curve says, and you have been carrying the difference in your head for six weeks.
+</Dialogue>
+
+He is right about the conclusion and wrong about the arithmetic, which is the most expensive way to be right.
+
+Sandoval says nothing for a moment. Then she pulls the other sheet out from under the schedule: the yard's certification from Adlinda, the one that came aboard with the hull, and she puts it next to his total.
+
+<KeyTable
+  columns={['total', 'mean kW', 'margin', 'how it was arrived at']}
+  rows={[filedRow, yardRow]}
+  caption="Two totals on the same six loads. They differ by a factor of five and they cannot both be right."
+  ariaLabel="The Ensign's filed total and the yard's certified total"
+  alertRows={[0, 1]}
+/>
+
+<Dialogue speaker="engineer" aside="She taps the two margins in turn, once each, and then stops talking. It is not a dramatic pause. She has said the rule and she is not going to do the sum.">
+{fmtInt(NAIVE_SUM_OF_SDS_KW)} says every system on this ship misbehaves in the same direction on the same watch. {fmtInt(YARD_MARGIN_KW)} says they cancel each other out like a trick. — Variances add, Ensign. Not sigmas, not sigmas over root six. Variances.
+</Dialogue>
+
+She goes back to the gauge.
+
+Ebele looks at the two sheets for about ten seconds, and then he says the thing that makes him worth training.
+
+<Dialogue speaker="analyst" aside="Slowly, for once, and to the sheet rather than to her.">
+So — those are three different totals, and two of them are wrong, and only one of them has a rule behind it. And the one the yard certified is the generous one. — Sir. If the margin on this hull's cellar is wrong in the flattering direction on a document the yard signed, that is either a mistake or it is not, and I do not know how you tell the difference.
+</Dialogue>
+
+Nobody answers that. Ferrier is not on this deck and the question is not one Sandoval will speculate about out loud with a cellar at {fmt(heat.sinkPct, 0)} percent and {fmt(hoursLeft, 0)} hours to run.
+
+What can be settled is the arithmetic. Six loads, six spreads, one total, one rule — and then the number the whole heat plan has been standing on: how often does a Watch window at that load empty {fmtInt(SINK_CAPACITY_GJ)} gigajoules of lithium before the Chief's {WATCH_WORKING_HOURS} hours are up?
+
+</Scene>
+
+<Briefing title="Variances add; standard deviations do not" topics={["4.9"]}>
+<Briefing.Intuition>
+Three rules, one idea underneath them: **spread lives in the variance, and only the variance behaves arithmetically.**
+
+**One variable, rescaled.** Multiply a random variable by a constant and add another — $Y = aX + b$, which is every unit conversion there is:
+
+$$\mu_{aX+b} = a\mu_X + b, \qquad \sigma_{aX+b} = |a|\,\sigma_X, \qquad \sigma^2_{aX+b} = a^2\sigma^2_X$$
+
+The offset $b$ shifts every value by the same amount, so no distance inside the distribution changes and the spread is untouched. The multiplier scales distances, so it lands on the standard deviation **once** — in absolute value, because a spread has no sign — and inside the variance **twice**, because the variance is built out of squares. Kilowatts into percent-of-cellar per hour, hours into days, celsius into kelvin: the mean goes through the whole conversion, the SD goes through only the multiplying part of it.
+
+**Two variables, added.** For **independent** $X$ and $Y$:
+
+$$\mu_{X+Y} = \mu_X + \mu_Y, \qquad \sigma^2_{X+Y} = \sigma^2_X + \sigma^2_Y, \qquad \sigma_{X+Y} = \sqrt{\sigma^2_X + \sigma^2_Y}$$
+
+Means add, always, independent or not. Variances add *only* under independence, and standard deviations do not add at all. Adding the SDs asks for the spread of a total in which both parts run high together every single time; independence is precisely the statement that they do not. Most of the time one is above its mean while the other is below, and the two partly cancel — so the total's spread is wider than either part and narrower than the two widths laid end to end. The square root is taken once, at the end, after the squares have been added.
+
+**Two variables, subtracted.** Here is the one that costs marks:
+
+$$\mu_{X-Y} = \mu_X - \mu_Y, \qquad \sigma^2_{X-Y} = \sigma^2_X + \sigma^2_Y$$
+
+The mean subtracts. The variance **still adds**. A margin — a rating minus a load, a budget minus a bill, a design figure minus a measurement — is *less* certain than either quantity that made it, never more. Uncertainty in either number makes the gap between them harder to pin down, and a minus sign cannot cancel ignorance. Subtracting the variances is not merely wrong; on many tables it asks for the square root of a negative number, which is the arithmetic telling you what it thinks of the idea.
+
+**Why independence, and what fails without it.** The full rule carries a covariance term:
+
+$$\sigma^2_{X+Y} = \sigma^2_X + \sigma^2_Y + 2\,\text{Cov}(X, Y)$$
+
+Independence sets that term to zero, and the AP rule is the special case. So the rule is not a fact about addition; it is a claim about the hardware. Six loads drawn by scrubbers, processors, a receiver, the skin loops, the pumps and sixteen people are independent because nothing joins them: one running high does not make another run high. Put them all on one thermal loop, or make them all respond to the same cabin temperature, and the covariance is positive, the total's spread is larger than $\sqrt{\sum\sigma_i^2}$, and a margin computed under the rule is too small. **State the assumption out loud every time you use the rule**, because when it fails it fails in the direction that flatters the plan.
+
+**And why a total's spread is the whole of an endurance figure.** A cellar of fixed capacity divided by a load is an endurance. The load is a random variable, so the endurance is one too, and a single endurance number without a spread beside it is not a limit — it is an average with its uncertainty filed off. That is the difference between the design curve's figure, the figure an engineer works to, and the figure she will put in writing: all three are the same distribution, read at three distances from its centre.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\mu_{aX+b} = a\mu_X + b \qquad \sigma_{aX+b} = |a|\,\sigma_X \qquad \sigma^2_{aX+b} = a^2\sigma^2_X" terms={{ a: 'the multiplier — once on the SD, squared inside the variance', b: 'the offset — moves the centre, changes no distance, touches no spread' }} label="A linear transformation of one random variable" />
+
+<Formula tex="\sigma^2_{X+Y} = \sigma^2_X + \sigma^2_Y \qquad \text{and} \qquad \sigma^2_{X-Y} = \sigma^2_X + \sigma^2_Y \qquad (X, Y \text{ independent})" terms={{ '\\sigma^2_{X+Y}': 'the variance of the sum: the squares added, never the SDs', '\\sigma^2_{X-Y}': 'the variance of a DIFFERENCE — the same sum; nothing subtracts' }} label="Sums and differences of independent random variables" />
+
+<Formula tex="\sigma_{\text{total}} = \sqrt{\sum_{i} \sigma_i^2} \;<\; \sum_{i} \sigma_i" terms={{ '\\sqrt{\\sum \\sigma_i^2}': 'what independence buys: the root of the summed variances', '\\sum \\sigma_i': 'the sum of the SDs — the spread of a total that never happens' }} label="Many independent parts" />
+
+<Formula tex="\sigma^2_{X+Y} = \sigma^2_X + \sigma^2_Y + 2\,\text{Cov}(X,Y)" terms={{ '\\text{Cov}(X,Y)': 'zero when the two are independent — which is the assumption the AP rule rests on, and the one to state' }} label="The general rule, and where independence enters" />
+</Briefing.Definition>
+<Briefing.Worked>
+Two of the six loads, on their own — **{computing.name}** at {fmtInt(computing.meanKw)} ± {fmtInt(computing.sdKw)} kW and the **{cryo.name}** at {fmtInt(cryo.meanKw)} ± {fmtInt(cryo.sdKw)} kW. Different hardware, different failure modes, metered separately: independent.
+
+<Formula tex={sumTex} label="The sum of two independent loads" />
+
+So those two together draw {fmt(pairSum.mean, 0)} ± **{fmt(pairSum.sd, 2)}** kW. Note what that is not. Adding the spreads gives {fmtInt(pairNaive)} kW — {fmt(pairNaive - pairSum.sd, 2)} kW too wide, because it prices a watch on which the processors and the skin loops both run {fmtInt(computing.sdKw)} and {fmtInt(cryo.sdKw)} high together. They are independent. That watch happens, but it does not happen often enough to build a margin out of.
+
+**A difference, on the same two kinds of quantity.** Take the {computing.name} load minus the {comms.name} load — say you want the gap between the biggest draw and the smallest:
+
+<Formula tex={diffTex} label="A difference: the mean subtracts, the variance does not" />
+
+{fmt(pairDiff.mean, 0)} ± **{fmt(pairDiff.sd, 2)}** kW. Compare that with the sum's spread on the same pair of variances: they are the *same rule*. Subtracting the variances instead would give {fmt(pairDiffWrong, 2)} kW — a gap quoted as more certain than the numbers it was built from, which is impossible and is nevertheless what half of all margin sheets say.
+
+**Now the unit conversion**, because a cellar is not measured in kilowatts. This hull's sink holds {fmtInt(SINK_CAPACITY_GJ)} GJ, so one kilowatt held for one hour fills {fmt(fillRate, 5)} percent of it: $Y = aX$ with $a = {fmt(fillRate, 5)}$ and no offset at all.
+
+<Formula tex={transformTex} label="Kilowatts into percent of the cellar per hour" />
+
+The multiplier lands on the mean, lands once on the standard deviation, and lands twice inside the variance. Nothing about the *shape* has changed — {fmt(pairRate.mean, 4)} ± {fmt(pairRate.sd, 4)} percent per hour is the same statement as {fmt(pairSum.mean, 0)} ± {fmt(pairSum.sd, 2)} kilowatts, in the units the gauge on the bulkhead actually reads.
+
+**And the step the whole heat plan turns on.** Endurance is capacity over load: {fmtInt(SINK_CAPACITY_GJ)} GJ at {fmtInt(WATCH_MEAN_KW)} kW is {fmt(enduranceHours(WATCH_MEAN_KW), 1)} hours, which is the design curve's figure. Run it backwards and a stated endurance names a load: the load that empties the cellar in exactly {WATCH_WORKING_HOURS} hours is
+
+<Formula tex={enduranceLoadTex} terms={{ '\\text{GJ}': 'the cellar, as poured — a fixed capacity', '3.6\\times 10^{-3}': 'gigajoules a kilowatt dumps into the sink in one hour' }} label="The load that empties the cellar in exactly sixty-four hours" />
+
+So "the cellar saturates before {WATCH_WORKING_HOURS} hours" and "the realized Watch load comes in above {fmt(loadForEndurance(WATCH_WORKING_HOURS), 1)} kW" are the same event, written twice. Which means the risk term on the top of the heat plan is an upper tail on the total load — and you cannot compute it until you have the total's standard deviation, which is the one number on this deck nobody has yet produced correctly.
+
+All six loads. The rule is on the board. Do the arithmetic the Chief declined to do.
+</Briefing.Worked>
+<Briefing.Caution>
+*Adding the standard deviations.* The commonest error in the topic, and it looks like diligence. $\sum\sigma_i$ is the spread of a total in which every part runs to the same side of its mean at the same instant; for independent parts that is a rare watch, not a typical one. Square first, add second, root last — and the answer always comes out smaller than the sum of the SDs and larger than the biggest one of them. If your total's spread is not between those two bounds, the arithmetic is wrong before you check anything else.
+
+*Subtracting variances for a difference.* $\sigma^2_{X-Y} = \sigma^2_X + \sigma^2_Y$, with a plus sign, for independent $X$ and $Y$. A margin inherits both uncertainties; it cannot be more precisely known than either of the quantities that produced it. The tell is a negative number under the root, but the error is just as fatal when both variances happen to be large enough to hide it.
+
+*Forgetting that the multiplier squares.* $\sigma_{aX+b} = |a|\sigma_X$ and $\sigma^2_{aX+b} = a^2\sigma^2_X$. Using $a$ on the variance understates the spread; using $a^2$ on the SD mangles it the other way. And the offset $b$ appears in neither — a shift moves the centre and no distance inside the distribution, so it can never change a spread.
+
+*Using the rule without earning it.* Variances add **for independent random variables**. Nothing in a table tells you whether the parts are independent; only the hardware, the procedure or the traffic does. Six systems on one thermal loop are not six independent loads, and a margin computed as if they were is too small — in the direction that makes the plan look affordable. Say the assumption out loud, in the report, next to the number.
+</Briefing.Caution>
+</Briefing>
+
+<RandomVariableCombiner subsystems={WATCH_SUBSYSTEMS} capacityGJ={SINK_CAPACITY_GJ} thresholdHours={WATCH_WORKING_HOURS} />
+
+<Drill generator="act-4/sd-of-sum" count={1} />
+<Drill generator="act-4/sd-of-difference" count={1} />
+<Drill generator="act-4/linear-transform-rv" count={2} />
+<Drill generator="act-4/which-margin" count={1} />
+<Drill generator="act-4/interpret-sd-of-sum" count={1} />
+
+<MissionBeat id="act-4-07-sd" kind="numeric" label="THE SPREAD OF THE TOTAL"
+  answer={WATCH_SD_KW} digits={2} tolerance={0.05} units="kW"
+  prompt={`The six Watch-profile loads are on the plot above, each with its mean and its standard deviation in kilowatts. They are metered separately, they draw on different hardware, and the Chief treats them as **independent**.\n\nWhat is the **standard deviation of the total Watch load**? Report it in kW to two decimal places.`}
+  hint={`Variances add; standard deviations do not. Square each of the six spreads to get a variance column, add that column, and take the square root once — at the end. Neither ${fmtInt(NAIVE_SUM_OF_SDS_KW)} nor ${fmtInt(YARD_MARGIN_KW)} comes out of a rule.`}>
+  <Success>
+  <Dialogue speaker="engineer" aside="She writes it on the schedule in pencil, under both of the wrong totals, and does not cross either of them out.">
+  That is the margin on this cellar, Skipper. It sits between the Ensign's number and the yard's, and nearer the yard's, which is exactly what independence buys — the squares add and then you take one root, and most of the wobble cancels on the way. — Now it is a number I can turn into hours, which is the only form the bridge ever wants it in.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the variance column half-written and is squaring the entries one at a time, out loud, which is slower and correct.">
+  So — square, then add, then root. Once. — I added the sigmas, sir, which prices a watch where every system runs high together, and I nearly wrote it into the annex. And the yard divided something by something, and I cannot see what, and that is the part I keep coming back to.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-4-07-saturate" kind="numeric" label="THE RISK TERM"
+  answer={P_SATURATE_BEFORE_64} answerKind="proportion" digits={4}
+  prompt={`The cellar holds **${fmtInt(SINK_CAPACITY_GJ)} GJ**. The total Watch load is a random variable with mean ${fmtInt(WATCH_MEAN_KW)} kW and the standard deviation you have just computed, and it is modelled as approximately normal.\n\nWhat is the probability that a Watch window **saturates the cellar before the Chief's ${WATCH_WORKING_HOURS} hours are up** — that is, that the realized load is high enough to empty ${fmtInt(SINK_CAPACITY_GJ)} GJ in less than ${WATCH_WORKING_HOURS} hours? Report a proportion to four decimal places.`}
+  hint={`Turn the endurance into a load first. A kilowatt held for an hour is $3.6\\times10^{-3}$ GJ, so the load that empties ${fmtInt(SINK_CAPACITY_GJ)} GJ in exactly ${WATCH_WORKING_HOURS} hours is ${fmtInt(SINK_CAPACITY_GJ)} ÷ (${WATCH_WORKING_HOURS} × 0.0036) = ${fmt(loadForEndurance(WATCH_WORKING_HOURS), 1)} kW. The cellar runs out early exactly when the load comes in above that, so the answer is an upper tail on N(${fmtInt(WATCH_MEAN_KW)}, σ) — standardise, and take the area above z.`}>
+  <Success>
+  <Dialogue speaker="engineer" aside="She takes the risk term, boxes it, and puts it at the top of the plan next to the Captain's sentence from yesterday.">
+  There it is, and it is not small. That is the number that has been sitting underneath every probability this ship computed yesterday, and until this watch nobody aboard could have told you what it was. — Box it. A risk term that is not boxed gets read as a footnote, and a footnote is what an inquiry quotes back at you.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="She puts one finger on the capacity figure and the other on the hours, and holds both there.">
+  Hours into kilowatts first, Skipper, then the tail. {fmtInt(SINK_CAPACITY_GJ)} gigajoules over {WATCH_WORKING_HOURS} hours is a load, and the cellar comes up short exactly when the real load lands above it. — It is the same question as yesterday's, in different units. The weight past a line.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-4-07-margin" kind="choice" label="WHAT THE SPEC SHEET SHOULD SAY"
+  options={MARGIN_OPTIONS} correct={MARGIN_CORRECT} feedback={MARGIN_FEEDBACK}
+  prompt={`Three margins on the same six loads are on the engineering deck's table, and Adlinda Yards certified one of them when this hull was commissioned.\n\nWhich figure should the spec sheet have quoted for the total Watch load?`}
+  hint="Only one of the three comes from a rule. The other two are pictures of how six independent systems behave together — one picture too gloomy, one too cheerful — and the gap between the two errors is the whole margin.">
+  <Success>
+  <Dialogue speaker="engineer" aside="She folds the yard's certificate in half and puts it in the pocket of the schedule, which is not where it lives.">
+  That is what it should have said, and it says something else. — I am not going to speculate about a yard's paperwork in the middle of a window, Skipper. I am going to note the date on that certificate and the name on it, and we are going to look at both when we are not on Watch.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="She does not answer. She crosses the deck, checks the cellar gauge she checked four minutes ago, and stands there with her back to the table for a while.">
+  …
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-4-07-sd", "act-4-07-saturate", "act-4-07-margin"]}>
+
+<Scene stamp="MET 089/14:40" location={`Engineering deck · Watch, cellar ${fmt(heat.sinkPct, 0)}%`} condensed={`The margin goes on the plan: ${fmtInt(WATCH_MEAN_KW)} ± ${fmt(WATCH_SD_KW, 1)} kW, which is ${fmt(WATCH_DESIGN_HOURS, 1)} hours give or take ${fmt(WATCH_DESIGN_SD_HOURS, 1)}, which is why the Chief works to ${WATCH_WORKING_HOURS} and writes down ${WATCH_IN_WRITING_HOURS}. The yard's ± ${fmtInt(YARD_MARGIN_KW)} stays in the file unexplained — a mistake or not, and no evidence yet which. Ebele turns to the window's scheduled close passes and finds the next question: several hulls, each with its own chance of seeing a cold ship, and no distribution yet that can price the set of them.`}>
+
+Sandoval writes the total across the head of the schedule the way she writes everything, which is once and in full: {fmtInt(WATCH_MEAN_KW)} ± {fmt(WATCH_SD_KW, 1)} kilowatts, six independent loads, variances added, root taken once, assumption stated.
+
+Then she converts it, because the bridge has never once asked her for a kilowatt.
+
+{fmtInt(SINK_CAPACITY_GJ)} gigajoules at {fmtInt(WATCH_MEAN_KW)} kW is {fmt(WATCH_DESIGN_HOURS, 1)} hours; run the same linear transform on the spread and the endurance carries about {fmt(WATCH_DESIGN_SD_HOURS, 1)} hours of its own. {fmt(WATCH_DESIGN_HOURS, 1)}, give or take {fmt(WATCH_DESIGN_SD_HOURS, 1)}.
+
+<Dialogue speaker="engineer" aside="She says it flatly, and it is the first time in three weeks that she has explained where her own figures come from.">
+That is the whole of it, Skipper. The design curve quotes you the middle of a distribution and calls it an endurance. I work one spread short of it — {WATCH_WORKING_HOURS} hours — and I put two short of it in writing, at {WATCH_IN_WRITING_HOURS}. — At {WATCH_WORKING_HOURS} I am wrong about {fmtPct(P_SATURATE_BEFORE_64, 0)} of windows. At {WATCH_IN_WRITING_HOURS} I am wrong about {fmtPct(P_SATURATE_BEFORE_60, 1)} of them. Four hours of margin buys an order of magnitude, and that is not caution, it is the shape of a normal curve.
+</Dialogue>
+
+The three margins go into the log side by side: the Ensign's {fmtInt(NAIVE_SUM_OF_SDS_KW)}, the correct {fmt(WATCH_SD_KW, 1)}, and Adlinda's {fmtInt(YARD_MARGIN_KW)} — the last with the certificate's date beside it and no comment attached, because a comment would be a theory and there is no evidence for one yet.
+
+It is either a mistake or it is not. A yard that certifies a margin five times too generous has either averaged six errors it had no business averaging, or it has been asked for a number that makes a hull look better than it is. Both happen. They do not look different on a certificate, and the ship is on Watch with {fmt(hoursLeft, 0)} hours to run, and this is not the watch to find out.
+
+Ebele files it and goes back to the plot, and what is on the plot is traffic.
+
+<Dialogue speaker="analyst" aside="He has the Lane plot up with the window's scheduled close passes marked, counting them off with a stylus.">
+So — <LoiterFigure field="closePasses" /> close passes this window at the <LoiterFigure field="label" />, sir, each one a hull with a nav set, each one about {fmtPct(P_SEEN_PER_PASS_COLD, 0)} to see us while we are cold. — And I can price *one* pass. What I cannot do yet is price the set of them: at least one detection, or exactly none, or the chance that two of them see us and compare notes at Ceres. That is not one probability. That is a distribution over a count, and I do not have it.
+</Dialogue>
+
+He does not have it. It has a name, it has four conditions attached to it, and two of those conditions are the reason Oyelaran stopped him multiplying sweep entries together four days ago.
+
+The window closes at {metStamp(WINDOW_1.to)}. There is time.
+
+</Scene>
+
+<LogEntry
+  title="Variances add; standard deviations do not"
+  concept="A linear transformation aX + b moves the mean to aμ + b and the standard deviation to |a|σ — the offset changes no distance inside the distribution and so cannot change the spread, and the multiplier lands on the SD once and inside the variance squared. For independent random variables the means add (or subtract) and the VARIANCES add in both cases, so the SD of a sum or a difference is the square root of the summed variances: a total is less spread than the sum of its parts' spreads, and a margin is less certain than either quantity that made it. Independence is what sets the covariance term to zero, and it is a claim about the hardware, not about the table."
+  formula="\sigma_{aX+b} = |a|\,\sigma_X \qquad \sigma^2_{X \pm Y} = \sigma^2_X + \sigma^2_Y \qquad \sigma_{\text{total}} = \sqrt{\textstyle\sum_i \sigma_i^2} < \textstyle\sum_i \sigma_i"
+  mistake="Adding the standard deviations. That prices a total in which every independent part runs to the same side of its mean at the same moment; the right answer is the square root of the summed variances, which always lands between the largest single SD and the sum of them all. Its mirror image is subtracting variances for a difference — a margin inherits both uncertainties and can never be more precisely known than either number it came from."
+  tags={['random variable', 'linear transformation', 'sum of random variables', 'difference of random variables', 'variance', 'independence', 'standard deviation', 'margin', '4.9']}
+/>
+
+</Gated>

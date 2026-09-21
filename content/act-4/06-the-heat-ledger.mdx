@@ -1,0 +1,359 @@
+---
+id: act-4-06
+act: 4
+title: "The Heat Ledger"
+kind: module
+ap_topics: ["4.8"]
+objectives:
+  - "Calculate and interpret the mean (expected value) of a discrete random variable in context"
+  - "Calculate and interpret the standard deviation of a discrete random variable from its probability distribution"
+  - "Use expected value and the tail of a distribution to compare decisions under uncertainty, and explain what “expected” does and does not promise"
+prereqs: ["act-4-05"]
+est_minutes: 30
+calc_briefing: "expected-value-as-weighted-sum"
+summary: "Three loiter points, three cost distributions, two hours before the first window opens. Ebele has the means and wants the nearest one; Sandoval wants the tails. The cheapest window is not the safest and the safest buys the least, and the choice is yours."
+---
+
+import { expectedValue, fmt, fmtInt, fmtPct, normal, rvProb, rvSd, rvVariance, sd } from '@/lib/stats'
+import {
+  CLOSE_PASSES,
+  LOITER_OPTIONS,
+  PURGE_HOURS,
+  PURGE_STARTS,
+  P_SEEN_PER_PASS_COLD,
+  WATCH_DESIGN_HOURS,
+  WATCH_IN_WRITING_HOURS,
+  WATCH_WORKING_HOURS,
+  WINDOW_1,
+  heatFor,
+  hoursBetween,
+  loiterOption_,
+  metStamp,
+} from '@/instruments/act-4/data'
+import { HeatBudgetPlanner } from '@/instruments/act-4/HeatBudgetPlanner'
+import { WeightedSumBar } from '@/instruments/act-4/WeightedSumBar'
+import { KeyTable, SinkReadout, oneIn } from '@/instruments/act-4/_ui'
+import { ProfileEcho } from '@/instruments/act-4/story'
+import { expectedValueInterpretation } from '@/lib/problems/rubrics'
+
+export const heat = heatFor('act-4-06')
+export const near = loiterOption_('near')
+export const middle = loiterOption_('middle')
+export const far = loiterOption_('far')
+/** The wings came in at the end of the 88/06 purge; the window opens at 88/12. */
+export const wingsIn = metStamp(PURGE_STARTS[1] + PURGE_HOURS / 24)
+export const windowOpens = metStamp(WINDOW_1.from)
+export const windowCloses = metStamp(WINDOW_1.to)
+export const windowHours = hoursBetween(WINDOW_1.from, WINDOW_1.to)
+/** The far point — the Briefing's worked example, and the only option whose arithmetic is done for you. */
+export const farMean = expectedValue(far.pmf.values, far.pmf.probs)
+export const farVariance = rvVariance(far.pmf.values, far.pmf.probs)
+export const farSd = rvSd(far.pmf.values, far.pmf.probs)
+export const farTail = normal.sf(WATCH_WORKING_HOURS, far.meanHours, far.sdHours)
+export const farTailTable = rvProb(far.pmf, (v) => v > WATCH_WORKING_HOURS)
+/** The two readings that are not the expected value: the plain average and the plain spread of the cells. */
+export const farFlatMean = far.pmf.values.reduce((a, b) => a + b, 0) / far.pmf.values.length
+export const farFlatSd = sd(far.pmf.values)
+export const farTopProb = Math.max(...far.pmf.probs)
+export const farTopCells = far.pmf.values.filter((v, i) => far.pmf.probs[i] >= farTopProb - 1e-9)
+export const farRows = far.pmf.values.map((v, i) => [fmtInt(v), fmt(far.pmf.probs[i], 4), fmt(v * far.pmf.probs[i], 4), fmt((v - farMean) * (v - farMean) * far.pmf.probs[i], 4)])
+export const farTotalRow = ['Σ', fmt(far.pmf.probs.reduce((a, b) => a + b, 0), 4), fmt(farMean, 4), fmt(farVariance, 4)]
+export const farMeanTex = `\\mu_X = \\sum_x x\\,p(x) = ${far.pmf.values.slice(0, 3).map((v, i) => `${v} \\times ${fmt(far.pmf.probs[i], 4)}`).join(' + ')} + \\cdots + ${far.pmf.values.slice(-1).map((v) => `${v} \\times ${fmt(far.pmf.probs[far.pmf.probs.length - 1], 4)}`)} = ${fmt(farMean, 2)}`
+export const farVarTex = `\\sigma_X^2 = \\sum_x (x - ${fmt(farMean, 0)})^2 p(x) = ${fmt(farVariance, 3)} \\qquad \\sigma_X = \\sqrt{${fmt(farVariance, 3)}} = ${fmt(farSd, 3)}`
+export const farTailTex = `z = \\frac{${WATCH_WORKING_HOURS} - ${fmt(far.meanHours, 0)}}{${fmt(far.sdHours, 0)}} = ${fmt((WATCH_WORKING_HOURS - far.meanHours) / far.sdHours, 2)} \\qquad P(X > ${WATCH_WORKING_HOURS}) = P(Z > ${fmt((WATCH_WORKING_HOURS - far.meanHours) / far.sdHours, 2)}) = ${fmt(farTail, 9)}`
+/** The middle point's published cost table — the learner's own arithmetic, and the first mission beat. */
+export const middleRows = middle.pmf.values.map((v, i) => [fmtInt(v), fmt(middle.pmf.probs[i], 4)])
+export const middleMean = expectedValue(middle.pmf.values, middle.pmf.probs)
+export const middleSd = rvSd(middle.pmf.values, middle.pmf.probs)
+export const middleTail = normal.sf(WATCH_WORKING_HOURS, middle.meanHours, middle.sdHours)
+export const nearTail = normal.sf(WATCH_WORKING_HOURS, near.meanHours, near.sdHours)
+export const nearTailTable = rvProb(near.pmf, (v) => v > WATCH_WORKING_HOURS)
+export const nearOver = near.pmf.values.filter((v) => v > WATCH_WORKING_HOURS)
+/** What the three points buy, which is the other half of the trade. */
+export const contactRows = LOITER_OPTIONS.map((o) => [o.label, fmtInt(o.closePasses), fmt(o.pPerrineInRange, 2), fmt(o.pSeenCold, 3)])
+/** The orders. `loiterFromDecision` matches the substrings "near" and "far"; anything else is the middle. */
+export const LOITER_ORDERS = [
+  `The near point. Inside the traffic bundle: ${fmtInt(CLOSE_PASSES.near)} close passes in the window, the best odds on the board that a Perrine hull comes inside identification range — and a cost distribution with a real tail past the cellar.`,
+  `The middle point. Off the bundle by two hundred thousand kilometres: ${fmtInt(CLOSE_PASSES.middle)} close passes, a contact more often than not, and a window the cellar can carry without an early purge.`,
+  `The far point. Outside the traffic entirely: ${fmtInt(CLOSE_PASSES.far)} close pass, a window the cellar barely notices — and the worst odds on the board of seeing anything at all.`,
+]
+
+<SinkReadout sinkPct={heat.sinkPct} stamp={metStamp(heat.at)} profile="Quiet · purged, two hours to the window" />
+
+<Scene stamp={metStamp(heat.at)} location={`Bridge · Mark 9 region, 0.42 AU from Ceres · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="The wings came in at 08:36 and the cellar is empty; the first Watch window opens at noon. Ebele has three loiter points priced as three cost distributions, reads the near point's average off the header, and points out that it is under the Chief's sixty-four. Sandoval does not argue with the average. She asks him how often a window at that point costs more than the cellar holds, and stops there.">
+
+The wings came in at {wingsIn} and the cellar reads {fmt(heat.sinkPct, 0)} percent, which is as empty as this ship gets. For {fmt(PURGE_HOURS, 1)} hours in the middle of the night *Nightjar* was a lamp, and then the radiators folded and the parasol came back over and the ship went dark again with a full budget and nothing yet spent out of it.
+
+The first Watch window opens at {windowOpens} and closes at {windowCloses}: {fmt(windowHours, 0)} hours, booked against a cellar the Chief prices at {WATCH_WORKING_HOURS} hours of Watch profile and will put {WATCH_IN_WRITING_HOURS} in writing.
+
+Two hours. And the ship has not decided where to sit.
+
+Ebele has been up since the purge closed and he has it on the plot in three columns, which is the best piece of staff work he has done since the torch went off.
+
+Three loiter points on the Mark 9 approach. For each one he has the Lane plot's scheduled traffic, the Eyes' identification range, and — the part that took him two days — what a window *costs*, not as a number but as a distribution: every cost the window might run to, with the probability against it, the way the Chief made him do it two days ago.
+
+<Dialogue speaker="analyst" aside="He has all three tables up at once, which is too many to read, and he knows it, so he talks over them.">
+So — three points, sir, three cost tables, and every one of them sums to one. I checked. Twice. — The near point books at {fmt(near.meanHours, 0)} sink-hours on the header, and the cellar holds {WATCH_WORKING_HOURS}. It fits. It also has {fmtInt(CLOSE_PASSES.near)} close passes in the window against {fmtInt(CLOSE_PASSES.far)} at the far point, which is the whole reason we are out here. Sixty is under sixty-four. I would sit in the traffic.
+</Dialogue>
+
+Sandoval has been reading the tables and not the headers, one hand on the back of the chair, and she lets the silence run three seconds longer than is comfortable.
+
+<Dialogue speaker="engineer" aside="She does not tell him the number. She tells him which question he has answered and which one he has not.">
+Sixty is what a window at that point costs *on average*, Ensign, over more windows than this ship will ever fly. It is not what the next one costs. — Your table has costs in it that are well past {WATCH_WORKING_HOURS} and it has a weight against every one of them. So do not read me the middle of the table. Read me the end of it. How often does a window at that point want more hours than I have got?
+</Dialogue>
+
+Nobody answers, because the answer is not on the header.
+
+Here is the middle point's table, which is the one nobody has argued about yet, and which the ship will have to price on its own before anybody argues about anything.
+
+<KeyTable
+  columns={['sink-hours a window costs, x', 'p(x)']}
+  rows={middleRows}
+  caption="The middle point — the cost of one Watch window, cell by cell. Cells are two hours wide and the column sums to one."
+  ariaLabel="Probability distribution of the sink-hours a Watch window costs at the middle loiter point"
+/>
+
+And here is the other half of it, which is what each point *buys* — the traffic that makes a contact possible, and the same traffic looking back.
+
+<KeyTable
+  columns={['loiter point', 'close passes in the window', 'P(a Perrine hull inside ID range)', 'P(a passing hull sees us, cold)']}
+  rows={contactRows}
+  caption={`Scheduled close passes off the public Lane plot, and the ${fmtPct(P_SEEN_PER_PASS_COLD, 0)} per-pass detection odds against a cold hull.`}
+  ariaLabel="What each loiter point buys: close passes, contact odds and exposure"
+/>
+
+<Dialogue speaker="xo" aside="She reads the second table and not the first, which is the difference between her and the Ensign.">
+The near point is where the hulls are, and the near point is where the hulls can see us. Twelve passes buy the best chance of a contact and the best chance of being logged by a freighter's nav set. — And the cost is the Chief's department, not mine. Price it, Captain, and I will log whichever point we do not take.
+</Dialogue>
+
+<ProfileEcho
+  watch={<>Oyelaran has the full passive suite loaded for both windows, which is what the profile order bought: a tracker that can hold a plume's vector long enough to call it a turn. It also draws what it draws, and the tables on the plot are what the drawing costs.</>}
+  quiet={<>Oyelaran has the Quiet suite loaded for both windows, which is what the profile order bought: a much colder ship, and a detector that will see a plume and not follow one. The cost tables on the plot are the cheaper ones, and the cheapness is on the Eyes' sheet.</>}
+/>
+
+So: three tables, three sets of odds, and two hours. What a window costs is an average over many windows. What it *risks* is the weight sitting past the end of the cellar. Both come off the same column of probabilities, and the ship needs both before noon.
+
+</Scene>
+
+<Briefing title="What a window costs when you fly enough of them" topics={["4.8"]}>
+<Briefing.Intuition>
+A distribution has a centre of mass, and for a random variable it has a name: the **expected value**, $E(X)$, also written $\mu_X$. It is the average of the values *weighted by their probabilities* — which is the only kind of average a distribution can have, because its values are not equally common.
+
+$$\mu_X = E(X) = \sum_x x\cdot p(x)$$
+
+Read it as a bookkeeping instruction. Take each cost the window might run to, multiply it by the share of windows that run to it, and add the column. The weights sum to 1, which is what makes the result an average and not merely a sum. The data mean you computed in Act I is the same operation with every weight equal to $1/n$: in a sample, every observation is one observation, so they all weigh the same. In a distribution they do not.
+
+**What "expected" promises.** Exactly one thing: fly this window many times and the cost per window settles on $\mu_X$. That is the *long-run average*, and it is what a budget is made of — twenty windows at $\mu_X$ each is what the lithium has to cover.
+
+**What it does not promise.** Anything whatever about the next window. Three things follow, and each one has ended a plan:
+
+- $\mu_X$ need not be a value $X$ can take. A table in two-hour cells can have an expected value that falls between two cells, and then *no* window costs the expected amount.
+- $\mu_X$ is not the **most likely** outcome. The most likely outcome is the tallest bar — the mode. On a symmetric table they land in the same place and the distinction looks pedantic; on a skewed one they are nowhere near each other, and reading one for the other misprices everything downstream.
+- $\mu_X$ says nothing about the *spread*, and spread is what saturates a cellar.
+
+So the second number. The **standard deviation of a random variable** is weighted exactly as the mean is: every squared distance from $\mu$ counts for as much probability as sits on it.
+
+$$\sigma_X^2 = \sum_x (x-\mu_X)^2\,p(x), \qquad \sigma_X = \sqrt{\sigma_X^2}$$
+
+Square, weight, add, and take the root **once, at the end**. The probabilities are inside the sum, not outside it. Take the spread of the numbers in the left-hand column instead — as if every cost on the axis were equally common — and you have computed the spread of the axis, which is a property of how you drew the table and not of anything the ship does.
+
+**And the third number, which is the one a decision actually rides on.** A capacity is a line drawn across the axis, and what matters is how much of the distribution lies past it:
+
+$$P(X > c) = \sum_{x > c} p(x)$$
+
+This is not derivable from $\mu_X$. Two plans can have the same expected cost and tails that differ by a factor of forty, because a tail is made out of width as well as centre. A wide, cheap plan and a tight, dear plan will rank one way on the mean and the other way on the tail — and when they do, the ranking you use is a command decision, not an arithmetic one.
+
+Expected value ranks the cost. The tail ranks the risk. Neither of them ranks the *mission*, which is the third column on the plot and belongs to nobody but the officer who signs for it.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\mu_X = E(X) = \sum_{x} x \cdot p(x)" terms={{ x: 'one value the random variable can take — a cost in sink-hours', 'p(x)': 'the share of the probability sitting on that value', '\\mu_X': 'the long-run average over many repetitions of the chance process' }} label="Expected value: a weighted sum" />
+
+<Formula tex="\sigma_X^2 = \sum_{x} (x - \mu_X)^2\,p(x) \qquad \sigma_X = \sqrt{\sigma_X^2}" terms={{ '(x - \\mu_X)^2': 'the squared distance of a value from the centre', '\\sigma_X': 'a TYPICAL distance of one outcome from the mean — not a limit' }} label="The standard deviation of a random variable" />
+
+<Formula tex="P(X > c) = \sum_{x > c} p(x)" terms={{ c: 'the capacity — a line drawn across the axis', 'P(X > c)': 'the weight sitting past the line: the risk, which no mean contains' }} label="The tail a decision rides on" />
+
+<WeightedSumBar option={near} />
+</Briefing.Definition>
+<Briefing.Worked>
+The **far point**, priced the whole way through — the only one of the three whose arithmetic is done for you.
+
+Its cost table runs from {fmtInt(far.pmf.values[0])} to {fmtInt(far.pmf.values[far.pmf.values.length - 1])} sink-hours in two-hour cells. Third column: $x\cdot p(x)$. Fourth: $(x-\mu)^2p(x)$. The third adds to the mean and the fourth to the variance.
+
+<KeyTable
+  columns={['x · sink-hours', 'p(x)', 'x · p(x)', '(x − μ)² · p(x)']}
+  rows={[...farRows, farTotalRow]}
+  emphasisRow={farRows.length}
+  caption={`The far point's cost distribution, summed term by term. Σ p(x) = 1, Σ x·p(x) = ${fmt(farMean, 2)} h, Σ (x−μ)²p(x) = ${fmt(farVariance, 2)} h².`}
+  ariaLabel="Weighted sum table for the far loiter point"
+/>
+
+<Formula tex={farMeanTex} label="The far point's expected cost, in sink-hours" />
+
+<Formula tex={farVarTex} label="Its variance and standard deviation — squared, weighted, added, rooted once" />
+
+So a window at the far point costs **{fmt(farMean, 2)} sink-hours on average**, and a typical window lands about {fmt(farSd, 1)} hours either side of that. Now the line:
+
+<Formula tex={farTailTex} label="The weight past the cellar" />
+
+Off the table the answer is even blunter: the far point's distribution has no cell above {fmtInt(far.pmf.values[far.pmf.values.length - 1])} hours at all, so the weight past the cellar is {fmt(farTailTable, 4)} to every place the table keeps. Off the curve behind it, {oneIn(farTail)} windows. The far point sits {fmt((WATCH_WORKING_HOURS - far.meanHours) / far.sdHours, 1)} standard deviations clear of the line, and the cellar will effectively never see it.
+
+**Two readings that are not the expected value, on this same table.**
+
+The plain average of the cells on the axis is {fmt(farFlatMean, 2)} hours — which agrees with $\mu_X$ here, and the agreement is a coincidence of symmetry, not a method. The plain spread of those cells does not agree with anything: {fmt(farFlatSd, 2)} hours against the weighted {fmt(farSd, 2)}. The unweighted figure says a {fmtInt(far.pmf.values[0])}-hour window is exactly as common as the {fmtInt(far.pmf.values[Math.floor(far.pmf.values.length / 2)])}-hour one at the middle of the table, and the p(x) column exists to say it is not.
+
+**And the most likely value.** The tallest cell{farTopCells.length > 1 ? 's are' : ' is'} {farTopCells.map((v) => fmtInt(v)).join(' and ')} hours, at {fmt(farTopProb, 4)} apiece. The expected value is {fmt(farMean, 2)} — which is not a cell at all. The cheapest window this point can produce is {fmtInt(far.pmf.values[0])} hours and the dearest is {fmtInt(far.pmf.values[far.pmf.values.length - 1])}, and **no window costs {fmt(farMean, 0)}**, because the table has no such value in it. That is not a defect in the arithmetic. It is what an average over many windows is.
+
+Now do the other two. The middle point's table is on the plot above; the near point's is in the planner below, and the Chief's line is at {WATCH_WORKING_HOURS} hours for both.
+</Briefing.Worked>
+<Briefing.Caution>
+*"The expected value is the most likely outcome."* It is not, and on this ship it is frequently not even a possible one. The mode is the tallest bar; the mean is the balance point of the whole table. They coincide only when the distribution is symmetric, which a cost distribution with a hard floor and a long tail never is. An officer who plans to the mode buys the commonest window and is surprised by the bill; an officer who reads the mean as a forecast is surprised by the *next* window, which was never promised to him.
+
+*Computing the SD of a random variable by ignoring the probabilities.* The spread of the values in the left-hand column — {fmt(farFlatSd, 2)} hours on the far point's table — describes the axis you drew, not the windows you will fly. Every squared deviation belongs inside the sum with its own $p(x)$ against it, which is why the weighted answer here is {fmt(farSd, 2)}. The tell is that the unweighted figure does not change when you change the probabilities, and a distribution that does not notice its own probabilities is not a distribution.
+
+*Ranking two plans on the mean alone.* The mean is the right answer to "what does this cost over many windows" and no answer at all to "what are the odds this one saturates". The two rankings can disagree, and when they do the disagreement is the whole decision: cheapest is not safest, and safest is not most useful.
+
+*Reading the standard deviation as a bound.* $\sigma_X$ is a typical distance from the mean, not a fence. Windows land outside it routinely — that is what the tail was for.
+</Briefing.Caution>
+</Briefing>
+
+<HeatBudgetPlanner options={LOITER_OPTIONS} capacityHours={WATCH_WORKING_HOURS} selected="near" />
+
+<CalcBriefing topic="expected-value-as-weighted-sum" />
+
+<Drill generator="act-4/expected-value-from-pmf" count={1} />
+<Drill generator="act-4/sd-of-rv" count={1} />
+<Drill generator="act-4/exceed-capacity" count={1} />
+<Drill generator="act-4/compare-two-options" count={1} />
+<Drill generator="act-4/most-likely-trap" count={1} />
+<Drill generator="act-4/interpret-expected-value" count={1} />
+
+<MissionBeat id="act-4-06-expected" kind="numeric" label="WHAT A WINDOW COSTS"
+  answer={middleMean} digits={2} tolerance={0.05} units="h"
+  prompt={`The **middle point's** cost table is on the plot above: the sink-hours one Watch window costs, cell by cell, column summing to one.\n\nLet $X$ be the cost of one window at the middle point. What is $E(X)$ — the expected number of sink-hours a window there costs? Report it in sink-hours to two decimal places.`}
+  hint={`Weight every value by its own probability and add the column: $\\sum x\\,p(x)$. The plain average of the values in the left-hand column is a different quantity, and so is the tallest cell. Note what the answer is and is not: the cells are two hours wide, so the expected value need not be one of them.`}>
+  <Success>
+  <Dialogue speaker="engineer" aside="She writes it on the plan under the near point's header, in pencil, and underlines the word average.">
+  That is what the middle point costs over many windows, Skipper, and I will budget lithium against it. It is not what this window costs. This window costs whatever the table decides, and the table has no such number in it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the column up and is going back down it with a finger, one cell at a time.">
+  So — every cost times its own weight, sir, and then the column. Not the average of the left-hand column: that one says a cheap window and a dear window are equally common, and the whole reason the Chief made me build this table is that they are not. — The weights already add to one. I do not divide by anything afterwards.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-4-06-saturate" kind="numeric" label="THE END OF THE TABLE"
+  answer={nearTail} answerKind="proportion" digits={4}
+  prompt={`Now the Chief's question, and it is about the **near point** — the one the Ensign wants.\n\nA window at the near point costs a mean of ${fmt(near.meanHours, 0)} sink-hours with a standard deviation of ${fmt(near.sdHours, 0)} hours, and its cost table is in the planner above. The cellar holds **${WATCH_WORKING_HOURS} sink-hours** on the Chief's working figure.\n\nWhat is $P(X > ${WATCH_WORKING_HOURS})$ — the probability that a single window at the near point costs more hours than the cellar has, so that the ship must purge inside the window? Report a proportion to four decimal places.\n\nThe table's cells are two hours wide and their boundary falls on ${WATCH_WORKING_HOURS}, so adding the cells above the line and standardising on the normal model give the same answer to four decimals. Either route is accepted.`}
+  hint={`Off the table: add p(x) for every cell above ${WATCH_WORKING_HOURS} — the cells at ${nearOver.slice(0, 3).map((v) => fmtInt(v)).join(', ')} and upward. Off the curve: standardise, $z = (${WATCH_WORKING_HOURS} - ${fmt(near.meanHours, 0)}) / ${fmt(near.sdHours, 0)}$, and take the area above that z. A mean of ${fmt(near.meanHours, 0)} sitting under a capacity of ${WATCH_WORKING_HOURS} tells you nothing about this number.`}>
+  <Success>
+  <Dialogue speaker="engineer" aside="She says it to the plot, and there is nothing triumphant in it at all.">
+  One window in four, Ensign. Your point fits the cellar on the header and blows it one time in four — and a purge inside a Watch window is two and a half hours of this ship being a lamp in the middle of the traffic you went there to watch. — That is not a veto. It is a price. Put it on the plan next to what the twelve passes buy and let the Captain read both.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="She turns the slate round and puts one finger on the far end of the column, past the line.">
+  Past sixty-four, Skipper. Everything past it, weights and all, added. Not the height of the tallest cell and not one minus something you have already taken off the wrong end. — The mean is in the middle of the table. I am asking about the end of it, and the end is where the cellar is.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-4-06-interpret" kind="interpretation" label="THE SENTENCE ON THE PLAN"
+  {...expectedValueInterpretation({ value: middleMean, variable: 'sink-hours a Watch window costs at the middle point', units: 'h', context: 'Watch windows' })}
+  prompt={`One sentence for the heat plan, in the register Ferrier will sign.\n\nSay what the middle point's expected cost **means**: quote the value, say what is being averaged, and say over what it is averaged. The sentence must survive a reader at Valhalla who has no cellar gauge in front of him and will take any promise you make literally.`}
+  hint="An expected value is a long-run average over many repetitions of the same chance process. Begin with “Over many Watch windows …” and the repetition is in the first three words. Any word that turns the average into a promise about the next window — exactly, always, every time — is the error this whole module is about.">
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it once, marks nothing, and puts it at the head of the heat plan rather than in the annex.">
+  That sentence costs us nothing and protects the plan. It says what the lithium is budgeted against and it does not promise the Board a window. File it at the top, where the Chief can see it while she is arguing with me about the margin.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="She has stopped what she was doing, which she does not often do, and she says it without heat.">
+  Over many windows, Skipper. Not this one. — Write *this window will cost* and somebody at Valhalla reads it as a guarantee, and the first time a window runs long they will say the plan was wrong when the plan said exactly what it meant. An average is a statement about a great many windows and it makes no promise about any single one of them.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-4-06-expected", "act-4-06-saturate", "act-4-06-interpret"]}>
+
+<Scene stamp="MET 088/11:20" location={`Bridge · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="Forty minutes to the window. The three points are priced: the near one has the traffic and a tail that runs past the cellar, the far one is cheap and sees almost nothing, the middle sits between them on both counts. Sandoval will not choose and Ferrier will not either. She will log whichever point you do not take.">
+
+The plan is on the table with all three lines on it and nothing crossed out.
+
+The near point is where the hulls are: {fmtInt(CLOSE_PASSES.near)} close passes in the window and the best odds on the board that a Perrine hull comes inside the Eyes' identification range. It is also the only point whose cost distribution has real weight past the end of the cellar, and every one of those {fmtInt(CLOSE_PASSES.near)} passes is a hull that can see a purge.
+
+The far point is the cheapest window the ship can fly — {fmt(farMean, 0)} hours against a cellar of {WATCH_WORKING_HOURS}, a tail the cellar will never notice — and it buys {fmtPct(far.pPerrineInRange, 0)} odds of a hull in range, which is to say: a window flown mostly for the practice.
+
+The middle point is not a compromise so much as a different bet. Fewer passes, a tighter cost, and a contact more often than not.
+
+<Dialogue speaker="engineer" aside="Both hands flat on the plan. She has said what the arithmetic says and she stops exactly there.">
+I have given you what a window costs and how often it costs more than I have got, at all three points, and that is the whole of my department. — I will fly any of them. If you take the near point I want the purge plan written before the window opens, not during it, because a decision made at ninety-six percent with the traffic overhead is not a decision, it is a reflex.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="She has the log open already, which is the only pressure she will apply.">
+And I will log the alternative, Captain, whichever one it is — the point we did not take and the reason we did not take it, in the same entry, in your words. Not as a hedge. So that when somebody reads this file in a year they can see the cellar was spent on purpose.
+</Dialogue>
+
+Forty minutes.
+
+</Scene>
+
+<MissionBeat id="act-4-06-point" kind="decision" label="WHERE THE SHIP SITS"
+  prompt={`Window one opens at ${windowOpens}. One point, one window, and the plan does not get rebuilt at noon.\n\nThe arithmetic is done: you know what a window costs at each point, how often each one wants more hours than the cellar holds, and what each one buys in close passes and contact odds.\n\nGive the order.`}
+  options={LOITER_ORDERS}>
+  <Outcome option={0}>
+  <Dialogue speaker="engineer" aside="She writes it in and then writes the purge plan under it, unasked, in the same hand.">
+  Near point. Logged, and the contingency logged under it: if the cellar passes ninety-five before the window closes, the wings go out whether or not there is a hull on the plot. — One window in four, Skipper. I would rather be the one who wrote down what we do when it happens than the one who improvises it at ninety-seven.
+  </Dialogue>
+  <Dialogue speaker="xo" aside="She logs the alternative in the same entry, at the same length, without comment on either.">
+  Logged: the middle point was available at a lower expected cost and a materially smaller chance of saturation, and was not taken, on the commanding officer's assessment that {fmtInt(CLOSE_PASSES.near)} close passes are worth the tail. The reason is in the entry with the number beside it.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="engineer" aside="She writes it in without any change in her face, which from her is agreement.">
+  Middle point. Logged. That is a window I can carry to the end without arguing with the gauge, and if something comes inside range the Eyes will have it. — I will still write the purge plan. I write it for every window.
+  </Dialogue>
+  <Dialogue speaker="xo" aside="She logs both the alternatives, the near and the far, because an entry that only records the road not taken on one side is an advocacy document.">
+  Logged: the near point offered {fmtInt(CLOSE_PASSES.near)} close passes at a materially larger chance of saturation and was not taken; the far point offered a window the cellar would not notice and odds of a contact under a half, and was not taken either. The middle was chosen on both counts at once.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={2}>
+  <Dialogue speaker="engineer" aside="She writes it in and does not pretend to be sorry, and then says the second half anyway.">
+  Far point. Logged. The cellar will not notice this window — I will come out of it with hours in hand and a plan nobody has to improvise. — And I will say the other half of it once: the odds of anything crossing the Eyes out there are under a half, and the lithium we save is lithium we will still be holding when the second window opens.
+  </Dialogue>
+  <Dialogue speaker="xo" aside="Flat, complete, and filed before the window opens.">
+  Logged: the near and middle points both offered better odds of a Perrine hull inside identification range and were not taken, on the assessment that the cellar's margin is the asset worth protecting in the first window. — We will see fewer hulls, Captain. That is the shape of the choice and it is in the entry.
+  </Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<Scene stamp="MET 088/12:00" location="Bridge · the first Watch window opens" condensed="The ship moves to the chosen point and the window opens on the hour. What the plan still cannot say is how much the Chief's sixty-four hours is itself worth — a number with a spread on it, built out of six subsystem loads, and the yard's spec sheet says something about that spread that Ebele is about to add up wrong.">
+
+The ship makes the adjustment cold, on attitude thrusters, and at {windowOpens} the Eyes come up to the profile and the cellar starts to fill.
+
+Sandoval stays on the bridge for the first hour, which she does not usually do, and she is not watching the plot. She is watching the gauge and doing arithmetic in her head that she does not offer to anybody.
+
+Ebele notices, because noticing is the thing he is good at.
+
+<Dialogue speaker="analyst" aside="Quietly, and not as a challenge — he has learned that much this week.">
+So — Chief. Every number we just used came out of your {WATCH_WORKING_HOURS} hours. The cellar holds sixty-four hours of Watch, the tables are priced against sixty-four, the tail is the weight past sixty-four. — Where does sixty-four come from? Because the design curve says {fmt(WATCH_DESIGN_HOURS, 1)} and you say {WATCH_WORKING_HOURS} and you will put {WATCH_IN_WRITING_HOURS} in writing, and those are three different numbers about the same cellar.
+</Dialogue>
+
+<Dialogue speaker="engineer" aside="She answers without taking her eyes off the gauge, and the answer is the whole of the next module.">
+Because the load is not a number either, Ensign. It is six loads, each with a mean and a spread, and they add up to a total that has a spread of its own. — Bring me the subsystem table and the yard's spec sheet and I will show you what the spread of a sum actually is. I will also show you what the yard thinks it is, and you are going to want to sit down for that.
+</Dialogue>
+
+The heat ledger has a number in it now, and a risk term, and a sentence at the top of the plan saying what the number promises. What it does not have is a margin — and a margin is the one thing on this plan that nobody has yet computed correctly.
+
+</Scene>
+
+<LogEntry
+  title="Expected value is the average over many windows, not this one"
+  concept="The expected value of a discrete random variable is the weighted sum of its values, μ = Σ x·p(x), and it is the long-run average of the outcomes over many repetitions of the chance process — not a forecast for the next one, not the most likely outcome, and not necessarily a value the variable can take at all. Its standard deviation is weighted the same way, σ = √(Σ (x − μ)² p(x)), so the probabilities sit inside the sum and the root is taken once at the end; and the probability a decision actually rides on is the tail past a capacity, Σ p(x) for x > c, which no mean contains."
+  formula="\mu_X = \sum_x x\,p(x) \qquad \sigma_X^2 = \sum_x (x - \mu_X)^2 p(x) \qquad P(X > c) = \sum_{x > c} p(x)"
+  mistake="Choosing between plans on the expected value alone. Two options can rank one way on the mean and the opposite way on the tail, because a tail is made of width as well as centre — the cheaper window on average can be the likelier one to saturate the cellar. Its near relatives are reading the mean as the most likely outcome, and computing the spread of a random variable from the values on the axis with the probabilities left out."
+  tags={['random variable', 'expected value', 'weighted sum', 'long-run average', 'standard deviation of a random variable', 'tail probability', 'decisions under uncertainty', '4.8']}
+/>
+
+</Gated>

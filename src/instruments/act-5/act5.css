@@ -1,0 +1,108 @@
+/* Act V instruments — "Noise Floor". Tokens only, no raw colours. */
+
+/* ---------- Closing note under every instrument ---------- */
+.dr-act5__note {
+  margin: var(--dr-sp-3) 0 0;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  color: var(--dr-fg-2);
+  letter-spacing: 0.04em;
+  line-height: var(--dr-lh-ui);
+}
+.dr-act5__note strong {
+  color: var(--dr-fg-1);
+  font-weight: 500;
+}
+.dr-act5__note em {
+  color: var(--dr-fg-0);
+  font-style: normal;
+}
+
+/* ---------- Small uppercase section head inside a panel ---------- */
+.dr-act5__head {
+  margin: var(--dr-sp-3) 0 var(--dr-sp-1);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-2xs);
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-2);
+  font-weight: 500;
+}
+.dr-act5__head:first-child {
+  margin-top: 0;
+}
+
+/* ---------- Trace of a single draw (SamplingBuilder STEP) ---------- */
+.dr-act5__trace {
+  margin-top: var(--dr-sp-3);
+  padding: var(--dr-sp-2) var(--dr-sp-3);
+  border: 1px solid var(--dr-line);
+  border-radius: var(--dr-radius);
+  background: var(--dr-bg-1);
+}
+.dr-act5__trace-head {
+  margin: 0 0 var(--dr-sp-1);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-2xs);
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-2);
+}
+.dr-act5__trace-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dr-sp-1) var(--dr-sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-2xs);
+  color: var(--dr-fg-1);
+}
+.dr-act5__trace-list li {
+  white-space: nowrap;
+}
+
+/* ---------- Two stacked or side-by-side displays ---------- */
+.dr-act5__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dr-sp-3);
+}
+.dr-act5__split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--dr-sp-4);
+  align-items: start;
+}
+
+/* ---------- Button row for instruments that drive their own worker run ---------- */
+.dr-act5__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dr-sp-2);
+  align-items: center;
+  margin: var(--dr-sp-3) 0 0;
+}
+.dr-act5__progress {
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-2xs);
+  letter-spacing: var(--dr-track-label);
+  color: var(--dr-fg-2);
+}
+
+/* ---------- Empty stage before the first run ---------- */
+.dr-act5__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 9em;
+  margin: 0;
+  border: 1px dashed var(--dr-line);
+  border-radius: var(--dr-radius);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-2);
+}

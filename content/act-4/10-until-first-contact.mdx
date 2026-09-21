@@ -1,0 +1,368 @@
+---
+id: act-4-10
+act: 4
+title: "Until First Contact"
+kind: module
+ap_topics: ["4.12"]
+objectives:
+  - "Determine whether a setting is geometric and calculate P(X = k) for the number of trials up to and including the first success"
+  - "Calculate and interpret the mean 1/p and the standard deviation of a geometric random variable, and the tail P(X > k)"
+  - "Compare the geometric and binomial settings and choose the right one for a question"
+prereqs: ["act-4-08"]
+est_minutes: 25
+calc_briefing: "geometric-series"
+summary: "The second window opens with the cellar empty and the Chief buying a wait with lithium. Nobody knows what fraction of Perrine hulls ever turn, so the expected wait swings from months to weeks across a range nobody can narrow — and then, thirty-four hours in, one of them turns."
+---
+
+import { fmt, fmtInt, fmtPct, geometric, geometricMoments } from '@/lib/stats'
+import {
+  ARRIVALS_PER_DAY,
+  CLOSE_PASSES,
+  CLOSE_PASS_KM,
+  DIVERSION_RATE_LAST_YEAR,
+  DIVERSION_RATE_SIX_YEAR,
+  MARIUS_MET,
+  PURGE_HOURS,
+  PURGE_STARTS,
+  P_SEEN_PER_PASS_COLD,
+  TORCH_OFF,
+  WAIT_SCENARIOS,
+  WATCH_WORKING_HOURS,
+  WINDOW_2,
+  heatFor,
+  hoursBetween,
+  metStamp,
+  pNoDetection,
+  waitScenario,
+  windowTwoPasses,
+} from '@/instruments/act-4/data'
+import { GeometricExplorer } from '@/instruments/act-4/GeometricExplorer'
+import { BeingSeenSimulator } from '@/instruments/act-4/BeingSeenSimulator'
+import { SinkReadout, oneIn } from '@/instruments/act-4/_ui'
+import { ProfileEcho } from '@/instruments/act-4/story'
+import { geometricMeanInterpretation } from '@/lib/problems/generators/act-4/_rubrics'
+
+export const heat = heatFor('act-4-10')
+export const windowHours = hoursBetween(WINDOW_2.from, WINDOW_2.to)
+export const mariusHours = hoursBetween(WINDOW_2.from, MARIUS_MET)
+export const loiterDay = Math.ceil(heat.at - TORCH_OFF)
+export const purgeAfter = PURGE_STARTS[PURGE_STARTS.length - 1]
+/** The bracket Ebele shows in the bay: the two ends of the range, never the rate the beat asks for. */
+export const lowRate = WAIT_SCENARIOS[0]
+export const highRate = WAIT_SCENARIOS[WAIT_SCENARIOS.length - 1]
+/** The beat's rate — the Register's own six years. Its wait appears nowhere before the gate. */
+export const sixYear = waitScenario(DIVERSION_RATE_SIX_YEAR, 'the six-year rate, 19 of 900')
+/** The worked example runs on the other rate, the last twelve months, and never on the beat's. */
+export const lastYear = waitScenario(DIVERSION_RATE_LAST_YEAR, 'the last twelve months, 5 of 150')
+export const lastYearMoments = geometricMoments(DIVERSION_RATE_LAST_YEAR)
+export const lastYearTrial = Math.ceil(lastYearMoments.mean)
+export const lastYearByMean = geometric.cdf(lastYearTrial, DIVERSION_RATE_LAST_YEAR)
+export const lastYearFirst = geometric.pmf(1, DIVERSION_RATE_LAST_YEAR)
+export const lastYearTenth = geometric.pmf(10, DIVERSION_RATE_LAST_YEAR)
+/** The mirror question. The window's own close passes are the beat; the worked example uses the near point. */
+export const passes = windowTwoPasses
+export const nPasses = passes.length
+export const pNone = pNoDetection(passes)
+export const pStillUnseen = geometric.sf(nPasses, P_SEEN_PER_PASS_COLD)
+export const nearPasses = CLOSE_PASSES.near
+export const nearUnseen = geometric.sf(nearPasses, P_SEEN_PER_PASS_COLD)
+export const seenMoments = geometricMoments(P_SEEN_PER_PASS_COLD)
+export const pmfTex = `P(X = k) = (1-p)^{k-1}\\,p, \\qquad k = 1, 2, 3, \\ldots`
+export const tailTex = `P(X > k) = (1-p)^{k} \\qquad P(X \\le k) = 1 - (1-p)^{k}`
+export const momentTex = `\\mu_X = \\frac{1}{p} \\qquad \\sigma_X = \\frac{\\sqrt{1-p}}{p}`
+export const workedMeanTex = `\\mu = \\frac{1}{p} = \\frac{1}{${fmt(DIVERSION_RATE_LAST_YEAR, 4)}} = ${fmt(lastYearMoments.mean, 2)} \\text{ passages} \\qquad \\sigma = \\frac{\\sqrt{1-${fmt(DIVERSION_RATE_LAST_YEAR, 4)}}}{${fmt(DIVERSION_RATE_LAST_YEAR, 4)}} = ${fmt(lastYearMoments.sd, 2)}`
+export const workedPmfTex = `P(X = 10) = (1-${fmt(DIVERSION_RATE_LAST_YEAR, 4)})^{9}(${fmt(DIVERSION_RATE_LAST_YEAR, 4)}) = ${fmt(lastYearTenth, 4)} \\qquad P(X = 1) = ${fmt(lastYearFirst, 4)}`
+export const workedTailTex = `P(X > ${fmtInt(nearPasses)}) = (1 - ${fmt(P_SEEN_PER_PASS_COLD, 2)})^{${fmtInt(nearPasses)}} = ${fmt(nearUnseen, 4)}`
+
+<SinkReadout sinkPct={heat.sinkPct} stamp={metStamp(heat.at)} profile="Watch · window two, thirty-four hours in" />
+
+<Scene stamp={`${metStamp(WINDOW_2.from)} — ${metStamp(heat.at)}`} location={`Sensor bay · Mark 9 region, 0.42 AU from Ceres · Watch, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="The second window opens on an empty cellar with sixty-four hours in it, and the Chief wants the wait priced before she spends them: how many Perrine passages until one of them turns, when nobody knows what fraction ever do. Ebele brackets the answer instead of guessing it — months at one rate, weeks at another. Thirty-four hours in, on the twenty-first day of the loiter, MV Marius Regio comes up the Lane on profile at Mark 9.4, her transponder starts to fade, and her brake plume rotates eleven degrees while she is still decelerating.">
+
+The wings came in at {metStamp(WINDOW_2.from).slice(4)} on an empty cellar and the second window opened on the hour with {fmt(windowHours, 0)} hours in it — the Chief's figure, which she works to and does not argue about.
+
+Sandoval comes up to the bay herself, which she has done twice in twenty-one days.
+
+<Dialogue speaker="engineer" aside="She has the plan rolled under one arm and does not unroll it, because she has not come to show you anything.">
+I am not buying hulls, Skipper. I am buying a wait, and I am buying it in lithium at {fmt(windowHours, 0)} hours a window. So before I spend the second one: how long does this ship sit in the dark before a Perrine hull does something worth the sitting? — Give me the passages and give me the days. I can convert hours into either, and I cannot convert a feeling into anything.
+</Dialogue>
+
+Perrine hulls pass Mark 9 at {fmt(ARRIVALS_PER_DAY.Perrine, 2)} a day, six years of the Ledger behind that figure and nobody disputing it. What nobody has — not the Register, not the Board, not this bay — is the other number: what fraction of those passages is ever a diversion. One in fifty. One in ten. Nothing in the file decides between them.
+
+Ebele has stopped guessing at it, which is the single largest change in him since the eighty-third.
+
+<Dialogue speaker="analyst" aside="Two columns on the plot and a third he has left empty on purpose, which he wants somebody to notice.">
+So — I ran the ends instead of the middle, sir. At one passage in fifty the first diversion is {fmt(lowRate.meanTrials, 0)} passages out, and at {fmt(ARRIVALS_PER_DAY.Perrine, 2)} a day that is {fmt(lowRate.meanDays, 0)} days of loitering. At one in ten it is {fmt(highRate.meanTrials, 0)} passages — {fmt(highRate.meanDays, 0)} days. Four months against three and a half weeks, off the same arithmetic, and the only thing that moved was a rate nobody can measure. — The Register's own six years sit somewhere between those and I have deliberately not run them. The number is not the finding. The spread of it is the finding.
+</Dialogue>
+
+Oyelaran has been listening from the tracker without turning round, and she asks the mirror of it, because the mirror is her department.
+
+<Dialogue speaker="sensors" aside="Still facing the plot. She has had the pass list up since the window opened.">
+And the other direction, Ensign. Not how many of them until one of them turns — how many of them until one of them *sees us*. Same shape of question, other end of the telescope. — There are {fmtInt(nPasses)} scheduled close passes in this window and each of them finds a cold hull {fmtPct(P_SEEN_PER_PASS_COLD, 0)} of the time. The Chief wants a window length. I want the odds we come out of it unseen, and I want it before it is over rather than after.
+</Dialogue>
+
+So the window runs, and the Eyes walk the sectors, and for thirty-four hours nothing at all happens, which is what a loiter mostly is.
+
+Day {fmtInt(loiterDay)}. {metStamp(heat.at).slice(4)}, {fmt(mariusHours, 0)} hours into the window, the cellar at {fmt(heat.sinkPct, 0)} percent and climbing at the rate the Chief said it would.
+
+MV *Marius Regio*. Perrine flag, Adlinda Mk 3, inbound to Ceres and on profile at Mark 9.4, brake plume steady, transponder nominal. Solberg logs her and goes back to the beam schedule.
+
+Eleven minutes later the transponder starts to degrade — not a dropout, a fade, the signal going soft at the edges the way nineteen hulls in the Register went soft before they stopped being hulls.
+
+<ProfileEcho
+  watch={<>Oyelaran has the full tracker on her and holds the plume from the moment the fade starts. Fourteen minutes of continuous solution, and the plume does not falter, does not gutter, does not shut down. It *slews*. The exhaust axis walks eleven degrees off the Ceres approach and settles there, and the deceleration never stops for a second of it.</>}
+  quiet={<>On the profile you ordered the Eyes have a bearing and a rough range and nothing behind them. Oyelaran has a thermal source at Mark 9.4 and a transponder going soft, and when the source changes she can tell you that it changed and not what it changed into. A plume that stops and a plume that turns look identical from a detector, and she said so on the eighty-seventh.</>}
+/>
+
+<Dialogue speaker="sensors" aside="Flat, and she says it once, and the bay goes quiet around it.">
+The plume did not stop. It turned.
+</Dialogue>
+
+Solberg is already timing the fade against the Authority's own procedure, because he times everything.
+
+<Dialogue speaker="comms" aside="Two clocks on his board and a third he starts as he speaks.">
+Four hours, sir, from the start of the degradation to the point where the Authority calls her a silence and opens a file. — After that she is a number in the Register and this bay is the only place in the system that watched it happen.
+</Dialogue>
+
+Two numbers go on the sheet before anything else does. What the Chief bought, and what it cost to be here for it.
+
+</Scene>
+
+<Briefing title="How long until the first one" topics={["4.12"]}>
+<Briefing.Intuition>
+A **geometric** setting is the binomial's four conditions with one of them removed and the question turned round.
+
+- **Binary** — each trial is a success or it is not. A passage diverts or it does not.
+- **Independent** — one trial's result changes nothing about the next.
+- **Same probability** $p$ on every trial.
+- **No fixed number of trials.** The counting runs until the first success and then stops. $n$ is not given; $n$ is the answer.
+
+That last line is the whole distinction. In a binomial the trials are settled in advance and the count of successes is random. In a geometric the successes are settled at one — the first — and the *number of trials* is random. Same process, same $p$, adjacent questions.
+
+**The convention, stated once and used everywhere.** $X$ is the number of trials **up to and including** the first success. The support is 1, 2, 3, … There is no trial 0, and $P(X = 1) = p$ exactly, because a wait of one trial is a success on the first attempt. Some books count the *failures before* the first success and get a support starting at 0 and a mean of $(1-p)/p$; that is a different variable with a different mean, and it is not the one AP, this ship or your calculator uses.
+
+To wait exactly $k$ trials is to fail $k-1$ times and then succeed. Independent, so they multiply:
+
+$$P(X = k) = (1-p)^{k-1}\,p$$
+
+There is no binomial coefficient here. "First success on trial $k$" names one specific sequence of outcomes; there is nothing to arrange.
+
+**The tail is where a plan lives.** "Still waiting after $k$ trials" is the single event *every one of those $k$ trials failed*, so it needs no summation at all:
+
+$$P(X > k) = (1-p)^{k}$$
+
+That is the survival form, and it is the number a window length is chosen against — never $1 - P(X \le k)$ assembled from a pile of cells, and never confused with $P(X \ge k)$, which keeps the cell at $k$ and is a different quantity.
+
+**The mean, and the trap inside it.** The expected wait is
+
+$$\mu = \frac{1}{p} \qquad \sigma = \frac{\sqrt{1-p}}{p}$$
+
+Two things about that pair. First, for small $p$ the standard deviation is very nearly the mean itself: a wait whose spread is the size of its own average is a wait you cannot forecast. Second — and this is the one that gets written into plans — **the mean is not the most likely value.** Every term of the pmf is the one before it times $(1-p)$, so the distribution is *strictly decreasing* for every $p$ there is. The single most likely wait is always **one trial**. The mean $1/p$ sits far out along a long thin tail, and it is that tail, not the bulk, that drags the average to the right. Most waits are shorter than the mean; for small $p$, the share still running past it settles near $(1-p)^{1/p} \to e^{-1} \approx 0.37$.
+
+**And the mean is a reciprocal, which is why a guess at $p$ is expensive.** Halve $p$ and you double the wait. A rate known only to lie between one in fifty and one in ten does not give a wait known to within a few passages; it gives a wait known to within a factor of five. That is not an argument for guessing better. It is an argument for reporting the sensitivity rather than the number, and for choosing a window against the tail rather than against the average.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={pmfTex} terms={{ '(1-p)^{k-1}': 'the first k − 1 trials all fail, and independent failures multiply', p: 'the k-th trial succeeds', k: 'trials counted up to and including the first success — support 1, 2, 3, …' }} label="The geometric probability that the first success falls on trial k" />
+
+<Formula tex={tailTex} terms={{ 'P(X > k)': 'still waiting after k trials — one event, no summation', 'P(X \\le k)': 'the first success has arrived by trial k' }} label="The tail and the cumulative" />
+
+<Formula tex={momentTex} terms={{ '\\mu_X': 'the expected number of trials to the first success — an average over many waits', '\\sigma_X': 'how far a single wait typically lands from that average; for small p it is nearly the mean itself' }} label="Where a geometric wait sits and how far it moves" />
+</Briefing.Definition>
+<Briefing.Worked>
+The other rate on the plot — the Register's **last twelve months**, {fmtInt(5)} diversions in {fmtInt(150)} Perrine passages, a rate of {fmt(DIVERSION_RATE_LAST_YEAR, 4)}. Not the six-year figure; that one is yours below.
+
+**How long, on average.**
+
+<Formula tex={workedMeanTex} label="The expected wait at the twelve-month rate, and its spread" />
+
+{fmt(lastYearMoments.mean, 1)} passages, give or take {fmt(lastYearMoments.sd, 1)} — a standard deviation within a whisker of the mean. At {fmt(ARRIVALS_PER_DAY.Perrine, 2)} Perrine passages a day that is {fmt(lastYear.meanDays, 0)} days of loitering on average, which is more days than the ship has lithium for, which is the entire reason this module exists.
+
+**What the distribution actually looks like**, as against what the average suggests:
+
+<Formula tex={workedPmfTex} label="A wait of ten passages, against a wait of one" />
+
+The first passage is the most likely single answer — it always is — and it is more likely than the tenth. Meanwhile {fmtPct(lastYearByMean, 0)} of waits are over by passage {fmtInt(lastYearTrial)}, so the average sits above most of the waits rather than in the middle of them. The mean is a balance point, and the thing balancing it is a long thin tail of waits that run for months.
+
+**The mirror question, at the near point.** Now count close passes instead of Perrine hulls, and let the success be somebody else's nav sensors resolving a cold *Nightjar*: $p = {fmt(P_SEEN_PER_PASS_COLD, 2)}$ a pass. A window at the near loiter point carries {fmtInt(nearPasses)} of them.
+
+<Formula tex={workedTailTex} label="Still unseen after twelve close passes" />
+
+So {fmtPct(nearUnseen, 1)} of such windows end with nobody having resolved her — and note that this is the *same number* the binomial gives for zero detections in {fmtInt(nearPasses)} passes, because "still unseen after {fmtInt(nearPasses)} passes" and "no detections in {fmtInt(nearPasses)} passes" are the same event described from two ends. The expected number of close passes before the first one that finds her is $1/{fmt(P_SEEN_PER_PASS_COLD, 2)} = {fmt(seenMoments.mean, 0)}$ — {oneIn(P_SEEN_PER_PASS_COLD)} per pass, and far more passes than any window this ship can afford to fly. The two questions agree where they overlap and part company the moment anyone asks for a second detection, or for the length of the wait itself.
+</Briefing.Worked>
+<Briefing.Caution>
+*"The mean $1/p$ is the most likely wait."* It is not, and it never is. A geometric pmf falls from trial 1 onward — each term is the previous one times $(1-p)$ — so the **mode is trial 1 for every $p$**, and the mean sits far to its right, pulled out by a thin tail of very long waits. At the twelve-month rate {fmtPct(lastYearByMean, 0)} of waits are finished before the mean is reached. A plan that budgets for $1/p$ has budgeted for something that happens less than half the time, and has also budgeted for a wait it will usually beat.
+
+*Indexing the pmf from 0.* $X$ counts trials **up to and including** the first success. The support is 1, 2, 3, … and $P(X = 1) = p$. Counting the failures *before* the first success is a legitimate variable — it just is not this one: its support starts at 0, its mean is $(1-p)/p$, and mixing the two shifts every answer by exactly one trial. Write the exponent as $k-1$ and the convention takes care of itself.
+
+*Answering the binomial question well.* "How many diversions in the next twenty passages" and "how many passages until the first diversion" are different questions about one process. If $n$ is handed to you and the count is unknown, it is binomial; if the count is fixed at one and $n$ is what you are being asked for, it is geometric. They agree on exactly one thing — at least one success in $n$ trials is the same event as the first success arriving by trial $n$ — and nowhere else.
+
+*Building a tail out of cells.* $P(X > k)$ is $(1-p)^{k}$ in one line, because it is one event. Summing $k$ pmf terms and subtracting gets the same answer more slowly and with more places to drop a boundary; and $P(X \ge k)$ is not $P(X > k)$ — they differ by the whole cell at $k$.
+</Briefing.Caution>
+</Briefing>
+
+<GeometricExplorer p={DIVERSION_RATE_SIX_YEAR} arrivalsPerDay={ARRIVALS_PER_DAY.Perrine} />
+
+<BeingSeenSimulator band="middle" window={2} mode="geometric" seed="act-4-10" />
+
+<CalcBriefing topic="geometric-series" />
+
+<Drill generator="act-4/geometric-pmf" count={1} />
+<Drill generator="act-4/geometric-tail" count={1} />
+<Drill generator="act-4/geometric-moments" count={1} />
+<Drill generator="act-4/geometric-vs-binomial" count={1} />
+<Drill generator="act-4/geometric-display" count={1} />
+<Drill generator="act-4/interpret-geometric-mean" count={1} />
+
+<MissionBeat id="act-4-10-wait" kind="numeric" label="WHAT THE CHIEF IS BUYING"
+  answer={sixYear.meanTrials} answerKind="mean" digits={2} tolerance={0.05}
+  prompt={`The Chief wants the middle of Ebele's bracket, computed against the rate the Register itself supports: **${fmtInt(19)} diversions in ${fmtInt(900)} Perrine passages** over six years — a rate of ${fmt(DIVERSION_RATE_SIX_YEAR, 6)} per passage.\n\nLet $X$ be the number of Perrine passages **up to and including** the first one that diverts. What is the **expected number of passages**, $\\mu = 1/p$? Report it to two decimal places.`}
+  hint="The expected wait of a geometric variable is the reciprocal of the per-trial success probability. Nothing here depends on how many passages have already gone by, and nothing here needs a summation — the series does that work for you.">
+  <Success>
+  <Dialogue speaker="engineer" aside="She converts it into her own units before she writes it down, which takes her about four seconds and no calculator.">
+  At {fmt(ARRIVALS_PER_DAY.Perrine, 2)} a day that is {fmt(sixYear.meanDays, 0)} days of loitering, Skipper, and I have {fmt(windowHours, 0)} hours of Watch in the cellar. So the honest sentence is that we cannot afford the average and we are flying anyway, on the chance of being early. — Write that down. I would rather the inquiry read it in our hand than work it out in theirs.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="Working it through out loud, the way he does now instead of reaching for the answer.">
+  Not the count, sir — the *wait*. Nineteen in nine hundred is the chance one passage is the one; the expected number of passages is one over that, and it comes out in passages, not in hulls and not in days. Days are the conversion afterwards, at {fmt(ARRIVALS_PER_DAY.Perrine, 2)} a day. — And it is not np. There is no n. That is what makes it this distribution and not the other one.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-4-10-seen" kind="numeric" label="THE WINDOW'S LENGTH, IN THE LOG"
+  answer={pNone} answerKind="proportion" digits={4}
+  prompt={`Oyelaran's question, and the one that sets the length of the window Sandoval is paying for. The Lane plot carried **${fmtInt(nPasses)}** scheduled close passes of the holding point inside ${fmt(CLOSE_PASS_KM / 1e6, 1)} million kilometres for this window, and a passing hull's nav sensors resolve a cold *Nightjar* on any single pass with probability **${fmt(P_SEEN_PER_PASS_COLD, 2)}**.\n\nLet $X$ be the number of close passes up to and including the first one that finds her. What is $P(X > ${fmtInt(nPasses)})$ — the probability that she is **still unseen** when the window closes? Report a probability to four decimal places.`}
+  hint="“Still unseen after every one of them” is a single event, not a sum of cells: all of those passes have to miss her, and independent things that all have to happen multiply. The survival form is one power and no summation.">
+  <Success>
+  <Dialogue speaker="sensors" aside="She writes it on the window sheet under the pass list, and then writes the complement beside it without being asked.">
+  That is the number, and it is the same number the other way round — no detections in {fmtInt(nPasses)} passes, still unseen after {fmtInt(nPasses)} passes, one event with two names. — Take it off one and you have what this window costs in exposure. The Chief is buying hours. She is also buying that, and it is not zero.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="sensors" aside="She does not take the slate. One finger on the per-pass figure, and she leaves it there.">
+  {fmtInt(nPasses)} passes, Ensign, and each of them fails to resolve her {fmtPct(1 - P_SEEN_PER_PASS_COLD, 0)} of the time. Not {fmtPct(P_SEEN_PER_PASS_COLD, 0)} — {fmtPct(1 - P_SEEN_PER_PASS_COLD, 0)}. Raise that to the number of passes and stop. — And watch which side of the boundary you are on: *more than* {fmtInt(nPasses)} passes to the first detection throws the {fmtInt(nPasses)}th away, and *at least* {fmtInt(nPasses)} keeps it. Those are different windows and they cost different hours.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-4-10-turn" kind="choice" label="WHAT GOES IN THE LOG"
+  options={[
+    'A brake plume that rotated approximately eleven degrees off the Ceres approach and continued to decelerate on the new bearing — an off-profile manoeuvre, with a vector attached.',
+    'A transponder that degraded to nothing at Mark 9.4. Loss of signal, cause unknown, consistent with the nineteen.',
+    'A brake plume that stopped at Mark 9.4. The hull shut her drive down and went dark, which is what a casualty looks like.',
+    'Nothing. One fading transponder is a fault report and not an observation, and the Authority will file it as a fault whatever this ship writes.',
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    'The fade is real and it is in the log already — Solberg timed it. But a fade is what every one of the nineteen did, and it is exactly the observation the Board can absorb without moving. The thing worth reporting is what the plume did while the transponder was fading, and that requires a solution held long enough to measure an angle.',
+    'A plume that stops and a plume that turns are the same event to a detector and different events to a tracker. If the log says she stopped, the log has recorded a casualty; if it says she turned eleven degrees and kept decelerating, it has recorded a manoeuvre. The difference is a vector, and a vector is not something the Eyes can infer afterwards.',
+    'This is the Board\'s own position, arrived at early and on your own initiative. A fading transponder on its own is indeed a fault report. The question is whether this ship holds anything more than that — and what it holds depends entirely on the profile it was flying when the fade started.',
+  ]}
+  prompt={`*Marius Regio*'s transponder has been degrading for fourteen minutes and Solberg has four hours before the Authority opens a file on her. Oyelaran has whatever the Eyes held.\n\nOn the evidence this ship actually has, what goes in the log?`}>
+  <Success>
+  <ProfileEcho
+    watch={<Dialogue speaker="sensors" aside="She hands over the solution rather than reading it out, which from her is the entire commentary.">
+    Eleven degrees, still braking, bearing and range attached. — That is a manoeuvre, sir, and it is in the file before the Authority has finished deciding she is missing. The profile bought that. It cost sixty-four hours of cellar and it bought a number nobody else in the system has.
+    </Dialogue>}
+    quiet={<Dialogue speaker="sensors" aside="She logs what you have told her to log, and does not pretend the Eyes produced it.">
+    Logged as directed, sir. — I will note in the margin what the Eyes actually held, which was a bearing and a fade. A tracker's sentence in a detector's file is the kind of thing an inquiry finds in an afternoon.
+    </Dialogue>}
+  />
+  </Success>
+  <Failure>
+  <ProfileEcho
+    watch={<Dialogue speaker="sensors" aside="She brings the solution back up and runs it again from the start of the fade, without comment, until it reaches the slew.">
+    The tracker held her for fourteen minutes, sir. A plume that shuts down goes to background and stays there. This one did not go anywhere — it walked eleven degrees and kept burning. That is not a loss of signal and it is not a casualty. It is a ship changing where it is going, and we watched it happen.
+    </Dialogue>}
+    quiet={<Dialogue speaker="sensors" aside="She does not soften it, and she does not say it twice, and she has said it before.">
+    We do not have it, sir. On Quiet the Eyes are a detector: I have a bearing, a rough range and a transponder going soft, and a plume that stops looks exactly like a plume that turns. There is no eleven degrees in this file because nothing aboard this ship was looking hard enough to measure one. — Quiet is for hiding, sir. It is not for looking. If you want the vector, the profile decision is the one you made on the eighty-seventh, and it is the one to go back and make again.
+    </Dialogue>}
+  />
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-4-10-interpret" kind="interpretation" label="THE WAIT, FOR THE ANNEX"
+  {...geometricMeanInterpretation({ meanTrials: sixYear.meanTrials, p: sixYear.p, trial: 'Perrine passage', success: 'diversion', pBeyondMean: sixYear.pBeyondMean })}
+  prompt={`One or two sentences for the heat plan, under the figure you computed. Say what the expected wait of ${fmt(sixYear.meanTrials, 1)} Perrine passages means at the Register's six-year rate — name what is being counted, say what kind of average it is, and say what it does **not** promise about this loiter.\n\nSandoval will strike any sentence that reads as a forecast. She is spending lithium against it.`}
+  hint="An expected value is an average over many repetitions of the whole wait, each run from the beginning — not a countdown, and not a prediction for the wait in front of you. Say what the mean is not: the single likeliest outcome is one passage, and a substantial share of waits run past the mean.">
+  <Success>
+  <Dialogue speaker="engineer" aside="She reads it twice and files it at the front of the annex, above the close-pass count.">
+  That sentence I can spend money against, because it tells me what it does not know. — An average over many loiters is a thing I can plan around. A promise about this one is a thing I would have to believe, and I do not believe things in a heat plan.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="Crossing out his own draft and counting the pieces off on the plot, which is what he does now instead of arguing.">
+  Yes, sir — I wrote *it will take {fmt(sixYear.meanTrials, 0)} passages* and that is a forecast, and the arithmetic does not support a forecast. It is what the wait averages over many repetitions of the whole wait. The most likely single answer is the very first passage. And {fmtPct(sixYear.pBeyondMean, 0)} of waits run past the mean, which is the number that would actually strand us.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-4-10-wait", "act-4-10-seen", "act-4-10-turn", "act-4-10-interpret"]}>
+
+<Scene stamp={`${metStamp(heat.at)} — ${metStamp(purgeAfter)}`} location={`Sensor bay · Watch, cellar ${fmt(heat.sinkPct, 0)}% and climbing`} condensed="Thirty hours of cold-tracking with the Chief calling the cellar in hours remaining. Ferrier asks whether you intend to follow, and following means lighting the torch. The tracking ends at the Chief's sixty-four hours, the vector goes in the file, and the wings go out at 105/10.">
+
+You hold her for thirty hours.
+
+Cold the whole way, the tracker running and nothing else, Sandoval on the engineering channel calling the cellar not in percentages but in hours remaining, which is her way of saying a thing once and then saying it again in a form nobody can round off.
+
+*Marius Regio* does not come back to profile. She decelerates on the new bearing, steady, unhurried, transponder gone to nothing at 07:50 and the Authority's file opened eleven minutes later. Ebele runs the new vector out across the plot and it does not intersect Ceres, and it does not intersect anything else marked on the chart either.
+
+Ferrier waits until the solution has stopped improving before she asks, which is deliberate.
+
+</Scene>
+
+<MissionBeat id="act-4-10-follow" kind="decision" label="FOLLOW, OR LOG THE VECTOR"
+  prompt={`*Marius Regio* is thirty hours off profile on a bearing that goes nowhere on the chart, still decelerating, and the solution has stopped improving. She is opening range on a cold hull.\n\nFollowing means lighting the torch: the cellar goes, the loiter ends, and this ship becomes the brightest object in the Mark 9 region for as long as the burn lasts. Logging the vector means she goes over the horizon and the file has one hull in it.\n\nGive the order.`}
+  options={[
+    'Light the torch and follow her. A vector on a chart is an inference; a hull under observation is a fact, and this is the only one this ship has ever had in front of it.',
+    'Log the vector and hold the loiter. She is one hull, the file is what survives, and the ship was not sent out here to chase a single plume over the horizon.',
+  ]}>
+  <Outcome option={0}>
+  <Dialogue speaker="engineer" aside="She does not object. She reports, which is worse, and she reports it in the units she has been using all day.">
+  Torch in four minutes, Skipper. That is the cellar and that is the loiter, and I will want ninety kilometres a second of it before we are inside her track — which is Δv we do not get back and which the Ceres leg was written against. — I'll log that I said so. Not as a protest.
+  </Dialogue>
+  <Dialogue speaker="xo" aside="She writes the order out in full, with the reasoning, because she intends it to be read by people who were not here.">
+  Logged, Captain: pursuit of a single off-profile hull, on the commanding officer's authority, at the cost of the loiter and of the margin. — The Board will call it an unauthorised pursuit on the evidence of one manoeuvre and it will say so in writing, and we will be reading that sentence at Ceres with less fuel than the plan assumed. I do not say you are wrong. I say the file will not be able to tell the difference between this and an officer who wanted it to be true.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="xo" aside="She logs it at the same length she would have logged the other one, in the same flat hand.">
+  Logged. The vector, the fade, the eleven degrees, the thirty hours and the profile they were taken on. — That is an observation somebody else can check, Captain, which is the only kind worth having. She goes over the horizon and the file stays here.
+  </Dialogue>
+  <Dialogue speaker="engineer" aside="Already bringing the wings up on the schedule, because the cellar does not care what was decided.">
+  Then I take my window back and we purge at {metStamp(purgeAfter).slice(4)}. {fmt(PURGE_HOURS, 1)} hours as a lamp and then we are a cold rock again. — Thank you, Skipper.
+  </Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<Scene stamp={metStamp(purgeAfter)} location={`Sensor bay · wings out, ${fmt(PURGE_HOURS, 1)} h`} condensed="Tracking ends at the Chief's sixty-four hours, the wings go out at 105/10, and the annex closes with the wait, the tail and the vector in it. One hull, off profile, eleven degrees, still decelerating, heading for nothing on the chart. What it cannot say is whether it was the only one.">
+
+The tracking ends where the Chief said it would end, at {fmt(windowHours, 0)} hours, and the wings go out at {metStamp(purgeAfter).slice(4)} with the cellar where she said it would be.
+
+The annex closes with three lines on it and every one of them carries the arithmetic that produced it.
+
+*Window two, {fmt(windowHours, 0)} hours at the holding point. {fmtInt(nPasses)} scheduled close passes, cold throughout, {fmt(P_SEEN_PER_PASS_COLD, 2)} per pass: P(still unseen at the close of the window) = {fmt(pNone, 4)}, which is {oneIn(1 - pNone)} against being resolved. Expected Perrine passages to a first diversion at the Register's six-year rate of {fmt(sixYear.p, 6)}: {fmt(sixYear.meanTrials, 2)} passages, {fmt(sixYear.meanDays, 0)} days at {fmt(ARRIVALS_PER_DAY.Perrine, 2)} a day, standard deviation {fmt(sixYear.sdTrials, 1)} passages; {fmtPct(sixYear.pBeyondMean, 0)} of such waits run longer than the mean. Observed at {fmt(mariusHours, 0)} hours into the window: one.*
+
+One.
+
+Twenty-one days in the dark, {fmt(windowHours, 0)} hours of Watch, and a wait the arithmetic says should have run for {fmt(sixYear.meanDays, 0)} days ended on day {fmtInt(loiterDay)} — which is not luck and is not evidence, but the thing the distribution does most of the time, because most waits are shorter than the mean.
+
+<Dialogue speaker="analyst" aside="He is looking at the vector rather than at the wait, and he has not said *so* once.">
+Sir. Off profile, eleven degrees, still braking, on a bearing that does not go to Ceres and does not go to any mark on the plot. — I have what it is not. It is not a casualty, because a casualty stops. It is not the approach, because the approach is eleven degrees the other way. I do not have what it is.
+</Dialogue>
+
+You do not either, and the honest list of what this ship holds is short. A hull that turned. A vector. The odds that nobody watched you take it. And no way at all to say whether *Marius Regio* is one crooked master running a private errand, or the nineteenth of nineteen.
+
+The report goes to Valhalla at MET {fmtInt(106)}. Solberg has the slot and the annex is complete, and Sandoval wants every number in it defended before it leaves the ship.
+
+<LogEntry
+  title="Geometric: trials until the first success, mean 1/p, and most waits are shorter than it"
+  concept="When independent trials share a success probability p and the counting runs until the first success rather than over a fixed number of trials, X — the number of trials up to and including that success — is geometric: P(X = k) = (1 − p)^(k−1)p on the support 1, 2, 3, …, and the probability of still waiting after k trials is the single power (1 − p)^k. Its mean is 1/p and its standard deviation √(1 − p)/p, which for small p is nearly the mean itself. The pmf is strictly decreasing, so the most likely single wait is always one trial and the mean sits far out along a thin right tail: most waits are shorter than the average, and the share running past it settles near 0.37 as p gets small. Because the mean is a reciprocal, a rate known only to within a factor of five gives a wait known only to within a factor of five — which is why the honest report is the sensitivity and the window is chosen against the tail."
+  formula="P(X = k) = (1-p)^{k-1}p \qquad P(X > k) = (1-p)^{k} \qquad \mu_X = \frac{1}{p} \qquad \sigma_X = \frac{\sqrt{1-p}}{p}"
+  mistake="Expecting the mean. 1/p is a long-run average over many repetitions of the whole wait, not a forecast for this one and not the likeliest outcome — the mode of a geometric variable is trial 1 for every p there is. Its near relative is indexing the pmf from 0: counting the failures before the first success is a different variable, with support starting at 0 and mean (1 − p)/p, and mixing the two shifts every answer by exactly one trial."
+  tags={['geometric', 'trials to the first success', 'mean of a geometric', 'survival function', 'geometric vs binomial', 'sensitivity', 'AP convention', '4.12']}
+/>
+
+</Scene>
+
+</Gated>

@@ -1,0 +1,59 @@
+import { fmt, fmtPct, normal, t, zStar } from '@/lib/stats'
+import { InverseTail } from '@/instruments/act-6/InverseTail'
+
+export const C = 0.95
+export const zc = zStar(C)
+export const tail = (1 - C) / 2
+export const cumulative = (1 + C) / 2
+export const wrongCut = normal.standardQuantile(C)
+export const slopeAt95 = 1 / normal.pdf(zc)
+export const deepP = 0.9995
+export const deepZ = normal.standardQuantile(deepP)
+export const slopeDeep = 1 / normal.pdf(deepZ)
+export const dfSmall = 8
+export const dfMid = 30
+export const dfLarge = 200
+export const tSmall = t.quantile(cumulative, dfSmall)
+export const tMid = t.quantile(cumulative, dfMid)
+export const tLarge = t.quantile(cumulative, dfLarge)
+export const criticalTex = `z^\\star = \\Phi^{-1}\\!\\left(\\frac{1 + C}{2}\\right) = \\Phi^{-1}(${fmt(cumulative, 4)}) = ${fmt(zc, 4)}`
+
+Ebele has this one on a slate before you ask for it, because he has just been caught saying a number he could not derive. You do not need it to write the interval. It is here because the number in front of the square root is not a constant anybody chose — it is a function run backwards, and you are about to sign your name under it.
+
+Everything so far has run the curve forwards: pick a cutoff, get an area. The cumulative distribution function **is** that reading, and it is an integral.
+
+<Formula
+  tex="\Phi(z) = \int_{-\infty}^{z} \varphi(t)\,\mathrm{d}t, \qquad \varphi(t) = \frac{1}{\sqrt{2\pi}}e^{-t^2/2}"
+  terms={{ '\\varphi(t)': 'the standard normal density — a height, never a probability', '\\Phi(z)': 'the area to the left of z: cutoff in, area out' }}
+  label="The CDF: cutoff in, area out"
+/>
+
+A critical value runs it the other way. You are handed an area and asked for the cutoff that produces it, which is exactly what an **inverse function** does.
+
+**Why the inverse exists at all.** A function can be inverted only where it is one-to-one, and $\Phi$ is, for a reason you can see in one line of calculus: by the fundamental theorem of calculus its derivative is the density itself, and that density is strictly positive at every real number. A function whose derivative is positive everywhere is strictly increasing, so it never returns to a value it has already taken. Each area strictly between 0 and 1 therefore comes from exactly one cutoff, and the inverse is well defined on the whole of that range.
+
+**Where $z^\star$ comes from.** A $C$ interval is built to hold $C$ of the area in the middle, which leaves $1 - C$ split evenly between the two tails — half of it in each. So the area *below* the upper cutoff is the middle plus one tail.
+
+<Formula tex={criticalTex} terms={{ C: 'the confidence level — the central area the interval is built to hold', '\\frac{1 + C}{2}': 'the cumulative area below the upper cutoff: the middle plus one tail', '\\Phi^{-1}': 'the inverse CDF — area in, cutoff out' }} label="A critical value is an inverse CDF evaluated at (1 + C)/2" />
+
+At {fmtPct(C, 0)} the tails carry {fmt(tail, 4)} each, the middle carries {fmt(C, 4)}, and the cutoff is whatever value makes that true: {fmt(zc, 4)}, which rounds to the {fmt(zc, 2)} everybody quotes. Nothing was looked up.
+
+This is also why the commonest error in the topic happens *before* the inverse rather than inside it. Hand the inverse the level $C$ instead of $(1 + C)/2$ and it answers honestly — with the cutoff that has {fmtPct(C, 0)} below it and {fmtPct(1 - C, 0)} in a single tail, {fmt(wrongCut, 4)}. A perfectly good number, for a different question.
+
+**There is no formula for it.** $\Phi$ has no elementary antiderivative and its inverse has no closed form, so the value is computed by inverting numerically: guess a cutoff, read the area, correct the guess. Newton's method does exactly that, and the correction it uses is the derivative of the inverse.
+
+<Formula
+  tex="\frac{\mathrm{d}}{\mathrm{d}p}\,\Phi^{-1}(p) = \frac{1}{\varphi\!\left(\Phi^{-1}(p)\right)}"
+  terms={{ p: 'the area you are asking for', '\\varphi(\\Phi^{-1}(p))': 'the height of the curve at the cutoff that area produces' }}
+  label="Derivative of the inverse: one over the height at the cutoff"
+/>
+
+Read that for its meaning rather than its mechanics. The curve is low out in the tails, so $1/\varphi$ is large, so the cutoff is **violently sensitive** to the area you demand. At an area of {fmt(cumulative, 4)} the rate is about {fmt(slopeAt95, 0)}: one more thousandth of area moves the cutoff by roughly {fmt(slopeAt95 / 1000, 3)}. At {fmt(deepP, 4)} the same thousandth moves it by about {fmt(slopeDeep / 1000, 2)}, and the cutoff itself has gone from {fmt(zc, 3)} out to {fmt(deepZ, 3)}. Demanding near-certainty is not slightly more expensive than demanding confidence. It is expensive in a way that accelerates, and every extra nine costs more than the one before it.
+
+**And $t^\star$ is the same inversion on a different curve.** When the spread is estimated from the sample instead of known, the standardized statistic follows a t distribution, whose tails are heavier than the normal's — more of its area lives far from the centre. To enclose the same central {fmtPct(C, 0)} you must therefore reach further out. With {fmt(dfSmall, 0)} degrees of freedom the cutoff is {fmt(tSmall, 4)} against the normal's {fmt(zc, 4)}; with {fmt(dfMid, 0)} it is {fmt(tMid, 4)}; with {fmt(dfLarge, 0)} it is {fmt(tLarge, 4)}. As the degrees of freedom grow without bound the t density converges to the normal density at every point, and the cutoff converges with it. The last row of a t table is labelled ∞ and holds {fmt(zc, 3)} because it is a limit, not a coincidence.
+
+Set the area and watch the cutoff answer. Then switch curves and run the degrees of freedom up.
+
+<InverseTail />
+
+**Why this matters here.** Every margin this watch is $z^\star$ times a standard error, and the Lane's interval will be read by people who will ask where {fmt(zc, 2)} came from. It came from an inverse: the area was chosen first, and the cutoff was solved for. Hold on to the direction — area in, cutoff out — because the rest of the Act runs it the other way, handing a statistic to the CDF and taking an area back out as a P-value.

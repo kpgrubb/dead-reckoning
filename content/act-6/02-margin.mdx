@@ -1,0 +1,285 @@
+---
+id: act-6-02
+act: 6
+title: "Margin"
+kind: module
+ap_topics: ["6.2", "6.3"]
+objectives:
+  - "Construct a one-sample z-interval for a population proportion and interpret it in context, naming the true parameter and both endpoints"
+  - "Describe how the margin of error responds to the sample size and to the confidence level, and compute the sample size needed for a target margin"
+  - "Use a confidence interval to judge a claim about the parameter, distinguishing a value the interval excludes from a value it merely fails to rule out"
+prereqs: ["act-6-01"]
+est_minutes: 30
+calc_briefing: null
+summary: "The Lane's rate gets an honest margin, and the margin decides which sentence you are allowed to write. Ebele offers to wait a few more seasons for a better one; Solberg converts transits into years."
+---
+
+import { fmt, fmtInt, fmtPct, onePropInterval, sampleSizeForProportion, zStar } from '@/lib/stats'
+import {
+  BOARD_BASELINE,
+  BOARD_TABLE,
+  LANE_INTERVAL,
+  LANE_LOSSES,
+  LANE_RATE,
+  LANE_TRANSITS,
+  MARGIN_AFTER_THREE_YEARS,
+  ROOK_BASELINE,
+  ROOK_2176,
+  TARGET_MARGIN,
+  TRANSITS_FOR_TARGET_MARGIN,
+  TRANSITS_PER_YEAR,
+  YEARS_FOR_TARGET_MARGIN,
+  intervalClears,
+} from '@/instruments/act-6/data'
+import { MarginPlanner } from '@/instruments/act-6/MarginPlanner'
+import { confidenceIntervalInterpretation } from '@/lib/problems/rubrics'
+
+export const laneCi = LANE_INTERVAL.ci ?? [0, 0]
+export const laneMoe = LANE_INTERVAL.marginOfError ?? 0
+export const marsBelt = BOARD_TABLE.marsBelt
+export const marsBeltRate = marsBelt.losses / marsBelt.transits
+export const board = onePropInterval({ x: marsBelt.losses, n: marsBelt.transits, confidence: 0.95, random: true })
+export const boardCi = board.ci ?? [0, 0]
+export const boardArrivals = marsBelt.transits - marsBelt.losses
+export const boardTarget = 0.003
+export const boardNeeded = sampleSizeForProportion({ moe: boardTarget, confidence: 0.95, pGuess: marsBeltRate })
+export const boardTex = `${fmt(marsBeltRate, 5)} \\pm ${fmt(board.criticalValue ?? 0, 3)} \\times ${fmt(board.se, 5)} = ${fmt(marsBeltRate, 5)} \\pm ${fmt(board.marginOfError ?? 0, 5)}`
+export const sizeTex = `n = \\hat{p}(1 - \\hat{p})\\left(\\frac{z^\\star}{m}\\right)^2 = ${fmt(marsBeltRate, 5)} \\times ${fmt(1 - marsBeltRate, 5)} \\times \\left(\\frac{${fmt(zStar(0.95), 3)}}{${fmt(boardTarget, 3)}}\\right)^2 = ${fmt(marsBeltRate * (1 - marsBeltRate) * (zStar(0.95) / boardTarget) ** 2, 1)}`
+export const clearsRook = intervalClears(ROOK_BASELINE)
+export const clearsBoard = intervalClears(BOARD_BASELINE)
+export const claimCorrect = clearsRook && clearsBoard ? 2 : clearsRook ? 0 : clearsBoard ? 1 : 3
+export const targetTransits = Math.round(TRANSITS_FOR_TARGET_MARGIN / 100) * 100
+export const extraYears = YEARS_FOR_TARGET_MARGIN
+export const threeYearTransits = LANE_TRANSITS + 3 * TRANSITS_PER_YEAR
+export const intervalRubric = confidenceIntervalInterpretation({
+  level: 0.95,
+  parameter: 'proportion',
+  lower: laneCi[0],
+  upper: laneCi[1],
+  context: { population: 'transits on the Hundred-Day Lane', variable: 'ending in a loss' },
+  digits: 4,
+})
+
+<Scene stamp="MET 134/07:10" location="Bridge · CSV Nightjar · Compact consular berth, Ceres" condensed="Solberg has logged four transmissions from the Compact consulate to Valhalla in the first six hours alongside, none of them yours. Adjuster Renn wants a meeting. Ebele wants to say the Lane is dangerous; Ferrier wants the claim the data can carry, and sets the rule before the numbers arrive. Then Ebele offers to make the margin smaller by waiting.">
+
+Solberg is on the bridge before the watch and he has a list.
+
+<Dialogue speaker="comms" aside="He reads from the log in the flat voice he uses for facts he has no opinion about, which is all of them.">
+Four transmissions from the Compact consular station to Valhalla since we mated the collar at MET 133/06:52. Timestamps 07:14, 09:01, 14:38 and 22:40. Lag twenty-four minutes each way. None of them are ours, sir. I do not have the contents and I am not going to pretend otherwise.
+</Dialogue>
+
+Four in six hours from a consulate that files a traffic summary once a week. Whatever is going on the Lane, something about this ship being visible at Ceres is worth four messages and the price of the beam time.
+
+The second item on the morning board is a meeting request, routed through the consul's office and written by somebody who is used to being answered. *Halide Renn, Adjuster, Tharsis Mutual.* Her syndicate has paid a single beneficiary two point one billion credits over six years against hulls lost on the Hundred-Day Lane, and she would like to understand why a Compact navy that has never returned her calls has suddenly come to Ceres with its lights on.
+
+Ferrier reads the request twice and puts it down.
+
+"She will want a number from us. Before we have one, we settle what kind of number it is."
+
+Ebele has the Ledger open on the bridge plot: {fmtInt(LANE_TRANSITS)} transits, {fmtInt(LANE_LOSSES)} of them lost, a rate of {fmt(LANE_RATE, 4)} per transit. He has also, overnight, written a paragraph.
+
+"So — the Lane is running about one loss in every {fmtInt(Math.round(1 / LANE_RATE))} transits, and the Board's own comparison corridor runs at {fmtPct(BOARD_BASELINE, 2)}. My line is: *the Hundred-Day Lane is losing hulls at a materially higher rate than comparable corridors.* Sir."
+
+"On what?"
+
+"On — " He looks at the rate. "On {fmt(LANE_RATE, 4)} against {fmt(BOARD_BASELINE, 4)}."
+
+"Two numbers with no error bars on them, one of which you have been told twice this week is a sample." Ferrier does not raise her voice; she gets more exact instead. "Here is the rule, and I want it before we compute anything, so that nobody can accuse us of choosing it afterwards. Put an honest margin on our rate. Then look at what the interval reaches down to. Any value the interval still touches is a value we have not ruled out — and if the number we wanted to beat is one of them, **then that isn't the claim. Make the claim the data can carry.**"
+
+Ebele takes that well, and then makes the mistake she has been waiting for, which is a better mistake than the last one.
+
+"Then we make the margin smaller, sir. Two-tenths of a point would settle it — that would put the interval clear of anything anybody could argue about. We just need more transits, and the Lane produces about {fmtInt(TRANSITS_PER_YEAR)} a year. It's a few more seasons."
+
+"A few."
+
+"A few, sir."
+
+Ferrier looks at you. She has already worked it out and she is not going to say it, because the point is not the answer, it is that Ebele has offered the Board a timetable without pricing it.
+
+"Solberg," she says. "When the Ensign gives you a number of transits, convert it to years at {fmtInt(TRANSITS_PER_YEAR)} a year, and read it back to him with the date on it."
+
+<Dialogue speaker="comms" aside="He is already reaching for the log. It is the first cheerful thing he has said since Callisto.">
+With pleasure, sir. I convert things into time for a living.
+</Dialogue>
+
+</Scene>
+
+<Briefing title="The margin is the claim" topics={["6.2", "6.3"]}>
+<Briefing.Intuition>
+The interval is built the way the last module built it: the statistic, plus and minus a critical value times the standard error. What changes today is what you do with it, and there are three separate jobs.
+
+**Say what it means.** One sentence, four parts, and every part load-bearing: the **level**, the word **confident**, the **true** (population) parameter named in context, and **both endpoints**. Drop the word *true* and the sentence becomes a claim about the sample, which is known exactly and needs no interval. Say *probable* instead of *confident* and it becomes a claim about the one interval you have, which the last module disposed of.
+
+**Know what moves it.** The margin is
+
+$$m = z^\star\sqrt{\frac{\hat p(1 - \hat p)}{n}}$$
+
+and only three things are in it. The **level** enters through $z^\star$ alone: raise it and the interval widens, and nothing else about the estimate changes. The **sample size** enters under a square root: four times the data halves the margin, a hundred times the data divides it by ten. The **sample proportion** enters through $\hat p(1 - \hat p)$, which is largest at one-half and shrinks toward zero as the proportion approaches either end — so rare events have small standard errors in absolute terms and appalling ones relative to the rate itself. Notice what is *not* in the formula: the size of the population. It appears once, as a condition, and then never again.
+
+**Buy a margin.** Because $n$ is the only lever that improves precision without weakening the claim, it is worth being able to price it. Set the margin you need, solve for $n$, and round **up**, because a sample size is a count of units and a fraction of one buys nothing:
+
+$$n = p^\star(1 - p^\star)\left(\frac{z^\star}{m}\right)^2$$
+
+with $p^\star$ a pilot estimate, or $0.5$ when there is nothing to go on — the value that makes $p^\star(1 - p^\star)$ as large as it can be, and therefore the sample size as large as it will ever need to be. The margin is in the denominator and squared, which is the whole economics of the thing: **halving the margin costs four times the data.**
+
+**Judge a claim with it.** An interval is a set of plausible values, so it answers a question of the form *is the parameter at least $k$?* by geometry.
+
+- If the **whole interval lies above** $k$, every plausible value exceeds $k$ and the claim is supported at that level.
+- If $k$ lies **inside** the interval, $k$ has not been ruled out. That is not the same as showing $k$ is right; it is a statement about what the data could not exclude, and the honest report says so in those words.
+- The point estimate has no vote. $\hat p$ beats all sorts of values it cannot carry an argument against; the endpoint is what carries the argument.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\hat{p} \pm z^\star\sqrt{\frac{\hat{p}(1 - \hat{p})}{n}}" terms={{ '\\hat{p}': 'the sample proportion', 'z^\\star': 'critical value for the level', 'n': 'units in the sample' }} label="One-sample z-interval for a proportion" />
+
+<Formula tex="n = p^\star(1 - p^\star)\left(\frac{z^\star}{m}\right)^2 \quad \text{(round up)}" terms={{ 'm': 'the margin of error you require', 'p^\\star': 'a pilot estimate of the proportion, or 0.5 when there is none', 'z^\\star': 'critical value for the level you will report' }} label="Sample size for a target margin" />
+</Briefing.Definition>
+<Briefing.Worked>
+Not our corridor. The Board's — the Mars–Belt comparison the rebuttal table leans on: {fmtInt(marsBelt.losses)} losses in {fmtInt(marsBelt.transits)} transits, a rate of {fmt(marsBeltRate, 5)}.
+
+**Conditions.** Same three, same process argument: the corridor is an ongoing operation that will produce far more than ten times these {fmtInt(marsBelt.transits)} transits, and the Authority states the record complete. Counts: {fmtInt(marsBelt.losses)} losses and {fmtInt(boardArrivals)} arrivals, both well past ten.
+
+**The interval.** The standard error is {fmt(board.se, 5)} and the {fmtPct(0.95, 0)} critical value is {fmt(zStar(0.95), 4)}.
+
+<Formula tex={boardTex} label="Mars–Belt corridor · statistic ± margin" />
+
+so the corridor's rate lies in **({fmt(boardCi[0], 5)}, {fmt(boardCi[1], 5)})** with {fmtPct(0.95, 0)} confidence — {fmt(100 * boardCi[0], 2)} to {fmt(100 * boardCi[1], 2)} losses per hundred transits.
+
+Read what that does to the Board's own sentence. The rebuttal table prints {fmt(marsBeltRate, 5)} as though it were a fact about the corridor. It is a sample statistic with a margin of {fmt(board.marginOfError ?? 0, 5)} on it, which is {fmt(100 * (board.marginOfError ?? 0), 2)} of a percentage point either side. Any argument that turns on tenths of a point between two corridors is an argument this table cannot settle, and it is the Board's table.
+
+**What a tighter margin would cost them.** Suppose the Directorate wanted the Mars–Belt figure to {fmt(100 * boardTarget, 1)} of a point either side, at the same level:
+
+<Formula tex={sizeTex} label="Mars–Belt corridor · transits for a 0.3-point margin" />
+
+Rounded up: **{fmtInt(boardNeeded)} transits** — more than half again what the corridor has flown in the whole file. Precision about a rare event is not bought with better analysis. It is bought with years.
+</Briefing.Worked>
+<Briefing.Caution>
+*"A bigger sample makes us more confident."* It does not. The level is chosen by the author before the data exists, and $n$ appears nowhere near it. A larger sample buys a **narrower interval at the same level** — which is more useful than more confidence, and a different thing.
+
+*"The interval contains 95% of the sample proportions."* No: it is a range of plausible values for one fixed parameter, built around the single $\hat p$ you happened to draw. Future sample proportions cluster around the parameter, not around your estimate, so an interval centred on an unlucky $\hat p$ would contain rather fewer of them than the label suggests.
+
+*"The interval proves the rate is above $k$."* Nothing proves. An interval lying entirely above $k$ says that at this level every plausible value exceeds $k$, which is a strong, signable statement and not a proof. And the reverse is weaker still: a value **inside** the interval has not been shown to be right, only not excluded. Reporting "the data are consistent with $k$" as though it were "the rate is $k$" is the commonest way an honest interval is turned into a dishonest paragraph.
+</Briefing.Caution>
+</Briefing>
+
+<MarginPlanner />
+
+<Drill generator="act-6/one-prop-interval" count={1} />
+<Drill generator="act-6/margin-value" count={1} />
+<Drill generator="act-6/interval-interpretation" count={1} />
+<Drill generator="act-6/margin-drivers" count={1} />
+<Drill generator="act-6/justify-claim" count={1} />
+<Drill generator="act-6/sample-size-margin" count={1} />
+
+<MissionBeat id="act-6-02-endpoint" kind="numeric" label="THE LOWER ENDPOINT"
+  prompt={`The Ledger: ${fmtInt(LANE_LOSSES)} losses in ${fmtInt(LANE_TRANSITS)} transits. Conditions were checked and signed yesterday. Build the ${fmtPct(0.95, 0)} one-sample z-interval for the true loss rate per transit on the Hundred-Day Lane and report its **lower endpoint**, as a proportion, to **four decimal places**.`}
+  hint="Four steps: the sample proportion; the standard error from that proportion; the critical value for 95%; then statistic minus their product. Carry full precision and round once, at the end — the third and fourth decimals are exactly where this argument will be read."
+  answer={laneCi[0]} answerKind="proportion" digits={4} tolerance={0.0003}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He puts both endpoints on the plot with the margin written underneath, and does not say anything about what it proves.">
+  So the margin is {fmt(laneMoe, 5)} — about {fmt(100 * laneMoe, 2)} of a percentage point either side — and the interval runs {fmt(laneCi[0], 4)} to {fmt(laneCi[1], 4)}. That is one loss in every {fmtInt(Math.round(1 / laneCi[1]))} transits at the pessimistic end, and one in {fmtInt(Math.round(1 / laneCi[0]))} at the other. Sir, that is a wider file than I thought we had.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She does not take the plot down. She points at the denominator of the standard error.">
+  The standard error uses the proportion you measured, not a half and not a number from somebody else's table. And it is divided by n before the root, not after. Do the three pieces on separate lines — proportion, standard error, critical value — and multiply once.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-02-interpret" kind="interpretation" label="THE SENTENCE THAT GOES IN THE REPORT"
+  prompt={`Now say what that interval means, for the Adjuster and for the Board's counsel, both of whom will read it this week. One or two sentences, in context, naming the parameter and both endpoints.`}
+  hint="Four parts: the level, the word confident, the TRUE loss rate per transit for all transits on the Hundred-Day Lane, and the two endpoints. Then check what is not in it — no probability, no claim about individual transits, nothing about the sample proportion, which we know exactly."
+  {...intervalRubric}>
+  <Success>
+  <Dialogue speaker="xo" aside="She copies it into the draft herself, which is the nearest thing to praise that happens on this ship.">
+  That is the sentence. It says what we know, it says how well we know it, and it does not say one word we would have to withdraw. Now find out what it will carry.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the interval on the plot and is looking at his own draft rather than at it.">
+  Yes, sir. That's — yes. I wrote it about the sample again. We already know the sample rate exactly; it's {fmt(LANE_RATE, 4)}, there's nothing to be confident about. The interval is about the corridor — the true rate for every transit the Lane runs, not the {fmtInt(LANE_TRANSITS)} in the file.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-02-claim" kind="choice" label="WHICH CLAIM IT CARRIES"
+  prompt={`Two sentences are drafted for the report. The first: *the true loss rate on the Hundred-Day Lane exceeds ${fmtPct(ROOK_BASELINE, 2)} per transit* — the figure in the Asgard report of 2176, ${fmtInt(ROOK_2176.losses)} losses in ${fmtInt(ROOK_2176.transits)} transits. The second: *the true loss rate exceeds ${fmtPct(BOARD_BASELINE, 2)} per transit* — the Board's own Mars–Belt comparison corridor. Which of them does your interval support at ${fmtPct(0.95, 0)}?`}
+  options={[
+    `Only the first. The whole interval lies above ${fmtPct(ROOK_BASELINE, 2)}, so every plausible value of the true rate exceeds it; ${fmtPct(BOARD_BASELINE, 2)} is inside the interval and has not been ruled out.`,
+    `Only the second. The whole interval lies above ${fmtPct(BOARD_BASELINE, 2)}, and ${fmtPct(ROOK_BASELINE, 2)} is a value the data cannot exclude.`,
+    `Both. The sample rate of ${fmt(LANE_RATE, 4)} is above ${fmtPct(ROOK_BASELINE, 2)} and above ${fmtPct(BOARD_BASELINE, 2)}, so the interval supports both sentences.`,
+    `Neither. Both figures fall inside the interval, so the data are consistent with either and exclude neither.`,
+  ]}
+  correct={claimCorrect}
+  feedback={[
+    claimCorrect === 0 ? null : 'Compare each figure with the LOWER endpoint of the interval, not with the sample rate.',
+    `${fmtPct(BOARD_BASELINE, 2)} is the larger of the two floors. An interval that cleared it would clear ${fmtPct(ROOK_BASELINE, 2)} automatically, so "only the second" is not a shape this comparison can produce — check the lower endpoint against both.`,
+    `That is the point estimate voting, and it has no vote. ${fmt(LANE_RATE, 4)} beats both figures; the question is whether the interval does, and the interval reaches down to ${fmt(laneCi[0], 4)}.`,
+    `One of the two lies entirely below the interval. Put ${fmtPct(ROOK_BASELINE, 2)}, ${fmtPct(BOARD_BASELINE, 2)} and the lower endpoint ${fmt(laneCi[0], 4)} on the same line and read them in order.`,
+  ]}
+  hint="A claim of the form “the rate exceeds k” is supported only when the whole interval lies above k. So the only endpoint that matters is the lower one. Put both figures and that endpoint on a single number line.">
+  <Success>
+  <Dialogue speaker="xo" aside="She strikes the second sentence out of the draft with one line and does not soften it.">
+  Then that isn't the claim. We can say the Lane is worse than the corridor was in 2176 and we can sign it. We cannot say it is worse than the Board's corridor, because the Board's corridor is a value our own interval still touches — and if we write that sentence, their counsel will put this interval on a screen and read the lower endpoint aloud, and everything else we say that day will be about our arithmetic.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She puts the figure and the endpoint side by side on the plot and waits.">
+  You claimed the one the interval can't carry. Look at where the interval reaches down to, and then look at the number you wanted to beat. A value the interval still touches is a value we have not ruled out, and a report that treats it as ruled out is a report that loses the room.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-02-size" kind="numeric" label="WHAT THE ENSIGN'S FEW SEASONS COST"
+  prompt={`The Ensign wants the margin down to two-tenths of a percentage point — ${fmt(TARGET_MARGIN, 3)} — at ${fmtPct(0.95, 0)}, using the Lane's own observed rate as the planning value. How many Lane transits would the estimate have to stand on in total? Give the answer **to the nearest hundred transits**.`}
+  hint="Solve the margin formula for n rather than trying sizes: n = p*(1 − p*)(z*/m)², with p* the observed rate, z* the 95% critical value and m the margin you want. Then round up, and then to the nearest hundred."
+  answer={targetTransits} answerKind="count" tolerance={60}>
+  <Success>
+  <Dialogue speaker="comms" aside="He does the conversion out loud, at the board, with a stylus, because he has been waiting for it since 07:10.">
+  {fmtInt(TRANSITS_FOR_TARGET_MARGIN)} transits in total. We hold {fmtInt(LANE_TRANSITS)}, so that is {fmtInt(TRANSITS_FOR_TARGET_MARGIN - LANE_TRANSITS)} more, at {fmtInt(TRANSITS_PER_YEAR)} a year. That is {fmt(extraYears, 1)} years, sir. I am not going to be the one who dates that cover page.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the formula written out and one of the three quantities in the wrong place.">
+  Yes, sir. That's — yes. The margin goes in the denominator and it gets squared, so halving it is four times the transits, not twice. And p-star is the rate we measured, not a half — a half would be the conservative planning value if we had nothing, and we have six years of Ledger.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-6-02-endpoint", "act-6-02-interpret", "act-6-02-claim", "act-6-02-size"]}>
+
+<Scene stamp="MET 134/16:30" location="Bridge · CSV Nightjar · Compact consular berth, Ceres" condensed="Solberg prices the Ensign's few seasons in years and it comes out at two decades. Three more years buy a third of a point and settle nothing. The rate argument clears Rook's 2176 figure and does not clear the Board's corridor — so the report cannot be about the rate. It has to be about who was paid.">
+
+Solberg puts it on the board in his own hand, because he wants the arithmetic visible when somebody asks whether the ship was being difficult.
+
+{fmtInt(TRANSITS_FOR_TARGET_MARGIN)} transits in total for a margin of {fmt(TARGET_MARGIN, 3)}. The Ledger holds {fmtInt(LANE_TRANSITS)}. At {fmtInt(TRANSITS_PER_YEAR)} transits a year, the difference is **{fmt(extraYears, 1)} more years** of Lane traffic — and at the Lane's present rate, something on the order of {fmtInt(Math.round((TRANSITS_FOR_TARGET_MARGIN - LANE_TRANSITS) * LANE_RATE))} more lost hulls while everyone waits for the error bar to close.
+
+Ebele asks the follow-up himself, which is progress. What do three more years buy? Three seasons is {fmtInt(3 * TRANSITS_PER_YEAR)} transits, taking the file to {fmtInt(threeYearTransits)}, and the margin comes down from {fmt(laneMoe, 5)} to {fmt(MARGIN_AFTER_THREE_YEARS, 5)} — from {fmt(100 * laneMoe, 2)} of a point to {fmt(100 * MARGIN_AFTER_THREE_YEARS, 2)}. Not two-tenths. Not close to two-tenths, and still touching every figure the Board would want it to touch.
+
+"File it," Ferrier says. "Costed, at the front. When somebody asks in two years why we did not simply wait for better data, the file will show that we priced waiting and that the price was {fmt(extraYears, 0)} years and {fmtInt(Math.round((TRANSITS_FOR_TARGET_MARGIN - LANE_TRANSITS) * LANE_RATE))} hulls."
+
+Which leaves the rate argument exactly where the interval put it, and it is worth saying out loud before anybody gets attached to it.
+
+The Lane is worse than it was in 2176 by your own report, and you can sign that sentence at {fmtPct(0.95, 0)}. The Lane is worse than the Board's comparison corridor: you cannot sign that, today or in three years, because the corridor's rate sits inside your interval and your interval is not going to move far enough to push it out before people stop caring. **The rate argument beats your baseline and it does not beat the Board's.** Every version of this report that turns on *how often* hulls are lost on the Lane ends in an argument about tenths of a point between two corridors, both of which have margins on them, and the Board's counsel will win that argument because he does not have to prove anything.
+
+So the report cannot be about the rate.
+
+Ferrier says it flatly, standing at the plot with the interval still on it and the two baselines marked.
+
+<Dialogue speaker="xo" aside="She has already written the meeting acceptance. Renn's office, the consulate, tomorrow at ten.">
+The data says the Lane loses hulls at a rate we cannot distinguish from a corridor the Board is content with. That is not a finding. So we stop asking how many and start asking **which ones** — because if the losses were falling at random across the Lane, the question of who collects on them would be a dull one. The Adjuster has paid one beneficiary two point one billion credits. Ask her for the register.
+</Dialogue>
+
+Not *how often*. **Who was paid.** A rate cannot carry this report; composition might.
+
+</Scene>
+
+<LogEntry
+  title="An interval is judged by the endpoint the claim has to clear"
+  concept="A one-sample z-interval for a proportion is the sample proportion plus and minus a critical value times the standard error estimated from that same proportion, and it is interpreted about the TRUE proportion in context, with the level, the word confident and both endpoints. The margin answers only to the level, through the critical value, and to the sample size, under a square root — so four times the data halves it, the population size is irrelevant, and a target margin costs a sample size of p*(1 − p*)(z*/m)², rounded up. To judge a claim, compare the claimed value with the nearer endpoint: an interval lying entirely above a value supports the claim that the parameter exceeds it, while a value inside the interval has merely not been ruled out."
+  formula="\hat{p} \pm z^\star\sqrt{\frac{\hat{p}(1 - \hat{p})}{n}}, \qquad n = p^\star(1 - p^\star)\left(\frac{z^\star}{m}\right)^2"
+  mistake="A sample-statistic interpretation — “we are 95% confident the sample proportion is between the endpoints”. The sample proportion is known exactly and needs no interval; say “the true proportion” and name the population. The second version of the same error is judging a claim by the point estimate instead of by the endpoint the claim must clear."
+  tags={['confidence interval', 'one-proportion z-interval', 'margin of error', 'sample size', 'true proportion', 'justify a claim', 'precision', '6.2', '6.3']}
+/>
+
+</Gated>

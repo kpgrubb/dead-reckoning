@@ -1,0 +1,268 @@
+---
+id: act-5-03
+act: 5
+title: "The Machine"
+kind: module
+ap_topics: ["5.3", "5.7"]
+objectives:
+  - "State the mean and standard deviation of the sampling distribution of x̄ — μ and σ/√n — and the conditions under which its shape may be treated as approximately normal"
+  - "Explain what the Central Limit Theorem says and what it does not say, in context"
+  - "Calculate a probability about a sample mean and interpret it as a statement about a group's average, never about one member of the group"
+prereqs: ["act-5-02"]
+est_minutes: 30
+calc_briefing: "limits-and-the-clt"
+summary: "Each of the nineteen is ordinary. Their average is not. The machine builds the distribution of an average of nineteen honest transits, and the nineteen's own mean lands off the end of it."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct, mean, normal, samplingSdMean, skewness, zScore } from '@/lib/stats'
+import { LANE_DELAY_MEAN, LANE_DELAY_SD, MARK_MEAN_19, MARK_MEAN_31, MARK_NULL, NINETEEN_ABOVE_CUTOFF, NINETEEN_MEAN_DELAY, NINETEEN_N, NINETEEN_SD_DELAY, P_HONEST_AS_LATE, P_MEAN_19, SE_MARK_31, SE_MEAN_19, Z_MARK_19, Z_MARK_31, honestDelays, honestTransits, lossMarksAll, nineteenMarks } from '@/instruments/act-5/data'
+import { CltMachine } from '@/instruments/act-5/CltMachine'
+import { theMachineRubric } from '@/instruments/act-5/beats-b'
+
+export const AUDIT_N = 36
+export const auditDelays = honestTransits.filter((t) => t.ownerClass === 'Mercantile').slice(0, AUDIT_N).map((t) => t.mark9Delay)
+export const AUDIT_MEAN = mean(auditDelays)
+export const AUDIT_SE = samplingSdMean(LANE_DELAY_SD, AUDIT_N)
+export const AUDIT_Z = zScore(AUDIT_MEAN, LANE_DELAY_MEAN, AUDIT_SE)
+export const AUDIT_P = normal.sf(AUDIT_MEAN, LANE_DELAY_MEAN, AUDIT_SE)
+export const AUDIT_ONE = normal.sf(AUDIT_MEAN, LANE_DELAY_MEAN, LANE_DELAY_SD)
+export const AUDIT_WRONG_SD = LANE_DELAY_SD / AUDIT_N
+export const AUDIT_WRONG_Z = zScore(AUDIT_MEAN, LANE_DELAY_MEAN, AUDIT_WRONG_SD)
+export const HONEST_SKEW = skewness(honestDelays)
+export const ONE_IN = 1 / P_MEAN_19
+
+<Scene stamp="MET 114/02:50" location="Intel terminal · coasting between purges · Mark 9 region, Hundred-Day Lane" condensed="Four days from the torch. Ebele has the nineteen's delays on the terminal with act-5-02's verdict beside them: about one honest transit in seven is as late as their average, and almost none of them clear the one-percent cutoff. Ferrier refuses to send nineteen anecdotes to Ceres and gives the watch its question — not whether any one hull was late, but what the average of nineteen honest transits looks like and how tight it is. Ebele builds the Central Limit machine on the Ledger. Oyelaran comes down from the blister to watch it run.">
+
+Ninety minutes into the middle watch the ship is doing nothing, which is what she was built for. The torch has been out for six days. The wings are out and the cellar is coming down on the Chief's schedule, and the lithium ticks as it gives the heat back — a sound you stopped hearing on day three and would notice the absence of. Callisto is twenty-one minutes away at light speed; a question to Valhalla and an answer back is three quarters of an hour with nobody thinking in between. Two hundred and sixty-three kilometres per second in the tanks. Four days to the torch for Ceres.
+
+Ebele has had the Transit Ledger open since the forenoon watch. On the intel display: nineteen rows, hull names down the left, and one number down the right that he has come to dislike.
+
+<Dialogue speaker="analyst" aside="He has the act-5-02 plot pinned beside the rows, the cutoff drawn on it, and one hull above the line.">
+So here is where we are, sir, and it is not where I wanted to be. The nineteen average {fmt(NINETEEN_MEAN_DELAY, 2)} days behind the nominal plot, spread {fmt(NINETEEN_SD_DELAY, 2)} days about that. Against honest Lane traffic that is ordinary: {fmtPct(P_HONEST_AS_LATE, 1)} of honest transits are at least that late. About one in seven. {fmtInt(NINETEEN_ABOVE_CUTOFF)} of the nineteen clears the one-percent cutoff. So if a reviewer takes them one hull at a time, the file is nineteen ordinary ships and a shape I can see and cannot measure.
+</Dialogue>
+
+You tell him that a reviewer will take them one hull at a time, because that is the cheapest way to make a file go away, and that he should stop handing them over in that form.
+
+<Dialogue speaker="xo" aside="She has read the Board's rebuttal twice today and has it face down on the console, which is where she puts paper she intends to answer.">
+The file is not nineteen claims, Ensign. It is one claim about nineteen. — Then the number you want is not a number about a hull. What does the *average* of nineteen honest transits look like? Where does it sit, and how wide is it? Build that, and then we will know whether {fmt(NINETEEN_MEAN_DELAY, 2)} days is anywhere near it.
+</Dialogue>
+
+He starts building before she has finished. The machine is simple in outline and he says so out loud while his hands are on it: take the Ledger's honest transits as the population, draw nineteen of them at random, average the nineteen, put one dot on a pile. Do it again. Do it two thousand times. The pile that grows is not a pile of transits. It is a pile of averages, and no watch on any ship has ever seen one — you only ever get one sample, and the pile is what the sample was drawn from the world of.
+
+The hatch cycles. Oyelaran comes forward from the blister with the cold still on her sleeves.
+
+<Dialogue speaker="sensors" aside="She reports before anyone asks, which is how she comes into a compartment.">
+Blister secured, sir. Optics at minus one hundred forty, Eyes stowed, board clear for six hours. Confirmed. — I would like to watch this, if the Ensign does not mind the company.
+</Dialogue>
+
+Ebele does not mind the company. He sets the machine's first parent to something that is not the delay at all, because Ferrier has asked him a question he cannot answer yet and he would rather answer an easier one in front of witnesses first.
+
+</Scene>
+
+<Briefing title="A mean is steadier than anything it is made of" topics={["5.3", "5.7"]}>
+<Briefing.Intuition>
+There are three distributions in this compartment and the whole module is the discipline of never confusing them.
+
+**The population.** Every honest transit's Mark-9 delay: {fmtInt(honestDelays.length)} rows in the Ledger, centred on {fmt(LANE_DELAY_MEAN, 3)} days, spread {fmt(LANE_DELAY_SD, 3)} days about that. It is a fact about drives and filing habits. Nothing you do with a sample changes it by a hair.
+
+**One sample.** Nineteen of those rows. That is data. You can plot it, average it, and be wrong about it.
+
+**The sampling distribution of $\bar{x}$.** The distribution of the *average of nineteen*, over every sample of nineteen the Lane could have handed you. It is not data. Nobody has ever observed one; you get exactly one sample in a career, and the sampling distribution is the thing that sample was drawn out of. It is built by theory and checked by simulation, and it is the only object in the room that can tell you whether an average of nineteen is surprising.
+
+Two facts about it, and they hold for **every** population, of every shape, at every sample size:
+
+- **Its centre does not move.** $\mu_{\bar x} = \mu$. Averaging is not a lens; it does not shift anything. Over repeated samples $\bar{x}$ lands on the population mean, which is what makes it an unbiased estimator.
+- **Its spread shrinks — as $\sigma/\sqrt{n}$, not $\sigma/n$.** A high draw and a low draw in the same sample cancel one another, so averages scatter less than individuals do. *How much* less comes out of the variance: the variances of $n$ independent draws add to $n\sigma^2$, and the averaging divides by $n$ twice, once in each factor, leaving $\sigma^2/n$. Take the square root and the standard deviation of $\bar{x}$ is $\sigma/\sqrt{n}$. Four times the transits, half the spread. A hundred times the transits, one tenth.
+
+The third fact — the **shape** — is the only one that needs a licence, and there are exactly two:
+
+1. **The parent is itself approximately normal.** Then $\bar{x}$ is normal at *any* $n$, including 2, including 19. No rule of thumb required.
+2. **$n \ge 30$.** Then the **Central Limit Theorem** does the work whatever the parent looks like: flat, skewed, two-humped, or nothing but ones and zeros.
+
+The Lane's argument runs at nineteen, so the second licence is closed and the first is the one carrying the weight. It is available: the Ledger's honest delays have skewness {fmt(HONEST_SKEW, 3)}, symmetric and single-peaked, which is exactly what act-5-02 checked on a probability plot before anybody quoted a normal probability. That check is not a formality. It is the reason a number computed at nineteen is defensible at all, and a hostile reviewer will ask for it first.
+
+What the theorem **says**: as $n$ grows, the sampling distribution of $\bar{x}$ approaches a normal shape, centred on $\mu$, with standard deviation $\sigma/\sqrt{n}$, *whatever the population looks like*. What it **does not say**: anything whatsoever about the population, about a data set, or about one transit. The population keeps the shape it always had. The theorem describes one object and leaves everything else exactly as it found it.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\mu_{\bar x} = \mu, \qquad \sigma_{\bar x} = \frac{\sigma}{\sqrt{n}}" terms={{ '\\mu_{\\bar x}': 'centre of the sampling distribution of the sample mean', '\\sigma_{\\bar x}': 'its standard deviation — the standard error of the mean', '\\sigma': 'standard deviation of ONE draw from the population', 'n': 'the sample size' }} label="Centre and spread of x̄ — true for every population, at every n" />
+
+<Formula tex="\operatorname{Var}(\bar{x}) = \operatorname{Var}\!\left(\frac{1}{n}\sum_{i=1}^{n} x_i\right) = \frac{1}{n^{2}} \cdot n\sigma^{2} = \frac{\sigma^{2}}{n}" terms={{ '\\frac{1}{n^{2}}': 'the averaging constant, squared, because variance scales with the square', 'n\\sigma^{2}': 'variances of n independent draws, added' }} label="Where the square root comes from" />
+
+<Formula tex="z = \frac{\bar{x} - \mu}{\sigma/\sqrt{n}} \qquad\text{(shape licensed by: normal parent at any } n\text{, or } n \ge 30\text{)}" terms={{ '\\bar{x}': 'the observed sample mean', '\\mu': 'the centre the null model puts it at', '\\sigma/\\sqrt{n}': 'the spread of a MEAN of n — never σ, never σ/n' }} label="Standardizing a sample mean" />
+</Briefing.Definition>
+<Briefing.Worked>
+A case with no stakes in it, so the arithmetic can be watched on its own. The Lane Authority's 2181 scheduling audit timed **{fmtInt(AUDIT_N)} Mercantile transits** to Mark 9 against the nominal plot. Their mean delay came out **{fmt(AUDIT_MEAN, 2)} days**. Is that a slow month, or is it nothing?
+
+The population is the Ledger's honest transits: $\mu = {fmt(LANE_DELAY_MEAN, 3)}$ d, $\sigma = {fmt(LANE_DELAY_SD, 3)}$ d. Both licences for the shape are open here — the parent is near-normal *and* {fmtInt(AUDIT_N)} is at least 30 — so name one and move on.
+
+$$\mu_{\bar x} = \mu = {fmt(LANE_DELAY_MEAN, 3)} \text{ d}, \qquad \sigma_{\bar x} = \frac{\sigma}{\sqrt{n}} = \frac{{fmt(LANE_DELAY_SD, 3)}}{\sqrt{ {fmtInt(AUDIT_N)} }} = {fmt(AUDIT_SE, 4)} \text{ d}$$
+
+$$z = \frac{ {fmt(AUDIT_MEAN, 3)} - {fmt(LANE_DELAY_MEAN, 3)} }{ {fmt(AUDIT_SE, 4)} } = {fmt(AUDIT_Z, 3)} \qquad\Longrightarrow\qquad P(\bar{x} \ge {fmt(AUDIT_MEAN, 2)}) = {fmtP(AUDIT_P)}$$
+
+So: **{fmtPct(AUDIT_P, 1)}** of audits of {fmtInt(AUDIT_N)} honest transits come out at least that slow. Unremarkable. A scheduling clerk with a grievance would be told to wait for more data, and would be told right.
+
+Now hold that against the individual-level question, which is the one act-5-02 was about. A *single* honest transit {fmt(AUDIT_MEAN, 2)} days behind the plot is not even slightly unusual — {fmtPct(AUDIT_ONE, 0)} of them manage it, two in five. The same lateness is a shrug for one hull and a {fmtPct(AUDIT_P, 1)} event for a group of {fmtInt(AUDIT_N)}, because the spread the *mean* has to travel is {fmt(LANE_DELAY_SD / AUDIT_SE, 1)} times smaller. That factor is $\sqrt{ {fmtInt(AUDIT_N)} }$, and it is the entire engine of this Act.
+
+And the blunder, priced. Divide by $n$ instead of $\sqrt{n}$ and the spread reads {fmt(AUDIT_WRONG_SD, 4)} d instead of {fmt(AUDIT_SE, 4)} d — six times too tight. The same audit then standardizes to $z = {fmt(AUDIT_WRONG_Z, 2)}$, and a quiet month on the Mars run becomes an event the display cannot print a probability for. Every figure downstream of that error is wrong in the same direction: too extreme, too confident, too easy to demolish.
+</Briefing.Worked>
+<Briefing.Caution>
+*The CLT normalises the population.* It does not. It never touches the population. Put a flat parent in the machine, raise $n$ from 2 to 40, and watch the top plot: it does not move by a pixel while the bottom pile narrows and rounds off. Marks stay uniform. Silences stay skewed. Only the pile of averages changes, and it was never made of transits.
+
+*"$n \ge 30$" makes data normal.* It is a statement about $\bar{x}$, not a spell cast on a data set. Collect ten thousand times-to-silence and the histogram is the same long-tailed thing it always was, drawn sharper. The condition licenses a *shape* for the sampling distribution of the mean, and it has a better sibling: a normal parent, which licenses that shape at every $n$ there is.
+
+*$\sigma/n$ is not the standard deviation of $\bar{x}$.* $\operatorname{Var}(\bar{x}) = \sigma^2/n$, so the standard deviation is the square root of that: $\sigma/\sqrt{n}$. Dividing by $n$ shrinks the spread by another whole factor of $\sqrt{n}$, which makes a sample of $n$ look as precise as a sample of $n^2$, and drives every probability afterwards far out into a tail where it does not belong. Root $n$. It is in the log.
+
+*A group's mean can be impossible while every member of it is ordinary.* This is the exact inverse of act-5-02's caution, and the reason both modules exist. There, judging a group by whether any single member is extreme threw the evidence away. Here, the trap runs the other way: having found something impossible about an average, it is a short step to saying it about a hull. It is not true of any hull. $\sigma/\sqrt{n}$ is the standard deviation of an average and of nothing else, and a probability computed with it is a statement about averages and about nothing else.
+</Briefing.Caution>
+</Briefing>
+
+Ebele's first parent is the one that makes the point hardest to argue with. **Mark at last contact · the Board's null** is flat — a hull is as likely to go quiet at mark 3 as at mark 11, which is the Board's own account of the losses. Nothing about that population is normal; it has no peak at all.
+
+Set the PARENT POPULATION control to it, leave **sample size n** at 2, and press RUN. Then walk n up — 5, 12, 30, 60 — pressing RUN at each stop, and read two pairs of numbers against each other. `σ/√n · the theory` beside `SD of the simulated means · the machine`: the theorem's arithmetic and two thousand actual draws, agreeing to three or four places, with `σ/n · the common error` sitting beside them in alert red so that the size of that mistake is never abstract. Then `parent skewness` beside `skewness of the stack`. Both plots share one x-axis, which is the part to watch: as n rises, the bottom pile contracts and the top plot does not stir.
+
+<CltMachine parent="mark" />
+
+<Dialogue speaker="sensors" aside="She has not touched the controls. She watches the bottom pile square itself up out of a flat parent, three runs in a row, and says this to the display rather than to either of you.">
+Plume power is bimodal. Time to silence is skewed. Those are properties of the things, sir — of drives, of hulls. I have read them off the Eyes for eleven years. — I had thought *normal* was one of those. A property of a thing. It is not. It is a property of averages.
+</Dialogue>
+
+Nobody answers her, because she is right and it took her ninety seconds. Ebele runs it twice more on the parent with the long right tail — **Time to silence** — because he wants to see the shape form out of something ugly rather than something flat. At n = 4 the pile of means still leans right. At n = 40 it does not.
+
+<CltMachine parent="time-to-silence" n={4} reps={3000} />
+
+<Dialogue speaker="analyst" aside="He sets the parent to Bernoulli — ones and zeros, nothing between — and lets it run while he talks over it.">
+So one more, for next week, because I want it on the record that I saw it before I needed it. Set the parent to **Loss on one transit**: every draw is a one or a zero, lost or arrived, and there is nothing in between for a curve to be made out of. Average nine hundred of them. — That average *is* a loss rate. A sample proportion is a sample mean wearing different clothes, sir, and everything on this display applies to it unchanged.
+</Dialogue>
+
+<CalcBriefing topic="limits-and-the-clt" />
+
+<Drill generator="act-5/sd-of-xbar" count={1} />
+<Drill generator="act-5/probability-about-xbar" count={1} />
+<Drill generator="act-5/sigma-over-n-trap" count={1} />
+<Drill generator="act-5/clt-conditions" count={1} />
+<Drill generator="act-5/what-the-clt-claims" count={1} />
+<Drill generator="act-5/back-out-n" count={1} />
+<Drill generator="act-5/what-the-clt-says" count={1} />
+
+<MissionBeat id="act-5-03-se" kind="numeric" answer={SE_MEAN_19} answerKind="other" digits={3} units="d" label="THE WIDTH OF AN AVERAGE"
+  prompt={`Set the machine to the Lane's honest delays and to nineteen at a time. Honest Lane traffic runs at $\\mu = ${fmt(LANE_DELAY_MEAN, 4)}$ d with $\\sigma = ${fmt(LANE_DELAY_SD, 4)}$ d.\n\nWhat is the **standard deviation of the mean Mark-9 delay of nineteen honest transits** — the width of the pile the machine is building? Give it to three decimal places, in days.`}
+  hint="Not the spread of one transit; the spread of an average of nineteen. It is the population's σ cut down by the sample size — and the sample size enters under a root, because the variance is what divides by n.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He reads the theory figure and the machine's own figure off the display in the same breath, and they agree.">
+  So the average of nineteen honest transits sits on the plot, give or take about two thirds of a day. That is the whole width of the thing, sir. Two thousand simulated averages and the formula, to the fourth decimal.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="Ebele has the same figure on his own display. She reaches past him and puts a finger on the denominator.">
+  Root n, Ensign. It's in the log. — You have divided by nineteen. Dividing by n instead of its square root shrinks the spread of an average by another whole factor of the root, which would make a group of nineteen as precise as a group of three hundred and sixty-one, and every probability you hang on it afterwards comes out too extreme to defend. The variance divides by n. The standard deviation divides by the root.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-5-03-probability" kind="numeric" answer={P_MEAN_19} answerKind="pValue" allowInequality digits={4} label="WHERE THE NINETEEN LAND"
+  prompt={`The nineteen lost Perrine hulls averaged **${fmt(NINETEEN_MEAN_DELAY, 2)} days** behind the nominal plot. Suppose — and say it out loud, because everything rests on it — that those nineteen had flown the Lane like any other nineteen honest transits, drawn from a population centred on $${fmt(LANE_DELAY_MEAN, 4)}$ d with $\\sigma = ${fmt(LANE_DELAY_SD, 4)}$ d.\n\nWhat is the probability that the **mean** of nineteen such transits would come out at least as late as ${fmt(NINETEEN_MEAN_DELAY, 2)} d? Report the probability itself, or an upper bound written as "< 0.001" — either is accepted.`}
+  hint="Standardize the observed mean against the spread of a MEAN of nineteen, not against the spread of one transit. Then take the upper-tail area beyond that z. The parent is near-normal, which is what licenses the normal model at nineteen.">
+  <Success>
+  <Dialogue speaker="xo" aside="She does not raise her voice. She gets more precise, which on this deck is the same signal.">
+  Say what that is a probability *of*, before either of you says it is a probability of anything else. It is the share of samples of nineteen honest transits whose average would be at least this far behind the plot. It is not the probability that anybody is guilty of anything, and it is not a statement about one hull. — Now. That is a number I can put in front of a board.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the wrong figure on the display and the right denominator two lines above it.">
+  Yes, sir. That's — yes. I standardized against {fmt(LANE_DELAY_SD, 2)} days, which is the spread of one transit, and that answers act-5-02's question and not this one. The question is about an average of nineteen, so it goes against the spread of an average of nineteen. Same numerator. Different denominator. Whole different order of magnitude.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Scene stamp="MET 114/04:35" location="Intel terminal · the Register's loss records open beside the Ledger" condensed="Ebele opens a second axis — where along the Lane the losses happened — and runs the same machine on the nineteen's marks against the Board's uniform null. Ferrier strikes it out: the nineteen were separated from the other twelve in Act I partly because their marks clustered late, so testing their marks against a uniform null asks the data to confirm what it was chosen for. The test that survives is the one run on all thirty-one losses, whose marks nobody selected on.">
+
+Ebele finds the second axis on his own, which is the part you will put in the report. Not how late the hulls were. *Where* they were when they stopped.
+
+The Register has a mark at last contact for every one of the {fmtInt(lossMarksAll.length)} losses. The Board's account of them — the one in the rebuttal now face down on the console — is that losses happen along the Lane the way rain happens along a road: no particular place, mark {fmtInt(MARK_NULL.a)} as likely as mark {fmtInt(MARK_NULL.b)}. Flat. Uniform. A population with a mean of {fmt(MARK_NULL.mean, 1)} and a standard deviation of {fmt(MARK_NULL.sd, 4)}, which is the same flat parent that has been running in the machine for the past hour.
+
+He sets it going on the nineteen and has an answer inside a minute.
+
+<Dialogue speaker="analyst" aside="There is a rising note in it that was not there an hour ago, and he has not noticed yet.">
+So the nineteen have a mean mark of {fmt(MARK_MEAN_19, 2)} against the Board's {fmt(MARK_NULL.mean, 1)}, and standardizing against the spread of an average of nineteen puts them at {fmt(Z_MARK_19, 2)}. Sir, that is the same story on a second axis. Late *and* far along. It's the same argument twice and it is stronger the second time.
+</Dialogue>
+
+Ferrier takes a pen and draws one line through the figure on his slate, which she has not done to anything of his since Ceres.
+
+<Dialogue speaker="xo" aside="The pen goes down flat on the console beside the slate, and stays there.">
+No. Strike it. — Where did the nineteen come from, Ensign? Not the Ledger. From Act One, out of thirty-one losses, on a rule that included where they stopped. You separated them partly because their marks ran late, and now you are asking a model whether their marks run late. It will say yes. It was always going to say yes. — Say it back to me.
+</Dialogue>
+
+He says it back to her, badly the first time and then in one sentence: *you cannot test a hypothesis on the data that suggested it.* Then he asks the question that repairs it, and it is the right question — what group had its marks recorded before anybody sorted them?
+
+All {fmtInt(lossMarksAll.length)}. Every loss in the Register, the nineteen and the twelve together, marked at last contact by the Authority's own traffic log years before this ship existed and before anybody aboard her had a reason to want a particular answer. Nobody selected that set on anything. Ferrier gives him the axis back on that condition and on no other.
+
+</Scene>
+
+<MissionBeat id="act-5-03-mark" kind="numeric" answer={Z_MARK_31} answerKind="testStat" digits={2} label="THE SECOND AXIS"
+  prompt={`Run it on all ${fmtInt(lossMarksAll.length)} losses — **not** on the nineteen, who were separated from the rest partly on their marks, which makes a model asked about their marks a model asked to agree with itself.\n\nTake the Board's own account of where a hull is lost: mark at last contact uniform from ${fmtInt(MARK_NULL.a)} to ${fmtInt(MARK_NULL.b)}, so $\\mu = ${fmt(MARK_NULL.mean, 1)}$ and $\\sigma = ${fmt(MARK_NULL.sd, 4)}$. All ${fmtInt(lossMarksAll.length)} losses in the Register have a mean mark of **${fmt(MARK_MEAN_31, 2)}**.\n\nWhat is the z-score of that mean against the Board's null? Two decimal places.`}
+  hint="Same three steps as the delay axis, with the Board's μ and σ instead of the Lane's. The centre of the sampling distribution is the null's mean; its spread is the null's σ cut down by the number of losses being averaged.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He puts both axes on one page, the delay on the left and the mark on the right, with the selection note written under the second before he writes anything else.">
+  So the clean one holds, sir. Smaller than the number you struck — and it is worth less to us and more to the Board, which is the trade. Thirty-one marks nobody sorted, against the Board's own model of the Lane, and they still sit far along it. I have written the selection note under it. If anybody wants to know why the nineteen are not in this test on their own, the reason is on the same page as the number.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  You have standardized against the spread of one loss, or you have run it on the nineteen after I struck them. The spread of an *average* of {fmtInt(lossMarksAll.length)} marks is the Board's σ over the square root of {fmtInt(lossMarksAll.length)}. Use their model and their numbers throughout. The argument is worth more when every quantity in it is theirs.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-5-03-say-it" kind="interpretation" label="SAY IT BACK TO ME"
+  prompt={`Ferrier wants the sentence, in her hand, before the file is closed for the night — the one a hostile reader cannot move.\n\nWrite it. What exactly is the ${fmtP(P_MEAN_19)} a probability *of*? State the assumption it rests on, cite the size of the thing from your own arithmetic, frame it over repeated samples, anchor it in this corridor and these hulls — and then name its limit: what it settles, and what it leaves entirely open.`}
+  hint="Six things, and the last two are the ones people drop. The object (a sampling distribution of the mean of nineteen, not one hull); the assumption (if they had flown honestly); the magnitude (your z or your probability); the long-run framing; the context (Mark-9 delay in days, Lane transits, nineteen lost Perrine hulls); and the limit — a mean this late is not honest variation, and that is all it is."
+  {...theMachineRubric()}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it once, writes the date on it, and puts it in the file above the plots rather than below them.">
+  That will survive a hostile reader. Not because it claims a great deal — because it claims exactly what we have and stops on the line. — File it above the figures. Nobody reads the number without the sentence.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She hands it back with two words underlined and does not say which two.">
+  You have given me a number and a feeling about it. I want the object, the assumption, the size, and the limit, in that order. What is it a probability *of* — averages of nineteen, or hulls? What must be true for it to be the right number? How big is it? And what does it not say? — If you cannot write the last part, you have not understood the first.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-5-03-se", "act-5-03-probability", "act-5-03-mark", "act-5-03-say-it"]}>
+
+<Scene stamp="MET 114/05:20" location="Intel terminal · the machine still running · four days to the torch" condensed="The machine is set to the Lane's delays at nineteen with the nineteen's own mean marked, and the reference line is off the right-hand edge of the pile. Ferrier writes the clue line in the Board's register and then the list of what the ship does not have: a decision rule, an owner, and whether the argument survives using the nineteen's own s instead of the fleet's σ. Oyelaran goes back to the blister without saying anything else.">
+
+He runs it one more time with the reference line switched on, and this time nobody talks over it.
+
+Two thousand averages of nineteen honest transits, piled up between about minus two days and plus two, the normal model drawn over them, the theory and the machine agreeing to four places. And the nineteen's own mean, {fmt(NINETEEN_MEAN_DELAY, 2)} days, standing off the right-hand edge of the pile with nothing between it and the axis end — {fmt(Math.abs(P_MEAN_19 * 1e6), 1)} in a million, one sample of nineteen in {fmtInt(ONE_IN)}. Run the machine until the torch lights and you will not put a dot there. Run it until Ceres and you will not.
+
+<CltMachine showNineteen />
+
+Ferrier writes the clue line herself, in the Board's register, with no adjective in it.
+
+<Dialogue speaker="xo" aside="She writes it as a finding, in the form the Service uses for findings, so that answering it costs somebody an afternoon.">
+The mean Mark-9 delay of the nineteen lost Perrine-flag transits is {fmt(NINETEEN_MEAN_DELAY, 2)} days against a fleet mean of {fmt(LANE_DELAY_MEAN, 3)} days; under the Lane's own honest distribution, a mean of nineteen at least this late arises with probability {fmtP(P_MEAN_19)}. The mean mark at last contact of all {fmtInt(lossMarksAll.length)} losses stands {fmt(Z_MARK_31, 2)} standard errors above the Admiralty's stated uniform model. Neither figure is a test, and this vessel has not run one.
+</Dialogue>
+
+Then she does the other half, which she does every time and which is the reason you keep her: she writes down what the ship does not have, in the same hand, on the same page.
+
+<Dialogue speaker="xo" aside="Three items. She numbers them. The third one she says slowly, because Ebele has not met it yet and will meet it in a month.">
+One. We have a probability under a model. We do not have a decision rule — nothing on this page says how small a number has to be before a Service acts on it, and until we write that down and defend it in advance, any figure we quote can be argued about after the fact. Two. We have nineteen hulls and no owner. The Ledger says Perrine flag; a flag is not a beneficiary, and the register that would tell us who is paid when one of these stops is in an office at Ceres. Three. Every number on this page uses the *fleet's* sigma — two and a half thousand honest transits' worth of it. If the nineteen are their own population, we do not get to borrow it, and the honest version of this argument uses their own spread and a distribution with fatter tails. I expect it to hold. I have not checked, and I will not sign a thing I have not checked.
+</Dialogue>
+
+Oyelaran goes back up to the blister at the end of the watch. She does not say anything else about averages. On the ladder she stops for a moment with her hand on the rail, the way somebody does when a thought arrives at an inconvenient time, and then she goes on up and the hatch cycles behind her.
+
+The cellar is still coming down. Four days to the torch.
+
+</Scene>
+
+<LogEntry
+  title="Averages are normal even when things are not"
+  concept="Over all samples of size n from any population, the sample mean x̄ has centre μ and standard deviation σ/√n — the centre never moves and the spread falls like one over the square root of n, so four times the data halves it. Its shape may be treated as approximately normal on one of exactly two licences: the parent population is itself roughly normal, at any n, or n is at least 30 and the Central Limit Theorem supplies the shape whatever the parent looks like — and the theorem changes nothing about the population, the data set, or any single observation."
+  formula="\mu_{\bar x} = \mu, \qquad \sigma_{\bar x} = \frac{\sigma}{\sqrt{n}}, \qquad z = \frac{\bar{x} - \mu}{\sigma/\sqrt{n}}"
+  mistake="Applying the theorem to individuals. σ/√n is the standard deviation of an average and of nothing else, so a probability computed with it describes groups of n and never one member of the group — a mean can be impossible while every hull in it is ordinary. Its near relative is dividing by n instead of √n, which makes the sampling distribution far too tight and every probability afterwards far too extreme."
+  tags={['sampling distribution of x̄', 'central limit theorem', 'standard error of the mean', 'sigma over root n', 'conditions for normality', 'probability about a sample mean', 'post-selection', '5.3', '5.7']}
+/>
+
+</Gated>
