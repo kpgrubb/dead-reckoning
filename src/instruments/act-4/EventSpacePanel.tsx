@@ -103,14 +103,14 @@ export function EventSpacePanel({
   /* ---- Geometry: the unit bar, then A, B and the union under it ---- */
   const frame = useChartFrame({ height: 232, margin: { top: 12, right: 12, bottom: 34, left: 78 } })
   const xs = useMemo(() => scaleLinear().domain([0, 1]).range([0, frame.innerWidth]), [frame.innerWidth])
-  const spans = useMemo(() => {
-    let cursor = 0
-    return SWEEP_OUTCOMES.map((o, i) => {
-      const from = cursor
-      cursor += sweepOutcomeProbs[o]
-      return { outcome: o, i, from, to: cursor }
-    })
-  }, [])
+  const spans = useMemo(
+    () =>
+      SWEEP_OUTCOMES.map((o, i) => {
+        const from = SWEEP_OUTCOMES.slice(0, i).reduce((s, prev) => s + sweepOutcomeProbs[prev], 0)
+        return { outcome: o, i, from, to: from + sweepOutcomeProbs[o] }
+      }),
+    [],
+  )
 
   const rowY = (row: number) => row * (ROW_H + ROW_GAP)
   const rowLabel = (row: number, text: string) => (

@@ -150,7 +150,13 @@ export function IndependenceChecker({ preset: presetProp = 'sweeps' }: Independe
   const product = pA * pB
   const gapCond = pAGivenB - pA
   const gapJoint = joint - product
-  const independent = Math.abs(gapCond) < 5e-4 && Math.abs(gapJoint) < 5e-6
+  /**
+   * The verdict is read off the counts, not the probabilities: a table of whole hulls can only ever
+   * be independent to the nearest hull. Every cell within half a count of its expected value is as
+   * independent as an integer table gets.
+   */
+  const maxCellGap = Math.max(...tw.table.flatMap((r, i) => r.map((v, k) => Math.abs(v - tw.expected[i][k]))))
+  const independent = maxCellGap < 0.5
 
   const cellRows = tw.rows.flatMap((rn, i) =>
     tw.cols.map((cn, k) => [
@@ -255,6 +261,7 @@ export function IndependenceChecker({ preset: presetProp = 'sweeps' }: Independe
             <Readout label="difference" value={fmt(gapJoint, 5)} tone={independent ? 'default' : 'alert'} live />
             <Readout label="observed count in that cell" value={fmtInt(tw.table[0][0])} size="sm" />
             <Readout label="expected count" value={fmt(tw.expected[0][0], 1)} size="sm" />
+            <Readout label="largest cell gap" value={fmt(maxCellGap, 2)} tone={independent ? 'default' : 'alert'} live />
           </ReadoutRow>
         </section>
 
@@ -267,7 +274,7 @@ export function IndependenceChecker({ preset: presetProp = 'sweeps' }: Independe
 
         {independent ? (
           <Note tone="ok" live>
-            The conditionals sit on the marginal and the joint sits on the product. In this table, knowing {spec.eventB} tells you nothing about {spec.eventA}. Independence is a property of the numbers in front of you, not a fact about the Lane.
+            Independent to the nearest whole count: no cell sits more than {fmt(maxCellGap, 2)} away from its expected value, the conditionals sit on the marginal ({fmt(pAGivenB, 4)} against {fmt(pA, 4)}) and the joint sits on the product. In this table, knowing {spec.eventB} tells you nothing about {spec.eventA}. Independence is a property of the numbers in front of you, not a fact about the Lane.
           </Note>
         ) : (
           <Note tone="warn" live>

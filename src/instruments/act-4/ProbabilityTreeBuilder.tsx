@@ -171,35 +171,28 @@ export function ProbabilityTreeBuilder({ preset: presetProp = 'fades', purgeShar
   const nodeX = frame.innerWidth * 0.38
   const leafX = frame.innerWidth * 0.78
 
-  const leaves = useMemo(
-    () =>
-      ([0, 1] as const).flatMap((i) =>
-        ([0, 1] as const).map((c) => ({
-          i,
-          c,
-          y: leafY[i * 2 + c],
-          label: `${tree.first[i]} ∩ ${tree.second[c]}`,
-          joint: joints[i][c],
-        })),
-      ),
-    [tree, joints, frame.innerHeight],
+  const leaves = ([0, 1] as const).flatMap((i) =>
+    ([0, 1] as const).map((c) => ({
+      i,
+      c,
+      y: leafY[i * 2 + c],
+      label: `${tree.first[i]} ∩ ${tree.second[c]}`,
+      joint: joints[i][c],
+    })),
   )
 
-  const table = useMemo(
-    () => ({
-      columns: ['path', 'P(first stage)', 'P(second | first)', 'joint P(first ∩ second)', 'P(second)', 'P(first | second)'],
-      rows: leaves.map((l) => [
-        l.label,
-        fmt(tree.p1[l.i], 4),
-        fmt(tree.p2[l.i][l.c], 4),
-        fmt(l.joint, 4),
-        fmt(marginal2[l.c], 4),
-        marginal2[l.c] > 0 ? fmt(l.joint / marginal2[l.c], 4) : '—',
-      ] as (string | number)[]),
-      caption: `Two-stage tree. The four joints sum to ${fmt(jointTotal, 4)}; each joint is the product along its path, and the reversed conditional is the joint divided by the second-stage marginal.`,
-    }),
-    [leaves, tree, marginal2, jointTotal],
-  )
+  const table = {
+    columns: ['path', 'P(first stage)', 'P(second | first)', 'joint P(first ∩ second)', 'P(second)', 'P(first | second)'],
+    rows: leaves.map((l) => [
+      l.label,
+      fmt(tree.p1[l.i], 4),
+      fmt(tree.p2[l.i][l.c], 4),
+      fmt(l.joint, 4),
+      fmt(marginal2[l.c], 4),
+      marginal2[l.c] > 0 ? fmt(l.joint / marginal2[l.c], 4) : '—',
+    ] as (string | number)[]),
+    caption: `Two-stage tree. The four joints sum to ${fmt(jointTotal, 4)}; each joint is the product along its path, and the reversed conditional is the joint divided by the second-stage marginal.`,
+  }
 
   const edge = (x1: number, y1: number, x2: number, y2: number, ok: boolean, key: string) => (
     <path key={key} className="dr-tree__edge" d={`M${x1},${y1} C${(x1 + x2) / 2},${y1} ${(x1 + x2) / 2},${y2} ${x2},${y2}`} stroke={ok ? chartTheme.color.axis : semanticColor('rejected')} strokeWidth={chartTheme.stroke.line} fill="none" />

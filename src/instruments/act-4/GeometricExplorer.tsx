@@ -65,12 +65,14 @@ interface Cell {
 
 export function GeometricExplorer({ p: pProp = 0.02, kMax: kMaxProp, arrivalsPerDay: rateProp = ARRIVALS_PER_DAY.Perrine, scenarios = WAIT_SCENARIOS }: GeometricExplorerProps) {
   const [p, setPRaw] = useState(pProp)
-  const [k, setKRaw] = useState(() => Math.round(1 / pProp))
+  const [kState, setKRaw] = useState(() => Math.round(1 / pProp))
   const [rate, setRate] = useState(rateProp)
   const [view, setView] = useState<View>('geometric')
   const [trials, setTrials] = useState(24)
 
   const kMax = kMaxProp ?? Math.min(600, Math.max(20, Math.ceil(3 / p)))
+  /** The axis only runs to kMax, and kMax moves with p, so k is clipped on every render. */
+  const k = Math.min(kMax, Math.max(1, Math.round(kState)))
   const setP = (v: number) => {
     const next = Math.min(P_MAX, Math.max(P_MIN, v))
     setPRaw(next)

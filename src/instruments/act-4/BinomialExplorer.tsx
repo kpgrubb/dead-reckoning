@@ -81,10 +81,14 @@ export function BinomialExplorer({
   const [mode, setMode] = useState<Mode>(modeProp)
   const [n, setNRaw] = useState(nProp)
   const [p, setPRaw] = useState(pProp)
-  const [k, setKRaw] = useState(kProp)
+  const [kState, setKRaw] = useState(kProp)
   const [region, setRegion] = useState<Region>('ge')
-  const [observed, setObserved] = useState(observedProp)
+  const [observedState, setObserved] = useState(observedProp)
   const [preset, setPreset] = useState<Preset>(() => (pProp === BASELINES.board.p ? 'board' : pProp === BASELINES.rook.p ? 'rook' : 'custom'))
+
+  /** The support is 0…n, so a k or an observed count carried over from a larger n is clipped here. */
+  const k = Math.min(n, Math.max(0, Math.round(kState)))
+  const observed = Math.min(n, Math.max(0, Math.round(observedState)))
 
   const clampN = (v: number) => Math.min(N_MAX, Math.max(N_MIN, Math.round(v)))
   const clampP = (v: number) => Math.min(P_MAX, Math.max(P_MIN, v))

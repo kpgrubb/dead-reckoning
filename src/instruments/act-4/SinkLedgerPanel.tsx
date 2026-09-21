@@ -17,7 +17,6 @@ import { ChartSurface, HReferenceLine, Legend, PlotClip, Readout, ReadoutRow, XA
 import { fmt, fmtInt } from '@/lib/stats'
 import {
   ACT_END,
-  MARIUS_MET,
   PURGE_FLOOR_PCT,
   PURGE_HOURS,
   PURGE_STARTS,
@@ -243,6 +242,3 @@ export function SinkLedgerPanel({ from = TORCH_OFF, to = ACT_END, markAt, markLa
     </Panel>
   )
 }
-
-/** The MET the Act's contact turns off-profile — handy as `markAt` for act-4-10. */
-export { MARIUS_MET }

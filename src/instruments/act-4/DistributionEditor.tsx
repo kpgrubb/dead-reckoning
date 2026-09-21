@@ -102,7 +102,13 @@ export function DistributionEditor({
   }
   const normalise = () => {
     if (!(total > 0)) return
-    setProbs(probs.map((p) => Math.round((p / total) * 1e6) / 1e6))
+    // Divide through, round the cells to something a person can read, then put the rounding drift
+    // back on the mode so the table sums to exactly 1 rather than to 1 ± a few millionths.
+    const scaled = probs.map((p) => Math.round((p / total) * 1e6) / 1e6)
+    const drift = 1 - scaled.reduce((a, b) => a + b, 0)
+    const m = scaled.indexOf(Math.max(...scaled))
+    if (m >= 0) scaled[m] += drift
+    setProbs(scaled)
     setPreset('custom')
     setNote(`Divided every cell by ${fmt(total, 4)}. The shape is unchanged; the table now sums to 1.`)
   }
@@ -386,9 +392,9 @@ export function DistributionEditor({
               <Readout label="Σ p(x)" value={fmt(total, 4)} tone={valid ? 'engineering' : 'alert'} live />
               <Readout label="E[X]" value={fmt(rv.mean, 2)} units="h" tone="engineering" live />
               <Readout label="SD(X)" value={fmt(rv.sd, 2)} units="h" tone="engineering" live />
-              <Readout label={`P(X > ${WATCH_WORKING_HOURS})`} value={fmt(pOver64, 4)} tone="alert" live />
-              <Readout label={`P(X ≥ ${WATCH_WORKING_HOURS})`} value={fmt(pAtLeast64, 4)} size="sm" live />
-              <Readout label={`P(X > ${WATCH_IN_WRITING_HOURS})`} value={fmt(pOver60, 4)} size="sm" live />
+              <Readout label={`P(X > ${WATCH_WORKING_HOURS}) · the cellar overruns`} value={fmt(pOver64, 4)} tone="alert" live />
+              <Readout label={`P(X ≥ ${WATCH_WORKING_HOURS}) · includes the ${WATCH_WORKING_HOURS}`} value={fmt(pAtLeast64, 4)} size="sm" live />
+              <Readout label={`P(X > ${WATCH_IN_WRITING_HOURS}) · the written figure`} value={fmt(pOver60, 4)} size="sm" live />
             </ReadoutRow>
 
             {!valid && (
@@ -469,7 +475,7 @@ export function DistributionEditor({
             </ChartSurface>
 
             <ReadoutRow>
-              <Readout label={QUERY_LABEL[query].replace('k', fmt(k, 0))} value={fmt(queryValue, 4)} tone="engineering" size="lg" live />
+              <Readout label={`selected · ${QUERY_LABEL[query].replace('k', fmt(k, 0))}`} value={fmt(queryValue, 4)} tone="engineering" size="lg" live />
               <Readout label={`P(X ≥ ${fmt(k, 0)})`} value={fmt(pGe, 4)} size="sm" live />
               <Readout label={`P(X > ${fmt(k, 0)})`} value={fmt(pGt, 4)} size="sm" live />
               <Readout label={`the cell between them · p(${fmt(k, 0)})`} value={fmt(pEq, 4)} size="sm" tone={pEq > 0 ? 'alert' : 'default'} live />
