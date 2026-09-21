@@ -1,0 +1,163 @@
+/* Act II instruments — tokens only. Imported by the components that need it. */
+
+/* ---------- Cross-tab (TwoWayExplorer) ---------- */
+.dr-xtab {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-sm);
+  font-variant-numeric: tabular-nums;
+  margin: var(--dr-sp-2) 0 var(--dr-sp-3);
+}
+.dr-xtab caption {
+  caption-side: top;
+  text-align: left;
+  padding: 0 0 var(--dr-sp-2);
+  font-size: var(--dr-fs-xs);
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-2);
+}
+.dr-xtab th,
+.dr-xtab td {
+  border: 1px solid var(--dr-line);
+  padding: 0;
+  text-align: right;
+}
+.dr-xtab th {
+  padding: var(--dr-sp-1) var(--dr-sp-2);
+  color: var(--dr-fg-2);
+  font-weight: 500;
+  font-size: var(--dr-fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--dr-bg-1);
+}
+.dr-xtab th[scope='row'] {
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--dr-fg-1);
+}
+.dr-xtab__corner {
+  font-size: var(--dr-fs-2xs);
+  color: var(--dr-fg-2);
+  text-align: left;
+}
+.dr-xtab__cell {
+  display: block;
+  width: 100%;
+  min-height: var(--dr-control-h);
+  padding: var(--dr-sp-1) var(--dr-sp-2);
+  background: var(--dr-bg-0);
+  border: 0;
+  color: var(--dr-fg-0);
+  font: inherit;
+  text-align: right;
+  cursor: pointer;
+  transition:
+    background var(--dr-dur-fast) var(--dr-ease),
+    color var(--dr-dur-fast) var(--dr-ease);
+}
+.dr-xtab__cell:hover {
+  background: var(--dr-bg-2);
+}
+.dr-xtab__cell.is-active {
+  background: var(--dr-bg-3);
+  color: var(--dr-violet);
+  box-shadow: inset 0 -2px 0 var(--dr-violet);
+}
+.dr-xtab__cell:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--dr-focus);
+}
+.dr-xtab__cell.is-zero {
+  color: var(--dr-fg-2);
+}
+.dr-xtab__margin {
+  padding: var(--dr-sp-1) var(--dr-sp-2);
+  color: var(--dr-fg-1);
+  background: var(--dr-bg-1);
+}
+.dr-xtab__total {
+  color: var(--dr-fg-0);
+}
+
+/* Cell readout strip under the table / chart */
+.dr-xtab__readout {
+  min-height: 3.5em;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  color: var(--dr-fg-2);
+  letter-spacing: 0.04em;
+}
+.dr-xtab__readout-head {
+  margin: 0 0 var(--dr-sp-1);
+  text-transform: uppercase;
+  letter-spacing: var(--dr-track-label);
+}
+.dr-xtab__readout-head strong {
+  color: var(--dr-fg-0);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Shared bits ---------- */
+.dr-act2__note {
+  margin: var(--dr-sp-2) 0 0;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  color: var(--dr-fg-2);
+  letter-spacing: 0.04em;
+  line-height: var(--dr-lh-ui);
+}
+.dr-act2__note strong {
+  color: var(--dr-fg-1);
+  font-weight: 500;
+}
+.dr-act2__check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dr-sp-2);
+  min-height: 30px;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-1);
+  cursor: pointer;
+}
+.dr-act2__check input {
+  margin: 0;
+  accent-color: var(--dr-phosphor);
+}
+.dr-act2__check:focus-within {
+  outline: 2px solid var(--dr-focus);
+  outline-offset: 2px;
+  border-radius: var(--dr-radius);
+}
+.dr-act2__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dr-sp-2);
+  align-items: center;
+}
+.dr-act2__trace {
+  margin-top: var(--dr-sp-3);
+}
+.dr-act2__trace-head {
+  margin: 0 0 var(--dr-sp-1);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-2xs);
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-2);
+}
+.dr-act2__square {
+  transition:
+    x var(--dr-dur) var(--dr-ease),
+    y var(--dr-dur) var(--dr-ease),
+    width var(--dr-dur) var(--dr-ease),
+    height var(--dr-dur) var(--dr-ease);
+}

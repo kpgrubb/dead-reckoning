@@ -3,75 +3,114 @@ id: act-0-01
 act: 0
 title: "Shakedown"
 kind: module
-ap_topics: []
+ap_topics: ["1.1"]
 objectives:
-  - "Verify the module pipeline: scene, briefing, instrument, drill, mission beat, log entry"
+  - "Recognise variation as the normal condition of measurement, not a fault"
+  - "Summarise a small set of values with a mean, and explain why a range is not a summary of centre"
+  - "Distinguish a population from a sample and a parameter from a statistic in ship telemetry"
 prereqs: []
-est_minutes: 10
+est_minutes: 20
 calc_briefing: null
-summary: "PLACEHOLDER — Prologue Act Team replaces this module. Pipeline proof only."
+summary: "Nightjar leaves the slip. Six dead-reckoning fixes disagree, and the tug master wants one number."
 ---
 
-import { mean } from '@/lib/stats'
+import { fmt, mean, range, sum, min, max } from '@/lib/stats'
+import { loggedFixRun, yardAcceptanceFixes, FIX_SD_KM, FIX_ENVELOPE_KM } from '@/instruments/act-0/data'
+import { NavFixDisplay } from '@/instruments/act-0/NavFixDisplay'
 
-export const fixes = [11.2, 14.8, 9.6, 13.1, 12.4, 15.9]
+<Scene stamp="MET 0/06:00" location="Adlinda Yards, Callisto · the slip" condensed="Nightjar leaves the Adlinda slip under tug at MET 0. You walk the ship: the lithium cellar at four percent and warming, the wings folded, Oyelaran in the blister calibrating the Eyes on Jupiter's limb. Orders: three cold runs against Callisto's own telescopes.">
 
-<Scene stamp="MET 000:04:12" location="Callisto departure corridor" condensed="You take the corvette out on her first shakedown. The navigation officer reports dead-reckoning fix errors; you ask for the numbers, not the adjectives.">
+The tug takes her off the slip at 06:00 exactly, because Sandoval told the yard that anything else would be logged. You feel it through the deck as a change in the quality of the quiet: the yard's umbilicals gone, the ship's own pumps carrying the load. On the engineering display the cellar reads four percent and warming. Sixty tonnes of lithium, cold and solid, waiting to be asked to hold the ship's heat.
 
-The corvette answers the helm like something that has been waiting a long time to be let out. You keep your hands off the console and watch the officers work.
+You walk her. It is the first time you have done it as her captain rather than the Service's build liaison, and you notice that you still put your hand on the same frames. The sink vault, where the Chief has taped a card over the yard's brass plate with her own numbers on it. The radiator wings, folded into the hull like something asleep. The wardroom, where sixteen people who have known each other for nine days are not yet talking the way a crew talks. Ferrier has been aboard nine of those days. She has read every page of the design book and she has not yet said what she thinks of it.
 
-Forward of you, the navigation station is logging position fixes against the Callisto beacon — dead reckoning first, beacon truth second, the difference in kilometers. The XO reads the errors off the display and calls them "acceptable."
+The blister at the mast head is a two-person pressurised station with a manual lidar head and a view. Oyelaran is in it with the hatch open, calibrating the Eyes against Jupiter's limb, which is the only thing out here bright enough and known enough to calibrate against. She does not look up when you put your head through. "Four telescopes, four offsets, all inside spec, sir. I'll have them inside half of spec by the first run." You believe her.
 
-You ask for the numbers instead.
+The orders are one page. Three cold runs in Jovian space against Callisto's own telescopes, which know exactly where to look and will therefore find her sooner than anyone else could. The yard wants numbers. The Board wants a ship it can announce. Nobody has yet run the sink with sixteen people breathing in her.
+
+At MET 2/00:00 the torch goes out and the reactor scrams and the wings fold, and *Nightjar* is a cold object on a ballistic path, navigating by dead reckoning. Ferrier runs the first fix against Callisto's beacon at 01:00 and five more at ten-minute intervals: where the ship thinks it is, against where the beacon says it is. Six numbers. They do not agree with each other. Some are ahead of truth, some behind, and the difference between the best and the worst is the width of a small moon.
+
+The yard tug *Adlinda Nine*, standing off at two thousand kilometres as range safety, wants the ship's position error for its log. One number.
 
 </Scene>
 
-<Dialogue speaker="xo" aside="Not looking up from the plot.">
-Six fixes since departure, Commander. Errors between about ten and sixteen kilometers. Nothing to worry about.
+<Dialogue speaker="xo" aside="At the plot. She has the six values on the display and has not summarised them.">
+Six fixes since we went cold, Captain. They don't agree. The data says six things, and the tug master wants it to say one.
 </Dialogue>
 
-<Briefing title="The mean as a summary" topics={[]}>
+You tell her that he can have one number for where the ship thinks it is, and a second number for how sure she is. Not one number that pretends to be both.
+
+<Dialogue speaker="xo">
+Say it back to me, so it's on the log which one he's getting.
+</Dialogue>
+
+<Briefing title="Variation is data" topics={["1.1"]}>
 <Briefing.Intuition>
-"Between ten and sixteen" is a range. A range hides where most of the values sit. The first thing you want from a handful of numbers is a single number that stands for all of them — a **center**.
+Run the same procedure twice and you get two numbers. That is not a fault in the procedure; it is what measurement is. The question a commander asks of six fixes is not *which one is right* but *what do the six say together* — where they sit, and how far they scatter. Those are two different questions, and they get two different numbers.
+
+The first is a **summary of centre**: one value that stands in for all six. The mean is the balance point. The second is a **summary of spread**. The range — largest minus smallest — is the crudest one, and it is honest as far as it goes; but it answers *how far apart*, never *where*.
+
+Behind the six fixes is the **population**: every fix the dead-reckoning procedure could produce on this geometry, if it were run forever. The six you hold are a **sample** of it. A number that describes the population (the procedure's long-run mean error) is a **parameter**; a number computed from the six (their mean) is a **statistic**. The tug master gets a statistic. Nobody will ever hold the parameter.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i" terms={{ '\\bar{x}': 'sample mean', 'n': 'number of observations', 'x_i': 'the i-th observation' }} label="Sample mean" />
+<Formula tex="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i" terms={{ '\\bar{x}': 'sample mean — the summary of centre', 'n': 'number of observations in the sample', 'x_i': 'the i-th observation (a fix error, km)' }} label="Sample mean" />
+
+**Range** $= \max(x_i) - \min(x_i)$ — a summary of spread, in the same units. A **parameter** describes a population; a **statistic** describes a sample.
 </Briefing.Definition>
 <Briefing.Worked>
-The six fix errors are {fixes.join(', ')} km. Their sum is {fixes.reduce((a, b) => a + b, 0).toFixed(1)}; divided by six, the mean is **{mean(fixes).toFixed(2)} km**.
+Adlinda's own acceptance trial, two weeks before the crew came aboard, logged six along-track fixes against the same beacon (km, positive = ahead of truth): {yardAcceptanceFixes.map((v) => fmt(v, 0)).join(', ')}.
+
+Their sum is {fmt(sum(yardAcceptanceFixes), 0)}; divided by six, the mean is **{fmt(mean(yardAcceptanceFixes), 1)} km** — the yard's dead reckoning ran, on average, {Math.abs(mean(yardAcceptanceFixes)) < 1 ? 'on the beacon' : mean(yardAcceptanceFixes) > 0 ? 'ahead of the beacon' : 'behind the beacon'} by that much. The largest fix was {fmt(max(yardAcceptanceFixes), 0)} and the smallest {fmt(min(yardAcceptanceFixes), 0)}, so the range is **{fmt(range(yardAcceptanceFixes), 0)} km**. The yard's report gave both numbers, in that order, and labelled them.
 </Briefing.Worked>
+<Briefing.Caution>
+Two errors, both common on tug channels. *"The fixes disagree, so the navigation is faulty."* No: six fixes from a sound procedure always disagree; the size of the disagreement is information about the procedure, not evidence against it. *"The error is between minus a hundred and plus two hundred."* That is a range dressed as a position. It tells the tug master how far the fixes scatter and nothing about where the ship thinks it is.
+</Briefing.Caution>
 </Briefing>
 
-<Plot spec={{ kind: 'dotplot', values: fixes, label: 'Fix error (km)' }} label="NAV · DEAD-RECKONING FIX ERROR" description="Dotplot of six dead-reckoning fix errors in kilometers, ranging from about 9.6 to 15.9." showTable />
+<NavFixDisplay />
 
-<MonteCarlo label="NAV · SIMULATED FIX ERRORS" task="normal-sample-mean" params={{ n: 6, mu: 12.5, sigma: 2.5 }} n={500} statLabel="mean fix error (km)" description="Histogram of simulated mean fix errors from repeated six-fix runs." />
+<MonteCarlo label="NAV · FIVE HUNDRED SIX-FIX RUNS" task="normal-sample-mean" params={{ n: 6, mu: 0, sigma: FIX_SD_KM }} n={500} statLabel="mean fix error (km)" binWidth={20} description="Histogram of the mean fix error from five hundred simulated six-fix runs. Each run's mean scatters far less than any single fix; the pile is centred on the beacon." />
 
-<Drill generator="act-0/fix-error-mean" count={4} />
+<Drill generator="act-0/fix-run-centre" count={2} />
+<Drill generator="act-0/parameter-or-statistic" count={1} />
+<Drill generator="act-0/summary-of-centre" count={1} />
+<Drill generator="act-0/rerun-shift" count={1} />
 
-<MissionBeat id="act-0-01-mean" kind="numeric" answer={mean(fixes)} tolerance={0.05} units="km" digits={1}
-  prompt="The XO wants a number for the log, not a range. What is the mean fix error, to one decimal place?">
+<MissionBeat id="act-0-01-fix-mean" kind="numeric" answer={mean(loggedFixRun.fixes)} answerKind="mean" digits={1} units="km" label="THE TUG MASTER'S NUMBER"
+  prompt="Adlinda Nine wants the ship's position error for its log — one number for where the ship thinks it is. From the six logged fixes on the NAV display, report the **mean** fix error in km, to one decimal place. Keep the sign: positive means ahead of the beacon. You will give him the range separately."
+  hint="Add the six fixes, signs included, and divide by six. The range (largest minus smallest) is the second number, not this one.">
   <Success>
-  <Dialogue speaker="xo">Logged. Thirteen kilometers and change. Better than the yard promised.</Dialogue>
+  <Dialogue speaker="xo" aside="She keys it to the tug before you have finished the sentence.">
+  Logged. Mean of six against the beacon, and the spread to follow as a separate line. He can put the first in his position column and the second wherever he likes.
+  </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="xo">That's not what the sum gives me, Commander. Six values. Add them, divide by six.</Dialogue>
+  <Dialogue speaker="xo" aside="She does not look up from the six values.">
+  That is not the centre of those six, Captain. You gave him the spread as the position, or you gave him one fix and called it all of them. Add the six — signs and all — and divide by six. The range is a second number, and he gets it second.
+  </Dialogue>
   </Failure>
 </MissionBeat>
 
-<Gated by="act-0-01-mean">
+<Gated by="act-0-01-fix-mean">
 
-<Scene stamp="MET 000:06:40">
+<Scene stamp="MET 2/01:40" location="Jovian space · cold, ballistic · 2,000 km from Adlinda Nine" condensed="You give the tug the mean and the range as two numbers. Ferrier notes the class of error: a cold ship on dead reckoning knows its own position to a few hundred kilometres — and so does anyone who has its published profile.">
 
-The number goes into the log. It will matter later, when someone tells you a different number and expects you not to notice.
+Solberg sends it as two lines, because you told him to: the mean, {fmt(mean(loggedFixRun.fixes), 1)} km along track, and the spread, {fmt(range(loggedFixRun.fixes), 0)} km across the six. The tug master acknowledges in four words. He was not interested in the second line. He will be, one day, on some other ship.
+
+Ferrier writes the two numbers on the plot's margin in her own hand, the way navigators still do, and adds a third thing that is not a number. *Class of error: plus or minus three hundred.* Not this run's — the procedure's. Six fixes from a cold ship, with the beacon known, scatter across roughly three hundred kilometres; call it the {FIX_ENVELOPE_KM}-kilometre class, she says, and stop pretending the third decimal exists.
+
+"That is what a ship knows about itself when it is cold, Captain," she says. "A ship on a published profile, with the Authority plotting it, is known to about the same. Anyone with the profile could put a rock through it."
+
+The lithium ticks as it warms. Oyelaran reports the Eyes calibrated to half of spec, as promised. You have one number for where the ship is and one for how sure, and you have Ferrier's third thing, which is not about this ship at all.
 
 </Scene>
 
 <LogEntry
-  title="Sample mean"
-  concept="The mean is the balance point of a dataset: the sum of the values divided by their count. It uses every observation, which makes it precise and also sensitive to extreme values."
-  formula="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i"
-  mistake="Reporting a range (“between 10 and 16”) when a single summary of center is asked for."
-  tags={['mean', 'center', '1.7']}
+  title="Variation is data"
+  concept="Repeated measurements of the same thing disagree; that scatter is the normal condition of measurement, not a fault. A mean summarises where the values sit (centre); a range summarises how far they scatter (spread) — two questions, two numbers. The mean of a sample is a statistic; the long-run mean of the procedure that produced it is a parameter nobody will ever hold."
+  formula="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i \qquad \text{range} = \max(x_i) - \min(x_i)"
+  mistake="Reporting a range (“between −120 and +180”) as if it were a centre. The range says how far the fixes disagree; it says nothing about where the ship thinks it is."
+  tags={['mean', 'range', 'variation', 'parameter', 'statistic', '1.1']}
 />
 
 </Gated>

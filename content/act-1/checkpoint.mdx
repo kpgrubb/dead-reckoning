@@ -1,0 +1,123 @@
+---
+id: act-1-checkpoint
+act: 1
+title: "Checkpoint: Signatures"
+kind: checkpoint
+ap_topics: ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "1.10"]
+objectives:
+  - "Survive Ferrier's read-through of the preliminary: every one-variable display in it, on the Register and the contact log, defended from the numbers"
+  - "Describe and compare distributions in context, with comparative language, before the Board reads them"
+prereqs: ["act-1-06", "act-1-07"]
+est_minutes: 20
+calc_briefing: null
+summary: "The preliminary goes out under your name. Ferrier reads every display first, and strikes the ones that would not survive the Board's staff."
+---
+
+import { fmt, median, iqr, mean } from '@/lib/stats'
+import { losses, timeToSilence, lossMarks, REGISTER_META } from '@/instruments/act-1/data'
+import { CheckpointGate } from '@/instruments/act-1/CheckpointGate'
+
+export const gradual = timeToSilence.filter((t) => t >= 1).length
+export const abrupt = timeToSilence.length - gradual
+export const sulcusGradual = losses.filter((l) => l.time_to_silence >= 1 && l.hull_class === 'Sulcus-Mk3').length
+
+<Scene stamp="MET 027/14:00" location="Bridge · intel terminal · 0.28 AU from Callisto, 4 mgee" condensed="You draft the preliminary: two processes among the losses, one abrupt and coded piracy, one gradual and coded unknown, both late in the Lane. Ferrier reads every display before it goes out under your name.">
+
+You write it the way you wrote the *Asgard* report twenty years ago, in the order a hostile reader will read it. Thirty-one losses in 2,200 records. What the file is a sample of. The classification table, by office. The shape of time-to-silence, which is two shapes. Mark at last contact against the Board's own flat axis. Age, value. The contact log, sixty plumes, one of them hot for its declared mass, its certification requested and not yet answered.
+
+You do not write *piracy*. You do not write *Sulcus*. You write that the incident file, read as a distribution rather than a mean, shows two processes; that one of them is abrupt and coded piracy, the other gradual and coded unknown; that both are concentrated late in the Lane; and that the lost hulls' declared cargo is cheaper than the Lane's, which is not what piracy looks like. Not an accusation. A shape.
+
+Four paragraphs. Eleven displays. Ferrier takes the slate to the intel terminal and opens the file beside it.
+
+</Scene>
+
+<Dialogue speaker="xo" aside="Not looking up.">
+This goes out under the Captain's name. I want every display in it to survive a hostile reader. Assuming the file is complete, and assuming they read it — which they will, once, looking for the line to strike.
+</Dialogue>
+
+<Dialogue speaker="xo">
+So I'll strike first. Each one, from the numbers. Say it back to me.
+</Dialogue>
+
+<Checkpoint act="act-1" />
+
+<CheckpointGate act="act-1">
+
+<Scene stamp="MET 027/16:10" location="Bridge · comms station · 0.28 AU from Callisto" condensed="Solberg is ready to send. Ferrier asks one more thing before he does: whether the bimodality — the two piles — goes in this note, or waits for a second variable to explain it.">
+
+Solberg has the routing line up and his hand off the key. Two minutes twenty out; Callisto is still close enough that a reply could come the same watch, if anyone at Valhalla were in the habit of replying in the same watch.
+
+Ferrier stops him with a look, not a word.
+
+</Scene>
+
+<Dialogue speaker="xo">
+One thing before it goes. The two piles. {gradual} gradual, {abrupt} abrupt. We can describe it. We can't explain it — not with one variable. If it goes now, the Board reads "two processes" and hears "an accusation the Captain hasn't made yet." If it holds, we send a shape without its most interesting feature, and the Ensign asks me in a month why we sat on it.
+</Dialogue>
+
+<Dialogue speaker="xo">
+It's your name on the line, Captain. Say it back to me.
+</Dialogue>
+
+<MissionBeat id="act-1-checkpoint-send" kind="decision" label="THE PRELIMINARY"
+  prompt="The preliminary is ready. Does the bimodality — two processes among the losses, one abrupt, one gradual — go to the Board now, described and unexplained, or does it hold until a second variable can carry it?"
+  options={["Send the bimodality now", "Hold it — send the shape without the two piles"]}>
+  <Outcome option={0}>
+  <Dialogue speaker="comms">Sending as drafted, Captain. Valhalla. Two minutes twenty out. The earliest anyone can have an opinion about it is 16:15. I would not expect one before the morning watch.</Dialogue>
+  <Dialogue speaker="xo">Logged. I want it noted I asked. It's the right shape. It's early.</Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="comms">Sending the amended draft, Captain. Valhalla. Two minutes twenty out.</Dialogue>
+  <Dialogue speaker="xo">Logged. The two piles stay in the file. The Ensign will ask why. When he does, tell him the truth — that a shape without a second variable is a shape, not a finding.</Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<Gated by="act-1-checkpoint-send">
+
+<Scene stamp="MET 030/09:40" location="Bridge · 0.39 AU from Callisto, 4 mgee" condensed="The Board's reply comes in four hours: noted; continue within the assigned profile. Ebele points out that every gradual-silence hull is a Sulcus hull that passed Bureau certification. If they were heavier than they said, the Lane's own telemetry would show it — but that needs two variables.">
+
+The reply takes four hours, which Solberg reads as a compliment to somebody's staff. Three minutes twenty out now; three back. It is eleven lines.
+
+</Scene>
+
+<Scene variant="transmission" stamp="MET 030/09:40 · VALHALLA" condensed="The Board notes the observation and directs continued observation within the assigned profile.">
+
+*The Board notes the commanding officer's preliminary observation regarding the distribution of incident marks and incident classifications. It is noted that the distribution of transponder-degradation intervals is described as comprising two modes. The Board directs that observation continue within the assigned profile. Further characterisation of the incident pattern is expected in the commanding officer's next report. — For the Board, Maalouf, Cdre., Flag Secretary.*
+
+</Scene>
+
+<Dialogue speaker="comms">
+Timestamp is genuine, Captain. Four hours and six minutes from receipt. Somebody read it.
+</Dialogue>
+
+<Dialogue speaker="analyst" aside="He has been waiting to say it since the reply came in.">
+So — sir. The gradual pile. The {gradual} hulls that faded over hours instead of going dark in a minute. I pulled their hull classes. All {sulcusGradual} of them are Sulcus-class, Mk 3 drives, Sulcus Freight. Every one passed Bureau certification at Uruk High — declared mass, fuel load, examiner's stamp. And the one plume we flagged is a Sulcus hull running hot for its declared mass.
+</Dialogue>
+
+<Dialogue speaker="xo">
+Hot is an adjective, Ensign. Heavy is a number. We don't have it.
+</Dialogue>
+
+<Dialogue speaker="analyst">
+No, sir. But the Lane does. The relay net logs every hull's state vector from Mark 2. If a hull is heavier than its certificate says, its acceleration under a known drive is lower than it should be — thrust over mass. The Bureau has the declared mass. The relay net has the acceleration. Put them side by side for every departure and the ones that lied are the ones off the line.
+</Dialogue>
+
+<Scene stamp="MET 030/10:05" condensed="Two variables, not one. You draft the request to the Bureau of Hulls and Cargo for departure certifications, and to the Authority for the Mark 2 telemetry.">
+
+Two variables, not one. Twenty years ago you would have written the request in an hour. You write it in forty minutes, and you address it through the Directorate of Lane Operations, as directed, and you copy nobody, because you have not yet been given a reason to.
+
+The ship leans four milligee toward Ceres. The file stays open on the intel terminal, thirty-one rows of it, and Ebele's histograms, which he is no longer proud of, and which are, all of them, correct.
+
+</Scene>
+
+<LogEntry
+  title="Act I — the shape, not the centre"
+  concept="A single number summarises a distribution only when the distribution has one centre; the first job is the shape — dotplot, histogram, boxplot with fences — read in context, and a comparison is one sentence with comparative language, not two descriptions. The Register's thirty-one losses are two processes on time-to-silence and one tight pile on mark at last contact; the Board's mean over 2,200 records of every severity describes neither."
+  formula="\text{SOCS: shape} \rightarrow \text{centre} \rightarrow \text{spread} \rightarrow \text{unusual features};\quad \text{fence} = Q_3 + 1.5\,\mathrm{IQR};\quad z = \frac{x - \mu}{\sigma}"
+  mistake="Reporting the mean of a bimodal variable — or a proportion over the wrong denominator — as if it described the individuals."
+  tags={['unit-1', 'checkpoint', 'SOCS', 'comparison', 'z-score']}
+/>
+
+</Gated>
+
+</CheckpointGate>

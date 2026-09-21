@@ -1,216 +1,181 @@
 /**
- * Prologue reference generators — one per answer type, proving the framework for Act Teams.
- * Story-neutral shakedown-cruise framing; Act Teams replace these with in-plot problems.
+ * act-0-01 · Shakedown — drills. AP 1.1: variation is the normal condition of measurement; a mean
+ * summarises centre; a range is not a summary of centre; population vs sample, parameter vs statistic.
  *
- *   act-0/fix-error-mean        numeric        mean / median of a small log
- *   act-0/resistant-center      choice         which measure of center resists an outlier
- *   act-0/sd-in-context         interpretation standard deviation, via the rubric template
- *   act-0/dotplot-shape         display        dotplot → identify the shape
- *   act-0/two-way-conditional   table          conditional relative frequency from a two-way table
+ *   act-0/fix-run-centre           numeric   mean (or range) of a six-fix dead-reckoning run
+ *   act-0/parameter-or-statistic   choice    is this quantity a statistic or a parameter?
+ *   act-0/summary-of-centre        choice    which of these numbers summarises centre?
+ *   act-0/rerun-shift              numeric   how far the mean moves between two runs of the same procedure
  *
- * Every number comes from @/lib/stats; the draw is rejected when it would make the lesson ambiguous.
+ * Every number comes from @/lib/stats; fixes are drawn with the DS-18 procedure (N(0, 120) km, whole km).
  */
-import { defineGenerator, drawDataset, drawTwoWay, listNumbers, numericAnswer, pickContext, retry, tableMd, tableSpec } from '@/lib/problems/generate'
-import { standardDeviationInterpretation } from '@/lib/problems/rubrics'
-import { mean, median, sd, sorted, sum } from '@/lib/stats/descriptive'
+import { defineGenerator, listNumbers, numericAnswer, pickContext, retry } from '@/lib/problems/generate'
+import { max, mean, min, range, sum } from '@/lib/stats'
 import { fmt } from '@/lib/stats/format'
+import { drawFixErrors } from '@/instruments/act-0/data'
 
-const CONTEXTS = [
-  { what: 'dead-reckoning fix errors', units: 'km', mean: 12, sd: 4, station: 'the navigation officer' },
-  { what: 'radiator outlet temperatures', units: 'K', mean: 310, sd: 6, station: 'the engineering watch' },
-  { what: 'reaction-wheel settling times', units: 's', mean: 8.5, sd: 2, station: 'the helm' },
+const RUN_CONTEXTS = [
+  { where: 'the first cold hour of the Quiet run', who: 'Ferrier' },
+  { where: 'hour one of the Watch run', who: 'Ferrier' },
+  { where: 'the Standby check', who: 'the nav watch' },
+  { where: 'the tug-assisted transit out of the Adlinda slip', who: 'the helm' },
 ] as const
 
+function sixFixes(rng: Parameters<typeof drawFixErrors>[0]): number[] {
+  return retry(
+    rng,
+    (r) => drawFixErrors(r, 6),
+    (f) => new Set(f).size === 6 && Math.abs(mean(f)) >= 5 && range(f) >= 120 && Math.abs(max(f)) !== range(f),
+  )
+}
+
 // ---------------------------------------------------------------------------------------------
-// 1. Numeric — mean / median
+// 1. Numeric — mean or range of a six-fix run
 // ---------------------------------------------------------------------------------------------
 
-export const shakedownFixError = defineGenerator({
-  id: 'act-0/fix-error-mean',
-  label: 'Center of a small log',
-  ap_topics: ['1.7'],
+export const fixRunCentre = defineGenerator({
+  id: 'act-0/fix-run-centre',
+  label: 'Centre and spread of a fix run',
+  ap_topics: ['1.1'],
   skills: ['2'],
   generate(rng) {
-    const ctx = pickContext(rng, CONTEXTS)
-    const n = rng.int(5, 7)
-    // Distinct positive values so the median is unambiguous to read off a sorted list.
-    const xs = drawDataset(rng, { n, mean: ctx.mean, sd: ctx.sd, round: 1, min: 0.1, distinct: true })
-    const ask = rng.bool(0.6) ? 'mean' : 'median'
-    const m = mean(xs)
-    const med = median(xs)
-    const value = ask === 'mean' ? m : med
-    const s = sorted(xs)
+    const ctx = pickContext(rng, RUN_CONTEXTS)
+    const fixes = sixFixes(rng)
+    const ask = rng.bool(0.5) ? 'mean' : 'range'
+    const m = mean(fixes)
+    const rg = range(fixes)
+    const value = ask === 'mean' ? m : rg
+    const lo = min(fixes)
+    const hi = max(fixes)
     return {
-      prompt: `During the shakedown run ${ctx.station} logged ${n} consecutive ${ctx.what} (${ctx.units}):\n\n${listNumbers(xs)}\n\nReport the **${ask}** to one decimal place.`,
-      answer: numericAnswer(value, 'mean', { digits: 1, units: ctx.units }),
+      prompt: `${ctx.who} logs six dead-reckoning fixes against Callisto's beacon during ${ctx.where}. Along-track error, km (positive = ahead of truth):\n\n${listNumbers(fixes, 0)}\n\nThe tug master wants ${ask === 'mean' ? 'one number for where the ship thinks it is. Report the **mean** fix error' : 'one number for how far the fixes disagree. Report the **range**'}, to one decimal place (km).`,
+      answer: numericAnswer(value, ask === 'mean' ? 'mean' : 'other', { digits: 1, units: 'km' }),
       hints: [
-        ask === 'mean' ? 'The mean is the sum divided by the count.' : 'Sort the values first. The median is the middle value (or the mean of the two middle values).',
-        ask === 'mean' ? `Sum = ${fmt(sum(xs), 1)}; divide by ${n}.` : `Sorted: ${listNumbers(s)}. With $n = ${n}$ the median is ${n % 2 ? `the ${(n + 1) / 2}th value` : `the mean of values ${n / 2} and ${n / 2 + 1}`}.`,
+        ask === 'mean' ? 'The mean is the sum of the six fixes divided by six — signs included.' : 'The range is the largest fix minus the smallest fix, signs included.',
+        ask === 'mean' ? `Sum = ${fmt(sum(fixes), 0)}; divide by 6.` : `Largest ${fmt(hi, 0)}, smallest ${fmt(lo, 0)}.`,
       ],
       solution:
         ask === 'mean'
-          ? `$$\\bar{x} = \\frac{${xs.map((e) => fmt(e, 1)).join(' + ')}}{${n}} = \\frac{${fmt(sum(xs), 1)}}{${n}} = ${fmt(m, 3)}$$\n\nThe mean is **${fmt(m, 1)} ${ctx.units}**.`
-          : `Sorted: ${listNumbers(s)}. With $n = ${n}$ the median is ${n % 2 ? 'the middle value' : 'the mean of the two middle values'}: **${fmt(med, 1)} ${ctx.units}**.`,
-      misconception: ask === 'median' ? 'A common slip is to take the middle of the *unsorted* list. Sort first.' : 'Dividing by $n - 1$ is for the sample variance, not the mean.',
+          ? `$$\\bar{x} = \\frac{${fixes.map((v) => fmt(v, 0)).join(' + ')}}{6} = \\frac{${fmt(sum(fixes), 0)}}{6} = ${fmt(m, 2)}$$\n\nThe mean fix error is **${fmt(m, 1)} km**. The range, ${fmt(rg, 0)} km, is a separate number: it says how far the fixes disagree, not where the ship is.`
+          : `$$\\text{range} = ${fmt(hi, 0)} - (${fmt(lo, 0)}) = ${fmt(rg, 1)}$$\n\nThe range is **${fmt(rg, 1)} km**. The mean, ${fmt(m, 1)} km, is a separate number: it says where the ship thinks it is, not how far the fixes scatter.`,
+      misconception: ask === 'mean' ? 'The range (largest minus smallest) is a spread, not a position. Reporting it as “the error” gives the tug master the scatter instead of the centre.' : 'The largest fix on its own is one observation, not the spread. The range needs both ends.',
     }
   },
 })
 
 // ---------------------------------------------------------------------------------------------
-// 2. Choice — resistance to an outlier
+// 2. Choice — parameter or statistic
 // ---------------------------------------------------------------------------------------------
 
-export const resistantCenter = defineGenerator({
-  id: 'act-0/resistant-center',
-  label: 'Resistant measures',
-  ap_topics: ['1.7', '1.8'],
-  skills: ['2', '4'],
+type Statement = { text: (r: { n: number; v: string; p: string; k: number }) => string; kind: 0 | 1 }
+
+const STATEMENTS: Statement[] = [
+  { text: ({ n, v }) => `The mean of the ${n} fixes Ferrier logged in the first cold hour was ${v} km.`, kind: 0 },
+  { text: ({ n, k, p }) => `Of the ${n} sweeps the Eyes ran last watch, ${k} logged a contact — a detection rate of ${p}.`, kind: 0 },
+  { text: ({ n, v }) => `Over ${n} hours of the Quiet run the sink drained at an average of ${v} kW.`, kind: 0 },
+  { text: ({ p }) => `${p} of the Register's 2,200 records are losses.`, kind: 0 },
+  { text: () => `The long-run mean error of the dead-reckoning procedure, over every fix it could ever produce.`, kind: 1 },
+  { text: () => `The true proportion of all Watch-profile cold hours on which Callisto's telescopes would find *Nightjar*.`, kind: 1 },
+  { text: () => `The mean load the cellar would carry over every Watch run the ship could ever fly.`, kind: 1 },
+  { text: () => `The fraction of all transits the Lane will ever carry that end in a loss.`, kind: 1 },
+  { text: ({ n, v }) => `The range of the ${n} fixes logged on the Standby check: ${v} km.`, kind: 0 },
+]
+
+export const parameterOrStatistic = defineGenerator({
+  id: 'act-0/parameter-or-statistic',
+  label: 'Parameter or statistic',
+  ap_topics: ['1.1'],
+  skills: ['1'],
   generate(rng) {
-    const ctx = pickContext(rng, CONTEXTS)
-    const { xs, outlier } = retry(
-      rng,
-      (r) => {
-        const base = drawDataset(r, { n: r.int(6, 8), mean: ctx.mean, sd: ctx.sd * 0.6, round: 1, min: 0.1, distinct: true })
-        const outlier = Math.round((ctx.mean + ctx.sd * r.uniform(4, 6)) * 10) / 10
-        return { xs: base, outlier }
-      },
-      // The lesson needs the mean to move clearly more than the median.
-      ({ xs, outlier }) => {
-        const dMean = Math.abs(mean([...xs, outlier]) - mean(xs))
-        const dMed = Math.abs(median([...xs, outlier]) - median(xs))
-        return dMean > 3 * Math.max(dMed, 0.05) && dMean > 0.5
-      },
-    )
-    const withOut = [...xs, outlier]
-    const m0 = mean(xs)
-    const m1 = mean(withOut)
-    const d0 = median(xs)
-    const d1 = median(withOut)
-    const options = ['The mean', 'The median', 'Both are equally affected', 'Neither changes']
+    const s = pickContext(rng, STATEMENTS)
+    const n = rng.int(5, 40)
+    const k = rng.int(1, Math.max(1, Math.floor(n / 3)))
+    const fixes = sixFixes(rng)
+    const v = rng.bool() ? fmt(mean(fixes), 1) : fmt(range(fixes), 0)
+    const p = fmt(k / n, 3)
+    const text = s.text({ n, v, p, k })
+    const options = ['A statistic — it describes the sample actually observed (these fixes, this run, these records).', 'A parameter — it describes the whole population or process (every fix, every run, every transit).', 'Neither — it is a variable, not a number.']
     return {
-      prompt: `A sensor glitch adds one bad reading, **${fmt(outlier, 1)} ${ctx.units}**, to a log of ${ctx.what}:\n\n${listNumbers(xs)}\n\nWhich measure of center is **resistant** — that is, changes least when the bad reading is included?`,
+      prompt: `Ebele's brief contains the line:\n\n> ${text}\n\nIs the quantity a **statistic** or a **parameter**?`,
       answer: {
         type: 'choice',
         options,
-        correct: 1,
+        correct: s.kind,
         feedback: [
-          `The mean uses every value, so one extreme reading drags it: ${fmt(m0, 2)} → ${fmt(m1, 2)} ${ctx.units}.`,
-          null,
-          `Compute both. The mean moves by ${fmt(Math.abs(m1 - m0), 2)} ${ctx.units}; the median by ${fmt(Math.abs(d1 - d0), 2)} ${ctx.units}.`,
-          `The mean clearly changes (${fmt(m0, 2)} → ${fmt(m1, 2)} ${ctx.units}).`,
+          s.kind === 0 ? null : 'A statistic is computed from the observations you actually have. Nobody can log every fix the procedure could ever produce — this quantity describes the whole process.',
+          s.kind === 1 ? null : 'A parameter describes the population or the process as a whole. This number was computed from a specific set of observations, so it is a statistic.',
+          'It is a single number computed (or defined) for a set of observations — a summary, not a variable.',
         ],
       },
-      hints: ['Compute the mean and the median with and without the bad reading.', 'The mean is the balance point of all values; the median only depends on the middle position.', `Mean: ${fmt(m0, 2)} → ${fmt(m1, 2)}. Median: ${fmt(d0, 2)} → ${fmt(d1, 2)}.`],
-      solution: `Without the glitch: mean ${fmt(m0, 2)}, median ${fmt(d0, 2)}. With it: mean ${fmt(m1, 2)}, median ${fmt(d1, 2)} ${ctx.units}. The mean shifts by ${fmt(Math.abs(m1 - m0), 2)}; the median by ${fmt(Math.abs(d1 - d0), 2)}. **The median** is resistant because it depends only on the position of the middle value, not on how extreme the ends are.`,
-      misconception: 'Resistance is about how much a summary *changes* under an extreme value, not about which summary is larger.',
+      hints: ['A statistic is computed from a sample you hold; a parameter belongs to the population or the process behind it.', 'Ask: could the crew compute this number from the log, or does it describe every value the procedure could ever produce?'],
+      solution: s.kind === 0 ? `The quantity was computed from a specific set of observations, so it is a **statistic**. The corresponding parameter would be the same quantity over every observation the procedure could produce.` : `The quantity describes every value the process could ever produce, not a set the crew has logged, so it is a **parameter**. Any run's mean is a statistic that estimates it.`,
+      misconception: 'A number is not a parameter because it is “official” or “true-sounding”; it is a parameter because it describes the population or process, not the sample in hand.',
     }
   },
 })
 
 // ---------------------------------------------------------------------------------------------
-// 3. Interpretation — standard deviation in context (rubric template)
+// 3. Choice — which of these is a summary of centre
 // ---------------------------------------------------------------------------------------------
 
-export const sdInContext = defineGenerator({
-  id: 'act-0/sd-in-context',
-  label: 'Interpret a standard deviation',
-  ap_topics: ['1.7'],
-  skills: ['4'],
-  generate(rng) {
-    const ctx = pickContext(rng, CONTEXTS)
-    const xs = drawDataset(rng, { n: rng.int(8, 12), mean: ctx.mean, sd: ctx.sd, round: 1, min: 0.1 })
-    const s = sd(xs)
-    const m = mean(xs)
-    const answer = standardDeviationInterpretation({ sd: s, variable: ctx.what, units: ctx.units, population: 'this shakedown run', mean: m, digits: 2 })
-    return {
-      prompt: `The ${ctx.what} logged on this shakedown run (${ctx.units}) are:\n\n${listNumbers(xs)}\n\nThe mean is ${fmt(m, 2)} ${ctx.units} and the standard deviation is ${fmt(s, 2)} ${ctx.units}. **Interpret the standard deviation in context.**`,
-      answer,
-      hints: ['A standard deviation is a *typical distance* from the mean.', 'Say what varies, by about how much, and from what.', 'Template: “The ___ typically vary by about ___ from the mean of ___.”'],
-      solution: `${answer.exemplar}\n\nThe standard deviation ${fmt(s, 2)} ${ctx.units} is not a bound: individual readings can sit farther from the mean than that. It summarizes the *typical* deviation.`,
-      misconception: 'Do not describe the SD as a range or as a limit that all values stay inside.',
-    }
-  },
-})
-
-// ---------------------------------------------------------------------------------------------
-// 4. Display — dotplot → shape
-// ---------------------------------------------------------------------------------------------
-
-export const dotplotShape = defineGenerator({
-  id: 'act-0/dotplot-shape',
-  label: 'Read the shape of a dotplot',
-  ap_topics: ['1.5', '1.6'],
+export const summaryOfCentre = defineGenerator({
+  id: 'act-0/summary-of-centre',
+  label: 'A summary of centre',
+  ap_topics: ['1.1'],
   skills: ['2'],
   generate(rng) {
-    const ctx = pickContext(rng, CONTEXTS)
-    const shape = pickContext(rng, ['normal', 'skewRight', 'skewLeft'] as const)
-    const skewFor = (xs: number[]) => (mean(xs) - median(xs)) / sd(xs)
-    const xs = drawDataset(rng, {
-      n: rng.int(18, 26),
-      mean: ctx.mean,
-      sd: ctx.sd,
-      round: ctx.units === 'K' ? 0 : 1,
-      min: 0.1,
-      shape,
-      // The sample must actually look like its parent shape, or the item is unfair.
-      accept: (v) => {
-        const k = skewFor(v)
-        if (shape === 'normal') return Math.abs(k) < 0.08
-        if (shape === 'skewRight') return k > 0.25
-        return k < -0.25
-      },
-    })
-    const options = ['Roughly symmetric', 'Skewed right (tail toward larger values)', 'Skewed left (tail toward smaller values)']
-    const correct = shape === 'normal' ? 0 : shape === 'skewRight' ? 1 : 2
-    const m = mean(xs)
-    const med = median(xs)
+    const ctx = pickContext(rng, RUN_CONTEXTS)
+    const fixes = sixFixes(rng)
+    const m = mean(fixes)
+    const rg = range(fixes)
+    const hi = max(fixes)
+    const cands = [
+      { text: `The mean of the six: ${fmt(m, 1)} km`, correct: true },
+      { text: `The range of the six: ${fmt(rg, 0)} km`, correct: false },
+      { text: `The largest fix: ${fmt(hi, 0)} km`, correct: false },
+      { text: `The number of fixes: 6`, correct: false },
+    ]
+    const shuffled = rng.shuffle(cands)
+    const correct = shuffled.findIndex((c) => c.correct)
     return {
-      prompt: `The sensor array plots ${xs.length} ${ctx.what} (${ctx.units}) from the shakedown run. Describe the **shape** of the distribution.`,
+      prompt: `Six fixes from ${ctx.where} (km):\n\n${listNumbers(fixes, 0)}\n\nThe tug master asks for one number that stands for **where the ship thinks it is**. Which of these is a summary of centre?`,
       answer: {
-        type: 'display',
-        display: { kind: 'dotplot', values: xs, label: `${ctx.what} (${ctx.units})` },
-        question: {
-          type: 'choice',
-          options,
-          correct,
-          feedback: [
-            `Look at the tails: one side stretches farther than the other (mean ${fmt(m, 1)} vs median ${fmt(med, 1)}).`,
-            'A right skew has its long tail toward LARGER values. Check which side stretches out.',
-            'A left skew has its long tail toward SMALLER values. Check which side stretches out.',
-          ].map((f, i) => (i === correct ? null : f)),
-        },
+        type: 'choice',
+        options: shuffled.map((c) => c.text),
+        correct,
+        feedback: shuffled.map((c) => (c.correct ? null : c.text.startsWith('The range') ? 'The range is a summary of spread — how far the fixes disagree — not of where they sit.' : c.text.startsWith('The largest') ? 'One fix is one observation. A summary of centre stands for all six.' : 'A count says how many fixes there are, not where they sit.')),
       },
-      hints: ['Skew names the direction of the long tail, not where the pile sits.', `Compare the mean (${fmt(m, 1)}) with the median (${fmt(med, 1)}): the mean is pulled toward the tail.`],
-      solution: `The dots pile up ${shape === 'normal' ? 'near the middle with tails of similar length on both sides' : shape === 'skewRight' ? 'at the low end with a tail stretching toward larger values' : 'at the high end with a tail stretching toward smaller values'}. Mean ${fmt(m, 1)} ${shape === 'normal' ? '≈' : shape === 'skewRight' ? '>' : '<'} median ${fmt(med, 1)} ${ctx.units}, consistent with **${options[correct].toLowerCase()}**.`,
-      misconception: 'Learners often name the skew by where most of the data sit. Skew is named for the direction of the tail.',
+      hints: ['Centre answers “where do the values sit?”; spread answers “how far apart are they?”', 'The mean is the balance point of all six values.'],
+      solution: `A summary of centre is one number that stands in for where the values sit: the **mean, ${fmt(m, 1)} km**. The range (${fmt(rg, 0)} km) is a spread, the largest fix (${fmt(hi, 0)} km) is one observation, and 6 is a count.`,
+      misconception: 'Learners often report the range when asked for “the error”. The range is real information — but it answers a different question.',
     }
   },
 })
 
 // ---------------------------------------------------------------------------------------------
-// 5. Table — conditional relative frequency
+// 4. Numeric — re-run variation
 // ---------------------------------------------------------------------------------------------
 
-export const twoWayConditional = defineGenerator({
-  id: 'act-0/two-way-conditional',
-  label: 'Two-way table',
-  ap_topics: ['2.2', '2.3'],
+export const rerunShift = defineGenerator({
+  id: 'act-0/rerun-shift',
+  label: 'Re-run variation',
+  ap_topics: ['1.1'],
   skills: ['2'],
   generate(rng) {
-    const rows = ['Hull A', 'Hull B']
-    const cols = ['Nominal', 'Fault']
-    const t = drawTwoWay(rng, { rows, cols, n: rng.int(40, 80), association: rng.uniform(0.2, 0.8), minCell: 3 })
-    const i = rng.int(0, 1)
-    const j = 1
-    const value = t.counts[i][j] / t.rowTotals[i]
-    const tableRows = [...rows.map((r, k) => [r, ...t.counts[k], t.rowTotals[k]]), ['Total', ...t.colTotals, t.total]]
+    const { a, b } = retry(
+      rng,
+      (r) => ({ a: sixFixes(r), b: sixFixes(r) }),
+      ({ a, b }) => Math.abs(mean(a) - mean(b)) >= 3 && Math.abs(mean(a) - mean(b)) < range(a),
+    )
+    const ma = mean(a)
+    const mb = mean(b)
+    const shift = Math.abs(ma - mb)
     return {
-      prompt: `Post-shakedown inspection sorted ${t.total} subsystem checks by hull section and result. What proportion of **${rows[i]}** checks were faults? Give a proportion to three decimal places.`,
-      data: tableSpec(['Section', ...cols, 'Total'], tableRows),
-      answer: numericAnswer(value, 'proportion'),
-      hints: ['A conditional relative frequency uses a ROW total (the condition) as the denominator, not the grand total.', `Row total for ${rows[i]}: ${t.rowTotals[i]}. Faults in that row: ${t.counts[i][j]}.`],
-      solution: `Restrict to the ${rows[i]} row:\n\n${tableMd(['Section', ...cols, 'Total'], [tableRows[i]])}\n\n$$P(\\text{Fault} \\mid \\text{${rows[i]}}) = \\frac{${t.counts[i][j]}}{${t.rowTotals[i]}} = ${fmt(value, 3)}$$`,
-      misconception: `Dividing by the grand total (${t.total}) gives the joint relative frequency, ${fmt(t.counts[i][j] / t.total, 3)}, not the conditional one.`,
+      prompt: `Ferrier runs the six-fix procedure twice on the same cold hour, against the same beacon (km):\n\nRun A: ${listNumbers(a, 0)}\n\nRun B: ${listNumbers(b, 0)}\n\nThe tug master wants to know whether something broke between the runs. By how much did the **mean** fix error move from run A to run B? Give the absolute difference to one decimal place (km).`,
+      answer: numericAnswer(shift, 'mean', { digits: 1, units: 'km' }),
+      hints: ['Compute each run’s mean first; then take the difference, ignoring the sign.', `Run A: sum ${fmt(sum(a), 0)} ÷ 6. Run B: sum ${fmt(sum(b), 0)} ÷ 6.`, `$|${fmt(ma, 2)} - (${fmt(mb, 2)})|$, to one decimal.`],
+      solution: `$$\\bar{x}_A = \\frac{${fmt(sum(a), 0)}}{6} = ${fmt(ma, 2)},\\qquad \\bar{x}_B = \\frac{${fmt(sum(b), 0)}}{6} = ${fmt(mb, 2)}$$\n\n$$|\\bar{x}_A - \\bar{x}_B| = ${fmt(shift, 2)}$$\n\nThe mean moved by **${fmt(shift, 1)} km** — less than the spread inside either run (run A ranges over ${fmt(range(a), 0)} km). Nothing broke: the same procedure gives different numbers each time it is run. That is variation, and it is data.`,
+      misconception: 'A different answer on a second run is not evidence of a fault. Judge the shift against the spread the procedure shows within a single run.',
     }
   },
 })

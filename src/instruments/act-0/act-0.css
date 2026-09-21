@@ -1,0 +1,109 @@
+/* Prologue instruments — NavFixDisplay, HeatSinkGauge, RegisterBrowser. Tokens only. */
+
+/* ---------- shared ---------- */
+.dr-act0-heading {
+  margin: var(--dr-sp-3) 0 var(--dr-sp-1);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--dr-track-label);
+  text-transform: uppercase;
+  color: var(--dr-fg-2);
+}
+
+/* ---------- NavFixDisplay ---------- */
+.dr-navfix {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dr-sp-4);
+}
+.dr-navfix__logged {
+  min-width: 0;
+}
+.dr-navfix__caption {
+  margin: var(--dr-sp-2) 0 0;
+  font-size: var(--dr-fs-sm);
+}
+
+/* ---------- HeatSinkGauge ---------- */
+.dr-sink__chart {
+  min-width: 0;
+}
+
+/* ---------- RegisterBrowser ---------- */
+.dr-register .dr-table-wrap {
+  overflow-x: auto;
+  margin: var(--dr-sp-3) 0;
+  min-width: 0;
+}
+.dr-register__freq {
+  margin-top: var(--dr-sp-2);
+  padding-top: var(--dr-sp-3);
+  border-top: 1px dashed var(--dr-line);
+}
+.dr-register__freq-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--dr-sp-3) var(--dr-sp-4);
+  align-items: start;
+}
+.dr-register__freq-grid .dr-table-wrap {
+  margin: 0;
+}
+.dr-register__total td {
+  color: var(--dr-fg-0);
+  border-top: 1px solid var(--dr-line-strong);
+  font-weight: 500;
+}
+.dr-register__records {
+  margin-top: var(--dr-sp-3);
+  padding-top: var(--dr-sp-3);
+  border-top: 1px dashed var(--dr-line);
+}
+.dr-register__table td,
+.dr-register__table th {
+  white-space: nowrap;
+}
+.dr-register__sort {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dr-sp-1);
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+.dr-register__sort:hover {
+  color: var(--dr-fg-0);
+}
+.dr-register__sort:focus-visible {
+  outline: none;
+  box-shadow: var(--dr-focus-ring);
+  border-radius: var(--dr-radius);
+}
+.dr-register__sort-mark {
+  display: inline-block;
+  min-width: 1ch;
+  color: var(--dr-violet);
+}
+.dr-register__pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dr-sp-2);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  color: var(--dr-fg-2);
+  font-variant-numeric: tabular-nums;
+}
+.dr-register__pager-text {
+  margin-left: auto;
+}
+
+@media (max-width: 640px) {
+  .dr-register__freq-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
