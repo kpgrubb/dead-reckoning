@@ -1,0 +1,267 @@
+---
+id: act-4-02
+act: 4
+title: "The Sweep Log"
+kind: module
+ap_topics: ["4.3", "4.4"]
+objectives:
+  - "Define a sample space and an event, read a probability as a long-run relative frequency, and apply the complement rule"
+  - "Identify mutually exclusive events and apply the addition rule, correcting it with the intersection when the events overlap"
+  - "Compute joint, marginal and “or” probabilities from a two-way table"
+prereqs: ["act-4-01"]
+est_minutes: 25
+calc_briefing: null
+summary: "Fourteen hundred entries in the Eyes' log, each one ending exactly one of four ways. Ebele adds two things that cannot happen together and is right; then he adds twelve things that can, and hands Oyelaran a probability of one point four."
+---
+
+import { binomial, fmt, fmtInt, twoWay } from '@/lib/stats'
+import {
+  CLOSE_PASS_KM,
+  CLOSE_PASSES,
+  PURGE_HOURS,
+  PURGE_STARTS,
+  P_SEEN_COLD,
+  P_SEEN_PER_PASS_COLD,
+  P_SEEN_PER_PASS_PURGING,
+  P_SWEEP_DETECTS,
+  SWEEP_COUNT,
+  SWEEP_OUTCOMES,
+  SWEEP_SECTORS,
+  heatFor,
+  metStamp,
+  sinkAt,
+  sweepOutcomeCounts,
+  sweepOutcomeProbs,
+  sweeps,
+} from '@/instruments/act-4/data'
+import { EventSpacePanel } from '@/instruments/act-4/EventSpacePanel'
+import { KeyTable, ProbabilityBar, SinkReadout, oneIn } from '@/instruments/act-4/_ui'
+
+export const heat = heatFor('act-4-02')
+export const nextPurge = PURGE_STARTS.find((t) => t > heat.at)
+/** Ebele's wrong arithmetic, rendered rather than asserted: one ring of the Eyes, probabilities added. */
+export const ringSum = SWEEP_SECTORS * P_SWEEP_DETECTS
+export const ringCrossesAt = Math.ceil(1 / P_SWEEP_DETECTS)
+/** The two-way the Briefing works: range band against resolving mode, among the detections only. */
+export const BANDS = ['near', 'middle', 'far']
+export const MODES = ['thermal', 'optical', 'RF']
+export const detections = sweeps.filter((s) => s.detection)
+export const bandModeCounts = BANDS.map((b) => MODES.map((m) => detections.filter((s) => s.range_band === b && s.mode === m).length))
+export const bandMode = twoWay(bandModeCounts, { rows: BANDS, cols: MODES })
+export const pNear = bandMode.marginalRows[0]
+export const pThermal = bandMode.marginalCols[0]
+export const pNearAndThermal = bandMode.joint[0][0]
+export const pNearOrThermal = pNear + pThermal - pNearAndThermal
+export const naiveNearThermal = pNear + pThermal
+/** The complement over repeated trials, on the model that matters: close passes of the loiter point. */
+export const coldPasses = CLOSE_PASSES.middle
+export const pNoneCold = binomial.pmf(0, coldPasses, P_SEEN_PER_PASS_COLD)
+export const pSeenCold = P_SEEN_COLD.middle
+export const naiveCold = coldPasses * P_SEEN_PER_PASS_COLD
+export const coldCrossesAt = Math.ceil(1 / P_SEEN_PER_PASS_COLD)
+export const purgePasses = 2
+export const pNonePurging = binomial.pmf(0, purgePasses, P_SEEN_PER_PASS_PURGING)
+export const pSeenPurging = binomial.atLeast(1, purgePasses, P_SEEN_PER_PASS_PURGING)
+export const naivePurging = purgePasses * P_SEEN_PER_PASS_PURGING
+
+<Scene stamp={metStamp(heat.at)} location={`Sensor bay · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed={`A day into the cold, Oyelaran's sweep log has ${fmtInt(SWEEP_COUNT)} entries in it, each ending exactly one of four ways: thermal, optical, RF, or nothing at all. Ebele adds thermal and optical for "seen" — correct, because they cannot both happen on one entry — and then adds a probability to itself once for each of the ${SWEEP_SECTORS} sectors in the ring and hands Oyelaran a number larger than one.`}>
+
+The sensor bay is four degrees colder than the rest of the ship because Oyelaran keeps it that way and nobody has ever successfully argued with her about it.
+
+A day into the drift the Eyes have {fmtInt(SWEEP_COUNT)} entries logged. Each one is a scheduled one-degree sweep of one of the {SWEEP_SECTORS} sectors she walks, eight to forty seconds of dwell, and each entry closes exactly one way — a thermal contact, an optical contact, an RF contact, or nothing at all. Never two. If a sweep resolves thermally the entry says thermal and the optical column is blank, because the log records what *resolved* it and a thing is only resolved once.
+
+<Dialogue speaker="sensors" aside="She has the log up as a running column and scrolls it with one finger rather than turning her head.">
+Four outcomes. One per entry. Thermal {fmtInt(sweepOutcomeCounts.thermal)}, optical {fmtInt(sweepOutcomeCounts.optical)}, RF {fmtInt(sweepOutcomeCounts.RF)}, nothing {fmtInt(sweepOutcomeCounts.nothing)}. They sum to {fmtInt(SWEEP_COUNT)} because they have to; there is nowhere else for an entry to go. — That is not a statistic, Ensign. That is a list of everything that can happen.
+</Dialogue>
+
+Ebele has a display open beside hers and is doing the arithmetic out loud, which is how you can tell when he is about to be right and when he is about to be wrong.
+
+"So, sir — 'the Eyes saw something' is thermal or optical or RF. And those three can't both — can't *any two* happen on one entry, the log won't let them. So I add the three counts and divide by the entries. No correction, nothing counted twice, because nothing is in two of them at once."
+
+Oyelaran says nothing, which from her is agreement.
+
+"And the complement is the nothing column, which means I could get the same answer the other way round —"
+
+"Get it both ways," you say. "Then check that they agree."
+
+He does, and they do, and for about ninety seconds it is a good morning.
+
+Then he moves on to the question the heat plan actually needs, which is not about one sweep.
+
+"Right, so — the Eyes walk the whole ring. Twelve sectors, twelve sweeps, and the Chief wants to know the chance we see *something* in a full pass of the ring. That's the per-sweep probability, twelve times."
+
+He writes it. He gets **{fmt(ringSum, 2)}**.
+
+He looks at it. He does not immediately say anything, which is new.
+
+<Dialogue speaker="sensors" aside="She still has not turned her head. She says it exactly once, at the same volume as the rest of the morning.">
+Say that number again.
+</Dialogue>
+
+"One point four."
+
+"A probability of one point four. Out of a sample space that is all of one unit wide." She lets it sit for three seconds, which from Oyelaran is a lecture. "You added the sweeps. The Eyes do not see anything twice, Ensign — thermal and optical are exclusive on one entry, so the addition was free. But *twelve sweeps* are not four outcomes of one trial. Every one of those twelve can find something, and your sum counted every morning where two of them did, twice. — They can see nothing twice, though. All twelve can miss. Work out how often that happens and stop."
+
+</Scene>
+
+<Briefing title="The sample space, and the two rules that live inside it" topics={["4.3", "4.4"]}>
+<Briefing.Intuition>
+Everything in this module is bookkeeping on one picture: a unit bar.
+
+**The sample space** is every result a single repetition of a process can produce, listed so that exactly one of them happens every time. Two properties make it a sample space, and both are needed: the results are **mutually exclusive** (no trial lands in two) and **exhaustive** (no trial lands outside all of them). Then, and only then, the areas of the bar sum to 1 and arithmetic on it is safe. An **event** is any collection of those results — a region of the bar. A probability is the area, and it is a long-run relative frequency: what the share of trials landing there settles to as the trials grow without bound.
+
+**The complement rule** is the cheapest tool in the subject. The bar is one unit wide, so whatever is not in $A$ is the rest of it. When an event has many pieces and its opposite has one, do the one.
+
+**The addition rule** and the trap under it. If $A$ and $B$ share no part of the bar, the area of "A or B" is the two areas added, full stop. If they overlap, adding them counts the shared region twice, and the general rule subtracts it back out once. You can catch the error without looking at the table: a bare sum that lands above 1 is not a probability, and a sum that lands below 1 can still be wrong by exactly the overlap.
+
+Now the distinction that eats students alive, and it is the misconception this module is named for.
+
+> **Mutually exclusive is not independent.** They are not opposites, they are not synonyms, and they are about different things. *Mutually exclusive* says the two events cannot both happen — the regions do not touch. *Independent* says knowing one happened does not change the probability of the other. In fact two events with positive probability that are mutually exclusive are about as **dependent** as events get: learning that $A$ happened tells you $B$ definitely did not.
+
+The last idea is the one the whole heat plan will rest on: **events across several trials do not add**. Twelve sweeps are not twelve slices of one bar; they are twelve separate bars. Probabilities add along a *partition of one trial*. Across trials, the "at least one" question is answered by its complement — the only way for "at least one" to fail is for **every** trial to miss, which is one event, on one line, and always inside the sample space.
+
+And that is not a trick for avoiding arithmetic. $k \cdot p$ passes 1 and keeps climbing, which no probability can do; $1 - (1-p)^k$ approaches 1 and never reaches it, which is exactly the behaviour of a ship that can be unlucky forever but never more than certainly seen.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula
+  tex="P(A^{c}) = 1 - P(A)"
+  terms={{ 'A^{c}': 'the complement of A — everything in the sample space that is not A' }}
+  label="The complement rule"
+/>
+
+<Formula
+  tex="P(A \cup B) = P(A) + P(B) - P(A \cap B), \qquad \text{and } P(A \cup B) = P(A) + P(B) \text{ only when } P(A \cap B) = 0"
+  terms={{ 'P(A \\cup B)': 'probability that A happens, or B happens, or both', 'P(A \\cap B)': 'probability that both happen on the same trial — zero exactly when A and B are mutually exclusive' }}
+  label="The addition rule, general and special"
+/>
+
+<Formula
+  tex="P(\text{at least one in } k \text{ independent trials}) = 1 - (1 - p)^{k}"
+  terms={{ p: 'probability the event happens on one trial', k: 'number of trials in the window' }}
+  label="“At least one” is the complement of “none” — never the sum of the trials"
+/>
+</Briefing.Definition>
+<Briefing.Worked>
+**One trial: the four outcomes of a sweep.** The log's own relative frequencies, over {fmtInt(SWEEP_COUNT)} entries.
+
+<KeyTable
+  columns={['outcome of one sweep', 'entries', 'relative frequency']}
+  rows={[...SWEEP_OUTCOMES.map((o) => [o, fmtInt(sweepOutcomeCounts[o]), fmt(sweepOutcomeProbs[o], 4)]), ['total', fmtInt(SWEEP_COUNT), fmt(SWEEP_OUTCOMES.reduce((s, o) => s + sweepOutcomeProbs[o], 0), 3)]]}
+  emphasisRow={SWEEP_OUTCOMES.length}
+  caption="Four mutually exclusive, exhaustive outcomes. The relative frequencies sum to 1 because every entry closes exactly one way."
+  ariaLabel="Sweep outcome sample space with counts and relative frequencies"
+/>
+
+Exclusive outcomes, so combinations of them add with no correction. P(the sweep resolved by RF *or* by thermal) = {fmt(sweepOutcomeProbs.RF, 4)} + {fmt(sweepOutcomeProbs.thermal, 4)} = **{fmt(sweepOutcomeProbs.RF + sweepOutcomeProbs.thermal, 4)}**. And the complement of a big event is a small one: P(*not* thermal) = 1 − {fmt(sweepOutcomeProbs.thermal, 4)} = {fmt(1 - sweepOutcomeProbs.thermal, 4)}, which is the other three columns added, and you may check that if you like once.
+
+**Two variables on one trial: the general addition rule.** Restrict to the {fmtInt(detections.length)} entries that resolved to something, and cross the range band against the mode that resolved it. Now the two events *can* happen together.
+
+<KeyTable
+  columns={['range band', ...MODES, 'total']}
+  rows={[...BANDS.map((b, i) => [b, ...bandModeCounts[i].map((c) => fmtInt(c)), fmtInt(bandMode.rowTotals[i])]), ['total', ...bandMode.colTotals.map((c) => fmtInt(c)), fmtInt(bandMode.total)]]}
+  emphasisRow={BANDS.length}
+  caption={`The ${detections.length} detections by range band and resolving mode.`}
+  ariaLabel="Two-way table of range band against resolving mode among the detections"
+/>
+
+Draw one detection at random. P(near) = {fmtInt(bandMode.rowTotals[0])}/{fmtInt(bandMode.total)} = {fmt(pNear, 4)}. P(thermal) = {fmtInt(bandMode.colTotals[0])}/{fmtInt(bandMode.total)} = {fmt(pThermal, 4)}. Those are **marginal** probabilities: one variable, the other ignored, denominator the grand total. The cell where they meet — near *and* thermal — is a **joint** probability: {fmtInt(bandModeCounts[0][0])}/{fmtInt(bandMode.total)} = {fmt(pNearAndThermal, 4)}.
+
+Add the two margins and you get {fmt(naiveNearThermal, 4)}, because the {fmtInt(bandModeCounts[0][0])} detections that are both got counted in each. Subtract them once:
+
+<Formula
+  tex={`P(\\text{near} \\cup \\text{thermal}) = \\frac{${bandMode.rowTotals[0]}}{${bandMode.total}} + \\frac{${bandMode.colTotals[0]}}{${bandMode.total}} - \\frac{${bandModeCounts[0][0]}}{${bandMode.total}} = \\frac{${bandMode.rowTotals[0] + bandMode.colTotals[0] - bandModeCounts[0][0]}}{${bandMode.total}} = ${fmt(pNearOrThermal, 4)}`}
+  label="The general addition rule, with the overlap taken back out"
+/>
+
+**Several trials: the complement.** The loiter point has {fmtInt(coldPasses)} scheduled close passes inside {fmt(CLOSE_PASS_KM / 1e6, 1)} million kilometres during a Watch window. Each passing hull's navigation suite picks up a cold *Nightjar* with probability {fmt(P_SEEN_PER_PASS_COLD, 2)}, and the passes are different hulls on scheduled tracks.
+
+The only way the window passes clean is for every pass to miss: {fmt(1 - P_SEEN_PER_PASS_COLD, 2)} to the power {fmtInt(coldPasses)} = {fmt(pNoneCold, 4)}. So P(at least one pass sees us) = 1 − {fmt(pNoneCold, 4)} = **{fmt(pSeenCold, 4)}** — about {oneIn(pSeenCold)}. Ebele's method would have given {fmtInt(coldPasses)} × {fmt(P_SEEN_PER_PASS_COLD, 2)} = {fmt(naiveCold, 4)}: close, wrong, and wrong in the direction that flatters the plan. It leaves the sample space altogether at {fmtInt(coldCrossesAt)} passes.
+
+Now do it with the wings out, where the error stops being subtle. During a purge the ship is a lamp and the per-pass probability is {fmt(P_SEEN_PER_PASS_PURGING, 2)}. Two passes across those {fmt(PURGE_HOURS, 1)} hours: both miss with probability {fmt(pNonePurging, 4)}, so at least one sees us with probability **{fmt(pSeenPurging, 4)}**. Added instead, {fmtInt(purgePasses)} × {fmt(P_SEEN_PER_PASS_PURGING, 2)} = {fmt(naivePurging, 2)}. Two hulls and the arithmetic has already left the universe.
+
+<ProbabilityBar value={pSeenCold} label={`at least one of ${fmtInt(coldPasses)} cold passes detects us`} complementLabel="the window passes clean" />
+<ProbabilityBar value={pSeenPurging} label={`at least one of ${fmtInt(purgePasses)} passes detects us while purging`} complementLabel="both miss" />
+</Briefing.Worked>
+<Briefing.Caution>
+*"Mutually exclusive" and "independent", swapped.* They answer different questions. Exclusive is about whether the two events can occur **together** on one trial; independent is about whether one **informs** the other. Two exclusive events with positive probability are strongly dependent — learning that one happened settles the other completely. The addition rule cares about exclusivity. The multiplication rule (next module but one) cares about independence. Bring the wrong one and the arithmetic will not complain.
+
+*P(A or B) = P(A) + P(B), always.* It is true only when the two events cannot happen together. On the four outcomes of a single sweep they cannot, so the addition is free — which is exactly why it is so easy to carry the habit into a table where they can. The general rule is the real rule; the special case is the general rule with a zero in it.
+
+*Adding probabilities across trials.* Twelve sweeps are twelve trials, not twelve outcomes of one. The bare sum double-counts every window in which two or more of them find something, and past {fmtInt(ringCrossesAt)} sweeps it returns a number above 1 — which is the cheapest error check in the subject. Compute "none", then take the complement.
+
+*Subtracting the count instead of the probability.* "1 − {fmtInt(sweepOutcomeCounts.thermal)}" is not a probability and never was. The complement rule subtracts from one whole sample space, and the sample space is 1 — not {fmtInt(SWEEP_COUNT)}.
+</Briefing.Caution>
+</Briefing>
+
+<SinkReadout sinkPct={heat.sinkPct} stamp={metStamp(heat.at)} profile="Quiet" />
+
+<EventSpacePanel />
+
+<EventSpacePanel mode="window" perSweepP={P_SWEEP_DETECTS} sweepsInWindow={SWEEP_SECTORS} />
+
+<Drill generator="act-4/sample-space" count={1} />
+<Drill generator="act-4/addition-exclusive" count={1} />
+<Drill generator="act-4/two-way-probability" count={2} />
+<Drill generator="act-4/complement-rule" count={2} />
+
+<MissionBeat id="act-4-02-modes" kind="numeric" label="SEEN, ONE WAY OR THE OTHER" answer={sweepOutcomeProbs.thermal + sweepOutcomeProbs.optical} answerKind="proportion"
+  prompt={`Draw one entry at random from the ${fmtInt(SWEEP_COUNT)} in the Eyes' log. What is the probability that it was resolved **thermally or optically**? Report a proportion.`}
+  hint="Exactly one outcome per entry, so thermal and optical cannot both happen on the same one. Mutually exclusive events need no correction: add the two areas of the bar, and divide by the whole log.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He has both the addition and the long way on the board and the two agree to the fourth decimal, which was the point of doing both.">
+  So — {fmt(sweepOutcomeProbs.thermal + sweepOutcomeProbs.optical, 4)}, sir, and no correction anywhere in it. {fmtInt(sweepOutcomeCounts.thermal)} and {fmtInt(sweepOutcomeCounts.optical)} out of {fmtInt(SWEEP_COUNT)}. There is no entry in that log that is in both columns, so there is nothing to take back out. — The Lieutenant is right that it was free. I would like it on the record that I knew *why* it was free.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="sensors" aside="One finger on the two columns, one after the other.">
+  Two columns. Every entry is in one of them or in neither of them, and there is no entry in the log that sits in both — the log will not accept one. So the areas add and nothing is counted twice. Divide by the whole log, Ensign, not by the detections.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-4-02-detects" kind="numeric" label="THE COMPLEMENT" answer={P_SWEEP_DETECTS} answerKind="proportion"
+  prompt={`Same draw, one entry out of the ${fmtInt(SWEEP_COUNT)}. What is the probability that it detected **something** — by any mode at all? Get it off the *nothing* column, using the complement, and then check it against the long way.`}
+  hint={`“Detected something” and “detected nothing” are complements: together they are the whole log and they share none of it. So P(something) = 1 − P(nothing), and the nothing column is one number.`}>
+  <Success>
+  <Dialogue speaker="sensors" aside="She writes it into the sensor log herself, which she does not usually bother to do for anybody else's arithmetic.">
+  {fmt(P_SWEEP_DETECTS, 4)}. One subtraction, one column, and it agrees with adding the other three — as it must, because those four numbers are the whole of what a sweep can do. — Remember which one was cheaper. When the question becomes *how often does nothing find us across a whole window*, the cheap one is the only one that works.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="sensors" aside="Flat. She has not moved.">
+  Say that number again. — A probability lives between nothing and everything, and if yours does not, you have added across trials or divided by the wrong total. One entry. The whole log underneath it. The nothing column, taken off one.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-4-02-modes", "act-4-02-detects"]}>
+
+<Scene stamp={metStamp(heat.at + 5 / 24)} location={`Sensor bay · Quiet, cellar ${fmt(sinkAt(heat.at + 5 / 24), 0)}%`} condensed={`The log's arithmetic transfers. Ebele turns the same three rules around to face the other way: not what the Eyes see, but what sees Nightjar. The Lane plot is public, so the close passes can be counted in advance; the first purge goes at ${metStamp(nextPurge)} and the cellar is already a quarter full.`}>
+
+The useful part is not the log. The useful part is that Ebele turns the machine around, without being told to, some time in the afternoon watch.
+
+"Sir — it's the same three rules pointed the other way. The Eyes looking out is one sweep with four outcomes. Us being *looked at* is one close pass with two: they get a contact, or they don't. Mutually exclusive. Exhaustive. Complement rule."
+
+He has the Lane plot up, which is public because the Authority publishes it, and therefore the one piece of intelligence nobody has to spend heat to acquire.
+
+"And I can count the passes in advance. Every hull whose scheduled track comes inside {fmt(CLOSE_PASS_KM / 1e6, 1)} million kilometres of a loiter point, by name, with a closest-approach time. That's not a guess, that's a timetable. So P(nobody sees us in a window) is every pass missing, and P(somebody does) is one minus that — and if the Chief tells me how many hours we're on Watch, I can price the whole window before we fly it."
+
+<Dialogue speaker="sensors" aside="She pulls the first purge onto the plot beside his passes and puts them on the same axis without being asked, which is the actual answer to what he just said.">
+Then price this one too, Ensign. {metStamp(nextPurge)}. {fmt(PURGE_HOURS, 1)} hours with the wings out and this hull the brightest thing inside half an astronomical unit. — Cold, a passing freighter finds us one time in fifty. Purging, three times in five. It is the same rule and the same arithmetic and it is a completely different ship.
+</Dialogue>
+
+She does not say what that costs, because nobody aboard can price it yet. That is two modules away and it is a conditional probability, and Ferrier has already put it on the wardroom board in her own hand: **given that we are cold**, and **given that we are not**.
+
+The cellar reads {fmt(sinkAt(heat.at + 5 / 24), 0)} per cent.
+
+</Scene>
+
+<LogEntry
+  title="Add only what cannot happen together"
+  concept="A sample space lists the outcomes of one trial so that exactly one of them happens every time, which is what makes their probabilities sum to 1 and makes arithmetic on events safe; an event is a collection of those outcomes and its probability is the long-run relative frequency of trials landing in it. The addition rule gives P(A or B) as P(A) + P(B) only when the events are mutually exclusive, and otherwise subtracts the intersection once; across several independent trials probabilities do not add at all, and “at least one” is computed as one minus the probability that every trial misses."
+  formula="P(A^{c}) = 1 - P(A) \qquad P(A \cup B) = P(A) + P(B) - P(A \cap B) \qquad P(\text{at least one of } k) = 1 - (1-p)^{k}"
+  mistake="Adding overlapping events — either two events that can occur together on one trial, or the per-trial probabilities of several trials. Both double-count, and both are caught free of charge by a total above 1. The companion error is treating “mutually exclusive” as “independent”: exclusive events are in fact maximally dependent, because one occurring rules the other out."
+  tags={['sample space', 'event', 'complement rule', 'mutually exclusive', 'addition rule', 'two-way table', 'at least one', '4.3', '4.4']}
+/>
+
+</Gated>

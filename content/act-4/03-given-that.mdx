@@ -1,0 +1,334 @@
+---
+id: act-4-03
+act: 4
+title: "Given That"
+kind: module
+ap_topics: ["4.5"]
+objectives:
+  - "Calculate and interpret a conditional probability from a two-way table and from a tree diagram"
+  - "Apply the general multiplication rule P(A ∩ B) = P(A)·P(B | A) along a path through a tree"
+  - "Reverse a conditioning with a tree and explain in context why P(A | B) and P(B | A) are different numbers"
+prereqs: ["act-4-02"]
+est_minutes: 30
+calc_briefing: null
+summary: "Two conditionals, twelve hours before the first purge. One is why the ship exists. The other is a true sentence in a Board staff paper that answers a question nobody asked — and Ferrier will not let it go."
+---
+
+import { fmt, fmtInt, fmtPct, twoWay } from '@/lib/stats'
+import {
+  FADE_COLS,
+  FADE_ROWS,
+  GRADUAL_LOSS_PERRINE,
+  GRADUAL_TOTAL,
+  LOSS_TOTAL,
+  OWNER_CLASSES,
+  PURGE_HOURS,
+  PURGE_STARTS,
+  P_GRADUAL_GIVEN_LOSS,
+  P_LOSS_GIVEN_GRADUAL,
+  P_NO_LOSS_GIVEN_GRADUAL,
+  P_SEEN_PER_PASS_COLD,
+  P_SEEN_PER_PASS_PURGING,
+  REGISTER_RECORDS,
+  fadeByOwnerCounts,
+  fadeCounts,
+  heatFor,
+  metStamp,
+  sinkAt,
+} from '@/instruments/act-4/data'
+import { ProbabilityTreeBuilder, PURGE_DUTY_CYCLE } from '@/instruments/act-4/ProbabilityTreeBuilder'
+import { KeyTable, ProbabilityBar, SinkReadout, oneIn } from '@/instruments/act-4/_ui'
+
+export const heat = heatFor('act-4-03')
+export const nextPurge = PURGE_STARTS.find((t) => t > heat.at)
+export const hoursToPurge = (nextPurge - heat.at) * 24
+/** The Register's fade table, through the shared two-way engine. */
+export const fade = twoWay(fadeCounts, { rows: [...FADE_ROWS], cols: [...FADE_COLS] })
+export const gradualLosses = fadeCounts[0][0]
+export const gradualResolved = fadeCounts[0][1]
+export const abruptLosses = fadeCounts[1][0]
+/** The being-seen tree, which is the Briefing's worked example: cold or purging, then seen or not. */
+export const pPurging = PURGE_DUTY_CYCLE
+export const pCold = 1 - pPurging
+export const jointColdSeen = pCold * P_SEEN_PER_PASS_COLD
+export const jointPurgeSeen = pPurging * P_SEEN_PER_PASS_PURGING
+export const jointColdUnseen = pCold * (1 - P_SEEN_PER_PASS_COLD)
+export const jointPurgeUnseen = pPurging * (1 - P_SEEN_PER_PASS_PURGING)
+export const pSeen = jointColdSeen + jointPurgeSeen
+export const pPurgingGivenSeen = jointPurgeSeen / pSeen
+export const pColdGivenSeen = jointColdSeen / pSeen
+/** Perrine's share of the gradual-fade losses — the clue at the end, not the lesson. */
+export const perrineIndex = OWNER_CLASSES.indexOf('Perrine')
+export const gradualByOwner = OWNER_CLASSES.map((oc, i) => ({ owner: oc, gradual: fadeByOwnerCounts[i][0], abrupt: fadeByOwnerCounts[i][1] }))
+
+<Scene stamp={metStamp(heat.at)} location={`Bridge · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed={`The cellar is half full and the first purge is ${fmt(hoursToPurge, 0)} hours out. Ebele builds the tree the whole heat plan rests on — the chance a passing freighter sees you cold against the chance it sees you with the wings out. Then Ferrier puts the Board's Act I staff paper beside it: eighty-four per cent of gradual transponder degradations on the Lane were faults resolved without loss, computed over all ${GRADUAL_TOTAL} of them. True. And it is not the question a hostile reader asks.`}>
+
+The cellar reads {fmt(heat.sinkPct, 0)} per cent and the first purge goes in {fmt(hoursToPurge, 0)} hours. Nobody has said anything about it since breakfast. Everybody on the bridge knows the number.
+
+Ebele has the being-seen model up because Sandoval asked him for it in writing, and it is two branches deep and does not need to be any deeper.
+
+"So — one close pass, sir. Stage one is us: are the wings in or out at closest approach. Stage two is them: does the navigation suite return a contact or not. That's four paths and every pass in the whole loiter goes down exactly one of them."
+
+He puts the two conditionals on the board, the ones the Chief measured at Halden and the yard hated.
+
+"**Given we are cold**, a freighter's nav sees us {fmt(P_SEEN_PER_PASS_COLD, 2)} of the time. **Given we are purging**, {fmt(P_SEEN_PER_PASS_PURGING, 2)}. Same hull, same range, same aperture. Thirty times the exposure, and the only thing that changed is whether the radiators are out."
+
+"That is the ship," Ferrier says. "That difference is what the Compact bought. Write it down and then put it away, because there is a second tree and it is the one that has been sitting in the file for two months looking respectable."
+
+She has the Board's Act I staff paper up — the one that came back attached to the first report, four paragraphs, no annex, over a flag secretary's signature.
+
+<Dialogue speaker="admiralty" aside="Board staff paper, appended to the reply of MET 11. Ebele has read it eleven times and can quote the sentence from memory, which is how Ferrier knows it has been bothering him too." lag="lag 21.6 min · Valhalla">
+*It is noted that eighty-four per cent of gradual transponder degradations recorded on the Lane over the six-year period were faults subsequently resolved without loss of the hull. A gradual fade is therefore consistent with a failing unit, and the Board sees no basis in the record for treating gradual degradation as an indicator of hostile action.*
+</Dialogue>
+
+"Check the number," Ferrier says.
+
+Ebele already has. "It's true, sir. I pulled every gradual degradation in the Register — not the losses, *every* one, across all {fmtInt(REGISTER_RECORDS)} records. {fmtInt(GRADUAL_TOTAL)} of them. {fmtInt(gradualResolved)} were faults that got resolved, the hull carried on, nothing happened. The other {fmtInt(gradualLosses)} were losses." He does the division and does not round it in his head. "Their eighty-four per cent is {fmtInt(gradualResolved)} over {fmtInt(GRADUAL_TOTAL)}. It is exactly right and I cannot find a thing wrong with the arithmetic."
+
+"No," Ferrier says. "There is nothing wrong with the arithmetic."
+
+She lets that hang for a beat, which she does about twice a month.
+
+"So ask the other question. Not *what does a fade usually mean* — the Board has answered that one and answered it honestly. Ask what a **loss** usually looks like. Out of the {fmtInt(LOSS_TOTAL)} hulls on that Register that never arrived, how many of them started with a gradual fade?"
+
+Ebele stops with his hand halfway to the board.
+
+"That's — the same cell, sir. The same {fmtInt(gradualLosses)} hulls. Over a different total."
+
+"Over a different total. The Board's denominator is every gradual fade on the Lane, {fmtInt(GRADUAL_TOTAL)} of them, most of which are somebody's cooling loop. Mine is every hull that did not come home. Same numerator. Different question, and only one of the two questions is about *losses*."
+
+<Dialogue speaker="xo" aside="She says it to the bulkhead rather than to Ebele, and she says it once, in the register she keeps for things she intends to have said out loud in front of witnesses.">
+The Board conditioned on the answer it wanted. I am not alleging that anybody did it deliberately — a staff officer with four paragraphs and no annex writes the conditional that is easy to compute, and that one is easy. — But the sentence is now in the record, and it will be read by people who will never see the other one. Build both. Put them on the same page. Then we will find out which of them the Board declines to discuss.
+</Dialogue>
+
+</Scene>
+
+<Briefing title="Given that" topics={["4.5"]}>
+<Briefing.Intuition>
+A conditional probability is not a new kind of number. It is the same counting done inside a smaller room.
+
+$P(A \mid B)$ — "the probability of $A$ **given** $B$" — says: throw away every individual that is not $B$, and *then* ask what share are $A$. The word *given* names the new denominator. That is the whole definition, and almost every error in this topic is an error about the denominator.
+
+Three probabilities live in any two-way table and they are told apart by what they divide by:
+
+- **Joint** $P(A \cap B)$ — one cell over the **grand total**. What share of everybody is both things at once.
+- **Marginal** $P(B)$ — one row or column total over the **grand total**. One variable; the other ignored.
+- **Conditional** $P(A \mid B)$ — one cell over **that row or column's total**. The only one that changes the denominator.
+
+Rearranging the definition gives the **general multiplication rule**, and it is how a tree is read: a path's probability is the first branch times the conditional on the branch that follows it. Not the first branch times the *overall* second-stage probability — the one sitting on that branch. Multiply along a path; add down a column of paths.
+
+Now the move this module exists for.
+
+**Reversing a conditioning.** You are given $P(A \mid B)$ and you want $P(B \mid A)$. These share a numerator, $P(A \cap B)$, and nothing else, and there is no arithmetic that turns one into the other on its own — you need the base rates. Build the tree forwards, multiply out the joints, add the joints that end in $A$ to get $P(A)$, and divide the one you care about by that new total.
+
+The reason this matters more than it looks is that both numbers are often **true**, and a reader cannot tell from the sentence which one they have been handed. "Of the certifications Voss signed, 19% were queried" and "of the queried certifications, 19% were signed by Voss" are different claims about the same file, and the passive voice makes them look identical. Reported to the wrong question, a true number is worse than a false one, because it survives every check a careful reader can make.
+
+That swap has a name: the **prosecutor's fallacy** — quoting $P(\text{evidence} \mid \text{innocent})$ as though it were $P(\text{innocent} \mid \text{evidence})$. The gap between the two is the base rate, and when the base rate is small the two numbers are not close, they are not even the same order of magnitude.
+
+So the discipline is small and absolute: **before you quote a conditional, say out loud what you divided by.** If the sentence does not make its denominator visible, rewrite the sentence.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula
+  tex="P(A \mid B) = \frac{P(A \cap B)}{P(B)}"
+  terms={{ 'P(A \\mid B)': 'probability of A given that B happened — the denominator is B', 'P(A \\cap B)': 'the joint: both, out of everybody', 'P(B)': 'the new total; the “given” names it' }}
+  label="Conditional probability — the definition, and the denominator rule"
+/>
+
+<Formula
+  tex="P(A \cap B) = P(B)\cdot P(A \mid B) = P(A)\cdot P(B \mid A)"
+  terms={{ 'P(B)\\cdot P(A \\mid B)': 'multiply along a path: branch, then the conditional sitting on that branch' }}
+  label="The general multiplication rule (no independence assumed anywhere)"
+/>
+
+<Formula
+  tex="P(B \mid A) = \frac{P(B)\,P(A \mid B)}{P(B)\,P(A \mid B) + P(B^{c})\,P(A \mid B^{c})}"
+  terms={{ 'P(B^{c})\\,P(A \\mid B^{c})': 'the other path that also ends in A — the reason the denominator changes' }}
+  label="Reversing the conditioning: the joint over the other margin"
+/>
+</Briefing.Definition>
+<Briefing.Worked>
+The tree the ship is built around, and not the one the Board wrote about — that one is yours, below.
+
+**Stage one, us.** Over the whole loiter the wings are out for {fmt(PURGE_HOURS, 1)} hours per purge, which works out at a duty cycle of {fmt(pPurging, 4)}. So a close pass drawn at random from the loiter finds *Nightjar* purging with probability {fmt(pPurging, 4)} and cold with probability {fmt(pCold, 4)}.
+
+**Stage two, them.** Given cold, the pass detects her with probability {fmt(P_SEEN_PER_PASS_COLD, 2)}. Given purging, {fmt(P_SEEN_PER_PASS_PURGING, 2)}. Those are the two conditionals the Halden trials measured, and neither is a probability of being seen on its own — each is a probability inside its own branch.
+
+**Multiply along the paths.** The general multiplication rule, four times:
+
+<KeyTable
+  columns={['path', 'P(stage one)', 'P(seen | stage one)', 'joint']}
+  rows={[
+    ['cold ∩ seen', fmt(pCold, 4), fmt(P_SEEN_PER_PASS_COLD, 4), fmt(jointColdSeen, 4)],
+    ['cold ∩ not seen', fmt(pCold, 4), fmt(1 - P_SEEN_PER_PASS_COLD, 4), fmt(jointColdUnseen, 4)],
+    ['purging ∩ seen', fmt(pPurging, 4), fmt(P_SEEN_PER_PASS_PURGING, 4), fmt(jointPurgeSeen, 4)],
+    ['purging ∩ not seen', fmt(pPurging, 4), fmt(1 - P_SEEN_PER_PASS_PURGING, 4), fmt(jointPurgeUnseen, 4)],
+    ['total', '—', '—', fmt(jointColdSeen + jointColdUnseen + jointPurgeSeen + jointPurgeUnseen, 4)],
+  ]}
+  emphasisRow={4}
+  caption="Four paths, four joints, and they sum to 1 — which is the only check worth doing on a tree."
+  ariaLabel="Joint probabilities for the four paths of the being-seen tree"
+/>
+
+**Add down the column** to get the marginal. P(a random close pass detects her) = {fmt(jointColdSeen, 4)} + {fmt(jointPurgeSeen, 4)} = **{fmt(pSeen, 4)}** — about {oneIn(pSeen)}.
+
+**Now reverse it,** which is the only interesting question on this tree. A pass *did* return a contact. Given that, was she purging?
+
+<Formula
+  tex={`P(\\text{purging} \\mid \\text{seen}) = \\frac{P(\\text{purging} \\cap \\text{seen})}{P(\\text{seen})} = \\frac{${fmt(jointPurgeSeen, 4)}}{${fmt(pSeen, 4)}} = ${fmt(pPurgingGivenSeen, 4)}`}
+  label="The numerator is one leaf; the denominator is the column that leaf sits in"
+/>
+
+Read what that says. The wings are out **{fmtPct(pPurging, 1)}** of the loiter — and they account for **{fmtPct(pPurgingGivenSeen, 1)}** of every detection. Three and a half per cent of the time, and more than half of the risk.
+
+<ProbabilityBar value={pPurging} label="share of the loiter spent purging" complementLabel="cold" />
+<ProbabilityBar value={pPurgingGivenSeen} label="share of detections that happen while purging" complementLabel="detected while cold" />
+
+And note what did *not* happen: {fmt(P_SEEN_PER_PASS_PURGING, 2)} did not turn into {fmt(pPurgingGivenSeen, 4)} by any operation on {fmt(P_SEEN_PER_PASS_PURGING, 2)} alone. P(seen | purging) is a property of the sensor. P(purging | seen) is a property of the sensor **and the timetable**, and it moves whenever the Chief changes the purge schedule while the sensor stays exactly as it was. Two numbers, two denominators, one tree.
+</Briefing.Worked>
+<Briefing.Caution>
+*P(A | B) read as P(B | A) — the prosecutor's fallacy.* The two share a numerator and nothing else. "Given purging, seen {fmtPct(P_SEEN_PER_PASS_PURGING, 0)} of the time" and "given seen, purging {fmtPct(pPurgingGivenSeen, 0)} of the time" are both true here and they are about different populations of close passes. No amount of care with the arithmetic protects you; the error happens in the sentence, before the arithmetic starts.
+
+*Conditioning on the wrong total.* A cell over the grand total is a **joint** probability; a cell over its row total is a **conditional**. Both are true statements about the table, both are quotable, and only one of them answers a question that began with the word *given*. When a figure looks too small, check whether you have divided by everybody instead of by the group.
+
+*Treating a true number as an honest answer.* A staff paper that reports the conditional which is easy to compute, when the reader's question is the other one, has made no arithmetic error at all — which is precisely why the error survives review. The defence is to compute both directions and print both, every time, with their denominators attached.
+
+*Branches that do not sum to one.* Every stage of a tree is a sample space: its branches must total 1, conditional on where they hang. If they do not, the joints below them are not probabilities of anything, and no amount of correct multiplication downstream will repair it.
+</Briefing.Caution>
+</Briefing>
+
+<SinkReadout sinkPct={heat.sinkPct} stamp={metStamp(heat.at)} profile="Quiet" />
+
+<ProbabilityTreeBuilder preset="seen" />
+
+Now the other tree. Same four numbers in the same four places, and it is the Register's, not the ship's: the fade pattern a hull showed, and what became of it.
+
+<KeyTable
+  columns={['fade pattern', ...FADE_COLS, 'total']}
+  rows={[
+    [FADE_ROWS[0], fmtInt(fadeCounts[0][0]), fmtInt(fadeCounts[0][1]), fmtInt(fade.rowTotals[0])],
+    [FADE_ROWS[1], fmtInt(fadeCounts[1][0]), fmtInt(fadeCounts[1][1]), fmtInt(fade.rowTotals[1])],
+    ['total', fmtInt(fade.colTotals[0]), fmtInt(fade.colTotals[1]), fmtInt(fade.total)],
+  ]}
+  emphasisRow={2}
+  caption={`Every transponder event in the Register that has an outcome against it — ${fmtInt(fade.rowTotals[0])} gradual degradations and ${fmtInt(fade.rowTotals[1])} abrupt silences, ${fmtInt(fade.total)} in all. The Board's paragraph lives in the top row; the Lane's ${fmtInt(LOSS_TOTAL)} losses live in the first column.`}
+  ariaLabel="Two-way table of fade pattern against outcome"
+/>
+
+<ProbabilityTreeBuilder preset="fades" />
+
+<Drill generator="act-4/conditional-from-table" count={1} />
+<Drill generator="act-4/tree-joint" count={1} />
+<Drill generator="act-4/reverse-conditional" count={2} />
+<Drill generator="act-4/which-conditional-stated" count={1} />
+<Drill generator="act-4/interpret-conditional" count={1} />
+
+<MissionBeat id="act-4-03-forward" kind="numeric" label="GIVEN A FADE" answer={P_LOSS_GIVEN_GRADUAL} answerKind="proportion"
+  prompt={`Take the Board's direction first, so that the two numbers can be set beside each other. A hull on the Lane shows a **gradual transponder degradation**. Given that, what is the probability that it was **lost**? Report a proportion.`}
+  hint={`The “given” names the denominator. Conditioning on a gradual fade throws away the abrupt row entirely before the question is asked, so divide by the gradual-fade row total, not by the ${fmtInt(fade.total)} records or by the ${fmtInt(LOSS_TOTAL)} losses.`}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes the Board's figure and his own on the same line with a plus sign between them, because they are complements and he wants that visible.">
+  {fmt(P_LOSS_GIVEN_GRADUAL, 4)}, sir — {fmtInt(gradualLosses)} over {fmtInt(GRADUAL_TOTAL)}. And the Board's {fmtPct(P_NO_LOSS_GIVEN_GRADUAL, 1)} is the other {fmtInt(gradualResolved)} over the same {fmtInt(GRADUAL_TOTAL)}. Same denominator, so they add to one, so *that* pair really is just a complement. — Which means the staff paper and I do not disagree about a single hull. We disagree about what to divide by next.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="One finger on the top row of the table, and she does not move it off.">
+  You have been given a fade. So the abrupt row is gone — it was never a candidate, it is not in the question, it does not belong in the arithmetic. What is left is that row and that row's total. Count inside the room the word *given* put you in.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by="act-4-03-forward">
+
+<MissionBeat id="act-4-03-reverse" kind="numeric" label="GIVEN A LOSS" answer={P_GRADUAL_GIVEN_LOSS} answerKind="proportion"
+  prompt={`Now the question a hostile reader asks, which is not about fades at all. A hull on the Lane was **lost**. Given that, what is the probability that it began with a **gradual fade**? Report a proportion.`}
+  hint={`Same cell, different room. The condition is now “lost”, so the denominator is every hull that never arrived — the ${fmtInt(LOSS_TOTAL)} in the lost column — and the numerator is the ${fmtInt(gradualLosses)} of those that faded gradually.`}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He has both numbers up in the size he uses for findings, and for once he does not follow them with a conclusion.">
+  So — {fmt(P_GRADUAL_GIVEN_LOSS, 4)}, sir. {fmtInt(gradualLosses)} of the {fmtInt(LOSS_TOTAL)}. A fade is usually a fault: {fmtPct(P_NO_LOSS_GIVEN_GRADUAL, 0)} of them. And a loss is usually a fade: {fmtPct(P_GRADUAL_GIVEN_LOSS, 0)} of them. Both true. The same {fmtInt(gradualLosses)} hulls on the top of both fractions and nothing else in common. — I have been reading that staff paper for two months and I never once asked it what a loss looks like.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She turns the table ninety degrees on the plot, which is not a metaphor; she physically rotates it.">
+  You have quoted me a number about fades. I asked you a question about losses. — Move the denominator, Ensign. The column, not the row. Every hull that did not come home, and how many of those faded on the way out.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+</Gated>
+
+<Gated by={["act-4-03-forward", "act-4-03-reverse"]}>
+
+<MissionBeat id="act-4-03-claim" kind="choice" label="WHAT THE PARAGRAPH SAYS"
+  prompt={`The reply goes to Valhalla with one paragraph about the Board's sentence, and it has to be exactly right about what the staff paper claims and what it does not. Which statement is correct?`}
+  options={[
+    `The ${fmtPct(P_NO_LOSS_GIVEN_GRADUAL, 0)} is P(resolved without loss | gradual fade), computed over the ${fmtInt(GRADUAL_TOTAL)} gradual degradations in the Register, and it is true. It does not bear on what a loss looks like: P(gradual fade | lost) is ${fmt(P_GRADUAL_GIVEN_LOSS, 3)} on the same file, a different denominator and a different question.`,
+    `The ${fmtPct(P_NO_LOSS_GIVEN_GRADUAL, 0)} is wrong, because ${fmtInt(gradualLosses)} of the ${fmtInt(LOSS_TOTAL)} losses began as gradual fades — which is ${fmtPct(P_GRADUAL_GIVEN_LOSS, 0)}, not ${fmtPct(P_NO_LOSS_GIVEN_GRADUAL, 0)}.`,
+    `The ${fmtPct(P_NO_LOSS_GIVEN_GRADUAL, 0)} is P(gradual fade | resolved without loss): of the hulls that came home, ${fmtPct(P_NO_LOSS_GIVEN_GRADUAL, 0)} had shown a gradual fade at some point.`,
+    `The ${fmtPct(P_NO_LOSS_GIVEN_GRADUAL, 0)} is a marginal probability: ${fmtPct(P_NO_LOSS_GIVEN_GRADUAL, 0)} of all ${fmtInt(fade.total)} degradations in the Register resolved without loss, whatever pattern they showed.`,
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    'The paper made no arithmetic error. Both figures are correct on the same table and they are not in competition: one divides the shared cell by the gradual-fade row, the other divides it by the lost column. Calling the Board wrong about the number is the fastest way to lose the argument about the question.',
+    "That reverses it. The staff paper's denominator is the gradual fades — the phrase is *of gradual transponder degradations* — not the hulls that came home. Swapping the two is precisely the error being examined, and here it would put the error in the Board's favour.",
+    'A marginal probability ignores the other variable. The sentence restricts to gradual degradations before it reports anything, so it is conditional, not marginal — and the marginal over all degradations would be a different figure with the abrupt cases folded in.',
+  ]}>
+  <Success>
+  <Dialogue speaker="xo" aside="She drafts the paragraph in eleven words longer than it needs to be, and the extra eleven words are the denominator.">
+  Correct, and — more to the point — *fair*. We concede the number, in writing, in the first sentence. Then we put the other one beside it and let the Board explain why only one of the two was in the file. — A reply that calls them wrong gets answered by a clerk. A reply that calls them incomplete has to go to a flag officer.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She does not raise her voice for this, which makes it worse.">
+  You have just committed the Board's error in the Board's favour. — Read the sentence again and find the word *of*: whatever follows it is what they divided by. Everything else in the paragraph is decoration designed to stop you looking.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+</Gated>
+
+<Gated by={["act-4-03-forward", "act-4-03-reverse", "act-4-03-claim"]}>
+
+<Scene stamp={metStamp(heat.at + 4 / 24)} location={`Bridge · Quiet, cellar ${fmt(sinkAt(heat.at + 4 / 24), 0)}%`} condensed={`Both conditionals go into the reply with their denominators attached. Then Ebele adds one more column to the fade table — owner class — and every one of the ${GRADUAL_LOSS_PERRINE} gradual-fade losses on the Register turns out to be a Perrine hull. It is not proof of anything. It is the third coincidence in a row and nobody says so out loud. The purge goes in ${fmt(hoursToPurge - 4, 0)} hours.`}>
+
+The paragraph takes four lines and the denominators take two more, and Ferrier puts the denominators in the same sentence as the figures rather than in a note, for the same reason she did it yesterday.
+
+Then Ebele does the thing nobody asked him to do, which is by now a pattern of his own.
+
+He takes the {fmtInt(gradualLosses)} gradual-fade losses and splits them by owner class. It is one more column and it takes him ninety seconds.
+
+<KeyTable
+  columns={['owner class', 'losses that faded gradually', 'losses that went abruptly silent']}
+  rows={gradualByOwner.map((g) => [g.owner, fmtInt(g.gradual), fmtInt(g.abrupt)])}
+  alertRows={[perrineIndex]}
+  caption={`The ${fmtInt(LOSS_TOTAL)} losses, by fade pattern and owner class.`}
+  ariaLabel="Losses by owner class and fade pattern"
+/>
+
+{fmtInt(GRADUAL_LOSS_PERRINE)} of {fmtInt(gradualLosses)}. Every hull on the Lane that faded gradually and was never seen again flew a Perrine flag. The {fmtInt(abruptLosses)} that went abruptly silent — a drive failure, a structural event, the things that kill a ship in under a minute — are spread across the other two owner classes and there is not one Perrine hull among them.
+
+Nobody on the bridge says anything for a while.
+
+<Dialogue speaker="analyst" aside="He is being careful, and the care is audible, and it is the most professional thing he has done since the shakedown.">
+Sir, I want to say what this is and what it isn't, before somebody says the other thing. What it is: a conditional. Given a gradual-fade loss, the owner is Perrine — {fmtInt(GRADUAL_LOSS_PERRINE)} out of {fmtInt(gradualLosses)}, which is as high as a conditional gets. — What it isn't: evidence of a cause. The whole thing could be a reporting habit. One office coding one owner's incidents one way for six years would produce this table exactly, and nobody would have done anything worse than be lazy in a consistent direction.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="She writes the table into the file and does not send it to Valhalla, and she tells him she is not sending it, which is the courtesy.">
+Then it stays aboard, with that sentence attached to it. Three things now point the same way and not one of them can be made to say why. — The Board asked for evidence that a fade means something. We will not have it out of the file, Ensign. We are going to have to be somewhere, cold, with the Eyes open, when one of them does it.
+</Dialogue>
+
+Sandoval calls the purge up from the cellar at the change of the watch. {fmt(hoursToPurge - 4, 0)} hours. {fmt(PURGE_HOURS, 1)} hours with the radiators out and the ship a lamp to anything with a naval aperture inside half an astronomical unit, and the only thing anybody aboard can put a number to is how often a freighter's nav suite catches it.
+
+Which — given the wings are out — is {fmt(P_SEEN_PER_PASS_PURGING, 2)}.
+
+</Scene>
+
+<LogEntry
+  title="P(A | B) is not P(B | A); the denominator is the “given”"
+  concept="A conditional probability discards every individual outside the given group before it counts anything, so P(A | B) = P(A ∩ B) / P(B) and the word “given” names the denominator — the same cell over a row total, a column total or the grand total produces three different true numbers. Rearranged, the definition is the general multiplication rule P(A ∩ B) = P(B)·P(A | B), which is how a path through a tree is priced; reversing a conditioning means rebuilding the tree forwards, adding every path that ends in the observed outcome to get the new total, and dividing the one path you care about by it."
+  formula="P(A \mid B) = \frac{P(A \cap B)}{P(B)}, \qquad P(A \cap B) = P(B)\,P(A \mid B), \qquad P(B \mid A) = \frac{P(B)P(A \mid B)}{P(B)P(A \mid B) + P(B^{c})P(A \mid B^{c})}"
+  mistake="The prosecutor's fallacy: quoting P(A | B) as though it answered a question about P(B | A). Both are usually true, they share a numerator and nothing else, and the gap between them is the base rate — which is why a staff paper can report a correct figure and still answer a question nobody asked. The related slip is conditioning on the wrong total: dividing a cell by the grand total gives a joint probability, not a conditional."
+  tags={['conditional probability', 'two-way table', 'tree diagram', 'general multiplication rule', 'reversing a conditional', "prosecutor's fallacy", 'base rate', '4.5']}
+/>
+
+</Gated>

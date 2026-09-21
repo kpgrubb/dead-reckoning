@@ -213,7 +213,7 @@ interface Candidate {
 }
 
 function candidates(xs: number[], ys: number[], transforms: Transform[]): Candidate[] {
-  const LABELS: Record<Transform, string> = { none: 'raw', logy: 'log y on x', logx: 'y on log x', loglog: 'log y on log x' }
+  const LABELS: Record<Transform, string> = { none: 'raw', logy: 'log y', logx: 'y on log x', loglog: 'log–log' }
   return transforms.map((transform) => {
     const fit = transformedRegression(xs, ys, transform, { base: 10 })
     return { transform, label: LABELS[transform], fit, curv: curvature(fit.tx, fit.residuals), r2: fit.r2 }
@@ -231,16 +231,17 @@ function describeResiduals(c: Candidate): string {
 /** The model written out in the original variables, with the fitted constants substituted. */
 function modelTex(c: Candidate): string {
   const a = fmt(c.fit.fit.intercept, 4).replace('−', '-')
-  const b = fmt(c.fit.fit.slope, 4).replace('−', '-')
+  const slope = c.fit.fit.slope
+  const b = `${slope < 0 ? '-' : '+'} ${fmt(Math.abs(slope), 4)}`
   switch (c.transform) {
     case 'none':
-      return `\\hat{y} = ${a} + ${b}x`
+      return `\\hat{y} = ${a} ${b}x`
     case 'logy':
-      return `\\log_{10}\\hat{y} = ${a} + ${b}x`
+      return `\\log_{10}\\hat{y} = ${a} ${b}x`
     case 'logx':
-      return `\\hat{y} = ${a} + ${b}\\log_{10}x`
+      return `\\hat{y} = ${a} ${b}\\log_{10}x`
     case 'loglog':
-      return `\\log_{10}\\hat{y} = ${a} + ${b}\\log_{10}x`
+      return `\\log_{10}\\hat{y} = ${a} ${b}\\log_{10}x`
   }
 }
 
