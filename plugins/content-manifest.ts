@@ -31,6 +31,13 @@ function readFrontmatter(file: string): Record<string, unknown> {
   return parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {}
 }
 
+/**
+ * Directories under content/ that hold MDX which is NOT a micro-module: calc-briefing bodies are
+ * rendered by <CalcBriefing topic="…"> via its own import.meta.glob, and must never enter the
+ * module manifest (they have no module frontmatter, so they would appear as id-less rows).
+ */
+const NON_MODULE_DIRS = new Set(['calc', 'fragments'])
+
 function scan(root: string, contentDir: string, warn: (msg: string) => void): RawEntry[] {
   const dir = path.resolve(root, contentDir)
   if (!fs.existsSync(dir)) return []
@@ -40,6 +47,7 @@ function scan(root: string, contentDir: string, warn: (msg: string) => void): Ra
     for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
       const p = path.join(d, entry.name)
       if (entry.isDirectory()) {
+        if (d === dir && NON_MODULE_DIRS.has(entry.name)) continue
         walk(p)
       } else if (entry.name.endsWith('.mdx')) {
         const fm = readFrontmatter(p)

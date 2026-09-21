@@ -11,14 +11,18 @@ type MDXModule = { default: ComponentType<{ components?: MDXComponents }>; front
 // Keys look like "/content/act-0/01-shakedown.mdx" — identical to ModuleMeta.path.
 const loaders = import.meta.glob<MDXModule>('/content/**/*.mdx')
 
-export const modules: ModuleMeta[] = manifest.map((m) => ({
-  kind: 'module',
-  ap_topics: [],
-  objectives: [],
-  prereqs: [],
-  calc_briefing: null,
-  ...m,
-}))
+// Defence in depth: an MDX file without module frontmatter must never reach the mission map,
+// the router or the resume selector. The manifest plugin already skips non-module directories.
+export const modules: ModuleMeta[] = manifest
+  .filter((m) => typeof m.id === 'string' && m.id.length > 0)
+  .map((m) => ({
+    kind: 'module',
+    ap_topics: [],
+    objectives: [],
+    prereqs: [],
+    calc_briefing: null,
+    ...m,
+  }))
 
 const byId = new Map(modules.map((m) => [m.id, m]))
 const indexById = new Map(modules.map((m, i) => [m.id, i]))
