@@ -1,0 +1,225 @@
+---
+id: act-3-03
+act: 3
+title: "Bored at Ceres"
+kind: module
+ap_topics: ["3.4"]
+objectives:
+  - "Identify undercoverage, nonresponse, voluntary response, convenience sampling and response bias in a described study"
+  - "Predict the direction of each bias in context and say which way the reported figure is wrong"
+  - "Distinguish bias, which is systematic, from sampling variability, which is random, using a simulated sampling distribution"
+prereqs: ["act-3-02"]
+est_minutes: 30
+calc_briefing: null
+summary: "The survey runs, master by master, at twenty-five seconds each way. A hull goes dark at Mark 9.3, an independent master spends nine minutes telling you what the Authority told her, and the Sulcus masters say nothing at all — which is itself a number."
+---
+
+import { fmt, fmtInt, fmtPct } from '@/lib/stats'
+import { BELIEF_BY_OWNER, CERES_Q4, CERES_SURVEY, FRAME_BELIEF, FRAME_MIX, FRAME_N, HARPAGIA, LANE_FRAME, THESSALY_DAWN, proportion } from '@/instruments/act-3/data'
+import { BiasDemonstrator } from '@/instruments/act-3/BiasDemonstrator'
+import { EyesLine, SurveyBeat, SurveyFigure } from '@/instruments/act-3/story'
+import { ceresBiasRubric } from '@/instruments/act-3/beats'
+
+export const responders = LANE_FRAME.filter((m) => !m.sulcus && m.respondsToContact)
+export const responderTruth = proportion(responders, (m) => m.believesPiracy)
+export const willNotAnswer = LANE_FRAME.length - responders.length
+export const frameGap = FRAME_BELIEF - responderTruth
+
+export const asgardCrew = { ratings: 320, sinkAlarms: 112, volunteers: 80, volunteerYes: 48, srsN: 80, srsYesA: 27, srsYesB: 30 }
+export const asgardTruth = asgardCrew.sinkAlarms / asgardCrew.ratings
+export const asgardVolunteerP = asgardCrew.volunteerYes / asgardCrew.volunteers
+export const asgardBias = asgardVolunteerP - asgardTruth
+export const asgardSrsA = asgardCrew.srsYesA / asgardCrew.srsN
+export const asgardSrsB = asgardCrew.srsYesB / asgardCrew.srsN
+export const asgardSe = Math.sqrt((asgardTruth * (1 - asgardTruth)) / asgardCrew.srsN)
+export const asgardSeBig = Math.sqrt((asgardTruth * (1 - asgardTruth)) / (4 * asgardCrew.srsN))
+export const asgardRmse = Math.sqrt(asgardBias * asgardBias + asgardSeBig * asgardSeBig)
+
+<Scene stamp="MET 59/03:18" location="Comms station · braking at 4 mgee · 0.70 AU from Callisto" condensed="Two days into the contact schedule, the Authority's traffic feed reports MV Harpagia Sulcus — the hull the Eyes found in Act I — transponder-degraded at Mark 9.3. Uruk classifies her unknown, presumed lost four hours later. Ebele notices, without being asked, which office wrote the classification.">
+
+The feed comes in at three in the morning because the Lane does not keep watches, and Solberg wakes you for it because you told him to wake you for that hull.
+
+<Dialogue speaker="comms" aside="He reads from the Authority's traffic bulletin without editing it, which is the only way he ever reads anything." lag="lag 15 min 52 s · Authority relay">
+Lane Authority traffic feed, timestamped MET 59 slash 02 colon 51, received 15 minutes 52 seconds later. Reads, verbatim: MV {HARPAGIA}, Perrine registry, transponder output degraded below carrier threshold at Mark 9.3. Last clean check-in Mark 9.1. Traffic in the vicinity advised. End of bulletin. Sir — that is the hull the Lieutenant flagged on the outbound sweep.
+</Dialogue>
+
+<EyesLine />
+
+At MET 59/06:51 Uruk High classifies her. Four hours, to the minute, from the first degraded frame, and the entry is two words long: *unknown, presumed lost*.
+
+Ebele is at the terminal in a jacket over nothing, reading the classification, and he does not say the thing everybody is thinking. He says a smaller thing, which is worse.
+
+"So it's Uruk again, sir. Not Ceres. I'm not saying that means anything yet. I'm saying I've started counting which office writes which word, and I'd rather have started counting before I had a reason to."
+
+Ferrier, who has been up since the bulletin and has not sat down: "Then count. Do not conclude. We have a survey running and it is the only thing on this ship that can produce a fact this week."
+
+</Scene>
+
+<Scene stamp="MET 61/09:40 — 70/17:20" location="Comms station · braking at 4 mgee · 0.74 AU from Callisto" condensed="Nine days of the contact schedule, one master at a time, twenty-five seconds each way. Independent masters talk; several of them raise Sulcus hulls turning late without being asked. The Sulcus masters do not talk at all — most of them do not answer the raise, and the ones who do say no comment. Ebele wants to drop them from the sample; you make him record the silence as data, and Ferrier says what the number will then be about.">
+
+Nine days. One master at a time. Solberg raises a hull, waits, reads the return questions in order, waits, writes down the answer in the master's own words, and logs the window closed. Twenty-five seconds out, twenty-five seconds back, every time, all day, and after the first day you stop hearing it as delay and start hearing it as the ordinary rhythm of talking to somebody who is a long way off and moving.
+
+They talk. That is the first surprise, if you have spent your service reading the Authority's opinion returns. Working masters on a corridor where hulls have been disappearing will give a Compact officer nine minutes and their own coffee if the officer asks a question worth answering. Under our own design we raised <SurveyFigure of="n" words /> masters, and <SurveyFigure of="responders" words /> of them gave a usable return.
+
+And <SurveyFigure of="turningLate" words /> of them, unprompted — not in answer to any item on the return, but in the space after it, when Solberg says *anything else, Master* because Ferrier wrote that line into the script — raise the same thing.
+
+Sulcus hulls, on the Ceres approach, turning late.
+
+<Dialogue speaker="comms" aside={`Tight-beam to MV ${THESSALY_DAWN}, independent registry, Mark 7.4. He announces her before he patches her through.`} lag="lag 25 s each way">
+Master Y. Marsh, *Thessaly Dawn*, independent. She has been on the beam eleven minutes and I have read her the return twice. Sir, I am going to hand her to you, and I am going to tell you first that she has asked me three times who is going to read this.
+</Dialogue>
+
+<Dialogue speaker="marsh" aside="Nine minutes of it, twenty-five seconds at a time, and she does not waste a single gap." lag="lag 25 s each way">
+You want to know what I *believe*, Commander? I believe my brother's ship is twenty thousand tonnes of nothing somewhere off Mark ten and the Authority has told me two stories about it and won't stand behind either. *Thessaly Ember*. Eleven crew. First it's a rock — a rock, on a corridor they survey twice a season, and I said fine, show me the survey, and they didn't. Then six weeks later it's pirates, and there's a bulletin about escort economics, and some clerk at Ceres has my brother in a column. Rock. Pirates. Pick one, you bastards, because they're not the same thing and you don't get to have both. — I'll tell you what I've actually *seen*, since you asked me that and nobody else ever has. Sulcus hulls coming into the approach late off the plot and burning like they've got somewhere else to be. Twice, my own eyes, my own chronometer. I logged both. Nobody asked. — So what are you going to do about it?
+</Dialogue>
+
+You tell her the truth, which is that you are collecting it properly, and she waits twenty-five seconds and then twenty-five more and says nothing, because it is not an answer and she was a master for nineteen years before you were a commander.
+
+The Sulcus masters are the other shape in the file, and they are a shape made of absence. Solberg raised <SurveyFigure of="sulcusContacted" words /> of them. <SurveyFigure of="sulcusAnswered" words /> answered — acknowledged the raise, confirmed their hull, and declined the return, *no comment, Lieutenant, with respect* — and the rest never came up on the beam at all, through a full window, with the acquisition good.
+
+<Dialogue speaker="analyst" aside="He has the return file open with the Perrine rows greyed out, and his hand is on the key that would drop them.">
+So they're not data, sir. That's my argument and I'll make it once. A row with nothing in it isn't a measurement. If I drop the Perrine masters out of the file and say in the method that the survey covers Mercantile and independent masters, every number in the report is clean and every denominator is a count of actual answers.
+</Dialogue>
+
+You do not let him drop them. You tell him to give the silence a row, a count and a rate, in the results and not in the footnotes.
+
+<Dialogue speaker="xo" aside="She says it slowly, because she intends him to write it down in these words, and he does.">
+Because a master who will not talk to a Compact warship is a fact about the Lane, Ensign, and it is a fact we obtained by a method. — And then say which masters your number is about, and put the ones who did not answer on the same page. Not in an appendix. On the same page as the estimate.
+</Dialogue>
+
+Which leaves the thing you have been circling since MET 54, and it is not the thing the Authority got wrong. It is the thing nobody can get right from this ship.
+
+</Scene>
+
+<Briefing title="Bias is a direction; variability is a spread" topics={["3.4"]}>
+<Briefing.Intuition>
+Imagine repeating the whole survey a thousand times under the same method. You get a thousand estimates. That cloud of estimates has a **centre** and a **width**, and the two are damaged by completely different things.
+
+**Sampling variability** is the width. It comes from the luck of the draw and nothing else, it is what a standard error measures, and it shrinks as $1/\sqrt{n}$. It is not an error in the method; it is the price of not asking everybody, and it is *quantifiable*.
+
+**Bias** is the distance from the centre of the cloud to the true value. It comes from the method, it is the same for every repetition, and **it does not shrink with $n$**. A biased design run at $n = 1000$ is the same wrong answer, held more firmly.
+
+The named mechanisms, each with a direction you can usually predict before you collect anything:
+
+- **Undercoverage.** The frame misses part of the population. Direction: toward whatever the reachable part believes. A dock-office frame over-weights whoever docks.
+- **Convenience sampling.** Units chosen because they were easy. A special case of undercoverage with no frame at all and no computable error.
+- **Voluntary response.** The units decide whether to be in the sample. Direction: toward strong opinion, and usually toward grievance, because a person with a complaint will spend fifteen minutes on a form and a person without one will not.
+- **Nonresponse.** You selected them properly and could not get an answer. Direction: toward whatever the *responders* believe — which is a real and estimable quantity, and not the one you set out to measure.
+- **Response bias.** The answer differs from the truth because of how it was asked: **wording** that names the conclusion before the question ("*Do you believe pirates … are responsible?*"), an **interviewer** the respondent wants to please or fears, a question about something the respondent is unwilling to admit. Direction: toward the socially safe answer, or toward whatever the question suggested.
+
+Random selection is a cure for exactly one disease. It makes the selection unbiased *within the frame*. It does nothing about a bad frame, nothing about who refuses to answer, and nothing whatever about a leading question, because it does not change a word of it.
+
+And there is a harder case, which is this survey. When a whole stratum will not answer anybody, a probability design does not estimate what the frame believes. It estimates, without bias, what the **responding part of the frame** believes — and it measures the size of the silence. Those are two parameters, and the only dishonest report is the one that quotes the first number and calls it the second.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\text{bias} = E[\hat{p}] - p, \qquad \operatorname{SD}(\hat{p}) = \sqrt{\frac{p(1-p)}{n}}" terms={{ 'E[\\hat{p}]': 'the centre of the estimates over repeated sampling', 'p': 'the parameter the claim is about', 'n': 'the sample size' }} label="Centre and width are different quantities" />
+
+<Formula tex="\text{RMSE} = \sqrt{\text{bias}^2 + \operatorname{Var}(\hat{p})} \;\xrightarrow[n \to \infty]{}\; |\text{bias}|" terms={{ '\\text{RMSE}': 'typical total distance from the truth', '\\operatorname{Var}': 'the squared spread, which goes to zero' }} label="Why a bigger biased sample does not help" />
+
+<Formula tex="\text{nonresponse rate} = \frac{\text{contacted} - \text{answered}}{\text{contacted}}" terms={{ '\\text{contacted}': 'units the design selected and reached for', '\\text{answered}': 'units that gave a usable response' }} label="The number that must be printed beside the estimate" />
+</Briefing.Definition>
+<Briefing.Worked>
+Your own ship, 2176, and a case where the truth came out afterwards. *Asgard* carried {fmtInt(asgardCrew.ratings)} ratings. The question was whether a rating had been through a sink alarm in the commission, and because the maintenance log recorded every alarm by compartment, the answer was knowable later: **{fmtInt(asgardCrew.sinkAlarms)} of {fmtInt(asgardCrew.ratings)}**, a true share of {fmt(asgardTruth, 3)}.
+
+The first attempt was a notice in the mess. {fmtInt(asgardCrew.volunteers)} ratings filled it in; {fmtInt(asgardCrew.volunteerYes)} said yes — {fmt(asgardVolunteerP, 3)}. Bias: {fmt(asgardVolunteerP, 3)} − {fmt(asgardTruth, 3)} = **{fmt(asgardBias, 3)}**, and the direction was predictable before a single form came back, because a rating who had been sealed in a hot compartment wanted to say so and a rating who had not had nothing to write.
+
+The second attempt was an SRS of {fmtInt(asgardCrew.srsN)} off the watch bill, twice, a week apart: {fmtInt(asgardCrew.srsYesA)} yes and then {fmtInt(asgardCrew.srsYesB)} yes — {fmt(asgardSrsA, 3)} and {fmt(asgardSrsB, 3)}, on either side of {fmt(asgardTruth, 3)}. The two estimates differ by {fmt(Math.abs(asgardSrsA - asgardSrsB), 3)} and neither is wrong: the standard deviation of an estimate at this size is {fmt(asgardSe, 3)}, so that is exactly the wobble the design promises.
+
+Now the arithmetic that decides everything. Quadruple the mess notice to {fmtInt(4 * asgardCrew.volunteers)} volunteers and its spread halves, to about {fmt(asgardSeBig, 3)} — while its bias sits, unmoved, at {fmt(asgardBias, 3)}. Typical total distance from the truth: {fmt(asgardRmse, 3)}, which is {fmtPct(asgardSeBig / asgardRmse, 0)} spread and the rest pure direction. Against an SRS of {fmtInt(asgardCrew.srsN)} whose typical distance is the {fmt(asgardSe, 3)} above and whose centre is the truth. **The small honest sample beats the large dishonest one by a factor of {fmt(asgardRmse / asgardSe, 1)}, and the gap widens every time you spend more money on the wrong design.**
+</Briefing.Worked>
+<Briefing.Caution>
+*Bias fixed by $n$.* The commonest error in the subject, and the one the Ensign made out loud in the wardroom. More data narrows the cloud; it does not move it. If you cannot say which direction a mechanism pushes, you cannot correct for it either — you can only report it.
+
+*Variability called bias.* Two honest samples of the same population give different numbers. That is not evidence that either is biased, and a reviewer who calls a difference of one standard error "a discrepancy" is reading noise as signal. Bias is a statement about the **centre of the repeated-sampling distribution**, which no single sample displays.
+
+*Random selection as a cure for response bias.* Choosing respondents by digits does not unask a leading question. Q4 — "{CERES_Q4}" — names the conclusion, the culprits and their home port before it asks anything, and it would do so just as efficiently to a perfect simple random sample of the corridor.
+</Briefing.Caution>
+</Briefing>
+
+<BiasDemonstrator />
+
+<Drill generator="act-3/name-the-bias" count={1} />
+<Drill generator="act-3/bias-or-variability" count={1} />
+<Drill generator="act-3/bias-direction" count={2} />
+<Drill generator="act-3/nonresponse-rate" count={1} />
+<Drill generator="act-3/larger-sample-effect" count={1} />
+
+<MissionBeat id="act-3-03-autopsy" kind="interpretation" label="THE AUTOPSY"
+  prompt={`The report needs a paragraph on the Authority's return that a hostile reader cannot move. Name the biases in the Ceres survey of ${fmtInt(CERES_SURVEY.n)} masters — how each one was built into the method — say which way each pushes the estimate, and state the consequence for the Authority's headline figure. Be specific about what and whom the figure is a figure of.`}
+  hint="Three mechanisms, one direction, one consequence. Who was on the list at all; who decided whether to be in the sample; and what the question said before it asked. Then: do these push the estimate up or down, and what is the number therefore a number about?"
+  {...ceresBiasRubric()}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it once and hands it back without a mark on it.">
+  That paragraph is the reason this ship was sent. Not the estimate — the paragraph. File it ahead of the estimate so that nobody reads the number without it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the Authority's method section open beside his own draft, line against line.">
+  Yes, sir. That's — yes. I named them and I stopped. Each one needs the mechanism and then the arrow: who it left off the list, who chose themselves in, what the wording did — and then which way the number moved because of it, and what the number is a number *about*.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<SurveyBeat kind="belief" id="act-3-03-belief">
+  <Success>
+  <Dialogue speaker="analyst" aside="He puts it on the plot under the Authority's figure, with both methods printed underneath both numbers.">
+  So that is what a properly drawn sample says about independent masters, sir, and it is nothing like the Authority's number, and the difference is not the masters. It's the method. Same corridor, same season, same question asked straight.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  The denominator is the independents who answered. Not the independents we raised, not the sample, not the frame. Count the answers, then count the yeses inside them, and divide in that order.
+  </Dialogue>
+  </Failure>
+</SurveyBeat>
+
+<SurveyBeat kind="nonresponse" id="act-3-03-nonresponse">
+  <Success>
+  <Dialogue speaker="comms" aside="He logs it with the window timestamps beside it, every raise and every repeat, so that the rate can be audited from the beam log alone.">
+  Recorded, sir. Every raise, every repeat, every window closed without a return. If Valhalla wishes to argue that we did not try to reach them, the argument is in the log with the times on it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst">
+  Yes, sir. That's — yes. I counted the ones who said *no comment* as nonresponse, and they are not: they answered us. Nonresponse is the ones who never came up at all, over everyone we contacted.
+  </Dialogue>
+  </Failure>
+</SurveyBeat>
+
+<Gated by={["act-3-03-autopsy", "act-3-03-belief", "act-3-03-nonresponse"]}>
+
+<Scene stamp="MET 70/21:05" location="Wardroom · braking at 4 mgee · 0.79 AU from Callisto" condensed="The results go on one page with two parameters on it: what the responding masters believe, beside the rate at which the Sulcus masters did not answer. The testimony is that several independent masters have seen Sulcus hulls turn late on the approach, and that Sulcus masters will not talk to a Compact warship. Where the hulls go is not in evidence.">
+
+The page Ferrier signs has two numbers on it and a sentence between them explaining why there have to be two.
+
+Belief among the masters who answered: <SurveyFigure of="independentBeliefPct" /> of the responding independent masters, against the Authority's {fmtPct(CERES_SURVEY.pYes, 0)}. Sulcus nonresponse: <SurveyFigure of="nonresponsePct" /> of the Sulcus masters contacted, with the raise times in the appendix.
+
+And the sentence, which is the part Ebele fought and then wrote better than anyone else could have:
+
+*No survey conducted from this vessel estimates the belief of all {fmtInt(FRAME_N)} masters on the schedule. {fmtInt(willNotAnswer)} of them will not answer a Compact warship, and their silence is not random with respect to what they know. What the design estimates without bias is belief among the {fmtInt(responders.length)} masters who will answer, reported here beside the rate at which the remainder did not.*
+
+Ebele works the frame's own arithmetic out afterwards, on the plot, for himself, and it makes him quiet in a way you have not seen before. If every master on the schedule answered honestly, belief in piracy across the frame would stand at {fmtPct(FRAME_BELIEF, 1)} — {fmtPct(BELIEF_BY_OWNER.Perrine, 0)} of the {fmtInt(FRAME_MIX.Perrine)} Perrine masters, {fmtPct(BELIEF_BY_OWNER.Mercantile, 0)} of the Mercantile, {fmtPct(BELIEF_BY_OWNER.independent, 0)} of the independents. Among the masters who *will* answer it is {fmtPct(responderTruth, 1)}. The gap between those two figures, {fmt(frameGap, 3)}, is not sampling error and never will be. It is the shape of who declines to speak.
+
+Our own figure for the independents does not sit on {fmtPct(BELIEF_BY_OWNER.independent, 0)} either, and Ferrier makes him say why before she signs: no sample lands on a parameter, a draw of <SurveyFigure of="independentResponders" words /> masters scatters by several points either side of one, and the distance between our number and the corridor's is the width of the cloud and not a fault in the method. The distance between ours and the Authority's is something else entirely, and it has a direction.
+
+"Every design we could have run lands on the second number, sir," he says. "The clean ones land on it honestly and the Authority's landed somewhere else entirely. There is no draw from this ship that reaches the first one."
+
+"Then we do not claim it," Ferrier says. "We have two things nobody had on Tuesday. We have a corridor figure with a method behind it. And we have <SurveyFigure of="turningLate" words /> masters who, without being asked, described the same manoeuvre."
+
+<Dialogue speaker="xo" aside="She writes the clue line herself, in the Board's own register, so that it cannot be read as an accusation.">
+Independent masters in a probability sample report observing Perrine-registry hulls diverging late from profile on the Ceres approach. Perrine masters declined the return at the rate recorded above. The two observations are consistent with several explanations and this vessel is not in a position to choose between them.
+</Dialogue>
+
+What the hulls are doing when they turn, and where they are when they stop, is not in evidence and will not be produced by asking anybody. Testimony has taken you exactly as far as testimony goes. The next thing on the page is the Board's escort trial, and Ferrier has been reading it for two days with the expression she keeps for paperwork that has been written backwards.
+
+</Scene>
+
+<LogEntry
+  title="Bias is a direction; variability is a spread"
+  concept="Over repeated sampling an estimate has a centre and a width: bias is the distance from that centre to the parameter and comes from the method — undercoverage, convenience, voluntary response, nonresponse, or response bias from wording or interviewer — while sampling variability is the width and comes only from the draw, shrinking as one over the square root of n. Random selection removes selection bias inside the frame and nothing else: it does not repair a frame, it does not make a refusal answer, and it does not unask a leading question, so a nonresponse rate must be reported beside the estimate and the estimate must name which units it is about."
+  formula="\text{bias} = E[\hat{p}] - p \ \ (\text{free of } n), \qquad \operatorname{SD}(\hat{p}) = \sqrt{\tfrac{p(1-p)}{n}}, \qquad \text{RMSE} \to |\text{bias}|"
+  mistake="A bigger biased sample. Increasing n narrows the cloud of estimates around the wrong centre, which converts an uncertain wrong answer into a confident one; the near relative is calling an ordinary difference between two honest samples a bias when it is one standard error of noise."
+  tags={['bias', 'sampling variability', 'undercoverage', 'nonresponse', 'voluntary response', 'response bias', 'question wording', 'direction of bias', '3.4']}
+/>
+
+</Gated>

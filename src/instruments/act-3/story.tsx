@@ -16,6 +16,7 @@ import { Dialogue } from '@/components/Dialogue'
 import { Plot } from '@/components/Plot'
 import { useProgress } from '@/store/progress'
 import { fmt, fmtPct } from '@/lib/stats'
+import { scopeRubric } from './beats'
 import {
   DESIGN_LABEL,
   DESIGN_OPTIONS,
@@ -153,6 +154,28 @@ export function LotteryBeat({ id, children }: { id: string; children?: ReactNode
       label="where minus two-thirds falls"
       prompt={`Ebele’s claim is directional: escorts *reduce* advisories. Under the claim that escorts do nothing, every one of the ${trial.exact.count} ways of choosing ${k} escorted transits out of ${n} was equally likely. What fraction of those relabellings gives a difference (escorted − unescorted) at least as negative as the one observed, ${fmt(trial.exact.observed, 2)}? Report the exact one-sided randomization p-value to four decimal places.`}
       hint={`Count the relabellings with x̄ₑ − x̄ᵤ ≤ ${fmt(trial.exact.observed, 3)} and divide by ${trial.exact.count}. The machine’s shuffles approximate it; the exact count is on its readout.`}
+    >
+      {children}
+    </MissionBeat>
+  )
+}
+
+/**
+ * Interpretation mission beat: the scope of inference for whichever trial the learner has. The rubric
+ * needs the trial's own p-value and transit count, which depend on the act-3-05 decision, so the beat
+ * has to read the store — an MDX body cannot call a hook inside a JSX expression.
+ */
+export function LotteryScopeBeat({ id, children }: { id: string; children?: ReactNode }) {
+  const trial = useTrial()
+  const n = trial.transits.length
+  return (
+    <MissionBeat
+      id={id}
+      kind="interpretation"
+      label="what the trial licenses"
+      prompt={`Write the scope of inference for ${trial.name}, as it will appear in the report. Say whether the difference in advisories is statistically significant and cite the one-sided randomization p-value. Say what the design licenses and what it does not: which conclusion the ${n} transits' assignment by lot buys, how far the finding generalizes, and what the trial says about losses.`}
+      hint="Four things, and the fourth is the one Ebele leaves out: the decision and the p-value; what random assignment would have licensed had there been a difference; how far it generalizes, given these transits were not a random sample of the Lane; and what the response variable was — advisories, not losses."
+      {...scopeRubric(trial.exact.pLess, { transits: n, name: trial.name })}
     >
       {children}
     </MissionBeat>

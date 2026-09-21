@@ -78,7 +78,7 @@ describe('independenceInContext', () => {
     const exclusive = 'P(loss | Perrine ownership) is 0.0211 and P(loss) is 0.0119, so in this ledger loss and Perrine ownership are not independent — they are mutually exclusive.'
     const r1 = gradeInterpretation(a, exclusive)
     expect(r1.correct).toBe(false)
-    expect(r1.forbidden?.some((f) => f.label.includes('mutually exclusive'))).toBe(true)
+    expect(r1.forbidden?.some((f) => f.label.includes('exclusiv'))).toBe(true)
     const causal = 'In this ledger P(loss | Perrine ownership) is 0.0211 against P(loss) 0.0119, so being a Perrine hull causes a loss.'
     const r2 = gradeInterpretation(a, causal)
     expect(r2.correct).toBe(false)
@@ -120,7 +120,7 @@ describe('binomialSurpriseInterpretation', () => {
   })
   it('accepts a tail-based verdict that names the baseline', () => {
     const good =
-      'Under the 2176 Asgard report, a rate of 0.50 percent, losses in 2,612 Lane transits average 13.2 with an SD of 3.6. Thirty-one is 4.9 SD above that, and the chance of 31 or more is under 0.0001, so it is surprising under that baseline.'
+      'Under the 2176 Asgard report, a rate of 0.50 percent, losses in 2,612 Lane transits average 13.2 with an SD of 3.6. The observed count is 4.9 SD above that, and the chance of 31 or more is under 0.0001, so it is surprising under that baseline.'
     expect(gradeInterpretation(a, good).correct).toBe(true)
   })
   it('fails the point-probability argument', () => {

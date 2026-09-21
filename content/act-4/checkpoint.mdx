@@ -1,0 +1,104 @@
+---
+id: act-4-checkpoint
+act: 4
+title: "Checkpoint: Running Cold"
+kind: checkpoint
+ap_topics: ["4.1", "4.2", "4.3", "4.4", "4.5", "4.6", "4.7", "4.8", "4.9", "4.10", "4.11", "4.12"]
+objectives:
+  - "Defend every probability in the heat plan from the arithmetic that produced it — simulation, complement, conditional, independence, distribution, expectation, variance, binomial, geometric"
+  - "State what an expected value, a tail and a long-run average do and do not promise, in the ship's own units"
+prereqs: ["act-4-07", "act-4-09", "act-4-10"]
+est_minutes: 25
+calc_briefing: null
+summary: "Twenty-three days of loiter, seven purges, one hull that turned. Before the report goes to Valhalla, the Chief wants every number in the annex defended."
+---
+
+import { PassGate } from '@/instruments/act-4/story'
+import { fmt } from '@/lib/stats'
+import { ACT_END, LOITER_DAYS, PURGE_COUNT, PURGE_HOURS_TOTAL, TORCH_OFF, WINDOW_1, WINDOW_2, hoursBetween, metStamp, sinkAt } from '@/instruments/act-4/data'
+
+export const windowHours = hoursBetween(WINDOW_1.from, WINDOW_1.to) + hoursBetween(WINDOW_2.from, WINDOW_2.to)
+
+<Scene stamp="MET 105/13:40" location="Wardroom · Mark 9 region, 0.42 AU from Ceres · Quiet, cellar 5%" condensed="Twenty minutes after the last purge closes. Twenty-three days of loiter, seven purges, two Watch windows, one hull that turned off profile at Mark 9.4. The report goes to Valhalla at MET 106 with the heat plan and every probability in it attached. Sandoval will not let it go until the arithmetic is defended.">
+
+The wings came in at 105/12:36 and the ship has been quiet for an hour, which is the only kind of quiet anyone aboard trusts.
+
+Twenty-three days. {PURGE_COUNT} purges, {fmt(PURGE_HOURS_TOTAL, 1)} hours of them with the radiators out and the ship a lamp to anything with a naval-grade aperture inside half an astronomical unit. {fmt(windowHours, 0)} hours on Watch across two windows. One hull that came up the Lane on profile, began to fade, and turned eleven degrees while it was still braking.
+
+Sandoval has the heat plan on the wardroom table, face up, which is where she put it and not where you left it. Beside it, in Ebele's hand, the annex: the close-pass count for each window, the wait, the cluster study, the two baselines, the six subsystem loads with their spreads. Every page of it is arithmetic somebody did on this ship in the last three weeks.
+
+The report goes at MET 106. Solberg has the slot.
+
+</Scene>
+
+<Dialogue speaker="engineer" aside="One hand flat on the plan. She does not slide it across.">
+Every number in this goes on the record, Skipper, and the record is what the Chief works to. I am not asking you to defend the plan. The plan is done; we flew it. I am asking you to defend the arithmetic, because that is the part they can take apart from a room at Valhalla with no cellar gauge in front of them.
+</Dialogue>
+
+<Dialogue speaker="engineer">
+Twelve things. How the Ensign's simulation was built and what its number means. The complement, because that is where he put a probability above one. Both directions of a conditional and which one the Board quoted. Whether two events are independent and which check says so. A distribution that sums to one, what it averages, and how far it spreads. Variances. The binomial on the passes and the binomial on the count. And the wait, which is the one I care about, because the wait is what I am buying with lithium.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="Standing where she can read it the right way up. She has already read it.">
+Assuming the annex is complete — and it is, I checked it against the log — the annex is the part that survives. The finding is one ship. The method is what makes the next nineteen legible. Where you are asked for a sentence, write the one you would sign.
+</Dialogue>
+
+<Checkpoint act="act-4" />
+
+<PassGate act="act-4">
+
+<Scene stamp="MET 106/06:00" location={`Bridge · comms station · Quiet, cellar ${fmt(sinkAt(ACT_END), 0)}%`} condensed="The report goes at MET 106: one observed off-profile diversion, vector logged, with the heat plan and the probability annex attached. Solberg counts the lag out loud — twenty-one and a half minutes each way.">
+
+Solberg sends it at six.
+
+*At MET 104/03:50 this ship observed MV* Marius Regio *(Perrine flag, Adlinda Mk 3) at Mark 9.4, on profile, transponder degrading. The hull rotated its brake plume approximately eleven degrees and continued to decelerate on the new bearing. The vector is attached. This ship did not pursue. Observation was conducted from a cold loiter over {fmt(LOITER_DAYS, 0)} days at {metStamp(TORCH_OFF)} onward, under a heat plan whose probabilities are attached in full.*
+
+Four paragraphs. The annex runs to eleven displays and every one of them carries the denominator it was computed against.
+
+</Scene>
+
+<Dialogue speaker="comms">
+Valhalla. Twenty-one and a half minutes out, twenty-one and a half back. Timestamp is genuine. At the earliest, Captain, somebody at Valhalla has an opinion about this at 06:43. In practice I would not look for one before tomorrow's second watch.
+</Dialogue>
+
+<Scene variant="transmission" stamp="MET 107/09:12 · VALHALLA" condensed="The Board's reply: a single off-profile manoeuvre is consistent with a navigational casualty. Observation to continue within the assigned profile. The probability annex is noted.">
+
+*The Board acknowledges the commanding officer's report of MET 106. It is noted that a single off-profile manoeuvre by a hull with a degrading transponder is consistent with a navigational casualty, and that the Lane Authority's incident record contains manoeuvres of this description which were subsequently resolved. The probability material appended is noted. The Board directs that observation continue within the assigned profile and that no pursuit be undertaken. — For the Board, Maalouf, Cdre., Flag Secretary.*
+
+</Scene>
+
+<Dialogue speaker="analyst" aside="He has the annex open and is turning pages he wrote.">
+So — sir. They didn't say the arithmetic is wrong. Not one line of it. They said one is one.
+</Dialogue>
+
+<Dialogue speaker="xo">
+Because one is one. One ship is an anecdote, Ensign. You witnessed a hull turn eleven degrees and you can put a number on how long you waited for it and how likely it was that nobody saw you doing the waiting. You cannot put a number on whether it was the only one.
+</Dialogue>
+
+<Scene stamp="MET 107/09:40" location="Bridge" condensed="The turn: the Board's rebuttal is not about this hull but about nineteen. To answer it you need to know what nineteen honest hulls would look like — the noise, before the signal. Ceres is 0.4 AU away and the Board's own comparison table is aboard.">
+
+She is right, and the thing that makes her right is the thing you have spent three weeks building.
+
+You know what one hull turning costs in lithium. You know the odds a freighter's nav sensors caught you while it happened, pass by pass. You know how long you should have expected to wait and how badly that expectation moves when the rate moves. Every one of those is a probability about *this* ship, in *this* window, and the Board has just declined every one of them by pointing at a denominator of one.
+
+The Register says thirty-one hulls in six years. Nineteen of them are Perrine. All nineteen faded gradually and every one of them was coded *unknown* by the same office. You have the tightest cluster of loss dates in the file and a simulation that says chance produces it about twice in a hundred years of that kind.
+
+What you do not have is the shape of ordinary. If nineteen hulls were late, or lost, or gradual, or Perrine, purely because nineteen hulls have to be *something* — what would that look like? How far from the middle does a batch of nineteen wander when nothing at all is wrong with it?
+
+Ferrier says it the way she says everything, which is once.
+
+</Scene>
+
+<Dialogue speaker="xo">
+We have been computing probabilities of events. The Board is going to answer with a statistic — a rate, a mean, a count out of a corridor — and statistics have distributions of their own. Until we know what the noise looks like, we cannot tell them we have heard a signal. Ceres is fifteen days at fifteen milligee and the fuel state is adequate. I would like to be there with that work already done.
+</Dialogue>
+
+<LogEntry
+  title="Act IV — buying odds with heat"
+  concept="Probability turned the ship's stealth into a budget you could price: a sample space with a complement, conditionals that reverse into different numbers, independence that holds for scheduled close passes and fails for own-ship re-sweeps, and random variables whose means add, whose variances add, and whose tails are what a decision actually rides on. The binomial priced a window of close passes and a count of losses against a chosen baseline; the geometric priced the wait. Every one of those is a probability about a single ship in a single window — which is exactly the objection the Board raised, and the reason Act V exists."
+  formula="P(A^c) = 1 - P(A) \qquad P(A \mid B) = \frac{P(A \cap B)}{P(B)} \qquad \mu_X = \sum x\,p(x) \qquad \sigma_{X+Y}^2 = \sigma_X^2 + \sigma_Y^2 \qquad P(X = k) = \binom{n}{k}p^k(1-p)^{n-k} \qquad P(X = k) = (1-p)^{k-1}p"
+  mistake="Answering a question about a long run with a statement about the next trial — an expected value read as a forecast, a mean read as the likeliest outcome, a simulated estimate read as exact."
+  tags={['unit-4', 'checkpoint', 'probability', 'random variables', 'binomial', 'geometric', 'expected value']}
+/>
+
+</PassGate>

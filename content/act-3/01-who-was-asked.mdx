@@ -39,7 +39,7 @@ export const feederCoverage = feeder.reachable / feeder.listed
 export const feederResponse = feeder.answered / feeder.contacted
 export const feederYes = feeder.yes / feeder.answered
 
-<Scene stamp="MET 54/09:20" location="Wardroom · braking at 4 mgee · 0.61 AU from Callisto" condensed="Eight days past turnover, the Board's third attachment is on the wardroom table: the Lane Authority's dock survey, 212 masters, 94 percent of them agreeing that pirates are responsible. Ebele has taken it apart and found the mechanism — a notice at Ceres, answered by whoever wanted to answer it — and then proposes to fix it by asking twice as many masters at Ceres. Ferrier does not answer him.">
+<Scene stamp="MET 54/09:20" location="Wardroom · braking at 4 mgee · 0.61 AU from Callisto" condensed={`Eight days past turnover, the Board's third attachment is on the wardroom table: the Lane Authority's dock survey, ${fmtInt(CERES_SURVEY.n)} masters, ${fmtPct(CERES_SURVEY.pYes, 0)} of them agreeing that pirates are responsible. Ebele has taken it apart and found the mechanism — a notice at Ceres, answered by whoever wanted to answer it — and then proposes to fix it by asking twice as many masters at Ceres. Ferrier does not answer him.`}>
 
 Eight days of braking and the deck still knows which way is down, which is the only thing about this passage that has not changed. Sandoval says the wings are carrying it and will keep carrying it as long as nobody asks the ship to be quiet. Nobody has asked the ship to be quiet since MET 46.
 
@@ -67,7 +67,7 @@ You clear the attachment off the table and put three empty circles on the plot, 
 
 </Scene>
 
-<Scene variant="transmission" stamp="Attachment C" location="Lane Authority · Ceres dock office · Master Opinion Return, Close Season 2184" condensed="The Authority's return: a notice posted at the Ceres dock office, 212 masters answering of their own accord, owner mix 9 / 61 / 30 percent, and Q4 — which names pirates from the Free Holds before it asks anything — returning 94 percent yes.">
+<Scene variant="transmission" stamp="Attachment C" location="Lane Authority · Ceres dock office · Master Opinion Return, Close Season 2184" condensed={`The Authority's return: a notice posted at the Ceres dock office, ${fmtInt(CERES_SURVEY.n)} masters answering of their own accord, and Q4 — which names pirates from the Free Holds before it asks anything — returning ${fmtPct(CERES_SURVEY.pYes, 0)} yes.`}>
 
 **LANE AUTHORITY · CERES DOCK OFFICE · MASTER OPINION RETURN**
 
@@ -145,7 +145,7 @@ Write the scope honestly and it reads: *{fmtPct(feederYes, 0)} of responding mas
   hint="The population is set by the sentence the Board wrote, not by the data. Then ask the only question that finds a frame: who could physically have been asked?">
   <Success>
   <Dialogue speaker="analyst" aside="He labels the third circle last, the one that touches neither of the others, and sits looking at it.">
-  So the outer circle is the Lane and the middle one is the dock office, and they overlap, but not the way the caption assumes — {fmtInt(ceresOnLane)} of the {fmtInt(CERES_SURVEY.n)} are masters who are on the schedule now, out of {fmtInt(FRAME_N)}. That's {fmtPct(frameCoverage, 0)} coverage of the corridor. And the third circle is everyone who was never going to be asked: of the {fmtInt(POPULATION_N)} masters working this Close Season, {UNREACHABLE_ORDER.map((s) => `${fmtInt(unreachableStatus[s])} ${STATUS_LABEL[s]}`).join('; ')}.
+  So the outer circle is the Lane and the middle one is the dock office, and they overlap, but not the way the caption assumes — {fmtInt(ceresOnLane)} of the {fmtInt(CERES_SURVEY.n)} are masters who are on the schedule now, out of {fmtInt(FRAME_N)}. That's {fmtPct(frameCoverage, 0)} coverage of the corridor. And the third circle is everyone the schedule cannot reach at all — of the {fmtInt(POPULATION_N)} masters working this Close Season, {UNREACHABLE_ORDER.map((s) => `${fmtInt(unreachableStatus[s])} ${STATUS_LABEL[s]}`).join('; ')} — {fmtInt(unreachable.length)} masters who are on nobody's tight-beam this month.
   </Dialogue>
   </Success>
   <Failure>
@@ -173,7 +173,7 @@ Write the scope honestly and it reads: *{fmtPct(feederYes, 0)} of responding mas
 
 <Gated by={["act-3-01-three-circles", "act-3-01-question"]}>
 
-<Scene stamp="MET 54/14:05" location="Wardroom · braking at 4 mgee · 0.61 AU from Callisto" condensed="The preliminary gets a line that survives Valhalla: the Authority's figure is a number about Ceres dock volunteers, and what masters on the Lane have actually seen is not yet in evidence. Solberg prices a contact — fifty-five minutes, plus or minus fifteen — and counts what all 260 would cost: about 238 hours of link time, near ten days of it.">
+<Scene stamp="MET 54/14:05" location="Wardroom · braking at 4 mgee · 0.61 AU from Callisto" condensed={`The preliminary gets a line that survives Valhalla: the Authority's figure is a number about Ceres dock volunteers, and what masters on the Lane have actually seen is not yet in evidence. Solberg prices a contact at ${fmtInt(COST.contactMin)} minutes plus or minus ${fmtInt(COST.contactSd)}, and counts what all ${fmtInt(FRAME_N)} would cost: ${fmt(contactHours, 0)} hours of link, ${fmt(contactDays, 1)} days of it.`}>
 
 The line goes into the preliminary in the register the Board taught you to write in, which is the register that gives them nothing to hold.
 
@@ -193,7 +193,7 @@ Sir. One master, raised on tight-beam and worked through a return: fifty-five mi
 All {fmtInt(FRAME_N)} of them would be {fmt(contactHours, 0)} hours. That is {fmt(contactDays, 1)} days of continuous link, and we have twenty-nine days before torch-off, and I sleep. I would like it recorded that I raised the sleeping.
 </Dialogue>
 
-Ferrier does not smile, which on the third day of a passage is the same as smiling.
+Ferrier does not smile, which after eight days of braking is the same as smiling.
 
 "Then we are not asking all of them," she says. "Which means the Ensign has one more thing to learn before Tuesday, and it is the part the Authority got wrong twice."
 

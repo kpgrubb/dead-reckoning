@@ -1,0 +1,32 @@
+import { WeightedSumBar } from '@/instruments/act-4/WeightedSumBar'
+
+Ebele puts three means on the display and stops, and the Chief asks for the tails. Before the tails, the means — because *mean* here is not the thing you did in Act I, and the difference is the whole of this briefing.
+
+In Act I you averaged data: add the values, divide by how many. Every observation counted once, because every observation *was* one observation.
+
+An expected value averages a **distribution**. The values are not equally common, so they cannot count equally. Each one is weighted by how often it happens:
+
+<Formula
+  tex="\mu_X = E(X) = \sum_{x} x \cdot p(x)"
+  terms={{ x: 'one value the random variable can take — a cost in sink-hours', 'p(x)': 'how much of the total probability sits on that value', '\\sum': 'over every value in the support; the weights sum to 1' }}
+  label="Expected value: a weighted sum"
+/>
+
+The weights summing to 1 is what makes it an average and not just a sum. Divide the plain average $\frac{1}{n}\sum x_i$ by nothing and you get a weighted sum with every weight equal to $1/n$ — the data case is the special case where the distribution is flat over the observations you happened to collect.
+
+**Finer grain.** Now let the variable be continuous. There is no list of values to run over, so cut the axis into cells of width $\Delta x$. The probability of the cell at $x$ is about $f(x)\,\Delta x$, so the same weighted sum reads
+
+$$\sum_{i} x_i \, f(x_i)\,\Delta x \;\xrightarrow[\;\Delta x \to 0\;]{}\; \int_{-\infty}^{\infty} x\,f(x)\,\mathrm{d}x$$
+
+which is the definition of the mean for a density. Nothing new is introduced at the limit. The integral **is** the weighted sum; the cells have simply stopped being wide enough to be wrong. The same substitution turns every other weighted sum in this Act into an integral: $\sum p(x) = 1$ becomes $\int f = 1$, and $\sum (x - \mu)^2 p(x)$ becomes $\int (x-\mu)^2 f(x)\,\mathrm{d}x$, which is the variance.
+
+**What the weighting is for.** Two readings that are not the expected value, and that the plan will be wrong if you confuse with it:
+
+- The **unweighted** mean of the possible values. Average the numbers in the left-hand column and you have said that a 78-hour window and a 54-hour window are equally common. They are not.
+- The **most likely** value. The single tallest bar is the mode. For a symmetric distribution it coincides with the mean and teaches you nothing; for a skewed one — a geometric wait, say — the mode is trial 1 and the mean is $1/p$, and they are nowhere near each other.
+
+Build the sum below one term at a time and watch the running total land on $\mu$. Then halve the cell width and watch it land on the same place with twice as many terms.
+
+<WeightedSumBar />
+
+**Why this matters here.** The three loiter points differ in their means by a handful of sink-hours and in their tails by a factor of forty. The mean is a weighted sum you can do on a slate; the tail is the part Sandoval asks for. Both are read off the same column of weights, and an officer who cannot say what the weights are doing cannot say what "expected" promises — which is an average over many windows, and nothing whatever about the next one.
