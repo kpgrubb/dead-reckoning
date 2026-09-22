@@ -1152,7 +1152,8 @@ Every open question from the bible (§14), the curriculum map (§8), and every c
 11. *Filler transitions* — "Furthermore," "Moreover," "It is crucial to note," "In conclusion" — and faux-insider hooks.
 12. *Em dashes used as a default connector.* Ration them; prefer a full stop or a colon.
 13. *The circular callback.* "Solberg sends it as two lines, **because you told him two lines**." An action, then a justification restating it in the same words — empty, and it congratulates the CO for a decision already shown. Cut the clause. A "because" that reveals character is fine ("cranking the head round by hand because she does not trust the actuator"); one that points back at an order just given is not.
-14. *Narration that admits it is a lesson.* "You give the table to Ebele, **because he is the one who has to learn it**." The fiction never acknowledges its pedagogical purpose. Ebele is an officer doing a job, not a proxy for the learner.
+14. *The arch trailing clause.* "Ebele has taped a thermometer to the bulkhead, **which nobody asked him to do and nobody has told him to stop**." A good concrete detail, then a wry aside telling the reader how to take it. **When a detail lands, stop** — do not annotate it. The "which nobody X and nobody Y" shape is three faults at once: relative-clause explainer, balanced pair, wink. Characters may be wry in dialogue; the narrator may not.
+15. *Narration that admits it is a lesson.* "You give the table to Ebele, **because he is the one who has to learn it**." The fiction never acknowledges its pedagogical purpose. Ebele is an officer doing a job, not a proxy for the learner.
 
 Reference authors: **James S.A. Corey** and **Richard Swan**.
 
