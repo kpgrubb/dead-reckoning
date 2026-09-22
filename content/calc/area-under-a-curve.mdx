@@ -1,6 +1,6 @@
 import { RiemannArea } from '@/instruments/act-1/RiemannArea'
 
-Ebele offers this one at the sensor bay door, on a slate, unasked. You do not need it to work the watch. It is here because the curve on the sensor display is doing something you already know how to do, under a name you were taught in a different room.
+Optional. Nothing in this module depends on it, and no assessed item will ask for an integral. It is here because the normal curve is doing a piece of calculus under a statistical name, and seeing the two as one thing is what keeps "area" and "height" apart in your head.
 
 A normal model is a **density**: a curve whose height $f(x)$ is not a probability. Probability is the **area** the curve encloses over an interval — and area under a curve is the definite integral.
 
@@ -24,7 +24,7 @@ That sum is a Riemann sum, and the integral is its limit. Nothing new is introdu
   label="A density assigns no probability to a point"
 />
 
-So for a continuous model $P(X \ge x)$ and $P(X > x)$ are the same number, and "at most" and "less than" agree. The height $f(x)$ can be anything — it can exceed 1 — because it is probability *per unit of x*, and only multiplying it by a width turns it into probability at all. A signature of exactly 109.2 percent has probability zero; a signature of 109.2 percent *or hotter* does not.
+So for a continuous model $P(X \ge x)$ and $P(X > x)$ are the same number, and "at most" and "less than" agree. The height $f(x)$ can be anything at all, including values above 1, because it is probability *per unit of x*; only multiplying it by a width turns it into a probability. Under a continuous model, one exact reading has probability zero. That reading *or anything above it* does not.
 
 **And the total is one.** Over the whole axis the hull is somewhere:
 
@@ -36,4 +36,4 @@ Add rectangles below and watch the midpoint sum close on the exact area. Then co
 
 <RiemannArea />
 
-**Why this matters here.** Every number the normal model returns this watch — the proportion of honest hulls above the flagged ratio, the 68, the 95, the 99.7 — is one of these integrals, evaluated for you. Knowing that it is an area and not a height is the difference between reporting a probability and reporting the height of a curve, which is not a probability and never was.
+**Why this matters here.** Every figure a normal model returns is one of these integrals, evaluated for you: a tail proportion, the 68, the 95, the 99.7. `normalcdf(` on the calculator is doing the same sum with better rectangles. Knowing that the output is an area and not a height is what stops a density's value being reported as a probability.

@@ -109,6 +109,8 @@ Banned patterns, each of which appeared in the first draft of the Prologue:
 10. **"Not just X, but Y"**, and the rule of three (exactly three parallel adjectives or examples).
 11. **Filler transitions and hooks:** "Furthermore," "Moreover," "It is crucial to note," "In conclusion," "Here's what most people get wrong."
 12. **Em dashes as a default connector.** Ration them; a full stop or colon usually reads better.
+13. **The circular callback.** "Solberg sends it as two lines, *because you told him two lines*." An action followed by a justification that restates it in the same words. It is empty, and it congratulates the POV character for a decision the reader already watched him make. Cut the clause; keep the action. A "because" is fine when it reveals something new about a *character* ("cranking the head round by hand because she does not trust the actuator"), never when it points back at an order just given.
+14. **Narration that admits it is a lesson.** "You give the table to Ebele, *because he is the one who has to learn it*." The fiction must never acknowledge its own pedagogical purpose. Ebele is an officer doing a job, not a stand-in for the learner.
 
 Positively: concrete physical detail; varied sentence length; objects encountered rather than introduced; second person present for scenes; the ship's log in past tense; violence and death with weight and no spectacle.
 

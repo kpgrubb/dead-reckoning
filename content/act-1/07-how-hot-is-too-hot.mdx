@@ -33,23 +33,23 @@ export const ratedTail = normal.sf(harpagia.ratio_pct, 100, RATED_SPREAD_PCT)
 export const ratedP99 = normal.quantile(0.99, 100, RATED_SPREAD_PCT)
 export const ratedVarianceTrap = normal.sf(harpagia.ratio_pct, 100, RATED_SPREAD_PCT * RATED_SPREAD_PCT)
 
-<Scene stamp="MET 025/09:15" location="Sensor bay · 0.22 AU from Callisto, 4 mgee" condensed="Twelve days after the contact that dragged the mean of the first eleven, Oyelaran has reduced it three more times and it will not move: 109.2 percent of the class-table expectation, plus or minus three. Her z of 2.6 was taken against the table's rated spread, which is a specification and not a measurement; the fleet's own sixty have a spread of their own. Sandoval converts percent to tonnes and shows that a change of units moves the centre and the spread but never the z.">
+<Scene stamp="MET 025/09:15" location="Sensor bay · 0.22 AU from Callisto, 4 mgee" condensed={`Twelve days after the contact that dragged the mean of the first eleven, Oyelaran has reduced it three more times and it will not move: ${fmt(harpagia.ratio_pct, 1)} percent of the class-table expectation, plus or minus three. Her z of ${fmt(oyelaranZ, 1)} was taken against the table's rated spread, which is a specification and not a measurement; the fleet's own sixty have a spread of their own. Sandoval converts percent to tonnes and shows that a change of units moves the centre and the spread but never the z.`}>
 
-Somebody has taped a thermal blanket over the sensor bay's inboard hatch frame, which is against three standing orders and which nobody is going to mention. Twenty-five days out. Callisto twenty-two hundredths of an astronomical unit astern, fifty-one kilometres a second, a minute and fifty seconds of light each way. The Bureau's file on one hull was requested eleven days ago and has not come back.
+Somebody has taped a thermal blanket over the sensor bay's inboard hatch frame. It is against standing orders. Nobody is going to mention it. Twenty-five days out. Callisto twenty-two hundredths of an astronomical unit astern, fifty-one kilometres a second, a minute and fifty seconds of light each way. The Bureau's file on one hull was requested eleven days ago and has not come back.
 
 You duck the cable run — you have learned that much — and come in with your collar up. Oyelaran has the contact on the main display. She had it up before you were down the ladder.
 
-C-004. Logged {harpagia.met}, before this ship was a week into the Lane. *{harpagia.hull}*, Adlinda Mk 3, pulse {fmt(harpagia.pulse_hz, 1)} hertz, which is the family signature and not in dispute. Declared departure mass {fmtInt(harpagia.declared_mass)} tonnes off the transponder. Class-table expectation for that mass on that filed profile, {fmt(harpagia.expected_TW, 4)} terawatts. Measured plume, {fmt(harpagia.plume_TW, 4)}.
+Contact {harpagia.contact_id}. Logged {harpagia.met}, before this ship was a week into the Lane. *{harpagia.hull}*, Adlinda Mk 3, pulse {fmt(harpagia.pulse_hz, 1)} hertz. Nobody disputes the family. Declared departure mass {fmtInt(harpagia.declared_mass)} tonnes off the transponder. Class-table expectation for that mass on that filed profile, {fmt(harpagia.expected_TW, 4)} terawatts. Measured plume, {fmt(harpagia.plume_TW, 4)}.
 
 "Ratio {fmt(harpagia.ratio_pct, 1)} percent of expectation," she says. "I have reduced it three times since Tuesday. It does not move."
 
 You ask her for the error.
 
-There is a pause of the kind she does not usually leave. Then, flatly, the way a person says a word in a language they have decided to start speaking: "Plus or minus three. At this range the Eyes are good to three percent on plume power. So it is somewhere between six and twelve percent hot, and it is hot in every version of that."
+There is a pause of the kind she does not usually leave. Then, flatly, the way a person says a word in a language they have decided to start speaking: "Plus or minus three. At this range the Eyes are good to three percent on plume power. Take the three off it and it is still hot, sir. It is hot in every version of that."
 
 It is the first time she has volunteered one. Sandoval, who is here because the sensor bay's chilled loop is hers, does not look up from the gauge she is reading, and does not say anything, which from her is applause.
 
-Ebele has the other half of it. Oyelaran's original note put the contact at two point six spreads out — {fmt(oyelaranZ, 1)}, he has checked it — and the number she divided by was the class table's rated spread of {fmt(RATED_SPREAD_PCT, 1)} percent.
+Ebele has the other half of it. Oyelaran's original note put the contact at {fmt(oyelaranZ, 1)} spreads out, and he has checked her arithmetic, and the number she divided by was the class table's rated spread of {fmt(RATED_SPREAD_PCT, 1)} percent.
 
 "So that's the table's number, ma'am. It's what the yard certifies the family to hold — a tolerance. It's what the drive is *promised* to do." He has the sixty contacts open beside it. "We have sixty hulls in the log, measured by us, with the same Eyes, over thirteen days. They have a spread of their own, and it isn't the table's. It's tighter. If we're asking how strange this contact is, the honest model is the one the fleet actually built, not the one on the certificate."
 
@@ -130,6 +130,20 @@ The centre lands essentially on the declaration itself, and the spread becomes a
 </Briefing.Caution>
 </Briefing>
 
+<Calculator title="Normal areas, and the inverse">
+<Calculator.Step keys={['2nd', 'VARS', '2:normalcdf(']}>`2nd` `VARS` is the **DISTR** menu. The command takes four arguments in this order: `lower`, `upper`, `μ`, `σ`. Omit μ and σ and the calculator assumes the standard normal, which is right only if you have already standardised.</Calculator.Step>
+<Calculator.Step note={`normalcdf(${fmt(100 - RATED_SPREAD_PCT, 1)}, ${fmt(100 + RATED_SPREAD_PCT, 1)}, 100, ${fmt(RATED_SPREAD_PCT, 1)})`}>The class-table model, one spread either side of centre. This is where the empirical rule's 68 comes from, and the calculator gives it exactly rather than rounded.</Calculator.Step>
+<Calculator.Read label="Ans" value={fmt(ratedOneSd, 4)}>the area within ±1 σ. Repeat with ±2 σ and ±3 σ for the other two figures.</Calculator.Read>
+<Calculator.Step note={`normalcdf(${fmt(harpagia.ratio_pct, 1)}, 1E99, 100, ${fmt(RATED_SPREAD_PCT, 1)})`}>An **upper tail**: everything from the cutoff rightwards. Type `1E99` with `2nd` `,` for the **EE** key — one keystroke, not the letters E and E — then `99`.</Calculator.Step>
+<Calculator.Read label="Ans" value={fmt(ratedTail, 6)}>the proportion of the class-table model at or above {fmt(harpagia.ratio_pct, 1)} percent of expectation.</Calculator.Read>
+<Calculator.Step keys={['2nd', 'VARS', '3:invNorm(']} note={`invNorm(0.99, 100, ${fmt(RATED_SPREAD_PCT, 1)})`}>The model run backwards: give it an **area** and it returns the cutoff that produces it.</Calculator.Step>
+<Calculator.Read label="Ans" value={fmt(ratedP99, 3)}>the value with 99 percent of the model below it — where a one-percent threshold would sit under this model.</Calculator.Read>
+<Calculator.Watch>**The infinite bound.** A normal curve has no smallest or largest value, so a one-tailed area needs `−1E99` as the lower bound or `1E99` as the upper one. Substituting 0, or 1000, or the smallest value in your data changes the answer, quietly and in the direction of looking reasonable. `(−)` for the negative sign is the key beside `ENTER`, not the subtraction key above it.</Calculator.Watch>
+<Calculator.Watch>**`invNorm` takes the area to the LEFT.** Feeding it 0.01 when you want the top one percent returns a cutoff *below* the centre. For an upper tail of $p$, enter $1-p$ — or, on OS 5.3 and later, set the third field of the wizard to `tail: RIGHT` and read it before you press Calculate, because it remembers what you did last time.</Calculator.Watch>
+<Calculator.Watch>**`normalcdf` wants σ, not σ².** Entering the variance here returns {fmt(ratedVarianceTrap, 4)} where the answer is {fmt(ratedTail, 4)}: a number about {fmtInt(Math.round(ratedVarianceTrap / ratedTail))} times too large, still between 0 and 1, with nothing on the screen to say anything is wrong. The fourth argument is a standard deviation and carries the units of the data. Check it every time.</Calculator.Watch>
+<Calculator.Watch>Neither command reads a list. `normalcdf` evaluates a **model** you have chosen; it knows nothing about whether the data support it. Standardising is arithmetic and always allowed; taking an area commits you to the normal curve.</Calculator.Watch>
+</Calculator>
+
 <NormalExplorer />
 
 <CalcBriefing topic="area-under-a-curve" />
@@ -161,7 +175,7 @@ The centre lands essentially on the declaration itself, and the spread becomes a
   hint="This is the area under the curve to the right of the cutoff — an upper tail, not a height. The panel's readout gives it directly; it is also 1 minus the area below.">
   <Success>
   <Dialogue speaker="sensors" aside="Quieter than she was an hour ago. She reads the readout twice before she says it.">
-  One in something under two thousand. And I have logged sixty contacts in thirteen days on one corridor.
+  About one hull in {fmtInt(Math.round(1 / harpagiaTail))}. And I have logged {fmtInt(contacts.length)} contacts in thirteen days on one corridor.
   </Dialogue>
   </Success>
   <Failure>
@@ -177,7 +191,7 @@ The centre lands essentially on the declaration itself, and the spread becomes a
 
 {fmt(harpagiaZ, 2)} standard deviations above the centre of the fleet's own model, and a tail of {fmt(harpagiaTail, 4)} — about one hull in {fmtInt(Math.round(1 / harpagiaTail))}, if the hulls of the Lane are honest and the model is right.
 
-Oyelaran does not say anything for a while. This is what she does when the data gets strange: she gets quieter, and the readouts get more attention than the people. She runs the reduction a fourth time while you stand there. It comes back the same, which everyone expected, and she needed anyway.
+Oyelaran does not say anything for a while. She runs the reduction a fourth time while you stand there, with her back to the three of you and her hands flat on the console either side of the readout. It comes back the same. Everyone expected that. She needed it anyway.
 
 "Two things," she says at last. "The first is that my number was worse arithmetic than I thought it was. I divided by the certificate. I should have divided by the fleet, and if I had, I would have brought you a bigger number eleven days ago." She does not apologise for it and you do not want her to. "The second is that this is a model. Sixty contacts, one corridor, thirteen days, and a normal curve I chose because the sixty looked like one. The tail is a statement about the curve. It is not a statement about that hull."
 
@@ -185,7 +199,7 @@ Oyelaran does not say anything for a while. This is what she does when the data 
 
 "That is the same sentence with feelings in it."
 
-Sandoval, from the hatch: "It is one in something under two thousand, and we found it in the first eleven we looked at. Either the Lane is a busier place than the file says, or we got lucky, or the model is wrong. All three of those are worth a paragraph and none of them is worth a conclusion."
+Sandoval, from the hatch: "One in {fmtInt(Math.round(1 / harpagiaTail))}, Skipper, and we found it in the first eleven we looked at. So either the Lane is a busier place than the file says. Or we got lucky. Or the model is wrong. Every one of those is worth a paragraph and not one of them is worth a conclusion."
 
 You have her put all three in the preliminary, in that order, with the tail and the z and Oyelaran's plus-or-minus, and the sentence that says the model is the fleet's own and was built without the contact in it.
 
@@ -221,7 +235,7 @@ You backed my read eleven days ago, sir, and I want the rest of it on the log to
 
 Ebele reads it twice and then reads it out, because the first time he did not believe the fourth line.
 
-Nineteen thousand four hundred tonnes. The certificate and the transponder agree to the tonne, which is what a certificate is for and is also, this morning, a small and specific disappointment. If the two numbers had disagreed you would have had a discrepancy, and a discrepancy is a thing you can put in a signal and let other people chase.
+{fmtInt(HARPAGIA_CERTIFICATION.declared_mass_t)} tonnes. The certificate and the transponder agree to the tonne. Had they disagreed you would have a discrepancy, and a discrepancy goes in a signal and becomes somebody else's work.
 
 What you have instead is a hull that was certified at a mass, declared that same mass on its transponder, and then burned like something heavier — a plume {fmt(harpagia.ratio_pct - 100, 1)} percent above what that mass and that acceleration should produce, on a reduction Oyelaran has now run four times with her plus-or-minus attached to every one.
 
@@ -229,7 +243,7 @@ What you have instead is a hull that was certified at a mass, declared that same
 
 Examining officer: {HARPAGIA_CERTIFICATION.examiner}. A name on a line, in the place where a name goes. Oyelaran logs the extract against C-004 and nobody in the bay has any reason to look at it twice, and nobody does.
 
-Which leaves *hot*, which is an adjective. Nine percent above expectation is a ratio — one number, standing by itself, with nothing on the other side of it. To get from a ratio to a mass you need what the plume was against what the hull *actually* carried, and the Register has one of those columns and not the other. Sandoval says it on her way out, to the corridor rather than to anybody in particular, in the tone she uses for a debt coming due.
+Which leaves *hot*. It is an adjective. {fmt(harpagia.ratio_pct - 100, 1)} percent above expectation is a ratio: one number, standing by itself, with nothing on the other side of it. Getting from a ratio to a mass takes the plume set against what the hull actually carried, and the Register holds one of those columns and not the other. Sandoval says it on her way out, to the corridor rather than to anybody in particular, in the tone she uses for a debt coming due.
 
 "One number is a reading. You want to know what it means, you'll need two."
 
