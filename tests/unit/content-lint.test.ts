@@ -112,6 +112,29 @@ describe('content MDX lint', () => {
     expect(offences).toEqual([])
   })
 
+  /**
+   * A JSX expression returns a *string*, and MDX inserts it as a text node — it is never parsed as
+   * Markdown. So `{rows.map(r => `| ${r.a} | ${r.b} |`).join('\n')}` under a literal `| … |` header
+   * renders an empty table followed by a line of raw pipes. It compiles and builds clean. Write the
+   * rows as real JSX `<tr>`s, or pass the Markdown through `<RichText text={…} />`.
+   */
+  it('never emits Markdown table rows from a JSX expression', () => {
+    const offences: string[] = []
+    for (const file of files) {
+      body(fs.readFileSync(file, 'utf8'))
+        .split(/\r?\n/)
+        .forEach((line, i) => {
+          const trimmed = line.trim()
+          if (!trimmed.startsWith('{')) return
+          // A pipe followed by a `${…}` interpolation is a generated table row.
+          if (/\|[^|]*\$\{/.test(trimmed) || (/\|/.test(trimmed) && /\.join\(\s*['"`]\\n/.test(trimmed))) {
+            offences.push(`${rel(file)}:${i + 1}: Markdown table row built in a JSX expression — "${trimmed.slice(0, 70)}"`)
+          }
+        })
+    }
+    expect(offences).toEqual([])
+  })
+
   /** Every module MDX needs the frontmatter the manifest and router rely on. Calc bodies have none. */
   it('gives every module file the required frontmatter, and every calc body none', () => {
     const offences: string[] = []

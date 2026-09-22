@@ -101,9 +101,24 @@ Note what $E = C/L$ implies. $C$ is fixed by the hardware. $L$ varies from run t
 <Briefing.Worked>
 Three runs from the yard's acceptance log, one run per row:
 
-| Run | Profile | Hours cold | Mean load (kW) | Sink at end (%) | Purges | Detected |
-|---|---|---|---|---|---|---|
-{yardAcceptanceRuns.map((r) => `| ${r.run} | ${r.profile} | ${r.hours} | ${r.loadKw} | ${fmt(r.sinkEndPct, 1)} | ${r.purges} | ${r.detected} |`).join('\n')}
+<table>
+  <thead>
+    <tr><th>Run</th><th>Profile</th><th>Hours cold</th><th>Mean load (kW)</th><th>Sink at end (%)</th><th>Purges</th><th>Detected</th></tr>
+  </thead>
+  <tbody>
+    {yardAcceptanceRuns.map((r) => (
+      <tr key={r.run}>
+        <td>{r.run}</td>
+        <td>{r.profile}</td>
+        <td>{r.hours}</td>
+        <td>{r.loadKw}</td>
+        <td>{fmt(r.sinkEndPct, 1)}</td>
+        <td>{r.purges}</td>
+        <td>{r.detected}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
 *Individuals:* the three runs — one row each. *Variables:* the six columns after the run label.
 
