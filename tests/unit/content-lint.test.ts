@@ -19,10 +19,15 @@ function mdxFiles(dir: string): string[] {
   })
 }
 
-/** Strip YAML frontmatter so its `---` fences and prose don't confuse the block scan. */
+/**
+ * Blank out YAML frontmatter so its `---` fences and prose don't confuse the block scans, while
+ * preserving every line offset — the rules below report file line numbers, and deleting the
+ * frontmatter would shift all of them.
+ */
 function body(src: string): string {
   const m = /^---\r?\n[\s\S]*?\r?\n---\r?\n?/.exec(src)
-  return m ? src.slice(m[0].length) : src
+  if (!m) return src
+  return m[0].replace(/[^\n]/g, ' ') + src.slice(m[0].length)
 }
 
 const files = mdxFiles(contentDir)
@@ -173,6 +178,36 @@ describe('content MDX lint', () => {
       .map(([phrase, inFiles]) => [phrase, [...inFiles].filter((f) => REVISED.some((a) => f.startsWith(a)))] as const)
       .filter(([, inFiles]) => inFiles.length >= 3)
       .map(([phrase, inFiles]) => `"${phrase}" appears in ${inFiles.length} revised modules: ${inFiles.join(', ')}`)
+    expect(offences).toEqual([])
+  })
+
+  /**
+   * "It's not X, it's Y" — a negation followed by the real answer, used as the default way to make
+   * a point. A rhetorical move standing in for a sentence, and a drone at scale. Say the positive
+   * thing. Scoped to the Acts revised to the prose standard; Acts II–IX carry 39 known instances
+   * that the voice sweep clears, and each Act joins REVISED as it is revised.
+   */
+  it('does not lean on the corrective reframe', () => {
+    const REVISED = ['act-0/', 'act-1/']
+    const patterns = [
+      /\b(?:is|was|are|were)\s+not\s+[^.;!?]{2,45}[,;.]\s+(?:it|that|they|those|the)\s+(?:is|are|was|were)\b/i,
+      /\b(?:isn't|aren't|wasn't|it's not)\s+[^.;!?]{2,45},\s+(?:it's|it is|they're|they are|that's)\b/i,
+      /\bnot because\s+[^.;!?]{2,50},\s+but because\b/i,
+      /\bThe (?:question|problem|point|issue) is not\s+[^.;!?]{2,45}[.;,]\s+(?:it|the)\b/i,
+    ]
+    // At most one per module: the standard permits it where the negation IS the misconception
+    // being taught (density vs probability). Two in one module means it has become the default way
+    // of making a point, which is the thing being banned.
+    const offences: string[] = []
+    for (const file of files.filter((f) => REVISED.some((a) => rel(f).startsWith(a)))) {
+      const hits: string[] = []
+      body(fs.readFileSync(file, 'utf8'))
+        .split(/\r?\n/)
+        .forEach((line, i) => {
+          if (patterns.some((re) => re.test(line))) hits.push(`${i + 1}: "${line.trim().slice(0, 70)}"`)
+        })
+      if (hits.length > 1) offences.push(`${rel(file)}: ${hits.length} corrective reframes (max 1) — ${hits.join(' | ')}`)
+    }
     expect(offences).toEqual([])
   })
 
