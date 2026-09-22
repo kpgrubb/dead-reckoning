@@ -9,7 +9,7 @@ export const act0Checkpoint: CheckpointSpec = {
   act: 'act-0',
   title: 'Release',
   briefing:
-    'MET 10/02:30. The yard’s release form is one page; the shakedown report under it is nine. Ferrier reads it at the plot with the burn timer running. “This goes to Adlinda under your name, Captain. Every number in it should survive someone who wants it to be wrong.” Answer from the log, not the adjectives.',
+    'Ten items, drawn fresh each attempt, on the three runs and the tasking file. Answer from the log rather than from memory: each one is checkable against a number the shakedown actually produced.',
   est_minutes: 10,
   threshold: 0.8,
   items: [

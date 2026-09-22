@@ -18,27 +18,41 @@ import { fmt, mean, range, sum, min, max } from '@/lib/stats'
 import { loggedFixRun, yardAcceptanceFixes, FIX_SD_KM, FIX_ENVELOPE_KM } from '@/instruments/act-0/data'
 import { NavFixDisplay } from '@/instruments/act-0/NavFixDisplay'
 
-<Scene stamp="MET 0/06:00" location="Adlinda Yards, Callisto · the slip" condensed="Nightjar leaves the Adlinda slip under tug at MET 0. You walk the ship: the lithium cellar at four percent and warming, the wings folded, Oyelaran in the blister calibrating the Eyes on Jupiter's limb. Orders: three cold runs against Callisto's own telescopes.">
+<Scene stamp="MET 0/06:00" location="Adlinda Yards, Callisto · the slip" condensed="Nightjar comes off the Adlinda slip under tug at MET 0 with the release form still unsigned. You walk her: the cellar at four percent, the wings folded, Oyelaran in the blister cranking the lidar head round by hand. Orders: three cold runs with Callisto's telescopes watching. At MET 2 the torch goes out, Ferrier runs six fixes against the beacon, and no two of them agree.">
 
-The tug takes her off the slip at 06:00 exactly, because Sandoval told the yard that anything else would be logged. You feel it through the deck as a change in the quality of the quiet: the yard's umbilicals gone, the ship's own pumps carrying the load. On the engineering display the cellar reads four percent and warming. Sixty tonnes of lithium, cold and solid, waiting to be asked to hold the ship's heat.
+The tug has her off the slip at 06:00, because Sandoval told the yard that anything later would go in the log with a name against it. The umbilicals come away. For three or four seconds there is no sound in the hull at all. Then the ship's own pumps take the load and the deck starts up against your boots at a pitch you have not heard before and will be living inside for a hundred days.
 
-You walk her. It is the first time you have done it as her captain rather than the Service's build liaison, and you notice that you still put your hand on the same frames. The sink vault, where the Chief has taped a card over the yard's brass plate with her own numbers on it. The radiator wings, folded into the hull like something asleep. The wardroom, where sixteen people who have known each other for nine days are not yet talking the way a crew talks. Ferrier has been aboard nine of those days. She has read every page of the design book and she has not yet said what she thinks of it.
+The yard's release form is on the slate under your arm. Unsigned.
 
-The blister at the mast head is a two-person pressurised station with a manual lidar head and a view. Oyelaran is in it with the hatch open, calibrating the Eyes against Jupiter's limb, which is the only thing out here bright enough and known enough to calibrate against. She does not look up when you put your head through. "Four telescopes, four offsets, all inside spec, sir. I'll have them inside half of spec by the first run." You believe her.
+You walk her. You did two years of this as the Service's build liaison and your hands have not learned the difference; you still put them on the same frames. The vault first, sixty tonnes of lithium behind that bulkhead, solid and cold, cold enough through the frame that you take your palm off it sooner than you meant to. Someone has taped an index card over the yard's brass plate. Pencil, block capitals, the Chief's hand, four figures that are not the four stamped underneath.
 
-The orders are one page. Three cold runs in Jovian space against Callisto's own telescopes, which know exactly where to look and will therefore find her sooner than anyone else could. The yard wants numbers. The Board wants a ship it can announce. Nobody has yet run the sink with sixteen people breathing in her.
+Four percent on the cellar. Warming.
 
-At MET 2/00:00 the torch goes out and the reactor scrams and the wings fold, and *Nightjar* is a cold object on a ballistic path, navigating by dead reckoning. Ferrier runs the first fix against Callisto's beacon at 01:00 and five more at ten-minute intervals: where the ship thinks it is, against where the beacon says it is. Six numbers. They do not agree with each other. Some are ahead of truth, some behind, and the difference between the best and the worst is the width of a small moon.
+Forward past the wing roots, where the radiators lie folded into their channels with frost standing in the hinges. Then the wardroom, where eleven of the sixteen are eating and the talk stops for exactly as long as it takes you to cross and starts up again behind you. Nine days is not long. Ferrier has been aboard all nine of them, has read the design book front to back twice, and has not yet told you what she makes of it.
 
-The yard tug *Adlinda Nine*, standing off at two thousand kilometres as range safety, wants the ship's position error for its log. One number.
+Up the mast tube hand over hand, sixty metres of it, and at the top the cold comes through your gloves.
+
+Oyelaran has the blister hatch open and both feet hooked under the rail, cranking the lidar head round by hand because she does not trust the actuator to a hundredth of a degree. Jupiter takes up a third of the port. The light off it is the colour of a sodium lamp and it puts a hard edge on everything in the compartment. Her breath fogs and clears, fogs and clears.
+
+"Four telescopes, four offsets, all inside spec." The head clicks over one notch. "Nothing else out here sits still enough to shoot at, sir. I'll have them inside half of—"
+
+She stops, and reads something, and does not finish it.
+
+The orders run to one page. Three cold runs in Jovian space with Callisto's telescopes watching, and a schedule. The yard wants figures for its file. The Board wants a ship it can announce. Nobody has yet run the sink with sixteen people breathing in her.
+
+At MET 2/00:00 the torch goes out. The reactor scrams, the wings fold into the hull, and the floor stops being a floor. *Nightjar* is a cold mass on a ballistic path with no drive, no beacon and no way of knowing where she is except by counting what she did to get here.
+
+Ferrier runs the first fix against Callisto's beacon at 01:00 and five more at ten-minute intervals: where the ship's own reckoning puts her, against where the beacon says she is. Six numbers come up on the plot, six dots strung out along one axis like buckshot. Some put her ahead of truth. Some put her behind it. None of them sits on zero.
+
+*Adlinda Nine* is standing off at two thousand kilometres as range safety, and the tug master wants the ship's position error for his log.
 
 </Scene>
 
-<Dialogue speaker="xo" aside="At the plot. She has the six values on the display and has not summarised them.">
-Six fixes since we went cold, Captain. They don't agree. The data says six things, and the tug master wants it to say one.
+<Dialogue speaker="xo" aside="Six values on the plot. She has not put a summary line under them.">
+Six fixes since we went cold, Captain. They don't agree. The data says six things and the tug master wants it to say one.
 </Dialogue>
 
-You tell her that he can have one number for where the ship thinks it is, and a second number for how sure she is. Not one number that pretends to be both.
+He can have one number for where the ship thinks she is, and a second for how far the six disagree. Not one number doing both jobs.
 
 <Dialogue speaker="xo">
 Say it back to me, so it's on the log which one he's getting.
@@ -46,26 +60,50 @@ Say it back to me, so it's on the log which one he's getting.
 
 <Briefing title="Variation is data" topics={["1.1"]}>
 <Briefing.Intuition>
-Run the same procedure twice and you get two numbers. That is not a fault in the procedure; it is what measurement is. The question a commander asks of six fixes is not *which one is right* but *what do the six say together* — where they sit, and how far they scatter. Those are two different questions, and they get two different numbers.
+Measure the same quantity six times with the same procedure and you will get six different values. That is not a fault in the procedure. Variation is what measurement does, and a set of measurements therefore raises two separate questions.
 
-The first is a **summary of centre**: one value that stands in for all six. The mean is the balance point. The second is a **summary of spread**. The range — largest minus smallest — is the crudest one, and it is honest as far as it goes; but it answers *how far apart*, never *where*.
+**Centre — where do the values sit?** One number that stands in for all of them. The usual choice is the **mean**: add the values, divide by how many there are. It is the balance point of the set.
 
-Behind the six fixes is the **population**: every fix the dead-reckoning procedure could produce on this geometry, if it were run forever. The six you hold are a **sample** of it. A number that describes the population (the procedure's long-run mean error) is a **parameter**; a number computed from the six (their mean) is a **statistic**. The tug master gets a statistic. Nobody will ever hold the parameter.
+**Spread — how far apart are they?** The simplest measure is the **range**: largest value minus smallest value, in the same units as the data. It is a real summary of spread and a bad answer to a question about centre. The two questions are not interchangeable, and neither are their answers.
+
+One further distinction, because the exam turns on it. Behind any set of measurements sits a **population**: every value the procedure could produce if you ran it forever. The values you actually hold are a **sample** from it. A number that describes the population is a **parameter**. A number computed from the sample is a **statistic**. You compute statistics. You almost never observe a parameter; you estimate it.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula tex="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i" terms={{ '\\bar{x}': 'sample mean — the summary of centre', 'n': 'number of observations in the sample', 'x_i': 'the i-th observation (a fix error, km)' }} label="Sample mean" />
 
-**Range** $= \max(x_i) - \min(x_i)$ — a summary of spread, in the same units. A **parameter** describes a population; a **statistic** describes a sample.
+**Range** $= \max(x_i) - \min(x_i)$ — a summary of spread, in the same units as the data.
+
+A **parameter** describes a population; a **statistic** describes a sample. Notation keeps them apart: $\mu$ is a population mean, $\bar{x}$ a sample mean.
 </Briefing.Definition>
 <Briefing.Worked>
-Adlinda's own acceptance trial, two weeks before the crew came aboard, logged six along-track fixes against the same beacon (km, positive = ahead of truth): {yardAcceptanceFixes.map((v) => fmt(v, 0)).join(', ')}.
+Six along-track fix errors from the yard's acceptance trial, in km, positive meaning ahead of the beacon: {yardAcceptanceFixes.map((v) => fmt(v, 0)).join(', ')}.
 
-Their sum is {fmt(sum(yardAcceptanceFixes), 0)}; divided by six, the mean is **{fmt(mean(yardAcceptanceFixes), 1)} km** — the yard's dead reckoning ran, on average, {Math.abs(mean(yardAcceptanceFixes)) < 1 ? 'on the beacon' : mean(yardAcceptanceFixes) > 0 ? 'ahead of the beacon' : 'behind the beacon'} by that much. The largest fix was {fmt(max(yardAcceptanceFixes), 0)} and the smallest {fmt(min(yardAcceptanceFixes), 0)}, so the range is **{fmt(range(yardAcceptanceFixes), 0)} km**. The yard's report gave both numbers, in that order, and labelled them.
+*Centre.* The sum is {fmt(sum(yardAcceptanceFixes), 0)} and $n = 6$, so $\bar{x}$ = **{fmt(mean(yardAcceptanceFixes), 1)} km**. On average these six fixes fell {Math.abs(mean(yardAcceptanceFixes)) < 1 ? 'on the beacon' : mean(yardAcceptanceFixes) > 0 ? 'ahead of the beacon' : 'behind the beacon'} by that much.
+
+*Spread.* The largest is {fmt(max(yardAcceptanceFixes), 0)} and the smallest {fmt(min(yardAcceptanceFixes), 0)}, so the range is {fmt(max(yardAcceptanceFixes), 0)} − ({fmt(min(yardAcceptanceFixes), 0)}) = **{fmt(range(yardAcceptanceFixes), 0)} km**.
+
+Report both, and label both. The mean answers *where*; the range answers *how far apart*.
+
+*Parameter or statistic?* {fmt(mean(yardAcceptanceFixes), 1)} km is a statistic: it came from six observations. The parameter it estimates is the long-run mean error of the dead-reckoning procedure on this geometry — a number that exists and will never be logged.
 </Briefing.Worked>
 <Briefing.Caution>
-Two errors, both common on tug channels. *"The fixes disagree, so the navigation is faulty."* No: six fixes from a sound procedure always disagree; the size of the disagreement is information about the procedure, not evidence against it. *"The error is between minus a hundred and plus two hundred."* That is a range dressed as a position. It tells the tug master how far the fixes scatter and nothing about where the ship thinks it is.
+**Disagreement is not malfunction.** Six measurements from a sound procedure always disagree. How much they disagree is information about the procedure; it is not evidence against it.
+
+**A range is not a position.** "The error is between −120 and +180" describes spread. It says nothing about where the values sit, so it cannot answer a question about centre. If both are wanted, give two numbers and say which is which.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="One-variable statistics">
+<Calculator.Step keys={['STAT', '1:Edit']}>Type the six fix errors into **L1**, one per row. Negative values need the `(−)` key, not the subtraction key.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ CALC', '1:1-Var Stats']} note="List: L1 · FreqList: (blank) · then Calculate">Enter `L1` with `2nd` `1`. Leave FreqList empty unless the data came as a frequency table.</Calculator.Step>
+<Calculator.Read label="x̄" value={fmt(mean(yardAcceptanceFixes), 4)}>the sample mean — the number the tug master's question is actually asking for.</Calculator.Read>
+<Calculator.Read label="n" value="6">how many observations went in. Check it before you trust anything above it.</Calculator.Read>
+<Calculator.Watch>Two standard deviations are printed. **Sx** divides by $n-1$ and is the sample SD — the one AP wants from sample data. **σx** divides by $n$ and describes a population you have measured in full. Neither is needed for this module, but read the right row when it is.</Calculator.Watch>
+<Calculator.Step keys={['▾']}>Arrow down past x̄, Σx, Σx², Sx, σx, n to the five-number summary: **minX**, Q1, Med, Q3, **maxX**.</Calculator.Step>
+<Calculator.Read label="minX" value={fmt(min(yardAcceptanceFixes), 0)} />
+<Calculator.Read label="maxX" value={fmt(max(yardAcceptanceFixes), 0)} />
+<Calculator.Watch>The **range is not on this screen**. The calculator never prints it. You compute it yourself: maxX − minX = {fmt(max(yardAcceptanceFixes), 0)} − ({fmt(min(yardAcceptanceFixes), 0)}) = {fmt(range(yardAcceptanceFixes), 0)}. Watch the signs when minX is negative.</Calculator.Watch>
+</Calculator>
 
 <NavFixDisplay />
 
@@ -81,27 +119,27 @@ Two errors, both common on tug channels. *"The fixes disagree, so the navigation
   hint="Add the six fixes, signs included, and divide by six. The range (largest minus smallest) is the second number, not this one.">
   <Success>
   <Dialogue speaker="xo" aside="She keys it to the tug before you have finished the sentence.">
-  Logged. Mean of six against the beacon, and the spread to follow as a separate line. He can put the first in his position column and the second wherever he likes.
+  Logged. Mean of six against the beacon, spread to follow on its own line. He can put the first in his position column and the second wherever he likes.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She does not look up from the six values.">
-  That is not the centre of those six, Captain. You gave him the spread as the position, or you gave him one fix and called it all of them. Add the six — signs and all — and divide by six. The range is a second number, and he gets it second.
+  That is not the centre of those six, Captain. You have given him the spread as a position, or one fix as though it were all of them. Add the six, signs and all, and divide by six. The range is a second number and he gets it second.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <Gated by="act-0-01-fix-mean">
 
-<Scene stamp="MET 2/01:40" location="Jovian space · cold, ballistic · 2,000 km from Adlinda Nine" condensed="You give the tug the mean and the range as two numbers. Ferrier notes the class of error: a cold ship on dead reckoning knows its own position to a few hundred kilometres — and so does anyone who has its published profile.">
+<Scene stamp="MET 2/01:40" location="Jovian space · cold, ballistic · 2,000 km from Adlinda Nine" condensed="The tug gets the mean and the spread as two lines and acknowledges the first. Ferrier writes the procedure's error class on the plot margin: ±300 km, the box any cold ship is in — and any hull on a published profile with it.">
 
-Solberg sends it as two lines, because you told him to: the mean, {fmt(mean(loggedFixRun.fixes), 1)} km along track, and the spread, {fmt(range(loggedFixRun.fixes), 0)} km across the six. The tug master acknowledges in four words. He was not interested in the second line. He will be, one day, on some other ship.
+Solberg sends it as two lines, because you told him two lines. Mean, {fmt(mean(loggedFixRun.fixes), 1)} km along track. Spread, {fmt(range(loggedFixRun.fixes), 0)} km across the six. The acknowledgement comes back in four words and does not mention the second line.
 
-Ferrier writes the two numbers on the plot's margin in her own hand, the way navigators still do, and adds a third thing that is not a number. *Class of error: plus or minus three hundred.* Not this run's — the procedure's. Six fixes from a cold ship, with the beacon known, scatter across roughly three hundred kilometres; call it the {FIX_ENVELOPE_KM}-kilometre class, she says, and stop pretending the third decimal exists.
+Ferrier writes both on the margin of the plot in pencil, the way navigators still do, and then writes a third thing that is not a measurement of anything. *Class of error: ±{FIX_ENVELOPE_KM} km.* Not this run's. The procedure's.
 
-"That is what a ship knows about itself when it is cold, Captain," she says. "A ship on a published profile, with the Authority plotting it, is known to about the same. Anyone with the profile could put a rock through it."
+"Cold ship, beacon known, six fixes," she says. "That is the box we are in, and we will be in it every hour between here and Ceres." She sets the pencil down in the tray and closes the tray. "A hull on a published profile with the Authority plotting it is known about that well too. By anyone holding the profile."
 
-The lithium ticks as it warms. Oyelaran reports the Eyes calibrated to half of spec, as promised. You have one number for where the ship is and one for how sure, and you have Ferrier's third thing, which is not about this ship at all.
+Down in the vault the lithium ticks as it warms. Oyelaran calls the Eyes in at half of spec, as promised, and then says nothing at all for an hour.
 
 </Scene>
 

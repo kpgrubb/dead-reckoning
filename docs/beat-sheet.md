@@ -1136,6 +1136,26 @@ Every open question from the bible (§14), the curriculum map (§8), and every c
 
 **Prose rules (bible §11, build-order §10).** Second person, present tense in scenes; the log past tense, first person, one paragraph, signed. Physical detail carries emotion — gauges, hands, timestamps, the lithium ticking; no one "feels a chill." Short sentences, exact nouns; glossary terms used once with context, then bare. Adverbs rationed ("quietly," "carefully," "suddenly" are defects). Nobody quips; humour is dry, rare, about time or paperwork, and no one laughs. The CO is never taught at — Ebele is, and the CO corrects him. Light-lag is said out loud; replies never arrive early. Death is stated once, plainly, by the one who saw it, and remembered in what people stop doing. The Board is never mocked; it is rendered exactly. Numbers carry their uncertainty when the Chief says them and lose it when the Board does. Violence is never spectacle: the frame rings once.
 
+**Scenes do not carry the lesson (added after the Prologue review; binding on every module).** The Situation creates the question and stops. The `<Briefing>` answers it in **plain instructional English**, out of character — in-world *data* is welcome, in-world *voice* is not. A scene doing double duty as teaching is a defect, and was the main reason the first Prologue draft read badly.
+
+**Banned prose patterns (same review; each one was found in that draft).**
+1. *Appositive definitions.* Objects are used, not introduced. Never "The blister is a two-person pressurised station with a manual lidar head."
+2. *Relative-clause explainers* — "…Jupiter's limb, **which is** the only thing bright enough to calibrate against"; "…and will **therefore** find her sooner." Cut, or give the line to a character with a reason to say it.
+3. *The paragraph-final aphorism.* "You believe her." One per scene at most. Never state the POV character's emotional reaction; show behaviour and stop.
+4. *Balanced pairs as the only rhythm* — "bright enough and known enough." Vary sentence architecture: long and accumulating, then four words, then one with no comma in it.
+5. *Abstraction instead of an image* — "and a view," "a change in the quality of the quiet." Name what is seen, heard, smelled or felt.
+6. *A POV character who only observes.* Rook has a body and a want in every Situation: something to get, avoid, decide or physically do; cold, mass, noise, other people in a narrow space.
+7. *Winking irony.* One per Act.
+8. *Dialogue that is all tidy competent reporting.* People interrupt, trail off, answer a different question, go quiet.
+9. *Buzzwords and grand generic descriptors* — delve, underscore, harness, testament, tapestry, pivotal, realm, intricate, paramount, multifaceted, beacon. (Literal hardware is exempt: Callisto's navigation beacon, a seat harness.)
+10. *"Not just X, but Y"* constructions, and the rule of three (exactly three parallel adjectives or examples).
+11. *Filler transitions* — "Furthermore," "Moreover," "It is crucial to note," "In conclusion" — and faux-insider hooks.
+12. *Em dashes used as a default connector.* Ration them; prefer a full stop or a colon.
+
+Reference authors: **James S.A. Corey** and **Richard Swan**.
+
+**`<Calculator>` placement.** Immediately after `</Briefing>`, before the instrument. One in every module with a real TI-84 Plus CE procedure (one-variable stats, normalcdf/invNorm, binompdf/binomcdf, LinReg, the inference tests, χ²); omitted where there is no calculator path. Use the calculator's own menu labels with their numbers, and `<Calculator.Watch>` for the trap on that screen (Sx vs σx, the wrong tail, the wrong total).
+
 **No targets before the beat (gate-review B6; binding on every module).** A Situation poses the question and may quote a *character's* wrong or partial number; the correct mission-beat target never appears in prose — Scene, Dialogue or module title — before the `<MissionBeat>`. Briefing worked examples use a different in-world case (the 2176 *Asgard* report, a Tessera hull, a shakedown run), never the beat's own data. The numbers in this sheet's Dataset and Mission-beat lines are for the Problem Author and the `data.ts` tests, not for the Writer. Post-beat gated scenes, Clue lines and Log entries may state the result the learner has just earned.
 
 **Voice rules (three per speaker; `speaker` keys from `src/content/crew.ts`).**

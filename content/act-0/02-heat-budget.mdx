@@ -15,65 +15,117 @@ summary: "The first cold runs. The Chief logs the cellar with a plus-or-minus; C
 ---
 
 import { fmt } from '@/lib/stats'
-import { PROFILES, SINK_CAPACITY_GJ, quietRun, watchRun, quietShortfallPct, quietShortfallPmPct, WATCH_DETECTION_H, EYES_DETECTION_H, yardAcceptanceRuns, COLD_RUN_VARIABLES } from '@/instruments/act-0/data'
+import { PROFILES, SINK_CAPACITY_GJ, enduranceHours, quietRun, watchRun, quietShortfallPct, quietShortfallPmPct, WATCH_DETECTION_H, EYES_DETECTION_H, yardAcceptanceRuns } from '@/instruments/act-0/data'
 import { HeatSinkGauge } from '@/instruments/act-0/HeatSinkGauge'
 
-<Scene stamp="MET 2/00:00 → 6/19:00" location="Jovian space · cold runs 1 and 2 · Callisto's telescopes watching" condensed="First cold run, Quiet profile, forty hours: Sandoval reads the cellar against the design curve and logs the result with a plus-or-minus. Second run, Watch: Callisto's telescopes find the ship at 61 hours when the skin loop lags; Oyelaran says the Eyes would have found her at 50. Ferrier asks what the crew's own estimate would have been. You have Ebele build the table of everything the ship logs cold.">
+export const a1 = yardAcceptanceRuns[0]
+export const a1Endurance = enduranceHours(SINK_CAPACITY_GJ, a1.loadKw)
+export const a1Shortfall = (100 * (PROFILES.Quiet.designMeanH - a1Endurance)) / PROFILES.Quiet.designMeanH
 
-The first cold run is Quiet: life support, passive sensors, the minimum of computing, and the skin loops pumping the hull's warmth inward into sixty tonnes of lithium at seventy kilowatts. Forty hours. The design book has a curve for it — a straight line, because the book assumes a constant load — and Sandoval has the line on her display beside the cellar's actual reading, updated every hour.
+<Scene stamp="MET 2/00:00 → 6/19:00" location="Jovian space · cold runs 1 and 2 · Callisto's telescopes watching" condensed={`Forty hours cold on Quiet and the ship cooks from the inside. Sandoval will not give you the Quiet figure until the run is done, and will not give you one number at all for Watch: the loads wander, so the hours do. The second run ends at ${WATCH_DETECTION_H} hours, when the skin loop lags and Callisto's telescopes find the ship.`}>
 
-By hour ten the two lines have separated. Not by much. She does not say by how much.
+Forty hours cold on the Quiet profile: life support, passive sensors, the least computing anyone can work with, and the skin loops pumping the hull's warmth inward into sixty tonnes of lithium at seventy kilowatts.
 
-"The book's ahead of the cellar, Skipper." She says it without turning round. "It was written by people who weren't sitting on it. I'll give you the figure when the run's done, with its plus-or-minus, and you'll work it out yourself, because when the yard asks how we got it I want you to have got it."
+By hour thirty the ship is warm the way a shut room is warm. Everything the heat crosses on its way to the cellar is you. Shirts off in the wardroom. Water standing in beads on the cold-plate handrails and going nowhere without gravity to take it. Ebele has taped a thermometer to the bulkhead by his terminal, which nobody asked him to do and nobody has told him to stop.
 
-You ask her what the number will be for Watch. Watch is the profile that matters — the full passive suite, tracking, analysis, the ship awake but dark — and it is the profile the Board will want a figure for. She goes silent and checks a gauge, which is how she disagrees.
+Sandoval has the design curve up with the cellar's actual reading laid over it, refreshed on the hour. The book's line is straight. Hers is not, quite.
 
-"I won't give you one number for Watch," she says eventually. "The loads wander. Sensor processing wanders, the loops wander with the sun angle, sixteen people wander. If the load wanders, the hours wander. I'll give you a figure I'd work to, and it'll be below the book's, and I'll tell you why when it matters." It will matter in the Lane's inner quarter, months from now. She knows that. So do you.
+By hour ten the two have separated. You ask by how much.
 
-The Quiet run ends at hour forty with the cellar at {fmt(quietRun.sinkEndPct, 0)} percent and the wings deployed to purge — two hours and thirty-six minutes as the brightest object in Jovian space, which is the price of having been dark. Sandoval logs the run's drain rate, its projected endurance, and a plus-or-minus for the next run, in that order. She circles the plus-or-minus.
+"Not yet."
 
-The second run is Watch. Reactor scrammed, torch cold, the Eyes and the ears and the analysis suite all live on the fuel cells. Callisto's telescopes — Valhalla's own, which know exactly where to look — are on the ship from the moment she goes dark, and the test is how long they take to find her. They find her at {WATCH_DETECTION_H} hours, when the skin loop lags the lithium's warming and the hull's outside climbs a few kelvin above the sky. The cellar at that moment reads {fmt(watchRun.sinkEndPct, 0)} percent.
+You stay. There is a rail at the back of the engineering space at head height and you hook an arm through it and wait, and the pumps run, and after a while she talks without turning round.
 
-Oyelaran, in the blister: "The Eyes would have had us at {EYES_DETECTION_H}, sir. Confirmed."
+"The book's ahead of the cellar, Skipper. It was written by people who weren't sitting on it." She thumbs the display over to the hourly column. "You'll get the figure when the run's done. With its plus-or-minus. And you'll work it out yourself, because when the yard asks how we got it I want you to have got it."
 
-Ferrier, at the plot: "Confirmed by what? Assuming they had the same geometry." She lets that sit. Then: "Sixty-one hours is a number Valhalla measured with instruments that knew our position. I want to know what the crew's estimate would have been if the telescopes had been looking somewhere else. That's the number we'll be living on."
+You ask what she will give the Board for Watch.
 
-You give it to Ebele, because he is the one who has to learn it. Every quantity the ship logs on a cold run — the profile, the cellar's percentage, the hours remaining, the load, whether anyone saw us — and, for each one, what kind of thing it is. Before anyone draws anything.
+She checks a gauge that does not need checking.
+
+"I won't give you one number for Watch," she says, eventually. "The loads wander. Sensor processing wanders. The loops wander with the sun angle. Sixteen people wander — you've no idea what a man puts out when he can't sleep. Load wanders, hours wander." She lets that stand for a moment. "I'll give you a figure I'd work to. It'll be under the book's. I'll tell you why when it matters."
+
+The run ends at hour forty with the cellar at {fmt(quietRun.sinkEndPct, 0)} percent. The wings come out and for two hours and thirty-six minutes *Nightjar* is the brightest object in Jovian space, throwing away what she spent forty hours swallowing. Sandoval logs the drain rate, then the endurance the drain rate projects, then a plus-or-minus for the next run. She draws a box round the third one.
+
+The second run is Watch. Reactor scrammed, torch cold, the Eyes and the ears and the whole analysis suite live on the fuel cells. Valhalla's telescopes have the search volume and they have the schedule, and the test is how long they need to put a mark on the ship.
+
+{WATCH_DETECTION_H} hours. The skin loop falls behind the lithium's warming, the outside of the hull comes up a few kelvin over the sky, and Callisto has her. The cellar reads {fmt(watchRun.sinkEndPct, 0)} percent at the moment they call it.
 
 </Scene>
 
-<Dialogue speaker="analyst" aside="With the log open and a blank table beside it. He has already started typing.">
+<Dialogue speaker="sensors" aside="From the blister, on the intercom, while the wings are still coming out.">
+The Eyes would have had us at {EYES_DETECTION_H}, sir. Confirmed.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="She does not look up from the plot.">
+Confirmed by what? — assuming they had this geometry, which they wouldn't have. {WATCH_DETECTION_H} hours is a number Valhalla measured with instruments that already knew where we were. I want the figure a crew gets when nobody is looking for them. That is the one we live on.
+</Dialogue>
+
+You give the table to Ebele, because he is the one who has to learn it. Every quantity the ship logs on a cold run — profile, cellar percentage, hours remaining, load, whether anyone saw us — and against each one, what kind of thing it is. Before anybody draws anything.
+
+<Dialogue speaker="analyst" aside="Log open, blank table beside it, already typing.">
 So — one row per run, one column per thing we log. Some of them are numbers and some of them are names, and some of the numbers are names too. The hull number, for instance. Sir.
 </Dialogue>
 
 <Briefing title="Individuals and variables" topics={["1.2"]}>
 <Briefing.Intuition>
-Before a table can say anything, you have to know what a row *is*. The **individuals** are the things described — here, cold runs, one per row. The **variables** are what is recorded about each of them, one per column.
+Before a data table can say anything, you have to be able to say what one row is.
 
-A **categorical** variable places an individual in a group: *Quiet / Watch / Standby*; *detected: yes / no*; the hull number *CX-1*. You tally it; you never average it, even when it is written with digits. A **quantitative** variable measures or counts something, and arithmetic on it means something. Among quantitative variables, a **discrete** one is a count — purges in the run, people aboard — and moves in whole steps; a **continuous** one can take any value in an interval — hours, kilowatts, percent of capacity — and the log merely rounds it. Every quantitative variable carries **units**, and a number without them is not yet data.
+The **individuals** are the things being described — one per row. The **variables** are what is recorded about each individual — one per column. Change what a row is and every variable in the table changes meaning with it.
 
-The cellar is the ship's governing resource because it is the only thing that lets her be dark at all, and it is a quantitative, continuous variable: percent of capacity, rising while cold. The hours it buys are continuous too — and they vary run to run, because the load does. That is why the Chief will not say a number without its plus-or-minus.
+Variables come in two kinds.
+
+A **categorical** variable places each individual in a group: *Quiet / Watch / Standby*, *detected: yes / no*, hull number *CX-1*. You tally categorical data and report counts or proportions. You never average it, and digits do not change that — a hull number and a cause code are labels that happen to be written with numerals.
+
+A **quantitative** variable measures or counts, and arithmetic on it is meaningful. Quantitative variables split again:
+
+- **Discrete** — a count. Purges in a run, people aboard, fixes logged. It moves in whole steps and there is nothing between 2 and 3.
+- **Continuous** — a measurement that can take any value in an interval. Hours, kilowatts, percent of capacity, temperature. The instrument rounds it; the quantity itself does not.
+
+Every quantitative variable carries **units**. A quantitative value reported without its units is not yet data.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula tex="E = \frac{C}{L}" terms={{ 'E': 'endurance — hours until the sink is full (quantitative, continuous)', 'C': 'sink capacity, joules (a constant of the ship)', 'L': 'load, watts (quantitative, continuous; varies run to run)' }} label="Endurance of the cellar at a steady load" />
 
-Individuals = the rows. Variables = the columns: **categorical** (groups; tally) or **quantitative** (numbers with units; average), the latter **discrete** (counts) or **continuous** (any value in an interval).
+Individuals = the rows. Variables = the columns: **categorical** (groups; tally) or **quantitative** (numbers with units; average), and quantitative variables are **discrete** (counts) or **continuous** (any value in an interval).
+
+Note what $E = C/L$ implies. $C$ is fixed by the hardware. $L$ varies from run to run, so $E$ varies from run to run: endurance is a variable, not a constant of the ship, and a single value of it is one observation rather than a specification.
 </Briefing.Definition>
 <Briefing.Worked>
-Adlinda's acceptance log, before the crew came aboard — three runs, one per row:
+Three runs from the yard's acceptance log, one run per row:
 
 | Run | Profile | Hours cold | Mean load (kW) | Sink at end (%) | Purges | Detected |
 |---|---|---|---|---|---|---|
 {yardAcceptanceRuns.map((r) => `| ${r.run} | ${r.profile} | ${r.hours} | ${r.loadKw} | ${fmt(r.sinkEndPct, 1)} | ${r.purges} | ${r.detected} |`).join('\n')}
 
-The individuals are the three runs. *Profile* and *Detected* are categorical. *Hours cold*, *Mean load* and *Sink at end* are quantitative and continuous (hours, kilowatts, percent). *Purges* is quantitative and discrete: a count.
+*Individuals:* the three runs — one row each. *Variables:* the six columns after the run label.
 
-The book's Quiet endurance is the capacity over the load: {SINK_CAPACITY_GJ} GJ over {PROFILES.Quiet.loadKw} kW is {fmt(PROFILES.Quiet.designMeanH, 1)} h. Run A-1 above, at {yardAcceptanceRuns[0].loadKw} kW, projects {fmt((SINK_CAPACITY_GJ * 1e9) / (yardAcceptanceRuns[0].loadKw * 1e3) / 3600, 1)} h. Two runs at the same profile, two loads, two endurances. The variable is the load; the hours follow it.
+*Classification.* **Profile** and **Detected** are categorical: they sort each run into a group. **Hours cold**, **Mean load** and **Sink at end** are quantitative and continuous, in hours, kilowatts and percent. **Purges** is quantitative and discrete: a count, in purges.
+
+*Arithmetic on a quantitative column.* The design endurance on Quiet is capacity over load: {SINK_CAPACITY_GJ} GJ at {PROFILES.Quiet.loadKw} kW gives {fmt(PROFILES.Quiet.designMeanH, 1)} h. Run {a1.run} ran the same profile at {a1.loadKw} kW, which projects {fmt(a1Endurance, 1)} h — a shortfall against the design figure of ({fmt(PROFILES.Quiet.designMeanH, 1)} − {fmt(a1Endurance, 1)}) ÷ {fmt(PROFILES.Quiet.designMeanH, 1)} × 100 = **{fmt(a1Shortfall, 1)} %**.
+
+Same profile, different load, different endurance. The load is the variable; the hours follow it.
 </Briefing.Worked>
 <Briefing.Caution>
-*"The cause code is 3, so it's a number."* It is a name with digits in it. Averaging cause codes gives a number that names nothing; cause code is categorical. *"Continuous means it can be any number."* It means any value in an interval makes sense: the cellar can be at 41.7 percent, but the ship cannot have made 2.4 purges. A count is discrete however large it gets.
+**"The cause code is 3, so it is quantitative."** It is a name written with a numeral. The mean of a set of cause codes names nothing. Test any column by asking whether its mean would mean anything.
+
+**"Continuous means it can be any number."** Continuous means any value in an interval is possible. A sink can read 41.7 percent; a ship cannot make 2.4 purges. A count stays discrete however large it gets.
+
+**Percentage of what.** A shortfall is a fraction of the figure you are measuring against — here the design endurance. Dividing by the measured endurance instead answers a different question and gives a different number.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="Endurance and shortfall from a logged run">
+<Calculator.Step keys={['STAT', '1:Edit']}>Type the gauge's hourly sink readings into **L1**, in order, one per row.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'MODE']}>QUIT back to the home screen. The list functions are used from there, not from the editor.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'LIST', '▸ OPS', '7:ΔList(']} note="ΔList(L1) STO▸ L2">Successive differences: hour-to-hour change in percent. `L1` is `2nd` `1`, `L2` is `2nd` `2`, and `STO▸` is the key above `ON`.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'LIST', '▸ MATH', '3:mean(']} note="mean(L2) STO▸ D">The mean hourly change **is** the drain rate in percent per hour. Store it in a variable (`ALPHA` `D`) rather than copying it down.</Calculator.Step>
+<Calculator.Read label="D">the drain rate, % per hour.</Calculator.Read>
+<Calculator.Step note="100 ÷ D">Endurance: the hours a full 0 → 100 % fill buys at that rate. Type the variable with `ALPHA` `D`, not the number you read off the screen.</Calculator.Step>
+<Calculator.Step note="(design − Ans) ÷ design × 100">Shortfall against the design figure, as a percentage of it. Recall the endurance with `2nd` `(−)` for **Ans** instead of retyping it.</Calculator.Step>
+<Calculator.Watch>**Do not round on the way through.** A drain rate rounded to two decimals can move the endurance by an hour and the shortfall by more than a tenth of a percent. Keep it in `D` or in `Ans` and round once, at the end.</Calculator.Watch>
+<Calculator.Watch>**The denominator is the design figure.** `(design − endurance) ÷ endurance` also produces a plausible-looking percentage, and it is the wrong one. Read the question: *a percentage of the design figure*.</Calculator.Watch>
+<Calculator.Watch>`1-Var Stats L2` gives the same drain rate as **x̄**. The **Sx** on that screen is the hour-to-hour jitter of the loop, not the Chief's run-to-run ±, and it is not what this beat asks for.</Calculator.Watch>
+</Calculator>
 
 <HeatSinkGauge />
 
@@ -127,19 +179,19 @@ The book's Quiet endurance is the capacity over the load: {SINK_CAPACITY_GJ} GJ 
 
 <Gated by={["act-0-02-classify", "act-0-02-shortfall"]}>
 
-<Scene stamp="MET 6/19:30" location="Jovian space · wings out, purging" condensed="Sandoval gives you the Watch figure the way she gives every figure: the book's number, the number she works to, and the number past which she wants it in writing. Endurance is a distribution, not a number. The ship can hide for days, not weeks.">
+<Scene stamp="MET 6/19:30" location="Jovian space · wings out, purging" condensed="Sandoval comes up to the bridge to give you the Watch figure in three parts: the book's number, the number she works to, and the number past which she wants it in writing. Ebele's table goes into the log with the endurance column flagged. The ship can hide for days, not weeks.">
 
-The wings are out and the ship is a beacon again, dumping sixty hours of Watch into the dark at eight megawatts. Sandoval comes up to the bridge for the first time since the slip, which she does not do, and stands beside the plot with her hands behind her back, which she does not do either.
+The wings are out and the ship is a lamp again, throwing sixty hours of Watch into the dark at eight megawatts. Sandoval comes up to the bridge. She has not been on the bridge since the slip. She takes the far side of the plot, puts her hands behind her back, and waits to be looked at.
 
-"The book says {fmt(PROFILES.Watch.designMeanH, 0)} hours on Watch," she says. "The book was written by people who weren't sitting on the cellar. Call it {Math.round(PROFILES.Watch.workingH)}, and if you go past sixty I'll want it in writing."
+"The book says {fmt(PROFILES.Watch.designMeanH, 0)} hours on Watch." She says it to the plot rather than to you. "The book was written by people who weren't sitting on the cellar. Call it {Math.round(PROFILES.Watch.workingH)}. Past {Math.round(PROFILES.Watch.inWritingH)} I want it in writing, with your signature on it."
 
-Ferrier: "Sixty-four is what?"
+Ferrier: "Where does {Math.round(PROFILES.Watch.workingH)} come from?"
 
-"It's the book's number, less the spread I've seen the load wander by. Sixty is less twice the spread. I'll show the arithmetic when it's worth showing." She looks at the plot, where the tracks of three cold runs lie over each other like the six fixes did: the same procedure, three different answers. "The hours aren't a number, Lieutenant Commander. They're a spread with a number in the middle of it. I'd rather you planned for the low edge."
+"The book's figure, less the spread I've watched the load wander by. The other one is less twice the spread. I'll show the arithmetic when it's worth showing." She looks at the plot, where the three cold runs lie across each other in three colours, one procedure and three answers. "Hours aren't a number, Lieutenant Commander. They're a spread with a number in the middle of it, and I'd rather you planned for the low edge."
 
-Ebele's table goes into the log as built: fourteen columns, each with its kind and its units, and a note in your hand at the bottom that the endurance column is continuous, varies run to run, and is not to be quoted without its plus-or-minus. Oyelaran's estimate of fifty hours for the Eyes goes in beside Valhalla's sixty-one, labelled as what it is.
+Ebele's table goes into the log as built: fourteen columns, each with its kind and its units, and a line in your own hand at the bottom saying the endurance column is continuous, varies run to run, and is not to be quoted without its plus-or-minus. Oyelaran's {EYES_DETECTION_H} hours goes in beside Valhalla's {WATCH_DETECTION_H}, labelled as an estimate.
 
-The lithium ticks as it cools. The ship can hide for days. Not weeks. Everyone aboard now knows the number, and — which is the point — knows it is not one number.
+Down in the vault the lithium ticks as it cools. Days. Not weeks.
 
 </Scene>
 

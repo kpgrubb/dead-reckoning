@@ -14,6 +14,11 @@ import { max, mean, min, range, sum } from '@/lib/stats'
 import { fmt } from '@/lib/stats/format'
 import { drawFixErrors } from '@/instruments/act-0/data'
 
+/** Capitalise an interpolated fragment that lands at the start of a sentence. */
+function sentenceCase(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
 const RUN_CONTEXTS = [
   { where: 'the first cold hour of the Quiet run', who: 'Ferrier' },
   { where: 'hour one of the Watch run', who: 'Ferrier' },
@@ -48,7 +53,7 @@ export const fixRunCentre = defineGenerator({
     const lo = min(fixes)
     const hi = max(fixes)
     return {
-      prompt: `${ctx.who} logs six dead-reckoning fixes against Callisto's beacon during ${ctx.where}. Along-track error, km (positive = ahead of truth):\n\n${listNumbers(fixes, 0)}\n\nThe tug master wants ${ask === 'mean' ? 'one number for where the ship thinks it is. Report the **mean** fix error' : 'one number for how far the fixes disagree. Report the **range**'}, to one decimal place (km).`,
+      prompt: `${sentenceCase(ctx.who)} logs six dead-reckoning fixes against Callisto's beacon during ${ctx.where}. Along-track error, km (positive = ahead of truth):\n\n${listNumbers(fixes, 0)}\n\nThe tug master wants ${ask === 'mean' ? 'one number for where the ship thinks it is. Report the **mean** fix error' : 'one number for how far the fixes disagree. Report the **range**'}, to one decimal place (km).`,
       answer: numericAnswer(value, ask === 'mean' ? 'mean' : 'other', { digits: 1, units: 'km' }),
       hints: [
         ask === 'mean' ? 'The mean is the sum of the six fixes divided by six — signs included.' : 'The range is the largest fix minus the smallest fix, signs included.',

@@ -105,6 +105,10 @@ Banned patterns, each of which appeared in the first draft of the Prologue:
 6. **A POV character who only observes.** Rook has a body and a want in every scene: something to get, avoid, decide or physically do. He is touched by cold, mass, noise, other people's bodies in narrow spaces.
 7. **Winking irony.** At most once per Act, not once per paragraph.
 8. **Everyone speaking in tidy complete reports.** People interrupt, trail off, answer a different question, repeat themselves under stress. Crew voices per the beat sheet's §6 card, but let them be unhelpful sometimes.
+9. **Buzzwords and grand generic descriptors:** delve, underscore, harness, testament, tapestry, pivotal, realm, intricate, paramount, multifaceted, beacon. Literal hardware is exempt — Callisto's navigation beacon, a seat harness.
+10. **"Not just X, but Y"**, and the rule of three (exactly three parallel adjectives or examples).
+11. **Filler transitions and hooks:** "Furthermore," "Moreover," "It is crucial to note," "In conclusion," "Here's what most people get wrong."
+12. **Em dashes as a default connector.** Ration them; a full stop or colon usually reads better.
 
 Positively: concrete physical detail; varied sentence length; objects encountered rather than introduced; second person present for scenes; the ship's log in past tense; violence and death with weight and no spectacle.
 
