@@ -135,6 +135,47 @@ describe('content MDX lint', () => {
     expect(offences).toEqual([])
   })
 
+  /**
+   * A crew member's voice note describes how they think, not a catchphrase. Act I shipped with
+   * Ebele saying "Yes, sir. That's — yes." in five modules and Ferrier "Say it back to me" in four.
+   * Flags any distinctive phrase of 4+ words repeated across 3+ modules inside <Dialogue> blocks.
+   */
+  it('does not let a crew voice become a catchphrase', () => {
+    const STOP = /^(the|a|an|and|but|so|then|that|this|it|is|are|of|to|in|on|for|with|you|your|i|we|they|he|she|not|no|yes|sir|captain|skipper)$/
+    const seen = new Map<string, Set<string>>()
+
+    for (const file of files) {
+      const src = body(fs.readFileSync(file, 'utf8'))
+      const speeches = [...src.matchAll(/<Dialogue[^>]*>([\s\S]*?)<\/Dialogue>/g)].map((m) => m[1])
+      for (const speech of speeches) {
+        const words = speech
+          .replace(/\{[^}]*\}/g, ' ') // drop interpolations
+          .replace(/[*_`]/g, '')
+          .toLowerCase()
+          .split(/[^a-z']+/)
+          .filter(Boolean)
+        for (let i = 0; i + 4 <= words.length; i++) {
+          const gram = words.slice(i, i + 5)
+          // Only phrases with real content words are distinctive enough to matter.
+          if (gram.filter((w) => !STOP.test(w)).length < 2) continue
+          const key = gram.join(' ')
+          if (!seen.has(key)) seen.set(key, new Set())
+          seen.get(key)!.add(rel(file))
+        }
+      }
+    }
+
+    // Acts revised to the post-Prologue prose standard. Acts II–IX were written before it and carry
+    // known catchphrase debt ("say it back to me" is in 16 modules); the voice sweep clears it, and
+    // each Act joins this list as it is revised. Guarding the revised Acts stops new instances.
+    const REVISED = ['act-0/', 'act-1/']
+    const offences = [...seen.entries()]
+      .map(([phrase, inFiles]) => [phrase, [...inFiles].filter((f) => REVISED.some((a) => f.startsWith(a)))] as const)
+      .filter(([, inFiles]) => inFiles.length >= 3)
+      .map(([phrase, inFiles]) => `"${phrase}" appears in ${inFiles.length} revised modules: ${inFiles.join(', ')}`)
+    expect(offences).toEqual([])
+  })
+
   /** Every module MDX needs the frontmatter the manifest and router rely on. Calc bodies have none. */
   it('gives every module file the required frontmatter, and every calc body none', () => {
     const offences: string[] = []
