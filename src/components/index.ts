@@ -6,6 +6,7 @@ import type { MDXComponents } from 'mdx/types'
 import { Scene } from './Scene'
 import { Dialogue } from './Dialogue'
 import { Briefing } from './Briefing'
+import { Calculator } from './Calculator'
 import { Formula } from './Formula'
 import { Plot } from './Plot'
 import { Sim } from './Sim'
@@ -22,6 +23,7 @@ export const mdxComponents: MDXComponents = {
   Scene,
   Dialogue,
   Briefing,
+  Calculator,
   Formula,
   Plot,
   Sim,
@@ -39,5 +41,5 @@ export const mdxComponents: MDXComponents = {
   RichText,
 }
 
-export { Scene, Dialogue, Briefing, Formula, Plot, Sim, MonteCarlo, CalcBriefing, Drill, MissionBeat, Success, Failure, Outcome, Gated, LogEntry, Checkpoint, Panel, RichText }
+export { Scene, Dialogue, Briefing, Calculator, Formula, Plot, Sim, MonteCarlo, CalcBriefing, Drill, MissionBeat, Success, Failure, Outcome, Gated, LogEntry, Checkpoint, Panel, RichText }
 export { ModuleContext, useModule } from './ModuleContext'

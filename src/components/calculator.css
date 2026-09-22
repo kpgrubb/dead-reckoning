@@ -1,0 +1,119 @@
+/* <Calculator> — TI-84 Plus CE keystrokes. Plain instructional register, visually distinct from
+   both the narrative and the in-world instrument panels. Tokens only. */
+
+.dr-calc84__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--dr-sp-3);
+  counter-reset: dr-calc84;
+}
+
+.dr-calc84__step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--dr-sp-2) var(--dr-sp-3);
+  align-items: baseline;
+  padding-left: var(--dr-sp-5);
+  position: relative;
+  font-size: var(--dr-fs-sm);
+  line-height: 1.55;
+}
+.dr-calc84__step::before {
+  counter-increment: dr-calc84;
+  content: counter(dr-calc84);
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  color: var(--dr-fg-2);
+  font-variant-numeric: tabular-nums;
+}
+/* Read-offs and warnings are not numbered steps. */
+.dr-calc84__step--read::before,
+.dr-calc84__step--watch::before {
+  content: '';
+  counter-increment: none;
+}
+
+.dr-calc84__keys {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}
+.dr-calc84__key {
+  display: inline-block;
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  letter-spacing: 0.04em;
+  padding: 2px var(--dr-sp-2);
+  border: 1px solid var(--dr-line-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--dr-radius);
+  background: var(--dr-bg-3);
+  color: var(--dr-fg-0);
+  white-space: nowrap;
+}
+.dr-calc84__key.is-menu {
+  background: var(--dr-bg-2);
+  color: var(--dr-phosphor);
+  border-color: var(--dr-phosphor-dim);
+}
+.dr-calc84__key.is-mod {
+  color: var(--dr-amber);
+  border-color: var(--dr-amber-dim);
+}
+.dr-calc84__arrow {
+  color: var(--dr-fg-2);
+  padding: 0 2px;
+  font-family: var(--dr-font-mono);
+}
+
+.dr-calc84__what {
+  color: var(--dr-fg-0);
+  max-width: var(--dr-measure);
+}
+.dr-calc84__what p { margin: 0 0 0.4em; }
+.dr-calc84__what p:last-child { margin-bottom: 0; }
+
+.dr-calc84__note {
+  grid-column: 2;
+  color: var(--dr-fg-2);
+  font-size: var(--dr-fs-xs);
+  font-family: var(--dr-font-mono);
+}
+
+/* A value read off the calculator screen. */
+.dr-calc84__screen {
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  padding: 2px var(--dr-sp-2);
+  border: 1px solid var(--dr-line);
+  border-radius: var(--dr-radius);
+  background: var(--dr-bg-0);
+  color: var(--dr-phosphor);
+  white-space: nowrap;
+}
+.dr-calc84__screen-value { color: var(--dr-fg-0); }
+
+.dr-calc84__step--watch { align-items: start; }
+.dr-calc84__watch-tag {
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-2xs, 0.65rem);
+  letter-spacing: 0.12em;
+  color: var(--dr-amber);
+  border: 1px solid var(--dr-amber-dim);
+  border-radius: var(--dr-radius);
+  padding: 1px var(--dr-sp-2);
+  white-space: nowrap;
+}
+.dr-calc84__step--watch .dr-calc84__what { color: var(--dr-fg-1); }
+
+@media (max-width: 640px) {
+  .dr-calc84__step { grid-template-columns: 1fr; }
+  .dr-calc84__note { grid-column: 1; }
+}

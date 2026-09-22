@@ -92,6 +92,26 @@ Vite 8 + React 19 + TypeScript 6, MDX 3, D3 7, KaTeX, Zustand 5, Vitest 5, Playw
 - **Charts/controls:** `src/instruments/shared/README.md` — `Histogram`, `Dotplot`, `Boxplot`, `Scatter` (draggable), `DensityCurve`, `BarChart`, `Slider`, `NumberField`, `Segmented`, `Readout`, `Legend`, `useChartFrame`. Theme in `src/design/chart-theme.ts`; icons in `src/design/icons.tsx`; live style reference at `/#/style`.
 - **Panel** supports `led`, `icon`, `flush`; **MissionBeat** supports `hint` (CONSULT), `answerKind`, `allowInequality`, rubric-template spreading for `kind="interpretation"`.
 
+## Prose standard (revised after the Prologue review — supersedes earlier voice guidance)
+
+Reference authors: **James S.A. Corey** and **Richard Swan**. The failure mode to avoid is explainer-prose: a narrator who defines its own nouns and tells you how to feel. Scenes carry story and physical experience. **Scenes do not carry the lesson** — the teaching lives in `<Briefing>` and `<Calculator>`, which speak plainly and out of character.
+
+Banned patterns, each of which appeared in the first draft of the Prologue:
+1. **Appositive definitions.** Not "The blister is a two-person pressurised station with a manual lidar head." Let a character use it; name it in passing. If the reader must know a spec, someone says it, complains about it, or reads it off a gauge.
+2. **"which is" / "therefore" explainer clauses.** Not "…Jupiter's limb, which is the only thing out here bright enough to calibrate against." Either trust the reader or give the line to a character.
+3. **The paragraph-final aphorism.** "You believe her." / "One number." Pick at most one per scene. Test: delete it — if nothing is lost, it was a tic. Never assert the POV character's emotional reaction; show the behaviour and stop.
+4. **Balanced pairs as the default rhythm.** "bright enough and known enough", "where they sit and how far they scatter". Vary sentence architecture: some long and accumulating, some four words, some without a comma at all.
+5. **Abstraction standing in for an image.** "and a view", "a change in the quality of the quiet". Name the actual thing seen, heard, smelled or felt.
+6. **A POV character who only observes.** Rook has a body and a want in every scene: something to get, avoid, decide or physically do. He is touched by cold, mass, noise, other people's bodies in narrow spaces.
+7. **Winking irony.** At most once per Act, not once per paragraph.
+8. **Everyone speaking in tidy complete reports.** People interrupt, trail off, answer a different question, repeat themselves under stress. Crew voices per the beat sheet's §6 card, but let them be unhelpful sometimes.
+
+Positively: concrete physical detail; varied sentence length; objects encountered rather than introduced; second person present for scenes; the ship's log in past tense; violence and death with weight and no spectacle.
+
+## Teaching register (separate from the fiction)
+- `<Briefing>` is **plain instructional English** and may drop the fiction entirely. No "two errors common on tug channels" framing. Say what the concept is, give the notation, work an example, name the misconception. The in-world dataset is welcome; the in-world *voice* is not.
+- `<Calculator title="…">` gives the **TI-84 Plus CE** keystrokes for any procedure the learner would run on the exam: `<Calculator.Step keys={['STAT','▸ CALC','1:1-Var Stats']}>`, `<Calculator.Read label="x̄" value="12.8">`, `<Calculator.Watch>` for the trap (Sx vs σx, the wrong tail, `2nd` prefixes, list names). Use the calculator's own menu labels including their numbers. Include one wherever a TI-84 procedure exists — one-variable stats, normalcdf/invNorm, binompdf/binomcdf, LinReg, the inference tests, χ² — and omit it where there is no calculator path.
+
 ## Agent working rules
 - Act Teams edit only `content/act-N/`, `src/instruments/act-N/`, `src/lib/problems/generators/act-N/`, `src/lib/problems/checkpoints/act-N.ts`. Shared-component changes are requests to the orchestrator, listed in your final report.
 - Before finishing: `npm run build` and `npm test` must pass for your files. Run `npx vitest run <your test path>` while iterating.
