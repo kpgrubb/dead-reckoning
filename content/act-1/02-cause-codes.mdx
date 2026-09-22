@@ -46,9 +46,9 @@ export const mbDrawnRatio = (marsBelt[0].relFreq - mbBaseline) / (marsBelt[2].re
 
 <Scene stamp="MET 13/08:40" location="Bridge · intel terminal · 0.009 AU from Callisto, 4 mgee" condensed="A day on and four seconds out, the Board's summary page goes up beside Ebele's own work: a bar chart of incident classifications over the whole file, with unknown a sliver at the end of it. He restores the denominator to the losses and the sliver stops being a sliver. Then he draws the same thing as a pie, and then again with the axis starting at sixty percent, and you make him take both down.">
 
-Four seconds to Callisto this morning, and the Jovian system has gone from a set of objects to a smear with a bright core in it. Ten kilometres a second and climbing. Sandoval has the wings out and says the sink is at eleven percent, plus or minus one, and will stay there as long as nobody asks the ship to be clever.
+Four seconds to Callisto this morning. Ten kilometres a second and climbing. Sandoval has the wings out and says the cellar is at eleven percent, plus or minus one, and will stay there as long as nobody asks the ship to be clever.
 
-The Board's summary page is still on the terminal's second panel, because you told Ebele to leave it there. It is a good-looking page. Somebody in Lane Operations cared about it.
+You eat standing at the back of the bridge because sitting down at 08:40 with a plate is a thing a crew notices. Reconstituted egg, a bulb of coffee gone lukewarm against the plot housing. The Board's summary page is still up on the terminal's second panel, where you told Ebele to leave it. It is a good-looking page. Somebody in Lane Operations cared about it.
 
 </Scene>
 
@@ -62,21 +62,21 @@ The Board's summary page is still on the terminal's second panel, because you to
 
 <Scene stamp="MET 13/09:10" location="Bridge · intel terminal · 0.009 AU from Callisto, 4 mgee" condensed="Ebele changes the denominator from all 2,200 records to the 31 losses and the unknown bar stops being a sliver. Then he draws it as a pie, then again with the axis starting at sixty percent to make the point louder, and both come down. Ferrier: the honest chart is the one that survives the Board's staff.">
 
-Ebele has had the page beside his own tables since yesterday afternoon and he has worked out what is wrong with it, which is more than the drafting officer did.
+Ebele has had the page beside his own tables since yesterday afternoon.
 
 "So the bars are right, sir. I checked every one against the file. Debris advisories, profile deviations, dropouts, diversions — the counts are exactly what the Authority logged. And *unknown* is a sliver, because it's a sliver of two thousand two hundred records, and most of those records are somebody's cargo net coming loose."
 
-He changes one control. The denominator goes from every record in the file to the thirty-one losses, and the chart redraws itself, and the sliver is not a sliver any more. It is the tallest bar on the axis by a distance, and it did not move; the floor under it did.
+He changes one control. The denominator goes from every record in the file to the thirty-one losses. The chart redraws, and the sliver is not a sliver. It is the tallest bar on the axis by a distance. The bar did not move. The floor under it did.
 
-Nobody says anything for a moment. Then Ebele, who is twenty-three and has just found something, does the thing you were waiting for.
+Nobody says anything for a moment. Then he turns it into a pie.
 
-He turns it into a pie. It is a perfectly legitimate pie — three mutually exclusive codes, every loss in exactly one of them, the slices sum to the whole — and it is also, on a bridge, three angles that nobody can compare by eye. Then, because the pie has not made his point loudly enough, he redraws it as bars with the value axis starting at sixty percent, and the *unknown* bar becomes a tower and the other two become stubs, and he sits back from it looking pleased.
+Three slices, correctly drawn, correctly labelled, and on a bridge at four milligee three angles that nobody can compare by eye across a compartment. He looks at it. Then he redraws it as bars with the value axis starting at sixty percent, and the *unknown* bar goes up like a mast and the other two are stubs, and he sits back from it with his arms folded.
 
-You tell him to take both down.
+You put the coffee bulb down on the housing and tell him to take both down.
 
-Not because either is a lie in the sense a court would recognise. The pie's angles are correct. The truncated chart's numbers are printed on its own axis, correctly labelled, and anyone who reads the labels will not be fooled. That is the whole defence, and it is the defence the Board's page could also make, word for word, and you have just spent a morning explaining why it is not good enough.
+He starts to say that the numbers are printed on the axis. He is right. They are printed, and they are correct, and that is the same defence the Board's page could make, word for word, and you have spent a morning explaining why it does not answer.
 
-"If we send a chart whose bars are three times each other when the numbers are not," you tell him, "then the first person at Valhalla who notices will be right, and everything under it will be read as though we did it on purpose. Including the part that is true."
+"If we send a chart whose bars are three times each other when the numbers are not," you tell him, "then the first person at Valhalla who notices will be right, and everything under it gets read as though we did it on purpose. Including the part that is true."
 
 </Scene>
 
@@ -105,16 +105,16 @@ With a value axis truncated at $b$, a bar of value $v$ is drawn at length $v - b
 <Formula tex="\frac{v_1 - b}{v_2 - b} \neq \frac{v_1}{v_2} \quad \text{unless } b = 0" terms={{ 'b': 'the baseline of the value axis', 'v_i': 'the value of bar i' }} label="Why the baseline must be zero" />
 </Briefing.Definition>
 <Briefing.Worked>
-Your own 2176 return from the cutter *Asgard*: {fmtInt(asgard.lost)} losses in {fmtInt(asgard.transits)} transits. Charted against transits, the loss bar stands at {fmtPct(asgard.lost / asgard.transits, 2)} — a hairline. That bar is honest and it answers a real question, *how often does a transit end in silence*. It cannot answer *how are the losses classified*, because for that question the denominator is {fmtInt(asgard.lost)}, and every bar on the chart grows by a factor of {fmt(asgard.transits / asgard.lost, 0)}.
+The cutter *Asgard*'s 2176 return: {fmtInt(asgard.lost)} losses in {fmtInt(asgard.transits)} transits. Charted against transits, the loss bar stands at {fmtPct(asgard.lost / asgard.transits, 2)} — a hairline. That bar is honest and it answers a real question, *how often does a transit end in silence*. It cannot answer *how are the losses classified*, because for that question the denominator is {fmtInt(asgard.lost)}, and every bar on the chart grows by a factor of {fmt(asgard.transits / asgard.lost, 0)}.
 
 Take the Mars–Belt corridor's file, 2170–76: {marsBeltTotal} losses, {marsBelt.map((r) => `${r.value} ${r.count}`).join(', ')}. As relative frequencies of the {marsBeltTotal}: {marsBelt.map((r) => `${r.value} ${fmt(r.relFreq, 3)}`).join(', ')}, summing to {fmt(marsBelt.reduce((s, r) => s + r.relFreq, 0), 3)}.
 
-Now truncate. *Accident* at {fmt(marsBelt[0].relFreq, 3)} is {fmt(mbTrueRatio, 2)} times *unknown* at {fmt(marsBelt[2].relFreq, 3)} — the honest chart draws one bar twice the other. Start the value axis at {fmtPct(mbBaseline, 0)} instead of zero and the drawn lengths become {fmt(marsBelt[0].relFreq - mbBaseline, 3)} against {fmt(marsBelt[2].relFreq - mbBaseline, 3)}: a height ratio of **{fmt(mbDrawnRatio, 1)}**. Same file, same three numbers, same correct axis labels, and a picture that says something more than three times louder than the data does.
+Now truncate. *Accident* at {fmt(marsBelt[0].relFreq, 3)} is {fmt(mbTrueRatio, 2)} times *unknown* at {fmt(marsBelt[2].relFreq, 3)} — the honest chart draws one bar twice the other. Start the value axis at {fmtPct(mbBaseline, 0)} instead of zero and the drawn lengths become {fmt(marsBelt[0].relFreq - mbBaseline, 3)} against {fmt(marsBelt[2].relFreq - mbBaseline, 3)}: a height ratio of **{fmt(mbDrawnRatio, 1)}**. Nothing in the file changed and the axis labels are still correct. The drawing now overstates the difference by a factor the reader has no way of recovering from the picture alone.
 </Briefing.Worked>
 <Briefing.Caution>
 *A pie for data that are not parts of one whole.* Two offices' *unknown* shares are two numbers from two different denominators; they do not partition anything and they need not sum to one, so they are not slices. Neither are quantities measured on a scale — hull ages have no slices — and neither is a time series, where a pie throws away the ordering the trend lives in.
 
-*A truncated axis read as a proportional difference.* "Nearly three times the height" is a statement about the drawing. The only defence against it is to read the axis first, every time, before the bars — which is exactly what the Board's staff will do to anything you send them.
+*A truncated axis read as a proportional difference.* "Nearly three times the height" is a statement about the drawing, not about the data. Read the axis before the bars, every time, and read it on charts other people send you as well as on your own.
 </Briefing.Caution>
 </Briefing>
 
@@ -200,7 +200,7 @@ And the file the same organisation keeps codes {piracyCount} of the {losses.leng
 
 Ferrier: "The data says the codes. The prose says something the codes do not. That is two statements by one institution, and we can prove one of them exists." She looks at you, not at him. "We are not in a position to say which is wrong. We are in a position to say that both are on the record, and that we noticed."
 
-You have three displays now that would survive Valhalla, and a preliminary that is beginning to have a spine. What you do not have is anything about *where* — and the mark axis is still sitting there with thirty-one marks on it, waiting for somebody to say what shape they are in.
+Three displays that would survive Valhalla, and none of them says anything about *where*. On the second panel the mark axis is still up from yesterday with thirty-one marks on it. Ferrier has not taken it down.
 
 </Scene>
 

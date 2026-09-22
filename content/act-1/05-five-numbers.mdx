@@ -36,27 +36,29 @@ export const gradual = losses.filter((l) => l.fade === 'gradual').map((l) => l.t
 
 <Scene stamp="MET 021/09:25" location="Sensor bay · 0.118 AU from Callisto, 4 mgee · light-lag 59 s" condensed="Twenty-one days out, a minute of light astern, Ebele draws boxplots because boxplots are what he was taught. The plume-ratio box puts one contact on its own beyond the upper whisker, and Oyelaran logs the hull id and signals Uruk High for its departure certification. Then he boxes the thirty-one times to silence and the display says nothing at all — a box, two whiskers, no flags — for a variable the ship watched split in half two days ago.">
 
-Fifty-nine seconds to Callisto. Call it a minute, which is what Solberg calls it, with the small dry pleasure he takes in the moment a conversation becomes correspondence. Thirty-seven kilometres a second. Eleven hundredths of an AU. The Jovian system is now something you point at rather than somewhere you are.
+Fifty-nine seconds to Callisto. Call it a minute, which is what Solberg calls it, with the small dry pleasure he takes in the moment a conversation becomes correspondence. Thirty-seven kilometres a second. Eleven hundredths of an AU.
 
-Ebele has been drawing boxplots since the middle watch, and he has been drawing them for the reason most officers draw them: because he can, and because a boxplot looks like a finished thing. Five numbers, a rule about the whiskers, a box. They fit four to a page and no one at Valhalla has ever asked what is inside one.
+You have brought your own coffee down to the sensor bay because the bay has no galley and is eleven degrees and Oyelaran will not leave it. She has not eaten since the middle watch. You put the second bulb down by her elbow without saying anything about it and she does not look at it for twenty minutes.
 
-The first is the contact log's plume ratio — all {fmtInt(REGISTER_META.contacts)} contacts, percent of the class-table expectation.
+Ebele has been drawing boxplots since 02:00. He draws them because they fit four to a page and because nobody at Valhalla has ever asked what is inside one.
 
-It is a good display and it does one thing well. A box, a median line in it, a whisker each side, and then, out past the upper whisker with clean space between it and everything else, a single point drawn on its own. Not a longer whisker. A separate mark, which is what a modified boxplot does with a value the fences flag.
+The first is the contact log's plume ratio: all {fmtInt(REGISTER_META.contacts)} contacts, percent of the class-table expectation.
 
-Oyelaran does not say anything about it. She reaches past Ebele, opens the contact record, and writes the hull id into the outgoing log with a request against it.
+A box, a median line in it, a whisker each side. And then, out past the upper whisker with clean space between it and everything else, a single point drawn on its own. Not a longer whisker. A separate mark.
+
+Oyelaran says nothing about it. She reaches across Ebele, opens the contact record, and writes the hull id into the outgoing log with a request against it.
 
 <Dialogue speaker="sensors" aside="She types it rather than saying it, and reads it back once, flat.">
 Signal {HARPAGIA_CERTIFICATION.departure}, Bureau of Lane Survey. Request the departure certification for MV *{harpagia.hull}*, most recent survey — declared mass, drive rating, examiner's name. Routine format, no priority.
 </Dialogue>
 
-Routine format means nobody at the Bureau will hurry, and the reply will take days to come back down the Lane with the ship running away from it the whole time. Fine. It is the first thing anybody aboard has asked the world for rather than computed out of what they already had.
+Routine format means nobody at the Bureau hurries, and the reply will chase the ship down the Lane for a week. It is also the first thing anybody aboard has asked the world for instead of computing out of what they already had.
 
-Then Ebele draws the second boxplot, and it is the reason this morning matters.
+Then Ebele draws the second boxplot.
 
-Same treatment, different column: the {fmtInt(timeToSilence.length)} lost hulls, hours from the first transponder degradation to silence. A box. A median line. A whisker each side. No flagged points at all — nothing outside either fence, the display perfectly clean.
+Same treatment, different column: the {fmtInt(timeToSilence.length)} lost hulls, hours from the first transponder degradation to silence. A box. A median line. A whisker each side. Nothing outside either fence, the display perfectly clean.
 
-It looks like nothing. It looks like an ordinary spread of an ordinary variable, the sort of box you would put in an annex and never look at again.
+It looks like an ordinary spread of an ordinary variable, the sort of box that goes in an annex and is never looked at again.
 
 You watched that variable come apart on an axis two days ago. So did he.
 
@@ -120,6 +122,21 @@ Nothing is wrong with the arithmetic. The fence is built from the batch's own IQ
 *A clean boxplot read as a well-behaved variable.* No flagged points means no value crossed a fence. It does not mean one mound, it does not mean no gap, and it does not mean the median describes anything. If the question is about shape, the box is the wrong display and reading it more carefully will not help.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="A modified boxplot, and the icon that hides outliers">
+<Calculator.Step keys={['STAT', '1:Edit']}>Type the {fmtInt(ratioFirstEleven.length)} ratios into **L1**.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'Y=', '1:Plot1']} note="On · Type: modified boxplot (2nd row, FIRST icon) · Xlist: L1 · Freq: 1 · Mark: □">There are **two** box icons on the second row of the Type menu. The **first** is the modified boxplot: it cuts the whiskers back at the fences and draws anything beyond them as its own mark. That is the one this course draws and the one AP expects.</Calculator.Step>
+<Calculator.Step keys={['ZOOM', '9:ZoomStat']}>Frames the plot to the data. For a boxplot, unlike a histogram, `ZoomStat` chooses nothing that changes the display's meaning — there is no bin width to get wrong.</Calculator.Step>
+<Calculator.Step keys={['TRACE', '▸']}>Steps left to right through the five numbers, one press each.</Calculator.Step>
+<Calculator.Read label="minX" value={fmt(elevenFive.min, 2)} />
+<Calculator.Read label="Q1" value={fmt(elevenFive.q1, 2)} />
+<Calculator.Read label="Med" value={fmt(elevenFive.median, 2)} />
+<Calculator.Read label="Q3" value={fmt(elevenFive.q3, 2)} />
+<Calculator.Read label="maxX" value={fmt(elevenFive.max, 2)} />
+<Calculator.Watch>**The second box icon is a plain boxplot and it hides outliers.** It runs both whiskers all the way out to the extreme values, so a flagged observation is swallowed into the end of a whisker and the display shows nothing unusual at all. Two plots of the same list, drawn one icon apart, disagree about whether the batch has an outlier in it. Choose the first icon, every time.</Calculator.Watch>
+<Calculator.Watch>**The IQR is not printed anywhere.** `TRACE` gives you Q1 and Q3 and stops. IQR = Q3 − Q1 = {fmt(elevenFive.q3, 2)} − {fmt(elevenFive.q1, 2)} = **{fmt(elevenBox, 2)}**. Nor are the fences drawn: compute them yourself, Q1 − 1.5 × IQR = {fmt(elevenFences.lowFence, 2)} and Q3 + 1.5 × IQR = {fmt(elevenFences.highFence, 2)}, and then compare every value to them. On these {fmtInt(ratioFirstEleven.length)} the rule flags {fmtInt(elevenFences.values.length)}, and the two icons therefore draw the same picture — which is exactly the case in which you cannot tell which icon you used.</Calculator.Watch>
+<Calculator.Watch>Nothing in this plot records $n$. A boxplot of {fmtInt(ratioFirstEleven.length)} values and one of {fmtInt(REGISTER_META.contacts)} can be the same width and the same shape, and `TRACE` will not tell you which you are looking at. Write the count into the caption yourself.</Calculator.Watch>
+</Calculator>
 
 <BoxplotBuilder />
 
@@ -207,9 +224,9 @@ The box is arithmetically perfect and it spans the gap without a mark on it. Its
 So the caption says: box first, dots second, and the dots are there because the box cannot show a gap. Sir — if I had drawn only the box, it would have gone to the Board and it would have been *correct*.
 </Dialogue>
 
-That is the whole lesson and he has it. A display is a choice about what to throw away, and every choice is defensible right up to the moment somebody asks it a question it cannot answer.
+It would have been correct. Ferrier initials the caption and does not say anything to him about it, which from her is the answer.
 
-One hull flagged, one signal away, one annex that tells the truth two ways. The Bureau's reply will find the ship somewhere further down the Lane, and until it does, the file says a Sulcus hull burns hotter than her paperwork and says nothing whatever about why.
+The annex goes into the preliminary with both displays on the same axis, and the hull id has been running ahead of the ship towards Uruk High since 09:41. The Bureau's reply will find her somewhere further down the Lane. Until it does, the file says a Sulcus hull burns hotter than her paperwork, and says nothing whatever about why.
 
 </Scene>
 

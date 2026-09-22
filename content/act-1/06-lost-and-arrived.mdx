@@ -25,7 +25,9 @@ export const valueGap = median(arrivedValues) - median(lostValues)
 
 <Scene stamp="MET 023/09:40" location="Wardroom · 0.165 AU from Callisto, 4 mgee" condensed="Twenty-three days out, Ebele lays out the obvious comparison — the 31 lost hulls against the ones that arrived, on mark, hull age and cargo value. Ferrier asks one question, what an arrived hull's mark at last contact is, and the answer is twelve, every time: arrived cannot say anything about where. The honest baseline for where is the Board's own flat file of all 2,200 incidents. Ferrante wants the base rate before the patient, and asks what these people take.">
 
-The wardroom is the only compartment aboard with a table long enough to lay three displays side by side, so this is where the comparison gets built. Twenty-three days. Callisto is a hundred and sixty-five thousandths of an astronomical unit astern, forty-four kilometres a second and opening; a minute and twenty-two seconds of light each way, which makes a question and its answer the better part of three minutes apart. Nobody has asked Valhalla anything since the preliminary went into draft.
+The wardroom is the only compartment aboard with a table long enough to lay three displays side by side, so this is where the comparison gets built. Twenty-three days. Callisto a hundred and sixty-five thousandths of an astronomical unit astern, forty-four kilometres a second and opening, a minute and twenty-two seconds of light each way. Nobody has asked Valhalla anything since the preliminary went into draft.
+
+You take the end of the table with your back to the bulkhead, which puts the heat exchanger against your spine, and you stay there for two hours because it is the only warm surface on this deck and your back has been wrong since MET 19.
 
 Ebele has been at this since the afternoon watch. Three variables, two groups. Mark at last contact. Hull age. Declared cargo value. The thirty-one against the ones that arrived, because the Transit Ledger carries all three columns for every transit the Lane has ever completed, and the Register carries them for every transit it did not.
 
@@ -37,7 +39,7 @@ He starts to answer with a number and stops on the first syllable of it.
 
 "Twelve," he says. Then, differently: "It's twelve. All of them. That's what arrived *means*."
 
-A group with no variation in the variable. Two thousand five hundred and eighty-one hulls whose last contact was the Ceres beacon, stacked on one tick of the axis, against thirty-one scattered along the corridor — and a comparison between those two things would be arithmetic performed on a definition. Ask *where does this happen* and the arrived hulls have nothing to say, because *arrived* is the answer to a different question.
+Two thousand five hundred and eighty-one hulls stacked on one tick of the axis, against thirty-one scattered along the corridor. Nobody at the table says anything for a moment. Ferrante turns a page of the medical returns he is not reading.
 
 "Then what do I put against them?"
 
@@ -47,7 +49,7 @@ Ferrante has come in for the coffee and stayed for the argument, which is his ha
 
 "Base rate first," he says. "Every diagnosis I have ever got wrong, I got wrong because I looked at the patient before I looked at how often the thing happens in people who are fine. You have thirty-one hulls that are not fine. Before you tell me what is unusual about them, put up what usual looks like, and make the two the same size on the page."
 
-Age and value keep their baseline: for *those*, an arrived transit is a real comparison group, because an arrived hull has an age and a manifest just as a lost one does. Ebele builds both. He gets halfway through reading them out before Ferrante interrupts with the only question he has asked all morning.
+Age and value keep the baseline they had. An arrived hull has an age, and it sailed under a manifest, exactly as a lost one did; Ferrier says so in six words and goes back to her cup. Ebele builds both. He gets halfway through reading them out before Ferrante interrupts with the only question he has asked all morning.
 
 "Pirates take the valuable ones," the surgeon says. "That is what makes them pirates. So — what do these people take?"
 
@@ -76,6 +78,10 @@ Three displays put two groups on one scale, and all three share an axis on purpo
 - **Histograms on a shared axis and a shared bin width** — the only one that shows shape honestly. Change either the axis or the bin width between the two panels and you have drawn a comparison of your own choices.
 
 Groups of very different size are compared on **shape, centre and spread — never on bar height or count**. Thirty-one hulls beside two thousand two hundred records will always look like a rounding error in counts, and that says nothing about where they sit.
+
+**Choosing the baseline.** Before any of that, the comparison group has to be capable of answering the question. A baseline is useless if the variable cannot vary within it. Compare the position at which hulls were lost against the position at which hulls arrived, and the second group takes one value — the destination — for every individual in it, because that is what arriving means. The difference between the groups is then a property of the definition, not a finding about the corridor.
+
+The test is mechanical. Look at the baseline group alone and ask whether the variable has a distribution in it. No spread, no baseline. Pick another comparison group in which the variable is free to take any of its values, and say which group you chose and why, because a reader who disagrees with the baseline disagrees with everything built on it.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula
@@ -103,6 +109,19 @@ That is a complete comparison and its finding is **no difference** — the gap b
 *Comparing bar heights across groups of different size.* On two histograms of 31 and {fmtInt(REGISTER_META.records)} records, every bar in the second is taller. Compare where the mass sits and how wide it is spread, not how tall the bars are — or draw both as relative frequencies.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="Two boxplots, one window">
+<Calculator.Step keys={['STAT', '1:Edit']}>Group A into **L1**, group B into **L2**. The two lists may be different lengths; nothing on this machine requires them to match.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'Y=', '1:Plot1']} note="On · Type: modified boxplot (2nd row, first icon) · Xlist: L1 · Freq: 1">The first group.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'Y=', '2:Plot2']} note="On · Type: modified boxplot · Xlist: L2 · Freq: 1">The second group. Both plots stay **On** — that is what puts the two groups on one scale.</Calculator.Step>
+<Calculator.Step keys={['ZOOM', '9:ZoomStat']}>Frames every switched-on plot together, so both boxes are drawn against the same axis. Plot1 draws on the upper track, Plot2 below it.</Calculator.Step>
+<Calculator.Step keys={['TRACE', '▾']}>`▸` steps through the five numbers of one plot; `▾` and `▴` jump between Plot1 and Plot2. Read both five-number summaries without leaving the graph.</Calculator.Step>
+<Calculator.Read label="Med (Plot1)" value={fmt(median(lostAges), 2)}>the lost hulls' median age, in years.</Calculator.Read>
+<Calculator.Read label="Med (Plot2)" value={fmt(median(arrivedAges), 2)}>the arrived transits' median age. Their IQRs are {fmt(iqr(lostAges), 2)} and {fmt(iqr(arrivedAges), 2)} years.</Calculator.Read>
+<Calculator.Watch>**One window, or no comparison.** Setting `WINDOW` by hand for one plot and then again for the other, or graphing them one at a time, draws two pictures on two axes; any difference the reader sees is then a difference between your window settings. `ZoomStat` with both plots on is what guarantees the shared scale.</Calculator.Watch>
+<Calculator.Watch>**`1-Var Stats` runs on one list at a time.** After reading group A, go back to `STAT` `▸ CALC` `1:1-Var Stats` and change `List` to `L2`. Leaving `L1` there is the standard way to report group A's mean and SD under group B's heading, and the screen gives no sign that anything is wrong.</Calculator.Watch>
+<Calculator.Watch>Neither box records how many observations made it. Two groups of {fmtInt(lostAges.length)} and {fmtInt(arrivedAges.length)} draw boxes of comparable width, and the drawing says nothing about the counts. Write both $n$'s into the caption. (A group that large is a table on paper, not a list you type; the exam gives you both groups small, and the keystrokes are the same.)</Calculator.Watch>
+</Calculator>
 
 <ComparativeDisplay />
 
@@ -140,7 +159,7 @@ It is what the two medians say. It is not yet a finding, because we have one num
 
 <Scene stamp="MET 023/11:15" location="Wardroom · 0.165 AU from Callisto, 4 mgee" condensed="The comparison goes into the preliminary: the losses sit later along the Lane and in a far narrower band than incidents in general, and they carry cheaper cargo than the Lane does — while hull age says nothing at all. Three findings, none of them proof; Ferrier logs all three as comparisons and refuses to let anyone call them a pattern.">
 
-Three comparisons on the table, and the wardroom has gone quiet in the particular way it does when nobody wants to be the one to say the next sentence.
+Three comparisons on the table. Nobody has touched the coffee. Ferrante has stopped turning pages.
 
 Where: the thirty-one sit late on the corridor and sit *tight* — the middle half of them inside a fraction of a mark, against a baseline whose middle half is most of the Lane. Ordinary incidents happen everywhere because ships are everywhere. These did not.
 
@@ -158,7 +177,7 @@ Ebele wants to say the word. You can see him arrive at it and decline it twice.
 
 "Still a coincidence," Ferrier says. "A more interesting one. We have thirty-one hulls, one corridor and no second corridor to check it against, and the Board has a standing account of this file that says *piracy*, which the cargo values do not support and do not refute. What we have is a comparison. What we do not have is a mechanism, and until somebody produces one I will not have the word *pattern* in a document with the Captain's name at the bottom."
 
-She is right, and it costs something to agree with her. Down the table Ebele has the mark display back up, the tight pile against the flat baseline, and is looking at it the way Ferrier looked at the histogram eleven days ago — not at what it shows, but at what would have to be true for it to look like that.
+You tell him to write it her way. Down the table he has the mark display back up, the tight pile against the flat baseline, and he is looking at it the way Ferrier looked at the histogram eleven days ago: not at what it shows, but at what would have to be true for it to look like that.
 
 Out on the hull, the wings are still out and the Lane is still empty, and somewhere ahead of you at Mark 9 a stretch of corridor that ought to be no more remarkable than any other has thirty-one hulls buried in it.
 

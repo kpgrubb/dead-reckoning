@@ -94,7 +94,7 @@ Report both, and label both. The mean answers *where*; the range answers *how fa
 </Briefing>
 
 <Calculator title="One-variable statistics">
-<Calculator.Step keys={['STAT', '1:Edit']}>Type the six fix errors into **L1**, one per row. Negative values need the `(−)` key, not the subtraction key.</Calculator.Step>
+<Calculator.Step keys={['STAT', '1:Edit']} note="Worked case: the yard acceptance trial above — not the logged run on the NAV display below.">Type the six acceptance-trial errors into **L1**, one per row: {yardAcceptanceFixes.map((v) => fmt(v, 0)).join(', ')}. Negative values need the `(−)` key, not the subtraction key.</Calculator.Step>
 <Calculator.Step keys={['STAT', '▸ CALC', '1:1-Var Stats']} note="List: L1 · FreqList: (blank) · then Calculate">Enter `L1` with `2nd` `1`. Leave FreqList empty unless the data came as a frequency table.</Calculator.Step>
 <Calculator.Read label="x̄" value={fmt(mean(yardAcceptanceFixes), 4)}>the sample mean — the number the tug master's question is actually asking for.</Calculator.Read>
 <Calculator.Read label="n" value="6">how many observations went in. Check it before you trust anything above it.</Calculator.Read>
@@ -115,8 +115,8 @@ Report both, and label both. The mean answers *where*; the range answers *how fa
 <Drill generator="act-0/rerun-shift" count={1} />
 
 <MissionBeat id="act-0-01-fix-mean" kind="numeric" answer={mean(loggedFixRun.fixes)} answerKind="mean" digits={1} units="km" label="THE TUG MASTER'S NUMBER"
-  prompt="Adlinda Nine wants the ship's position error for its log — one number for where the ship thinks it is. From the six logged fixes on the NAV display, report the **mean** fix error in km, to one decimal place. Keep the sign: positive means ahead of the beacon. You will give him the range separately."
-  hint="Add the six fixes, signs included, and divide by six. The range (largest minus smallest) is the second number, not this one.">
+  prompt={`Adlinda Nine wants the ship's position error for its log: one number for where the ship thinks it is.\n\nUse the six values in the **NAV · DEAD-RECKONING FIXES · LOGGED RUN** panel above — the table under the dotplot, stamped *${loggedFixRun.label}*. Not the acceptance-trial figures from the briefing, and not a drill's numbers. Report the **mean** fix error in km, to one decimal place. Keep the sign: positive is ahead of the beacon. The range goes to him separately.`}
+  hint="Add the six values in the LOGGED RUN table, signs included, and divide by six. The range (largest minus smallest) is the second number, not this one.">
   <Success>
   <Dialogue speaker="xo" aside="She keys it to the tug before you have finished the sentence.">
   Logged. Mean of six against the beacon, spread to follow on its own line. He can put the first in his position column and the second wherever he likes.

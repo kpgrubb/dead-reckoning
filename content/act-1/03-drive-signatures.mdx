@@ -35,9 +35,11 @@ export const hotExcess = harpagia.ratio_pct - 100
 
 <Scene stamp="MET 015/07:40" location="Sensor bay · 0.025 AU from Callisto, 4 mgee · light-lag 12 s" condensed="Three days on, twelve seconds of light astern, Oyelaran has sixty drive plumes in the contact log. Plotted as measured power the sixty make two humps, one per drive family, exactly as the class table says they should. Plotted as a ratio to what the table expects for each hull's declared mass they make one hump — and one point out on the right, alone. Oyelaran says the table is wrong; Sandoval says the table has a rated spread; you ask Ebele what bin width he used, and he does not know.">
 
-Twenty-five thousandths of an astronomical unit astern of Callisto, and twelve seconds of light between this ship and anyone who could answer her. Seventeen kilometres a second and building. The sensor bay is the coldest compartment aboard because Sandoval keeps it that way: the Eyes are four eight-hundred-millimetre cooled telescopes at the mast head, and a warm optic sees nothing but itself.
+Twenty-five thousandths of an astronomical unit astern of Callisto, and twelve seconds of light between this ship and anyone who could answer her. Seventeen kilometres a second and building.
 
-Oyelaran has been on the Lane since the second day out. Eleven contacts in the first three days, sixty by the end of the week — every one of them a freighter under thrust, every one of them a torch the Eyes can measure to about three percent at this range. She reads you one off the log as you come into the bay, the way she reads everything, quantity first and meaning second.
+The sensor bay runs at eleven degrees. Sandoval keeps it there for the Eyes, and the Eyes do not care what it does to the people, so Oyelaran works in fingerless gloves and you stand in the hatchway with your hands under your arms and the cold coming up through the deck into your boots. Four hundred and forty millimetres of headroom under the cable run. You have hit your head on it twice this week.
+
+Oyelaran has been on the Lane since the second day out. Eleven contacts in the first three days, sixty by the end of the week, every one of them a freighter under thrust and a torch the Eyes can measure to about three percent at this range. She reads you one off the log as you come in, quantity first and meaning second, the way she reads everything.
 
 <Dialogue speaker="sensors" aside="She does not look up from the plot.">
 Plume {fmt(nominalMk3, 2)} terawatt, {fmtInt(CLASS_TABLE['Mk 3'].pulse_hz)} hertz. Mk 3. It's a Sulcus hull. Confirmed Mk 3, on profile.
@@ -45,13 +47,11 @@ Plume {fmt(nominalMk3, 2)} terawatt, {fmtInt(CLASS_TABLE['Mk 3'].pulse_hz)} hert
 
 You let *confirmed* go for the moment and write it down instead.
 
-What the Eyes measure is power. What the class table holds is an expectation: for a declared departure mass and a filed acceleration, an Adlinda Mk 3 burning at {fmtInt(CLASS_TABLE['Mk 3'].pulse_hz)} hertz should push so much plume, and a Tessera-C at {fmtInt(CLASS_TABLE['Tessera-C'].pulse_hz)} hertz rather less. Two numbers, then. The one the sky gives you and the one the paperwork predicts.
+Two numbers exist for every contact in that log and she has only been reading you one of them. The Eyes give a measured plume power. The class table gives what a drive of that family, on that hull's declared departure mass and filed acceleration, is supposed to be burning. You have Ebele put the measured power up first. All {fmtInt(REGISTER_META.contacts)} of them on one axis and nothing else on it.
 
-You have Ebele plot the first of them — all {fmtInt(REGISTER_META.contacts)} measured plume powers on one axis, nothing else on it.
+Two humps. A low pile around {fmt(mean(tesseraPlume), 2)} terawatt and a high one around {fmt(mean(mk3Plume), 2)}, with the {fmtInt(mk2Plume.length)} older independents between them. {fmtInt(mk3Plume.length)} big Sulcus hulls, {fmtInt(tesseraPlume.length)} Tessera-C. It is the Lane the class table says exists, and everybody in the bay relaxes a little looking at it.
 
-Two humps. A low pile around {fmt(mean(tesseraPlume), 2)} terawatt and a high one around {fmt(mean(mk3Plume), 2)}, with the {fmtInt(mk2Plume.length)} older independents sitting between them. It is exactly what the class table says the Lane should look like: {fmtInt(mk3Plume.length)} big Sulcus hulls, {fmtInt(tesseraPlume.length)} Tessera-C, a handful of Mk 2s, three drive families making three piles of light. Nobody learns anything from it and everybody is reassured, which is the condition under which mistakes get filed.
-
-Then you have him plot the other one. Not the power. The *ratio*: each contact's measured plume as a percent of what the class table expects for that hull's own declared mass and filed profile. The drive families come out of it — a Tessera-C and a Sulcus that are each burning exactly what their own paperwork predicts land on the same mark, whatever their masses — and sixty contacts collapse onto one axis and make one hump.
+Then the other number. Not the power: the *ratio* of the measured plume to what the table expects for that hull's own declaration. Two hulls of different families and different masses, each burning exactly what its own paperwork predicts, land on the same mark. Sixty contacts collapse onto one axis and make one hump.
 
 One hump, and one point out on the right.
 
@@ -104,13 +104,13 @@ A relative-frequency histogram divides each bar by $n$; the shape is identical a
 <Briefing.Worked>
 Take the sixty contacts' **measured plume power**, in terawatts, and bin it two ways.
 
-At a bin width of 0.1 TW there are {fmtInt(coarseBins.bins.length)} bars, and their counts are {coarseBins.bins.map((b) => fmtInt(b.count)).join(' · ')}. That is as flat as a deck plate. On that display the Lane is one undifferentiated batch of freighters.
+At a bin width of 0.1 TW there are {fmtInt(coarseBins.bins.length)} bars, and their counts are {coarseBins.bins.map((b) => fmtInt(b.count)).join(' · ')}. On that display the sixty are one batch with a single peak.
 
 At a bin width of 0.025 TW there are {fmtInt(fineBins.bins.length)} bars, and the same sixty numbers make two piles with a trough between them: the bar at {fmt(valleyBin.lo, 3)} to {fmt(valleyBin.hi, 3)} TW holds {fmtInt(valleyBin.count)}, while the piles on either side of it run to {fmtInt(maxOf(fineBins.bins.map((b) => b.count)))}. Nothing about the data changed. The first display could not resolve two drive families and the second can.
 
 So: **shape** — bimodal, two piles with a gap; **centre** — the median plume power is {fmt(median(plumeTW), 2)} TW and the mean {fmt(mean(plumeTW), 2)} TW, and here is the trouble, because {fmt(mean(plumeTW), 2)} TW falls in the trough, and no hull on the Lane burns it; **spread** — the sixty run from {fmt(minOf(plumeTW), 2)} to {fmt(maxOf(plumeTW), 2)} TW, an IQR of {fmt(iqr(plumeTW), 2)}; **unusual features** — none beyond the two piles themselves, which are the {fmtInt(mk3Plume.length)} Mk 3 hulls at a mean of {fmt(mean(mk3Plume), 2)} TW and the {fmtInt(tesseraPlume.length)} Tessera-C at {fmt(mean(tesseraPlume), 2)}.
 
-Say the shape first and the centre becomes a sentence you would never have written otherwise.
+Naming the shape first is what makes the centre reportable at all. Had the order been reversed, "mean plume power {fmt(mean(plumeTW), 2)} TW" would have gone into the report as a description of the Lane, and no hull on the Lane burns it.
 </Briefing.Worked>
 <Briefing.Caution>
 *Naming the skew from the peak.* A distribution piled on the left with a long tail to the right is **skewed right**. Learners — and staff officers — read the peak, see it sitting low on the axis, and write "skewed left". The name belongs to the tail. When you are unsure, compare the mean with the median: the mean is dragged toward the tail.
@@ -120,6 +120,19 @@ Say the shape first and the centre becomes a sentence you would never have writt
 *Describing a display instead of a distribution.* "There is a tall bar at the left" is about the ink. "The measured plume powers of the sixty contacts are bimodal, with a pile of Tessera-C hulls near {fmt(mean(tesseraPlume), 2)} TW and a pile of Mk 3 hulls near {fmt(mean(mk3Plume), 2)} TW" is about the Lane.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="A histogram, and who chooses the bins">
+<Calculator.Step keys={['STAT', '1:Edit']}>Type the sixty plume powers into **L1**, in terawatts. Clear the list first: arrow up onto the `L1` header and press `CLEAR` `ENTER`, never `DEL`, which removes the list itself.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'Y=', '1:Plot1']} note="On · Type: histogram (3rd icon, top row) · Xlist: L1 · Freq: 1">STAT PLOT is the `2nd` function of `Y=`. Move onto **On** and press `ENTER`, then choose the third icon on the top row — the one drawn as touching bars. `Xlist` is `2nd` `1` for L1. `Freq` stays 1 unless the data arrived as a frequency table, in which case it is the list of counts.</Calculator.Step>
+<Calculator.Step keys={['WINDOW']} note={`Xmin ${fmt(minOf(plumeTW) - 0.02, 2)} · Xmax ${fmt(maxOf(plumeTW) + 0.02, 2)} · Xscl 0.1 · Ymin 0 · Ymax ${fmtInt(maxOf(coarseBins.bins.map((b) => b.count)) + 5)}`}>**`Xscl` is the bin width.** It is the only place on this calculator where you set it, and it is the number you must report with the display. `Ymin` must be 0 or the short bars are cut off below the axis.</Calculator.Step>
+<Calculator.Step keys={['GRAPH']}>At `Xscl` = 0.1 the sixty draw {fmtInt(coarseBins.bins.length)} bars with a single peak.</Calculator.Step>
+<Calculator.Step keys={['WINDOW']} note="Xscl 0.025">Change nothing but the bin width and graph again. The same sixty numbers now draw {fmtInt(fineBins.bins.length)} bars, and the two drive families separate with a trough between them.</Calculator.Step>
+<Calculator.Step keys={['TRACE', '▸']}>Each bar reads out as `min` ≤ x &lt; `max` with its count `n`. Step along and read the trough: the bar from {fmt(valleyBin.lo, 3)} to {fmt(valleyBin.hi, 3)} TW holds n = {fmtInt(valleyBin.count)}.</Calculator.Step>
+<Calculator.Read label="Xscl" value="0.025">the bin width, in the units of the data. Quote it in the caption. A histogram without its bin width cannot be checked by anybody.</Calculator.Read>
+<Calculator.Watch>**`ZOOM` `9:ZoomStat` picks its own `Xscl`.** It frames the data for you and in doing so it chooses your bins, usually about ten of them, at whatever width falls out of the range. Use it to find the data, then go back into `WINDOW`, set `Xscl` to a width you can defend, and `GRAPH` again. A shape you have not seen at more than one width is not a shape you have seen.</Calculator.Watch>
+<Calculator.Watch>**A histogram is not a bar chart, and the calculator will not stop you confusing them.** The fourth and fifth STAT PLOT icons are boxplots; there is no categorical bar chart on this machine at all, because a bar chart needs categories and the plot menu only takes lists of numbers. If the column is `office` or `classification`, none of these plots applies — tally it by hand.</Calculator.Watch>
+<Calculator.Watch>`ERR:INVALID DIM` after `GRAPH` almost always means a second stat plot is still switched on from an earlier module, or `Xlist` names a list of a different length from `Freq`. `2nd` `Y=` `4:PlotsOff` `ENTER` clears all of them. Equations left in `Y=` will also draw over the histogram.</Calculator.Watch>
+</Calculator>
 
 <DistributionBuilder />
 
@@ -177,9 +190,11 @@ The table's rated spread is {fmt(RATED_SPREAD_PCT, 1)} percent, Skipper. Plus or
 The Eyes measure to three percent, Chief. Not nine.
 </Dialogue>
 
-Both of them are right, which is the whole difficulty. A plume that runs {fmt(hotExcess, 1)} percent over expectation is either a hull heavier than its manifest, or a drive out of tune, or a class table whose rated spread is too narrow for a fleet that has been flying twenty years — and nothing on this display distinguishes those three. What you have is one number and no comparison. What you would need is the same hull measured twice, or a great many hulls measured against their masses, and neither of those exists in a contact log four days old.
+Both of them are right. That is the difficulty.
 
-What you do have is a preliminary going to Valhalla, and one line in it that has to say something.
+A plume {fmt(hotExcess, 1)} percent over expectation could be a hull heavier than her manifest. It could as easily be a drive out of tune, or a table whose tolerance stopped describing its fleet somewhere in the last twenty years. Nothing on that display separates them. One number, and nothing to hold it against; what would settle it is the same hull measured twice, or several hundred hulls measured against what they actually weigh, and a contact log four days old contains neither.
+
+There is a preliminary going to Valhalla, and a line in it that has to say something.
 
 </Scene>
 
@@ -212,7 +227,7 @@ Sixty contacts on the Lane in four days. Fifty-nine of them sit in one pile arou
 
 MV *{harpagia.hull}*, Sulcus hull, Adlinda Mk 3, declared {fmtInt(harpagia.declared_mass)} tonnes out of Uruk High, measured at {fmt(hotExcess, 1)} percent over the class table's expectation for that mass. Logged, with the bin width, the display and the fences that produced the flag.
 
-It is one contact. A single value standing apart is a question, not a finding, and the question it asks is *why* — for which the honest answers are still a heavy hull, a tired drive, or a table with a tolerance that no longer describes its fleet. Nothing aboard this ship can yet separate them. We would need the plume and the mass together, and the log holds a declaration, not a weight.
+It is one contact. A single value standing apart asks a question; it does not answer one. The candidate answers this morning are what they were at 09:00: a heavy hull, a tired drive, a tolerance that has outlived the fleet it was written for. Nothing aboard this ship separates them. That would take the plume and the mass together, and the log holds a declaration, not a weight.
 
 Noted for the preliminary. Continuing on profile.
 

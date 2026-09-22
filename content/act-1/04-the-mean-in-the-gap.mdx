@@ -15,7 +15,7 @@ calc_briefing: null
 summary: "Ebele has a mean and a sentence to hang on it. You ask for the thirty-one values instead, and plot them yourself."
 ---
 
-import { fmt, fmtInt, iqr, max as maxOf, mean, median, min as minOf, range as rangeOf, sd } from '@/lib/stats'
+import { fiveNumber, fmt, fmtInt, iqr, max as maxOf, mean, median, min as minOf, range as rangeOf, sd } from '@/lib/stats'
 import { harpagia, honestRatios, losses, ratioFirstEleven, ratioPct, REGISTER_META, timeToSilence } from '@/instruments/act-1/data'
 import { OutlierExplorer } from '@/instruments/act-1/OutlierExplorer'
 
@@ -24,14 +24,17 @@ export const elevenWithout = ratioFirstEleven.filter((v) => v !== harpagia.ratio
 export const elevenShift = mean(elevenWith) - mean(elevenWithout)
 export const sixtyShift = mean(ratioPct) - mean(honestRatios)
 
+export const elevenFive = fiveNumber(elevenWith)
 export const abrupt = losses.filter((l) => l.fade === 'abrupt').map((l) => l.time_to_silence)
 export const gradual = losses.filter((l) => l.fade === 'gradual').map((l) => l.time_to_silence)
 
 <Scene stamp="MET 019/08:15" location="Bridge · intel terminal · 0.079 AU from Callisto, 4 mgee · light-lag 40 s" condensed="Nineteen days out and forty seconds of light astern, Ebele has the transponder-degradation intervals for all thirty-one lost hulls reduced to one number — a mean of 3.4 hours — and a sentence ready to go into the preliminary under it. You decline the number and ask for the thirty-one values, then take them to the plot yourself. In the sensor bay the flagged contact is doing something to the sixty ratios that it did more loudly to the first eleven, and Ebele is set to computing every summary twice.">
 
-Forty seconds each way to Callisto this morning. Thirty kilometres a second, and the Jovian system has stopped being a place and become a bright thing behind the ship. Solberg reads the lag out at the top of every watch whether anyone asks or not, which is the correct habit and an irritating one.
+Forty seconds each way to Callisto this morning. Thirty kilometres a second. Solberg reads the lag out at the top of every watch whether anyone has asked for it or not, and nobody has told him to stop.
 
-Ebele has been in the file since 04:00 and he has found something with a number on it, which is his favourite kind of thing.
+Your back has been wrong since the middle watch — the plot housing is set for an officer four inches shorter and you have been leaning on it for eleven days — so you take the forenoon standing, one hand on the overhead rail, which is worse but differently.
+
+Ebele has been in the file since 04:00 and he has found something with a number on it.
 
 Every one of the thirty-one lost hulls has a transponder record: the moment its signal first began to degrade, and the moment the Authority logged the last packet. Subtract one from the other and you have an interval — the time from the first sign of trouble to silence. Thirty-one intervals. He has reduced them.
 
@@ -43,9 +46,11 @@ It does. That is exactly what it gives them, and it will go into a paragraph abo
 
 You ask him for the thirty-one values.
 
-He looks at you the way a man looks at an officer who has asked for the ingredients after being handed the meal. He has the mean. The mean is the summary of the values; that is what a summary is for. You ask again, and he prints them — thirty-one intervals, hull by hull, in the order the Register holds them — and you take the list to the plot yourself and put one dot on an axis of hours for every hull that stopped talking.
+He does not move for a moment. Then he says that he has the mean, sir, and that the mean is the summary of the values, and stops, because he can hear it.
 
-What is on that axis is the rest of this module and it is not yours to be told.
+You ask again. He prints them. Thirty-one intervals, hull by hull, in the order the Register holds them, and the printer in the intel bay is the loudest thing on the bridge for about nine seconds. You take the list to the plot yourself and put one dot on an axis of hours for every hull that stopped talking.
+
+Then you stand back from it with your arms folded and look at what you have drawn.
 
 <Dialogue speaker="xo" aside="She has not looked at the plot. She is looking at the drafted sentence.">
 Before that goes anywhere: the data says a mean exists. A mean always exists. It does not say the mean describes anything.
@@ -107,6 +112,24 @@ Note what dilutes with size: the same hull, in a log of {fmtInt(REGISTER_META.co
 *A summary quoted without the shape it summarises.* Every one of these five numbers exists for every batch of numbers. Whether it *describes* the batch is a separate question, and the display answers it.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="One-variable statistics: the five summaries on one screen">
+<Calculator.Step keys={['STAT', '1:Edit']}>Type the {fmtInt(elevenWith.length)} plume ratios into **L1**. Order does not matter; the calculator sorts internally for the quartiles.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ CALC', '1:1-Var Stats']} note="List: L1 · FreqList: (blank) · Calculate">`List` is `2nd` `1`. Leave `FreqList` empty unless the data came as a frequency table — a stale entry there is a common source of an answer that is nearly right.</Calculator.Step>
+<Calculator.Read label="x̄" value={fmt(mean(elevenWith), 4)}>the sample mean.</Calculator.Read>
+<Calculator.Read label="Sx" value={fmt(sd(elevenWith), 4)}>the sample standard deviation, divided by $n-1$.</Calculator.Read>
+<Calculator.Read label="n" value={String(elevenWith.length)}>check this before you trust anything above it.</Calculator.Read>
+<Calculator.Watch>**Sx against σx.** Both are printed, one line apart, and they differ only in the divisor: `Sx` uses $n-1$ and `σx` uses $n$. Every AP question about a *sample* wants **Sx**. `σx` is correct only when the data are the whole population, which in this course is almost never. On these {fmtInt(elevenWith.length)} values `σx` reads {fmt(sd(elevenWith) * Math.sqrt((elevenWith.length - 1) / elevenWith.length), 4)} against Sx's {fmt(sd(elevenWith), 4)}: near enough to look right, far enough to be marked wrong.</Calculator.Watch>
+<Calculator.Step keys={['▾']}>Arrow down past x̄, Σx, Σx², Sx, σx and n to the five-number summary: **minX**, **Q1**, **Med**, **Q3**, **maxX**.</Calculator.Step>
+<Calculator.Read label="minX" value={fmt(elevenFive.min, 2)} />
+<Calculator.Read label="Q1" value={fmt(elevenFive.q1, 2)} />
+<Calculator.Read label="Med" value={fmt(elevenFive.median, 2)} />
+<Calculator.Read label="Q3" value={fmt(elevenFive.q3, 2)} />
+<Calculator.Read label="maxX" value={fmt(elevenFive.max, 2)} />
+<Calculator.Watch>**The IQR is not on this screen, and neither is the range.** The calculator prints neither. Compute them: IQR = Q3 − Q1 = {fmt(elevenFive.q3, 2)} − {fmt(elevenFive.q1, 2)} = {fmt(iqr(elevenWith), 2)}, and range = maxX − minX = {fmt(rangeOf(elevenWith), 2)}. Recall the stored values with `VARS` `5:Statistics` `▸ PTS` rather than retyping rounded ones.</Calculator.Watch>
+<Calculator.Watch>**The TI's quartiles are the AP convention.** It splits the sorted list at the median and, when $n$ is odd, leaves the median out of both halves. Other software (and some spreadsheets) interpolates instead and returns slightly different quartiles from the same data, which then moves the IQR and every fence built on it. If a printed answer disagrees with your calculator in the second decimal, this is usually why.</Calculator.Watch>
+<Calculator.Watch>A **bimodal** column produces all six of these numbers without complaint. `1-Var Stats` has no opinion about whether a centre exists. Draw the data before you quote anything off this screen.</Calculator.Watch>
+</Calculator>
 
 <OutlierExplorer />
 
@@ -201,7 +224,7 @@ Ebele writes both findings up without being told, and puts the denominators and 
 Yes, sir. That's — yes. I'd have sent one number for two things. It would have been true and it would have been the wrong shape of true, and nobody at Valhalla would have caught it, because the arithmetic is right.
 </Dialogue>
 
-Nobody answers him, because he is correct. The file does not say what either process is. It says there are two of them, both ending in a lost hull, and that until this morning the Service had one number for both.
+Nobody answers him. Ferrier writes the two lines into the preliminary herself and initials the margin, and the file still does not say what either process is. It says there are two of them, both ending in a lost hull.
 
 </Scene>
 
