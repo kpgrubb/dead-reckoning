@@ -39,7 +39,7 @@ The Board directs that CSV *Nightjar* proceed to the Jovian–Ceres Transit Lane
 Good hunting, Anselm.
 </Dialogue>
 
-<Scene stamp="MET 8/16:00 → 9/09:00" location="Sick bay · then the intel terminal" condensed="Ferrante clears sixteen people for a hundred days, with reservations. At the intel terminal Ebele briefs the Board's page: thirty-one hulls, six years, mean mark 6.5, spread along the Lane. You ask how many rows went into the mean. He does not know. The file turns out to be 2,200 records of every severity, and while it loads you have him find what fraction of them are losses.">
+<Scene stamp="MET 8/16:00 → 9/09:00" location="Sick bay · then the intel terminal" condensed={`Ferrante clears sixteen people for a hundred days, with reservations. At the intel terminal Ebele briefs the Board's page: ${losses.length} hulls, six years, mean mark ${fmt(registerSummary.meanMarkAll, 1)}, spread along the Lane. You ask how many rows went into the mean. He does not know. The file turns out to be ${registerSummary.total.toLocaleString('en-US')} records of every severity, and while it loads you have him find what fraction of them are losses.`}>
 
 Ferrante's fitness board takes two hours in a compartment he keeps four degrees colder than the rest of the ship, and clears sixteen people for a hundred days. He states his reservations once each. One rating who has not slept since the slip. One officer, unnamed, who has not finished a meal since the Watch run. And you.
 
@@ -55,13 +55,13 @@ He signs.
 
 Ebele's first brief is at 09:00 the next morning at the intel terminal, one page on the display. He has had the tasking for nineteen hours and has slept, he says, for some of them. There is a ring of dried coffee on the console by his hand that he has not noticed.
 
-The page is the Board's. *Lane Incident File, 2178–84. Thirty-one hulls lost in six years. Mean mark at incident: 6.5. Incidents distributed along the Lane consistent with comparable corridors.* Under the text a table of classifications, a bar chart, and the finding.
+The page is the Board's. *Lane Incident File, 2178–84. Thirty-one hulls lost in six years. Mean mark at incident: {fmt(registerSummary.meanMarkAll, 1)}. Incidents distributed along the Lane consistent with comparable corridors.* Under the text a table of classifications, a bar chart, and the finding.
 
 He briefs it without looking at it. He has the whole page by heart.
 
-You ask what the 6.5 is a mean of.
+You ask what the {fmt(registerSummary.meanMarkAll, 1)} is a mean of.
 
-"So — mark at incident, sir. Twelve marks on the Lane, 6.5 is halfway along. Spread along the Lane, like it says."
+"Mark at incident, sir. Where the hull was along the corridor when it stopped." He puts a finger on the Lane diagram, halfway down it. "The marks run one to twelve. Average the whole file and you come out at {fmt(registerSummary.meanMarkAll, 1)}, near enough the middle, so nothing's piled up at either end. That's what the last line means."
 
 You ask how many rows went into it.
 
@@ -136,7 +136,7 @@ A patrol report from the cutter *Asgard* covering 2168–76 is a frequency table
 <Drill generator="act-0/percent-to-count" count={1} />
 
 <MissionBeat id="act-0-03-loss-fraction" kind="numeric" answer={registerSummary.lossFraction} answerKind="proportion" label="THE SUMMARY'S ROWS"
-  prompt={`The Board's mean of 6.5 was taken over every record in the file — ${registerSummary.total.toLocaleString('en-US')} rows. Using the Register browser, tabulate severity over the whole file: what fraction of the rows are **losses**? Give a proportion to three decimal places.`}
+  prompt={`The Board's mean of ${fmt(registerSummary.meanMarkAll, 1)} was taken over every record in the file — ${registerSummary.total.toLocaleString('en-US')} rows. Using the Register browser, tabulate severity over the whole file: what fraction of the rows are **losses**? Give a proportion to three decimal places.`}
   hint="No filter. Tabulate severity. The denominator is every record the mean was taken over.">
   <Success>
   <Dialogue speaker="analyst" aside="He has the frequency table on the display and is looking at the Total row rather than the loss row.">
@@ -182,7 +182,7 @@ A patrol report from the cutter *Asgard* covering 2168–76 is a frequency table
 
 <Scene stamp="MET 9/11:00" location="Intel terminal · the file loading" condensed="Ebele annotates the Board's page with what its mean was actually taken over. Knowing whether the summary is honest needs the shape of the thirty-one, not the centre of two thousand advisories — and that needs the records. One line on the tasking is still unanswered: the reporting channel.">
 
-Ebele writes it across the top of the page, above the Board's own heading, in the register the Service teaches: *Mean of 6.5 computed over {registerSummary.total.toLocaleString('en-US')} Authority records of all severities; losses {losses.length} of {register.length.toLocaleString('en-US')} ({fmt(100 * registerSummary.lossFraction, 1)} %).* He reads it back to himself twice. Then he adds, in smaller type underneath, what the other {fmt(100 * (1 - registerSummary.lossFraction), 1)} percent are.
+Ebele writes it across the top of the page, above the Board's own heading, in the register the Service teaches: *Mean of {fmt(registerSummary.meanMarkAll, 1)} computed over {registerSummary.total.toLocaleString('en-US')} Authority records of all severities; losses {losses.length} of {register.length.toLocaleString('en-US')} ({fmt(100 * registerSummary.lossFraction, 1)} %).* He reads it back to himself twice. Then he adds, in smaller type underneath, what the other {fmt(100 * (1 - registerSummary.lossFraction), 1)} percent are.
 
 "It isn't wrong, sir," he says. "The page. Six point five is the mean of what it says it's the mean of."
 
