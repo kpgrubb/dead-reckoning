@@ -192,6 +192,8 @@ describe('content MDX lint', () => {
     const patterns = [
       /\b(?:is|was|are|were)\s+not\s+[^.;!?]{2,45}[,;.]\s+(?:it|that|they|those|the)\s+(?:is|are|was|were)\b/i,
       /\b(?:isn't|aren't|wasn't|it's not)\s+[^.;!?]{2,45},\s+(?:it's|it is|they're|they are|that's)\b/i,
+      // Contracted subject on both halves: "That's not a distribution of losses. That's paperwork."
+      /\b(?:it's|that's|there's|these are|those are)\s+not\s+[^.;!?]{2,45}[,;.]\s+(?:it's|that's|it is|that is|they're|those are)\b/i,
       /\bnot because\s+[^.;!?]{2,50},\s+but because\b/i,
       /\bThe (?:question|problem|point|issue) is not\s+[^.;!?]{2,45}[.;,]\s+(?:it|the)\b/i,
     ]
