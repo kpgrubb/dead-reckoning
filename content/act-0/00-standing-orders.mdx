@@ -1,0 +1,78 @@
+---
+id: act-0-00
+act: 0
+title: "Standing Orders"
+kind: interlude
+ap_topics: []
+objectives:
+  - "Know who you are, where this is, and what the Service has sent you to do"
+prereqs: []
+est_minutes: 4
+calc_briefing: null
+summary: "Read first. The Compact, the Lane, the ship, and the thirty-one."
+---
+
+import { fmtInt } from '@/lib/stats'
+import { losses, register } from '@/instruments/act-0/data'
+
+<Scene stamp="2184 · standing orders" location="Valhalla, Callisto" condensed="You are Commander Anselm Rook of the Compact Orbital Service, given the Compact's only stealth corvette and sent to watch a trade corridor where thirty-one ships have gone missing in six years. The official finding is accidents and pirates. You have the Register, not witnesses.">
+
+Jupiter has four settled moons and about nine million people, and they call themselves the Galilean Compact because *empire* was taken and *republic* was a lie. Ganymede has the parliament and the water. Callisto has the naval yards, a rock called Valhalla with the Admiralty Board inside it, and eleven hundred officers who mostly know each other. Europa mines. Io is a place people are paid a great deal to go.
+
+The Compact is small. Mars is not, and neither is Earth, and both of them want helium-3 from Jupiter's upper atmosphere at a price the Compact sets. That tension is the weather you have worked in for thirty years.
+
+Everything the Compact sells travels the same road. From Jovian orbit to Ceres is a hundred days under a freighter's torch, twelve transponder marks along the way, and the crews call it the Hundred-Day Lane because sailors are not poets. Two and a half thousand transits have run it in the last six years.
+
+Thirty-one of those ships never arrived.
+
+The Lane Authority keeps a file on every incident, {fmtInt(register.length)} records deep, and its finding on the losses is that space is large and machinery fails and, latterly, that pirates have moved into the Belt end. Nobody has argued. The insurers paid. The families were told.
+
+You are Anselm Rook. You are fifty-three, you have commanded three ships, and you have spent the last two years as the Service's liaison to the yard that built the thing you are about to take out of the slip.
+
+*Nightjar* is sixty-two metres of hull wrapped around sixty tonnes of solid lithium. Every warship radiates: reactors are hot, crews are hot, and in the dark between moons heat is the only thing anyone can see. *Nightjar* does not radiate. She pumps her heat inward into the lithium instead of out through the wings, and for as long as the metal has capacity left she is a cold rock on a ballistic path. Then the metal fills, and she either shows her radiators to whoever is watching or she cooks. The Chief will tell you how many hours you have. She will tell you with a plus-or-minus, and she will mean it.
+
+Your orders are one page and the verb is *observe*. Take her down the Lane, watch, and report what the corridor looks like to a ship nobody can see.
+
+There are no witnesses to any of the thirty-one. There is no wreckage anyone has recovered, no distress call anyone logged, and no survivor. What there is, is {fmtInt(register.length)} records with dates and positions and cause codes in them, and {fmtInt(losses.length)} rows inside that file where a ship stops.
+
+Everything you are going to find, you are going to find in numbers. Nobody is going to tell you.
+
+</Scene>
+
+<Panel label="ORIENTATION · NAMES YOU WILL NEED" tone="log">
+
+You do not need to memorise these. They recur, and they are all here if a term goes past you.
+
+**Where**
+- **The Galilean Compact** — the four Jovian moons, your country. Capital Uruk, on Ganymede.
+- **Valhalla** — the naval seat on Callisto. The **Admiralty Board** sits there; its transmissions are signed by a Flag Secretary and arrive late.
+- **Adlinda** — the Callisto yard that built your ship.
+- **The Hundred-Day Lane** — the trade corridor from the Jovian system to Ceres, marked 1 to 12. Ceres is Belt territory and not yours.
+- **The Lane Authority** — the civilian body that runs the corridor and keeps the incident **Register**. It classifies a loss from whichever office covers the flag: Uruk for Compact hulls, Ceres for everyone else.
+
+**Who**
+- **You** — Commander Anselm Rook, Compact Orbital Service, commanding **CSV *Nightjar***.
+- **Ferrier**, your executive officer. She will ask what you would expect to see if you were wrong.
+- **Sandoval**, chief engineer. Numbers arrive with their uncertainty attached.
+- **Oyelaran**, sensors. Trusts the instruments further than they deserve.
+- **Ebele**, intelligence analyst, young and quick and about to make every mistake in this course before you do.
+
+**What the ship can do**
+Run cold, on a stored-heat budget measured in hours, then purge. Nothing else here is exotic: no faster-than-light, no artificial gravity, no invented physics. Signals take as long as light takes, so a reply from Valhalla is never sooner than the round trip.
+
+</Panel>
+
+<Panel label="ORIENTATION · HOW THIS WORKS" tone="intel">
+
+Each module runs in the same order, and the two registers are kept apart on purpose.
+
+- **The scene** puts you somewhere and raises a question. It never teaches.
+- **The briefing** answers it in plain language: the idea, the notation, a worked case, and the mistake people make. This is the statistics, stated straight.
+- **On the calculator** gives the TI-84 Plus CE keystrokes where a procedure exists, including the trap on that screen.
+- **The instrument** is yours to move. Drag the points, change *n*, run the simulation.
+- **Drills** are generated fresh each time, so a retry is new numbers rather than a remembered answer.
+- **The mission call** is the scene again, waiting on your analysis. Get it wrong and somebody tells you which method you reached for; the story does not branch, and nothing is lost.
+
+Modules unlock in order. To move around freely while you are finding your feet, turn off *Lock modules until prerequisites are complete* in **Settings**.
+
+</Panel>
