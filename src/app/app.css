@@ -193,6 +193,17 @@ a.dr-map__module-link:hover { border-color: var(--dr-line-strong); border-left-c
 .dr-settings { max-width: 640px; }
 .dr-settings .dr-choices { margin: var(--dr-sp-4) 0; }
 .dr-settings__danger { margin-top: var(--dr-sp-6); border-top: 1px solid var(--dr-line); padding-top: var(--dr-sp-4); }
+.dr-settings__build { margin-top: var(--dr-sp-6); border-top: 1px solid var(--dr-line); padding-top: var(--dr-sp-4); }
+.dr-settings__build code { font-family: var(--dr-font-mono); color: var(--dr-phosphor); font-size: var(--dr-fs-sm); }
+.dr-settings__build kbd {
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  padding: 1px var(--dr-sp-1);
+  border: 1px solid var(--dr-line-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--dr-radius);
+  background: var(--dr-bg-3);
+}
 .dr-settings__danger .dr-btn { border-color: var(--dr-alert-dim); color: var(--dr-alert); }
 .dr-settings__danger .dr-btn:hover:not(:disabled) { border-color: var(--dr-alert); background: color-mix(in srgb, var(--dr-alert) 10%, var(--dr-bg-3)); }
 

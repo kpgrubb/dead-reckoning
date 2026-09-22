@@ -8,10 +8,26 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import { fileURLToPath } from 'node:url'
+import { execSync } from 'node:child_process'
 import { contentManifest } from './plugins/content-manifest.ts'
 
 const src = fileURLToPath(new URL('./src', import.meta.url))
 const content = fileURLToPath(new URL('./content', import.meta.url))
+
+/**
+ * A build stamp, shown in Settings. GitHub Pages caches index.html for minutes, and index.html
+ * names the hashed asset files, so a stale document silently serves stale content. Being able to
+ * read the build off the page turns "is this the version I just deployed?" into a fact.
+ */
+function buildId(): string {
+  let sha = 'local'
+  try {
+    sha = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim()
+  } catch {
+    /* not a git checkout */
+  }
+  return `${sha} · ${new Date().toISOString().slice(0, 16).replace('T', ' ')}Z`
+}
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -34,6 +50,9 @@ export default defineConfig({
       '@': src,
       '@content': content,
     },
+  },
+  define: {
+    __BUILD_ID__: JSON.stringify(buildId()),
   },
   worker: { format: 'es' },
   build: {

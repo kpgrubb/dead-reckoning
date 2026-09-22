@@ -76,6 +76,14 @@ export function SettingsPage() {
           </>
         )}
       </fieldset>
+      <section className="dr-settings__build">
+        <div className="dr-field__label">Build</div>
+        <p className="dr-muted">
+          <code>{__BUILD_ID__}</code>
+          <br />
+          If a change you expect is missing, this is the build you are actually running. GitHub Pages caches the page for a few minutes; a hard reload (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>) fetches the current one.
+        </p>
+      </section>
       <section className="dr-settings__danger">
         <div className="dr-field__label">Progress</div>
         <p className="dr-muted">

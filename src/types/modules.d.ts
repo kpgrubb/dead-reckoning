@@ -7,6 +7,9 @@ declare module '*.mdx' {
   export default MDXContent
 }
 
+/** Injected by vite.config.ts: short commit sha + build time. Shown in Settings. */
+declare const __BUILD_ID__: string
+
 declare module 'virtual:content-manifest' {
   import type { ModuleMeta } from '@/content/schema'
   export const modules: ModuleMeta[]
