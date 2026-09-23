@@ -51,6 +51,16 @@ npm run e2e        # playwright end-to-end walkthrough (builds first)
 
 See [CLAUDE.md](./CLAUDE.md) for the full contracts. In short: `content/act-N/*.mdx` are the micro-modules, `src/lib/stats` is the numeric source of truth, `src/lib/problems` generates every drill and checkpoint from a seed, and `src/instruments/act-N` holds the interactive ship instruments.
 
+## Progress across devices
+
+Enter a passcode in the header (**HELIOS**) and progress is kept under it. After that it saves automatically a few seconds after anything changes, or immediately with **SAVE**. On another device, enter the same passcode and press **LOAD**.
+
+Loading is deliberately manual: automatic saving can only ever add a newer copy, whereas automatic loading could silently replace work you did offline.
+
+**How it works, and what it is not.** The site is static, so there is no server to authenticate against. The passcode is not a password — it is the *address* of your saved progress. It is hashed into an opaque key on [textdb.dev](https://textdb.dev), a free anonymous key-value store. Anyone who knows the passcode can read or overwrite what is saved under it, and the service carries no uptime guarantee. That is the trade for zero setup. Keep nothing private in there, and treat it as convenience rather than backup: `localStorage` on each device remains the source of truth, and a sync failure never loses local progress.
+
+To change the passcode, just enter a different one — any string works as its own separate slot. Click the passcode to forget it on that device.
+
 ## Ambient audio
 
 The top bar carries a **COMMS · AMBIENT** player (play/pause, skip, volume, mute; off by default; volume and last track are remembered). Tracks ship with the static build and are never fetched from the network.

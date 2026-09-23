@@ -65,29 +65,29 @@ The Eyes would have had us at {EYES_DETECTION_H}, sir. Confirmed.
 </Dialogue>
 
 <Dialogue speaker="xo" aside="She does not look up from the plot.">
-Confirmed by what? — assuming they had this geometry, which they wouldn't have. {WATCH_DETECTION_H} hours is a number Valhalla measured with instruments that already knew where we were. I want the figure a crew gets when nobody is looking for them. That is the one we live on.
+Confirmed by what? Assuming they had this geometry, which they wouldn't have. {WATCH_DETECTION_H} hours is a number Valhalla measured with instruments that already knew where we were. I want the figure a crew gets when nobody is looking for them. That is the one we live on.
 </Dialogue>
 
 You give the table to Ebele. Every quantity the ship logs on a cold run: profile, cellar percentage, hours remaining, load, whether anyone saw us. Against each one, what kind of thing it is. Nobody draws anything until that column is filled.
 
 <Dialogue speaker="analyst" aside="Log open, blank table beside it, already typing.">
-So — one row per run, one column per thing we log. Some of them are numbers and some of them are names, and some of the numbers are names too. The hull number, for instance. Sir.
+So. One row per run, one column per thing we log. Some of them are numbers and some of them are names, and some of the numbers are names too. The hull number, for instance. Sir.
 </Dialogue>
 
 <Briefing title="Individuals and variables" topics={["1.2"]}>
 <Briefing.Intuition>
 Before a data table can say anything, you have to be able to say what one row is.
 
-The **individuals** are the things being described — one per row. The **variables** are what is recorded about each individual — one per column. Change what a row is and every variable in the table changes meaning with it.
+The **individuals** are the things being described, one per row. The **variables** are what is recorded about each individual, one per column. Change what a row is and every variable in the table changes meaning with it.
 
 Variables come in two kinds.
 
-A **categorical** variable places each individual in a group: *Quiet / Watch / Standby*, *detected: yes / no*, hull number *CX-1*. You tally categorical data and report counts or proportions. You never average it, and digits do not change that — a hull number and a cause code are labels that happen to be written with numerals.
+A **categorical** variable places each individual in a group: *Quiet / Watch / Standby*, *detected: yes / no*, hull number *CX-1*. You tally categorical data and report counts or proportions. You never average it, and digits do not change that. A hull number and a cause code are labels that happen to be written with numerals.
 
 A **quantitative** variable measures or counts, and arithmetic on it is meaningful. Quantitative variables split again:
 
-- **Discrete** — a count. Purges in a run, people aboard, fixes logged. It moves in whole steps and there is nothing between 2 and 3.
-- **Continuous** — a measurement that can take any value in an interval. Hours, kilowatts, percent of capacity, temperature. The instrument rounds it; the quantity itself does not.
+- **Discrete:** a count. Purges in a run, people aboard, fixes logged. It moves in whole steps and there is nothing between 2 and 3.
+- **Continuous:** a measurement that can take any value in an interval. Hours, kilowatts, percent of capacity, temperature. The instrument rounds it; the quantity itself does not.
 
 Every quantitative variable carries **units**. A quantitative value reported without its units is not yet data.
 </Briefing.Intuition>
@@ -120,11 +120,11 @@ Three runs from the yard's acceptance log, one run per row:
   </tbody>
 </table>
 
-*Individuals:* the three runs — one row each. *Variables:* the six columns after the run label.
+*Individuals:* the three runs, one row each. *Variables:* the six columns after the run label.
 
 *Classification.* **Profile** and **Detected** are categorical: they sort each run into a group. **Hours cold**, **Mean load** and **Sink at end** are quantitative and continuous, in hours, kilowatts and percent. **Purges** is quantitative and discrete: a count, in purges.
 
-*Arithmetic on a quantitative column.* The design endurance on Quiet is capacity over load: {SINK_CAPACITY_GJ} GJ at {PROFILES.Quiet.loadKw} kW gives {fmt(PROFILES.Quiet.designMeanH, 1)} h. Run {a1.run} ran the same profile at {a1.loadKw} kW, which projects {fmt(a1Endurance, 1)} h — a shortfall against the design figure of ({fmt(PROFILES.Quiet.designMeanH, 1)} − {fmt(a1Endurance, 1)}) ÷ {fmt(PROFILES.Quiet.designMeanH, 1)} × 100 = **{fmt(a1Shortfall, 1)} %**.
+*Arithmetic on a quantitative column.* The design endurance on Quiet is capacity over load: {SINK_CAPACITY_GJ} GJ at {PROFILES.Quiet.loadKw} kW gives {fmt(PROFILES.Quiet.designMeanH, 1)} h. Run {a1.run} ran the same profile at {a1.loadKw} kW, which projects {fmt(a1Endurance, 1)} h. The shortfall against the design figure is ({fmt(PROFILES.Quiet.designMeanH, 1)} − {fmt(a1Endurance, 1)}) ÷ {fmt(PROFILES.Quiet.designMeanH, 1)} × 100 = **{fmt(a1Shortfall, 1)} %**.
 
 Same profile, different load, different endurance. The load is the variable; the hours follow it.
 </Briefing.Worked>
@@ -133,7 +133,7 @@ Same profile, different load, different endurance. The load is the variable; the
 
 **"Continuous means it can be any number."** Continuous means any value in an interval is possible. A sink can read 41.7 percent; a ship cannot make 2.4 purges. A count stays discrete however large it gets.
 
-**Percentage of what.** A shortfall is a fraction of the figure you are measuring against — here the design endurance. Dividing by the measured endurance instead answers a different question and gives a different number.
+**Percentage of what.** A shortfall is a fraction of the figure you are measuring against: here, the design endurance. Dividing by the measured endurance instead answers a different question and gives a different number.
 </Briefing.Caution>
 </Briefing>
 
@@ -190,7 +190,7 @@ Same profile, different load, different endurance. The load is the variable; the
   hint={`Drain rate = (end % − start %) ÷ hours. Endurance = 100 ÷ drain rate. Shortfall = (design − endurance) ÷ design × 100.`}>
   <Success>
   <Dialogue speaker="engineer" aside="She writes it on the card taped over the yard's brass plate, under her own numbers.">
-  Call it {fmt(quietRun.projectedEnduranceH, 0)} hours on Quiet, give or take {fmt(quietRun.enduranceSdH, 0)}. The book was {fmt(quietShortfallPct, 1)} percent generous — and the give-or-take is {fmt(quietShortfallPmPct, 1)} points of the book's figure on its own, so the next run won't land on that number either. Nobody at Adlinda is going to like the second half of that sentence. Log both halves.
+  Call it {fmt(quietRun.projectedEnduranceH, 0)} hours on Quiet, give or take {fmt(quietRun.enduranceSdH, 0)}. The book was {fmt(quietShortfallPct, 1)} percent generous. The give-or-take is {fmt(quietShortfallPmPct, 1)} points of the book's figure on its own, so the next run won't land on that number either. Nobody at Adlinda is going to like the second half of that sentence. Log both halves.
   </Dialogue>
   </Success>
   <Failure>
@@ -220,7 +220,7 @@ Down in the vault the lithium ticks as it cools. Days. Not weeks.
 
 <LogEntry
   title="The sink is a variable, not a constant"
-  concept="A table's rows are individuals and its columns are variables: categorical (groups; tally them) or quantitative (numbers with units; average them), and quantitative variables are discrete (counts) or continuous (any value in an interval). The cellar's endurance is quantitative and continuous, and because the load varies run to run, so do the hours — a spread with a number in the middle, which is why the Chief quotes every figure with its ±."
+  concept="A table's rows are individuals and its columns are variables: categorical (groups; tally them) or quantitative (numbers with units; average them), and quantitative variables are discrete (counts) or continuous (any value in an interval). The cellar's endurance is quantitative and continuous, and because the load varies run to run, so do the hours. Hours are a spread with a number in the middle, which is why the Chief quotes every figure with its ±."
   formula="E = \frac{C}{L} \qquad \text{shortfall} = \frac{E_{\text{design}} - E_{\text{measured}}}{E_{\text{design}}} \times 100\%"
   mistake="Treating a coded number (a cause code, a hull number, detected = 1) as quantitative. Digits do not make a measurement; ask whether the mean would mean anything."
   tags={['variables', 'categorical', 'quantitative', 'discrete', 'continuous', 'heat sink', '1.2']}

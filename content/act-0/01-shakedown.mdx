@@ -62,16 +62,16 @@ Say it back to me, so it's on the log which one he's getting.
 <Briefing.Intuition>
 Measure the same quantity six times with the same procedure and you will get six different values. That is not a fault in the procedure. Variation is what measurement does, and a set of measurements therefore raises two separate questions.
 
-**Centre — where do the values sit?** One number that stands in for all of them. The usual choice is the **mean**: add the values, divide by how many there are. It is the balance point of the set.
+**Centre: where do the values sit?** One number that stands in for all of them. The usual choice is the **mean**: add the values, divide by how many there are. It is the balance point of the set.
 
-**Spread — how far apart are they?** The simplest measure is the **range**: largest value minus smallest value, in the same units as the data. It is a real summary of spread and a bad answer to a question about centre. The two questions are not interchangeable, and neither are their answers.
+**Spread: how far apart are they?** The simplest measure is the **range**: largest value minus smallest value, in the same units as the data. It is a real summary of spread and a bad answer to a question about centre. The two questions are not interchangeable, and neither are their answers.
 
 One further distinction, because the exam turns on it. Behind any set of measurements sits a **population**: every value the procedure could produce if you ran it forever. The values you actually hold are a **sample** from it. A number that describes the population is a **parameter**. A number computed from the sample is a **statistic**. You compute statistics. You almost never observe a parameter; you estimate it.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula tex="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i" terms={{ '\\bar{x}': 'sample mean — the summary of centre', 'n': 'number of observations in the sample', 'x_i': 'the i-th observation (a fix error, km)' }} label="Sample mean" />
 
-**Range** $= \max(x_i) - \min(x_i)$ — a summary of spread, in the same units as the data.
+**Range** $= \max(x_i) - \min(x_i)$. A summary of spread, in the same units as the data.
 
 A **parameter** describes a population; a **statistic** describes a sample. Notation keeps them apart: $\mu$ is a population mean, $\bar{x}$ a sample mean.
 </Briefing.Definition>
@@ -84,7 +84,7 @@ Six along-track fix errors from the yard's acceptance trial, in km, positive mea
 
 Report both, and label both. The mean answers *where*; the range answers *how far apart*.
 
-*Parameter or statistic?* {fmt(mean(yardAcceptanceFixes), 1)} km is a statistic: it came from six observations. The parameter it estimates is the long-run mean error of the dead-reckoning procedure on this geometry — a number that exists and will never be logged.
+*Parameter or statistic?* {fmt(mean(yardAcceptanceFixes), 1)} km is a statistic: it came from six observations. The parameter it estimates is the long-run mean error of the dead-reckoning procedure on this geometry. That number exists and will never be logged.
 </Briefing.Worked>
 <Briefing.Caution>
 **Disagreement is not malfunction.** Six measurements from a sound procedure always disagree. How much they disagree is information about the procedure; it is not evidence against it.
@@ -115,7 +115,7 @@ Report both, and label both. The mean answers *where*; the range answers *how fa
 <Drill generator="act-0/rerun-shift" count={1} />
 
 <MissionBeat id="act-0-01-fix-mean" kind="numeric" answer={mean(loggedFixRun.fixes)} answerKind="mean" digits={1} units="km" label="THE TUG MASTER'S NUMBER"
-  prompt={`Adlinda Nine wants the ship's position error for its log: one number for where the ship thinks it is.\n\nUse the six values in the **NAV · DEAD-RECKONING FIXES · LOGGED RUN** panel above — the table under the dotplot, stamped *${loggedFixRun.label}*. Not the acceptance-trial figures from the briefing, and not a drill's numbers. Report the **mean** fix error in km, to one decimal place. Keep the sign: positive is ahead of the beacon. The range goes to him separately.`}
+  prompt={`Adlinda Nine wants the ship's position error for its log: one number for where the ship thinks it is.\n\nUse the six values in the **NAV · DEAD-RECKONING FIXES · LOGGED RUN** panel above, the table under the dotplot, stamped *${loggedFixRun.label}*. Not the acceptance-trial figures from the briefing, and not a drill's numbers. Report the **mean** fix error in km, to one decimal place. Keep the sign: positive is ahead of the beacon. The range goes to him separately.`}
   hint="Add the six values in the LOGGED RUN table, signs included, and divide by six. The range (largest minus smallest) is the second number, not this one.">
   <Success>
   <Dialogue speaker="xo" aside="She keys it to the tug before you have finished the sentence.">
@@ -131,7 +131,7 @@ Report both, and label both. The mean answers *where*; the range answers *how fa
 
 <Gated by="act-0-01-fix-mean">
 
-<Scene stamp="MET 2/01:40" location="Jovian space · cold, ballistic · 2,000 km from Adlinda Nine" condensed="The tug gets the mean and the spread as two lines and acknowledges the first. Ferrier writes the procedure's error class on the plot margin: ±300 km, the box any cold ship is in — and any hull on a published profile with it.">
+<Scene stamp="MET 2/01:40" location="Jovian space · cold, ballistic · 2,000 km from Adlinda Nine" condensed="The tug gets the mean and the spread as two lines and acknowledges the first. Ferrier writes the procedure's error class on the plot margin: ±300 km, the box any cold ship is in, and any hull on a published profile with it.">
 
 Solberg reads it back before he keys it. Mean, {fmt(mean(loggedFixRun.fixes), 1)} km along track. Spread, {fmt(range(loggedFixRun.fixes), 0)} km across the six. Four words come back from the tug, and they are about the first number.
 
@@ -145,7 +145,7 @@ Down in the vault the lithium ticks as it warms. Oyelaran calls the Eyes in at h
 
 <LogEntry
   title="Variation is data"
-  concept="Repeated measurements of the same thing disagree; that scatter is the normal condition of measurement, not a fault. A mean summarises where the values sit (centre); a range summarises how far they scatter (spread) — two questions, two numbers. The mean of a sample is a statistic; the long-run mean of the procedure that produced it is a parameter nobody will ever hold."
+  concept="Repeated measurements of the same thing disagree; that scatter is the normal condition of measurement, not a fault. A mean summarises where the values sit (centre); a range summarises how far they scatter (spread). Two questions, two numbers. The mean of a sample is a statistic; the long-run mean of the procedure that produced it is a parameter nobody will ever hold."
   formula="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i \qquad \text{range} = \max(x_i) - \min(x_i)"
   mistake="Reporting a range (“between −120 and +180”) as if it were a centre. The range says how far the fixes disagree; it says nothing about where the ship thinks it is."
   tags={['mean', 'range', 'variation', 'parameter', 'statistic', '1.1']}

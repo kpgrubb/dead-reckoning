@@ -1,0 +1,83 @@
+/* Header sync control. Tokens only; matches the COMMS strip's weight so the bar stays balanced. */
+.dr-sync {
+  display: flex;
+  align-items: center;
+  gap: var(--dr-sp-2);
+  font-family: var(--dr-font-mono);
+  font-size: var(--dr-fs-xs);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.dr-sync__btn {
+  background: transparent;
+  border: 1px solid var(--dr-line);
+  border-radius: var(--dr-radius);
+  color: var(--dr-fg-1);
+  font: inherit;
+  letter-spacing: inherit;
+  padding: var(--dr-sp-1) var(--dr-sp-2);
+  height: 26px;
+  cursor: pointer;
+  transition: border-color var(--dr-dur-fast) var(--dr-ease), color var(--dr-dur-fast) var(--dr-ease);
+}
+.dr-sync__btn:hover:not(:disabled) {
+  border-color: var(--dr-line-strong);
+  color: var(--dr-fg-0);
+}
+.dr-sync__btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.dr-sync__btn--go {
+  border-color: var(--dr-phosphor-dim);
+  color: var(--dr-phosphor);
+}
+
+.dr-sync__form {
+  display: flex;
+  align-items: center;
+  gap: var(--dr-sp-1);
+}
+.dr-sync__input {
+  background: var(--dr-bg-0);
+  border: 1px solid var(--dr-line-strong);
+  border-radius: var(--dr-radius);
+  color: var(--dr-fg-0);
+  font: inherit;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: var(--dr-sp-1) var(--dr-sp-2);
+  height: 26px;
+  width: 11ch;
+}
+
+.dr-sync__code {
+  background: var(--dr-bg-1);
+  border: 1px solid var(--dr-phosphor-dim);
+  border-radius: var(--dr-radius);
+  color: var(--dr-phosphor);
+  font: inherit;
+  letter-spacing: 0.12em;
+  padding: var(--dr-sp-1) var(--dr-sp-2);
+  height: 26px;
+  cursor: pointer;
+}
+.dr-sync__code:hover {
+  border-color: var(--dr-alert-dim);
+  color: var(--dr-alert);
+}
+
+.dr-sync__stamp {
+  color: var(--dr-fg-2);
+  max-width: 26ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dr-sync.is-error .dr-sync__stamp {
+  color: var(--dr-amber);
+}
+
+@media (max-width: 1100px) {
+  .dr-sync__stamp { display: none; }
+}

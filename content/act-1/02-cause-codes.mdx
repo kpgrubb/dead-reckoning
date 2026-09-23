@@ -56,7 +56,7 @@ You eat standing at the back of the bridge because sitting down at 08:40 with a 
 
 **LANE INCIDENT FILE 2178–84 · SUMMARY · PAGE 2**
 
-*Figure 2. Incident classifications, 2178–84.* Bar chart. Four tall bars — debris advisory, profile-deviation advisory, transponder dropout, medical diversion — and, at the right-hand end of the axis, three short ones: accident, piracy, unknown. The caption reads: *It is noted that incidents attributable to unknown cause represent {fmtPct(unknownOfRecords, 1)} of records logged. The incidence of unresolved classification is not material.*
+*Figure 2. Incident classifications, 2178–84.* Bar chart. Four tall bars (debris advisory, profile-deviation advisory, transponder dropout, medical diversion) and, at the right-hand end of the axis, three short ones: accident, piracy, unknown. The caption reads: *It is noted that incidents attributable to unknown cause represent {fmtPct(unknownOfRecords, 1)} of records logged. The incidence of unresolved classification is not material.*
 
 </Scene>
 
@@ -64,7 +64,7 @@ You eat standing at the back of the bridge because sitting down at 08:40 with a 
 
 Ebele has had the page beside his own tables since yesterday afternoon.
 
-"So the bars are right, sir. I checked every one against the file. Debris advisories, profile deviations, dropouts, diversions — the counts are exactly what the Authority logged. And *unknown* is a sliver, because it's a sliver of two thousand two hundred records, and most of those records are somebody's cargo net coming loose."
+"So the bars are right, sir. I checked every one against the file. Debris advisories, profile deviations, dropouts, diversions. The counts are exactly what the Authority logged. And *unknown* is a sliver, because it's a sliver of two thousand two hundred records, and most of those records are somebody's cargo net coming loose."
 
 He changes one control. The denominator goes from every record in the file to the thirty-one losses. The chart redraws and the sliver is the tallest bar on the axis by a distance. The bar did not move. The floor under it did.
 
@@ -81,7 +81,7 @@ He starts to say that the numbers are printed on the axis. He is right. They are
 </Scene>
 
 <Dialogue speaker="xo" aside="She has both of his charts up on the plot, side by side, and is not looking at either of them.">
-The honest chart is the one that survives the Board's staff. They will start at the axis, then the denominator, then the caption, and only then the bars — and they will be right to. Give them a chart with nothing in it to find, Ensign, and then the only thing left for them to argue with is the number.
+The honest chart is the one that survives the Board's staff. They will start at the axis, then the denominator, then the caption, and only then the bars. They will be right to. Give them a chart with nothing in it to find, Ensign, and then the only thing left for them to argue with is the number.
 </Dialogue>
 
 <Briefing title="A chart's denominator is its first claim" topics={["1.4"]}>
@@ -105,14 +105,14 @@ With a value axis truncated at $b$, a bar of value $v$ is drawn at length $v - b
 <Formula tex="\frac{v_1 - b}{v_2 - b} \neq \frac{v_1}{v_2} \quad \text{unless } b = 0" terms={{ 'b': 'the baseline of the value axis', 'v_i': 'the value of bar i' }} label="Why the baseline must be zero" />
 </Briefing.Definition>
 <Briefing.Worked>
-The cutter *Asgard*'s 2176 return: {fmtInt(asgard.lost)} losses in {fmtInt(asgard.transits)} transits. Charted against transits, the loss bar stands at {fmtPct(asgard.lost / asgard.transits, 2)} — a hairline. That bar is honest and it answers a real question, *how often does a transit end in silence*. It cannot answer *how are the losses classified*, because for that question the denominator is {fmtInt(asgard.lost)}, and every bar on the chart grows by a factor of {fmt(asgard.transits / asgard.lost, 0)}.
+The cutter *Asgard*'s 2176 return: {fmtInt(asgard.lost)} losses in {fmtInt(asgard.transits)} transits. Charted against transits, the loss bar stands at {fmtPct(asgard.lost / asgard.transits, 2)}, a hairline. That bar is honest and it answers a real question, *how often does a transit end in silence*. It cannot answer *how are the losses classified*, because for that question the denominator is {fmtInt(asgard.lost)}, and every bar on the chart grows by a factor of {fmt(asgard.transits / asgard.lost, 0)}.
 
 Take the Mars–Belt corridor's file, 2170–76: {marsBeltTotal} losses, {marsBelt.map((r) => `${r.value} ${r.count}`).join(', ')}. As relative frequencies of the {marsBeltTotal}: {marsBelt.map((r) => `${r.value} ${fmt(r.relFreq, 3)}`).join(', ')}, summing to {fmt(marsBelt.reduce((s, r) => s + r.relFreq, 0), 3)}.
 
-Now truncate. *Accident* at {fmt(marsBelt[0].relFreq, 3)} is {fmt(mbTrueRatio, 2)} times *unknown* at {fmt(marsBelt[2].relFreq, 3)} — the honest chart draws one bar twice the other. Start the value axis at {fmtPct(mbBaseline, 0)} instead of zero and the drawn lengths become {fmt(marsBelt[0].relFreq - mbBaseline, 3)} against {fmt(marsBelt[2].relFreq - mbBaseline, 3)}: a height ratio of **{fmt(mbDrawnRatio, 1)}**. Nothing in the file changed and the axis labels are still correct. The drawing now overstates the difference by a factor the reader has no way of recovering from the picture alone.
+Now truncate. *Accident* at {fmt(marsBelt[0].relFreq, 3)} is {fmt(mbTrueRatio, 2)} times *unknown* at {fmt(marsBelt[2].relFreq, 3)}. The honest chart draws one bar twice the other. Start the value axis at {fmtPct(mbBaseline, 0)} instead of zero and the drawn lengths become {fmt(marsBelt[0].relFreq - mbBaseline, 3)} against {fmt(marsBelt[2].relFreq - mbBaseline, 3)}: a height ratio of **{fmt(mbDrawnRatio, 1)}**. Nothing in the file changed and the axis labels are still correct. The drawing now overstates the difference by a factor the reader has no way of recovering from the picture alone.
 </Briefing.Worked>
 <Briefing.Caution>
-*A pie for data that are not parts of one whole.* Two offices' *unknown* shares are two numbers from two different denominators; they do not partition anything and they need not sum to one, so they are not slices. Neither are quantities measured on a scale — hull ages have no slices — and neither is a time series, where a pie throws away the ordering the trend lives in.
+*A pie for data that are not parts of one whole.* Two offices' *unknown* shares are two numbers from two different denominators; they do not partition anything and they need not sum to one, so they are not slices. Neither are quantities measured on a scale, since hull ages have no slices, and neither is a time series, where a pie throws away the ordering the trend lives in.
 
 *A truncated axis read as a proportional difference.* "Nearly three times the height" is a statement about the drawing, not about the data. Read the axis before the bars, every time, and read it on charts other people send you as well as on your own.
 </Briefing.Caution>
@@ -126,11 +126,11 @@ Now truncate. *Accident* at {fmt(marsBelt[0].relFreq, 3)} is {fmt(mbTrueRatio, 2
 <Drill generator="act-1/compare-categorical" count={1} />
 
 <MissionBeat id="act-1-02-unknown" kind="numeric" answer={unknownOfLosses} answerKind="proportion" digits={3} label="THE HONEST BAR"
-  prompt={`Restore the denominator the Board's figure should have used. Of the ${losses.length} losses — not the ${fmtInt(REGISTER_META.records)} records — what relative frequency carries the code *unknown*? Give a proportion to three decimal places.`}
+  prompt={`Restore the denominator the Board's figure should have used. Of the ${losses.length} losses, not the ${fmtInt(REGISTER_META.records)} records, what relative frequency carries the code *unknown*? Give a proportion to three decimal places.`}
   hint="Set the panel's denominator to the losses and the scale to relative frequency. The count on the unknown bar does not change; only what it is divided by does.">
   <Success>
   <Dialogue speaker="analyst" aside="He puts the two versions of the same bar side by side, with both denominators written under them.">
-  Same bar, sir. Same records in it. One page calls it not material and the other calls it most of what happened, and neither of them is arithmetic — they're two different questions with the same numerator.
+  Same bar, sir. Same records in it. One page calls it not material and the other calls it most of what happened. They're two different questions with the same numerator.
   </Dialogue>
   </Success>
   <Failure>
@@ -153,7 +153,7 @@ Now truncate. *Accident* at {fmt(marsBelt[0].relFreq, 3)} is {fmt(mbTrueRatio, 2
     null,
     'True, and honestly drawn: the file really is mostly advisories. That claim survives the change of denominator intact.',
     'True. The page is honest about how many records it holds, and the bar chart shows it.',
-    'True — of every record the Authority files, *unknown* is about one in a hundred. The figure represents that correctly. The trouble is that it is not the question anybody reads the page to answer.',
+    'True. Of every record the Authority files, *unknown* is about one in a hundred. The figure represents that correctly. The trouble is that it is not the question anybody reads the page to answer.',
   ]}
   hint="Three of these statements stay true when you swap the denominator from all records to the losses. One of them does not.">
   <Success>
@@ -170,7 +170,7 @@ Now truncate. *Accident* at {fmt(marsBelt[0].relFreq, 3)} is {fmt(mbTrueRatio, 2
 
 <MissionBeat id="act-1-02-compare" kind="interpretation" label="TWO OFFICES, ONE CODE"
   prompt="The preliminary needs two sentences that would survive the Board's staff. Using the side-by-side panel, compare the **Uruk** office and the **Ceres** office on how often each coded a loss *unknown*. The two offices classified very different numbers of losses, so compare shares: cite both percentages, name both offices, and say which classification you are talking about."
-  hint="Each office's own row total is its denominator. One sentence with both percentages and the word *than* in it; then one sentence saying what the difference is about — the classification, not the caseload."
+  hint="Each office's own row total is its denominator. One sentence with both percentages and the word *than* in it; then one sentence saying what the difference is about: the classification, not the caseload."
   {...compareCategorical({ groupA: 'the Uruk office', groupB: 'the Ceres office', category: 'unknown', propA: urukUnknown, propB: ceresUnknown, variable: 'classification' })}>
   <Success>
   <Dialogue speaker="analyst" aside="He writes it into the preliminary under a heading of its own, with both totals in the margin.">
@@ -186,7 +186,7 @@ Now truncate. *Accident* at {fmt(marsBelt[0].relFreq, 3)} is {fmt(mbTrueRatio, 2
 
 <Gated by={["act-1-02-unknown", "act-1-02-distortion", "act-1-02-compare"]}>
 
-<Scene stamp="MET 13/11:05" location="Bridge · intel terminal · 0.009 AU from Callisto, 4 mgee" condensed="The official story is piracy. The official codes are four piracy and twenty-two unknown out of thirty-one. The story and the ledger disagree, and nothing in the file explains which of them is wrong — only that the Board's own paperwork does not support the Board's own account.">
+<Scene stamp="MET 13/11:05" location="Bridge · intel terminal · 0.009 AU from Callisto, 4 mgee" condensed="The official story is piracy. The official codes are four piracy and twenty-two unknown out of thirty-one. The story and the ledger disagree, and nothing in the file explains which of them is wrong. What it shows is that the Board's own paperwork does not support the Board's own account.">
 
 Ebele redraws Figure 2 the way it should have been drawn: two panels, both with the axis at zero, both labelled with their denominator. All {fmtInt(register.length)} records on the left, where *unknown* is {fmtPct(unknownOfRecords, 1)} and the caption's word *immaterial* is defensible. The {losses.length} losses on the right, where it is {fmtPct(unknownOfLosses, 0)} and the word is not.
 
@@ -194,7 +194,7 @@ Then he does something you did not ask for, and it is the first thing he has don
 
 He goes back through the Board's own tasking signal and the Directorate's covering note and the three Lane Operations bulletins the Authority has issued since 2181, and he counts what the *prose* says. Interdiction. Hostile action against Compact-flagged shipping. Recommendations on escort economics. The word that appears, over and over, in the sentences human beings wrote about this corridor, is *piracy*.
 
-And the file the same organisation keeps codes {piracyCount} of the {losses.length} that way. Another {accidentCount} it calls accident. The rest — the great majority — it calls nothing at all.
+And the file the same organisation keeps codes {piracyCount} of the {losses.length} that way. Another {accidentCount} it calls accident. The rest, the great majority, it calls nothing at all.
 
 "The story and the ledger disagree, sir," he says. "Not by a little."
 
@@ -206,7 +206,7 @@ Three displays that would survive Valhalla, and none of them says anything about
 
 <LogEntry
   title="A chart's denominator is its first claim"
-  concept="A bar chart of a categorical variable makes four claims before it shows a single bar: which individuals are on the axis (the denominator), where the value axis starts (the baseline must be zero for length to mean quantity), whether the bars are counts or shares, and whether any second dimension has been scaled as well. A pie is legitimate only when its slices are mutually exclusive parts of exactly one whole and the question is about shares of that whole — never for comparing two groups, which is what side-by-side relative-frequency bars are for."
+  concept="A bar chart of a categorical variable makes four claims before it shows a single bar: which individuals are on the axis (the denominator), where the value axis starts (the baseline must be zero for length to mean quantity), whether the bars are counts or shares, and whether any second dimension has been scaled as well. A pie is legitimate only when its slices are mutually exclusive parts of exactly one whole and the question is about shares of that whole. Comparing two groups is what side-by-side relative-frequency bars are for."
   formula="\frac{v_1 - b}{v_2 - b} \neq \frac{v_1}{v_2} \quad (b \neq 0), \qquad \text{compare groups with } \frac{n_{ik}}{n_i}, \text{ never } n_{ik}"
   mistake="Comparing counts across groups of different size. A taller bar over a bigger caseload is not a higher rate, and without each group's total on the page no reader can tell the difference."
   tags={['bar chart', 'pie chart', 'relative frequency', 'denominator', 'truncated axis', 'comparing groups', '1.4']}

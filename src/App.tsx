@@ -8,6 +8,7 @@ import { useSettings, applySettings } from './store/settings'
 import { useProgress } from './store/progress'
 import { modules } from './content/registry'
 import { AudioPlayer } from './app/AudioPlayer'
+import { SyncControl } from './app/SyncControl'
 
 const StyleReference = lazy(() => import('./design/StyleReference'))
 
@@ -29,6 +30,7 @@ function Shell() {
           <NavLink to="/style" className="dr-topbar__nav-aux">STYLE</NavLink>
         </nav>
         <AudioPlayer />
+        <SyncControl />
         <span className="dr-topbar__status" aria-label="Progress">
           {completed}/{modules.length} MODULES
         </span>
