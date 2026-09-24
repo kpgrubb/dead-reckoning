@@ -232,6 +232,31 @@ describe('content MDX lint', () => {
     expect(offences).toEqual([])
   })
 
+  /**
+   * The behaviour gloss: an action, then a clause telling the reader what it signified. "Ferrier
+   * initials the caption and says nothing, which from her is the answer." It is the *You believe
+   * her* failure wearing a subordinate clause, and it was the most frequent tic in the book (28
+   * instances). Cut the gloss; if the action does not carry the meaning, change the action.
+   * Scoped to the revised Acts; each joins as the sweep reaches it.
+   */
+  it('does not gloss a behaviour for the reader', () => {
+    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'calc/']
+    const patterns = [
+      /,\s*which from (?:her|him|them|it)\b/i,
+      /,\s*which is (?:how|what|why) (?:he|she|they|you|one)\b/i,
+      /\bthe way (?:a|one|people|men|women|somebody|someone|a man|a person)\b[^.;!?]{0,60}\b(?:do|does|say|says|when)\b/i,
+    ]
+    const offences: string[] = []
+    for (const file of files.filter((f) => REVISED.some((a) => rel(f).startsWith(a)))) {
+      body(fs.readFileSync(file, 'utf8'))
+        .split(/\r?\n/)
+        .forEach((line, i) => {
+          if (patterns.some((re) => re.test(line))) offences.push(`${rel(file)}:${i + 1}: behaviour gloss — "${line.trim().slice(0, 80)}"`)
+        })
+    }
+    expect(offences).toEqual([])
+  })
+
   /** Every module MDX needs the frontmatter the manifest and router rely on. Calc bodies have none. */
   it('gives every module file the required frontmatter, and every calc body none', () => {
     const offences: string[] = []

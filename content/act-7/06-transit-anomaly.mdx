@@ -1,0 +1,360 @@
+---
+id: act-7-06
+act: 7
+title: "Transit Anomaly"
+kind: module
+ap_topics: ["7.8", "7.9"]
+objectives:
+  - "State hypotheses about μ₁ − μ₂ and check the two-sample conditions group by group, before any statistic is computed"
+  - "Carry out a two-sample t-test with an unpooled standard error, naming Welch's degrees of freedom or the conservative rule"
+  - "Write the conclusion in context at a stated α, about two population means rather than about the two samples"
+  - "State the scope of the inference: which population, whether a cause was established, and what the comparison does settle"
+prereqs: ["act-7-05"]
+est_minutes: 30
+calc_briefing: null
+summary: "Ebele has two sentences drafted and a line under them he cannot write. Ferrier asks what the Board's counsel asks for."
+---
+
+import { conservativeDf, fmt, fmtInt, fmtP, fmtPct, mean, sd, twoMeanInterval, twoMeanTest, welchDf } from '@/lib/stats'
+import { contextGroup } from '@/lib/problems/rubric'
+import { significanceTestConclusion } from '@/lib/problems/rubrics'
+import {
+  LANE_POPULATION,
+  LOST_VS_SURVIVING_CONSERVATIVE,
+  LOST_VS_SURVIVING_INTERVAL,
+  LOST_VS_SURVIVING_TEST,
+  LOST_VS_SURVIVING_WELCH_DF,
+  NINETEEN_N,
+  SURVIVING_PERRINE_N,
+  lostPerrineDelays,
+  survivingPerrineDelays,
+} from '@/instruments/act-7/data'
+import { TransitAnomalyPanel } from '@/instruments/act-7/TransitAnomalyPanel'
+import { TPValueVisualiser } from '@/instruments/act-7/TPValueVisualiser'
+
+export const escorted = [1.2, -0.4, 0.9, 2.1, 0.3, 1.6, -0.8, 1.1]
+export const unescorted = [2.4, 3.1, 1.8, 4.2, 0.9, 2.7, 3.6, 1.4, 2.9, 3.3, 2.0, 4.0, 2.2, 3.8, 1.6]
+export const escortAlpha = 0.05
+export const escortTest = twoMeanTest(escorted, unescorted, { alt: 'less', random: true })
+export const escortCons = twoMeanTest(escorted, unescorted, { alt: 'less', dfMethod: 'conservative', random: true })
+export const escortTwoSided = twoMeanTest(escorted, unescorted, { alt: 'two-sided', random: true })
+export const escortInterval = twoMeanInterval(escorted, unescorted, { confidence: 0.95, random: true })
+export const escortWelchDf = welchDf(sd(escorted), escorted.length, sd(unescorted), unescorted.length)
+export const escortConsDf = conservativeDf(escorted.length, unescorted.length)
+
+export const lostCi = LOST_VS_SURVIVING_INTERVAL.ci
+export const brdAlpha = 0.01
+
+export const lostConclusion = significanceTestConclusion({
+  pValue: LOST_VS_SURVIVING_TEST.pValue,
+  alpha: brdAlpha,
+  direction: 'greater',
+  parameterContext: {
+    parameter: 'difference in mean Mark-9 delay',
+    population: LANE_POPULATION,
+    variable: 'between the lost Perrine hulls and the Perrine hulls that arrived',
+    units: 'days',
+    nullValue: 0,
+  },
+  directionWords: ['later', 'slower', 'longer'],
+})
+
+export const scopeRubric = {
+  type: 'interpretation',
+  required: [
+    contextGroup('Names the population the conclusion is bounded to', [LANE_POPULATION], {
+      feedback: `Say whom the finding is about, in the Board's own words: ${LANE_POPULATION}.`,
+    }),
+    {
+      label: 'Refuses the causal claim',
+      phrasings: ['not cause', 'not causal', 'not establish cause', 'not show cause', 'not explain'],
+      feedback: 'Write it before he does. Nothing was randomly assigned, so the comparison does not establish that anything caused the gap, and it names no agent.',
+    },
+    {
+      label: 'Says the nineteen are the losses themselves, not a random sample',
+      phrasings: ['not random sample', 'not sample', 'not representative', 'selected', 'losses themselves'],
+      polarity: 'any',
+      feedback: 'The nineteen were picked out by how they ended, so they are not a random sample of anything and no sentence may generalise from them.',
+    },
+    {
+      label: 'States what the test does establish: direction and timing',
+      phrasings: ['before', 'later', 'greater', 'direction', 'timing', 'already'],
+      minMatches: 2,
+      polarity: 'any',
+      feedback: 'Finish with the finding. The lost hulls ran later on average than the hulls of the same owner that arrived, and the measurement was taken at Mark 9, before they were lost.',
+    },
+  ],
+  forbidden: [
+    { phrase: 'prove', label: 'Claims proof', why: 'Proves is the word he is waiting for. A test returns evidence at a stated level and never proof.' },
+    { phrase: 'cause', label: 'Claims causation', why: 'Nothing here was randomly assigned. The two groups differ in every way that put them in different groups, and the comparison cannot separate those from the delay.' },
+    { phrase: /\b(?:is|are|was|were)\s+(?:due to|because of)\b/, label: 'Attributes the gap', why: 'A causal claim in other words. The scope statement exists to refuse exactly this sentence.' },
+  ],
+  exemplar: `The ${fmtInt(NINETEEN_N)} hulls in the first group are the losses themselves and not a random sample of ${LANE_POPULATION}, so no sentence here generalises from them to that population. Nothing was randomly assigned, so the test does not establish a cause and names no agent. What it does establish is direction and timing: the mean Mark-9 delay of the lost hulls was greater than that of the ${fmtInt(SURVIVING_PERRINE_N)} hulls of the same owner that arrived, and that delay was recorded at Mark 9, before they were lost.`,
+  minWords: 25,
+}
+
+<Scene stamp="MET 163/18:00" location="CSV Halden Reach · wardroom · docked, 0.12 AU sunward of the Ceres approach" condensed="Rook is at the tender's evening table because his name went on the list four days ago and taking it off would have been a sentence in somebody's log. Ebele has the second interval drafted and a line under it he cannot write: the same two groups, the same estimate, the same standard error, and he cannot see what a test adds that the endpoints have not already said. Ferrier asks what the Board's counsel asks for. Ostrow is four seats down on the far side, eating slowly.">
+
+The tender's wardroom runs at twenty-two degrees and smells of hot bread, and coming into it out of an eleven-degree corvette makes your hands ache for the first ten minutes.
+
+You are at the table because Lindqvist-Oduya's yeoman put your name on the evening list four days ago, and striking it off would have been a sentence in somebody's log. Eighteen down both sides. Ostrow is four seats along on the far side with his back to the servery, eating slowly, saying nothing anybody could repeat afterwards.
+
+Ebele came across with you. He should not have brought the page.
+
+It is folded once in his breast pocket, on the side of him that faces the servery, and he has put two fingers on the pocket twice since the soup went round.
+
+<Dialogue speaker="analyst" aside="Low, leaning in, fork still in the other hand.">
+Sir. The second interval. Both sentences are drafted and there's a line under them I can't write.
+</Dialogue>
+
+Not here.
+
+He eats three mouthfuls. Then he says it anyway, at his plate, in the voice he uses when he has already decided the answer is going to embarrass him.
+
+<Dialogue speaker="analyst">
+It's the same two groups. Same estimate, same standard error, same twenty-four hundred hulls on the register behind them. If I write the test underneath as well, that's one page of arithmetic printed twice, and I'd rather spend the page on something else.
+</Dialogue>
+
+Ferrier is on your left with a glass of the tender's water she has not touched since it was poured.
+
+<Dialogue speaker="xo">
+What does counsel ask for.
+</Dialogue>
+
+Ebele starts to answer, and stops on the second word, because he has heard what the first one was.
+
+<Dialogue speaker="xo">
+Then your endpoints answer a question nobody at Valhalla is going to ask. Write both. And write what the second one cannot do underneath it, in your own words, before somebody else supplies a version you like less.
+</Dialogue>
+
+Four seats down, Ostrow lays his knife across the plate and asks the steward, at a volume pitched for the whole table, whether Compact ships all run their wardrooms this cold. Two of *Halden Reach*'s lieutenants laugh. He does not look up the table while it happens.
+
+You take the folded page out of Ebele's pocket and put it inside your own jacket, on the bulkhead side.
+
+Two sentences and a blank line. Somewhere between a day and a half and nearly four days, and no word yet for how surprising that is.
+
+</Scene>
+
+<Briefing title="The same two samples, as a decision" topics={["7.8", "7.9"]}>
+<Briefing.Intuition>
+An interval and a test for two independent means are built from the same two numbers. The point estimate $\bar{x}_1 - \bar{x}_2$ and the unpooled standard error $\sqrt{s_1^2/n_1 + s_2^2/n_2}$ are computed once. An interval multiplies the standard error by $t^\star$ and lays the product either side of the estimate. A test divides the estimate by the standard error and reads the result against a null model. Same arithmetic, two questions: how large, and whether there is evidence of anything at all.
+
+The **parameter** is $\mu_1 - \mu_2$, and the hypotheses are written about it before the statistic exists.
+
+$$H_0: \mu_1 - \mu_2 = 0 \qquad H_a: \mu_1 - \mu_2 > 0,\ < 0,\ \text{or} \neq 0$$
+
+The null value is almost always zero, which says the two population means are equal. The alternative comes from the question the office asked, and from nothing that happened in the data.
+
+The **statistic** is the estimate, measured in standard errors, away from the null value.
+
+$$t = \frac{(\bar{x}_1 - \bar{x}_2) - 0}{\sqrt{\dfrac{s_1^2}{n_1} + \dfrac{s_2^2}{n_2}}}$$
+
+The **degrees of freedom** are Welch's, real-valued, or the conservative $\min(n_1 - 1, n_2 - 1)$, which is smaller and gives a larger p-value. Either is accepted; the write-up names which one produced the number.
+
+The **p-value** is the area in the tail the alternative points to, under $t$ on those degrees of freedom. It is the probability, computed in the world where $H_0$ is exactly true, of a difference in sample means at least as extreme as the one observed. A two-sided alternative counts both tails.
+
+The **conclusion** compares $p$ with $\alpha$, states the decision, and then says what the decision is evidence about: two population means, named, in a population, named.
+
+**Conditions, group by group.** Random: each group is a random sample from its own population, or the two arose by random assignment. Independent: the groups are independent of one another, and each sample is no more than 10% of its own population. Normal: for each group, $n \geq 30$ or a graph of that group showing no strong skew and no outliers. A failure in either group stops the procedure.
+
+**Scope, which is a separate question from significance.** A small p-value says the gap would be surprising under $H_0$. It says nothing about who the two groups are or how they came to be different, and two features of the design settle that instead.
+
+- **Random assignment** to the groups is what licenses a causal conclusion, and only about the units studied.
+- **Random sampling** from a population is what lets the conclusion travel to that population.
+
+A study can have either, both or neither, and a comparison that has neither still produces a legitimate finding: a direction, a size, and whatever the timestamps on the measurements establish about the order events happened in. What it cannot produce is a cause or a population, and the write-up says so in its own words rather than waiting to be told.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="t = \frac{(\bar{x}_1 - \bar{x}_2) - \Delta_0}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}, \qquad \Delta_0 = 0" terms={{ '\\bar{x}_1 - \\bar{x}_2': 'the point estimate of μ₁ − μ₂, in the order you chose', '\\Delta_0': 'the hypothesised difference, almost always 0', 's_1, s_2': "each group's own standard deviation — never combined" }} label="The two-sample t statistic" />
+
+<Formula tex="P = P(T_{df} \geq t) \quad\text{or}\quad P(T_{df} \leq t) \quad\text{or}\quad 2P(T_{df} \geq |t|)" terms={{ 'df': "Welch's, real-valued, or the conservative min(n₁ − 1, n₂ − 1)", 'P': 'the area in the tail the alternative points to, under the null model' }} label="The p-value, one tail or two" />
+
+The interval and the test are the same procedure asked two ways. A two-sided test at $\alpha$ rejects exactly when the $100(1 - \alpha)\%$ interval excludes the null value; a one-sided test at $\alpha$ lines up with the $100(1 - 2\alpha)\%$ interval instead. Where a report quotes both, it quotes the level of each.
+</Briefing.Definition>
+<Briefing.Worked>
+The 2176 escort trial on the Mars–Belt corridor, the same file the previous module put an interval around. Delay against the filed plot, in days, for hulls that took an escort and for hulls that routed independently over the same eleven weeks. Different hulls in the two lists, assigned by the Authority's duty roster.
+
+Escorted, {fmtInt(escorted.length)} hulls: {escorted.map((v) => fmt(v, 1)).join(', ')}.
+
+Independently routed, {fmtInt(unescorted.length)} hulls: {unescorted.map((v) => fmt(v, 1)).join(', ')}.
+
+*State.* Let $\mu_1$ be the true mean delay of escorted hulls and $\mu_2$ that of independently routed hulls on the Mars–Belt corridor in 2176. The Authority asked whether escorts get hulls nearer their filed plot, so $H_0: \mu_1 - \mu_2 = 0$ against $H_a: \mu_1 - \mu_2 < 0$, at $\alpha$ = {fmt(escortAlpha, 2)}.
+
+*Plan.* A two-sample $t$-test, unpooled. Random: the roster assigned the escorts. Independent: no hull is in both lists, and {fmtInt(10 * escorted.length)} and {fmtInt(10 * unescorted.length)} are far below the corridor's traffic. Normal: both groups are under thirty, and both dotplots are roughly symmetric with nothing stranded.
+
+*Do.* $\bar{x}_1$ = {fmt(mean(escorted), 3)}, $s_1$ = {fmt(sd(escorted), 3)}, $n_1$ = {fmtInt(escorted.length)}. $\bar{x}_2$ = {fmt(mean(unescorted), 3)}, $s_2$ = {fmt(sd(unescorted), 3)}, $n_2$ = {fmtInt(unescorted.length)}.
+
+<Formula tex={`\\bar{x}_1 - \\bar{x}_2 = ${fmt(escortTest.estimate, 4)}, \\qquad SE = \\sqrt{\\frac{${fmt(sd(escorted), 3)}^2}{${escorted.length}} + \\frac{${fmt(sd(unescorted), 3)}^2}{${unescorted.length}}} = ${fmt(escortTest.se, 4)}`} label="Estimate and unpooled standard error" />
+
+<Formula tex={`t = \\frac{${fmt(escortTest.estimate, 4)} - 0}{${fmt(escortTest.se, 4)}} = ${fmt(escortTest.statistic, 4)}, \\qquad df_{\\text{Welch}} = ${fmt(escortWelchDf, 2)}, \\qquad P = ${fmtP(escortTest.pValue)}`} label="Statistic, degrees of freedom and one-sided p-value" />
+
+The conservative rule reads the same statistic at $\min$({fmtInt(escorted.length - 1)}, {fmtInt(unescorted.length - 1)}) = {fmtInt(escortConsDf)} degrees of freedom and returns $P$ = {fmtP(escortCons.pValue)}, a little larger and the same decision. The two-sided reading of the same statistic doubles the tail to {fmtP(escortTwoSided.pValue)}.
+
+*Conclude.* Because $P$ = {fmtP(escortTest.pValue)} is less than $\alpha$ = {fmt(escortAlpha, 2)}, reject $H_0$. There is convincing evidence that the true mean delay against the filed plot of escorted hulls is less than that of independently routed hulls, for hulls working the Mars–Belt corridor in 2176.
+
+*Scope.* The duty roster assigned the escorts, and it did so by rota rather than at anyone's request, which is close enough to random assignment that the report argued for a causal reading and said exactly what it was arguing from. The hulls were not a random sample of the corridor's traffic, so the conclusion covers the eleven weeks in the trial and stops there.
+
+*The same file as an interval.* The {fmtPct(0.95, 0)} two-sample $t$-interval for $\mu_1 - \mu_2$ runs {fmt(escortInterval.ci[0], 3)} to {fmt(escortInterval.ci[1], 3)} days, which is the estimate {fmt(escortInterval.estimate, 4)} give or take a margin of {fmt(escortInterval.marginOfError, 4)}. Every number in it has already appeared above. The interval says how much and the test says how surprising, and a brief that has to survive a hearing carries both with their levels named.
+</Briefing.Worked>
+<Briefing.Caution>
+**A conclusion about the samples.** "The escorted hulls were faster" describes {fmtInt(escorted.length)} rows that are already known exactly and needed no procedure. The claim the test supports is about $\mu_1 - \mu_2$, a difference between two population means nobody has measured, and the sentence has to name the population it belongs to.
+
+**Significance read as size.** A p-value falls when the gap grows and it also falls when the samples grow. On two groups of several hundred, a difference too small to matter clears any level; on two groups of nine, a difference that matters enormously may not. The magnitude lives in the interval, and a report that quotes only $P$ has thrown it away.
+
+**Proof, and intent.** A significance test returns evidence at a stated level. It cannot return proof, and it cannot return a reason. Where the groups were not assigned at random, every difference that put a unit in one group rather than the other is still in the comparison, and the arithmetic has no way to tell them apart from the one being measured.
+
+**Selecting a group on its outcome.** A group assembled by reading the outcome first is unusual by construction, which costs two things exactly: it is a sample of no population, and it supports no causal claim. It does not cost the description. Direction survives, size survives, and so does anything the timestamps establish about what was recorded before the outcome occurred.
+
+**Choosing the tail after looking.** The alternative is written from the question. Picking the direction the data happened to fall and then reporting one tail is a two-sided procedure quoting a one-sided number, and it halves the p-value on no evidence at all.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="Two-sample t-test">
+<Calculator.Step keys={['STAT', '1:Edit']} note="Worked case: the 2176 Mars–Belt escort trial above, not the Ledger comparison on the panels below.">With raw data, put the escorted delays in `L1` and the independently routed delays in `L2`. The two lists have different lengths, which is correct: these are two separate groups of hulls, not two measurements of one.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '4:2-SampTTest']} note="Inpt: Data · List1: L1 · List2: L2 · Freq1: 1 · Freq2: 1 · μ1: <μ2 · Pooled: No · Calculate">`4:2-SampTTest` sits below `3:2-SampZTest`. With summary statistics instead, set `Inpt: Stats` and type x̄1, Sx1, n1, x̄2, Sx2, n2 in that order. The alternative row offers `μ1: ≠μ2 <μ2 >μ2`; here the question is whether escorts arrive nearer the plot, so highlight `<μ2`.</Calculator.Step>
+<Calculator.Read label="t" value={fmt(escortTest.statistic, 6)}>the standardized difference in sample means.</Calculator.Read>
+<Calculator.Read label="p" value={fmtP(escortTest.pValue)}>the area in the tail the highlighted alternative points to.</Calculator.Read>
+<Calculator.Read label="df" value={fmt(escortWelchDf, 6)}>Welch's degrees of freedom, real-valued.</Calculator.Read>
+<Calculator.Read label="x̄1" value={fmt(mean(escorted), 4)} />
+<Calculator.Read label="x̄2" value={fmt(mean(unescorted), 4)} />
+<Calculator.Read label="Sx1" value={fmt(sd(escorted), 4)}>each group's own standard deviation. Both are printed because both are used.</Calculator.Read>
+<Calculator.Read label="Sx2" value={fmt(sd(unescorted), 4)} />
+<Calculator.Watch>**`Pooled: No` is the default and the right choice.** `Yes` assumes one common population standard deviation, and nothing in an observational file establishes that. It changes two things at once: the standard error stops being {fmt(escortTest.se, 4)} and the degrees of freedom jump to {fmtInt(escorted.length + unescorted.length - 2)} from Welch's {fmt(escortWelchDf, 2)}. Check the field before every run, because the setting persists between problems.</Calculator.Watch>
+<Calculator.Watch>**The `df` on the screen is Welch's and it is fractional.** {fmt(escortWelchDf, 6)} is the formula working, not a rounding fault: Welch's rule is an approximation and its answer is real-valued. The by-hand alternative is $\min(n_1 - 1,\ n_2 - 1)$ = {fmtInt(escortConsDf)}, which a $t$ table can be read at and which returns {fmtP(escortCons.pValue)} instead of {fmtP(escortTest.pValue)}. Write into the answer which of the two you used.</Calculator.Watch>
+<Calculator.Watch>**The order of the lists fixes the sign of `t` and the meaning of `>μ2`.** Enter the escorted delays as List1 and $t$ = {fmt(escortTest.statistic, 3)}; swap the lists and it reads {fmt(-escortTest.statistic, 3)}, and the alternative you should have highlighted flips with it. Decide which group is group 1 before the screen is filled in, and put that decision at the top of the written answer.</Calculator.Watch>
+<Calculator.Watch>**`Calculate` against `Draw`.** `Calculate` prints t, p, df and the six summaries. `Draw` shades the tail the highlighted alternative selects on a $t$ curve and prints t and p across the top, with no df and no summaries, so it is a check on which tail you chose rather than a substitute for the numbers. The shaded region is the p-value; on `μ1: ≠μ2` it shades both ends.</Calculator.Watch>
+</Calculator>
+
+<TransitAnomalyPanel />
+
+<TPValueVisualiser
+  mode="two-sample"
+  sampleA={lostPerrineDelays}
+  sampleB={survivingPerrineDelays}
+  alt="greater"
+  quantity="the difference in mean Mark-9 delay"
+  label="TACTICAL · THE TAIL THE ALTERNATIVE COUNTS"
+/>
+
+<Drill generator="act-7/two-sample-setup" count={1} />
+<Drill generator="act-7/two-sample-statistic" count={1} />
+<Drill generator="act-7/two-sample-p-value" count={1} />
+<Drill generator="act-7/two-sample-conclusion" count={1} />
+<Drill generator="act-7/ostrow-objection" count={1} />
+<Drill generator="act-7/scope-of-inference" count={1} />
+
+<MissionBeat id="act-7-06-statistic" kind="numeric" answer={LOST_VS_SURVIVING_TEST.statistic} answerKind="testStat" digits={2} label="THE SAME TWO GROUPS, AS A STATISTIC"
+  prompt={`Set the transit-anomaly panel to the **test** reading, one-sided, Welch degrees of freedom. The two groups are the ones the previous module put an interval around: the **${fmtInt(NINETEEN_N)}** Perrine hulls the Register carries as lost, against the **${fmtInt(SURVIVING_PERRINE_N)}** Perrine hulls that arrived. Lost minus surviving.\n\n$$H_0: \\mu_1 - \\mu_2 = 0 \\qquad H_a: \\mu_1 - \\mu_2 > 0$$\n\nReport **t**, to **two decimal places**.`}
+  hint="Nothing new is computed. The estimate and the standard error are the ones behind last watch's interval; the statistic is the first divided by the second.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He has the panel switched between the two readings and is watching the estimate stay where it is.">
+  So {fmt(LOST_VS_SURVIVING_TEST.statistic, 2)}, sir, on {fmt(LOST_VS_SURVIVING_WELCH_DF, 2)} degrees of freedom. Conservative rule gives {fmtInt(LOST_VS_SURVIVING_CONSERVATIVE.df)} and the same statistic. The estimate hasn't moved and the standard error hasn't moved. I've written one number twice and it answers two different questions, which is the thing I couldn't see last night.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Estimate over standard error. Both are on the page you drafted yesterday. If your statistic is negative you have subtracted the wrong way round, and if it is under two you have pooled.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-06-pvalue" kind="numeric" answer={LOST_VS_SURVIVING_TEST.pValue} answerKind="pValue" allowInequality label="HOW SURPRISING"
+  prompt={`Same two groups, same statistic, Welch degrees of freedom. The alternative is one-sided: $H_a: \\mu_1 - \\mu_2 > 0$.\n\nReport the **p-value**. Four decimal places, or an inequality if it falls below what four decimal places can carry.`}
+  hint="A tail area under the null model, and two things fix which curve: the statistic and the degrees of freedom. One tail, because the alternative points one way.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He reads it off the shaded curve rather than the readout, and then off the readout to check.">
+  {fmtP(LOST_VS_SURVIVING_TEST.pValue)}, sir. Draw {fmtInt(NINETEEN_N)} and {fmtInt(SURVIVING_PERRINE_N)} out of a lane where the two means are equal, draw them again, keep drawing: a gap this big turns up about once in twenty thousand tries. Conservative degrees of freedom move it in the fifth place and nowhere anybody reads.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Which curve, and which tail. The degrees of freedom are the ones your own standard error earned, not the sum of the two counts, and the alternative points one way because the question does. If you have doubled it, you have answered a question about either direction.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-06-conclusion" kind="interpretation" label="THE SENTENCE UNDER THE STATISTIC"
+  prompt={`Write the **conclusion in context**, at $\\alpha$ = ${fmt(brdAlpha, 2)} — the stricter of the two levels the Board has in front of it, so that the decision holds whichever one its counsel prefers.\n\nThe parameter is the true difference in mean Mark-9 delay between the lost Perrine hulls and the Perrine hulls that arrived, among ${LANE_POPULATION}.`}
+  hint="Four parts and none of them optional: the decision, the p-value and α beside each other, evidence language rather than fact, and the claim itself with its population attached. Then read it back for any word that claims more than a difference in two means."
+  {...lostConclusion}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it once, then reads the last clause again with a finger under it.">
+  That will hold. It says evidence and it says at what level, and it says whose hulls. Now the line underneath, and I want yours on it rather than his.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Proves is the word he's waiting for. Strike it. Then say the p-value and the alpha in the same breath, say reject, and say what the evidence is about: two means, in days, among the transits this brief is entitled to talk about.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-06-scope" kind="interpretation" label="WHAT THIS DOES NOT ESTABLISH"
+  prompt={`Now the line under the conclusion, over your own name. **Write the scope statement.**\n\nIt has four jobs. Name the population the finding is bounded to. Refuse the causal claim, and say why the design refuses it. Say what the ${fmtInt(NINETEEN_N)} are, which is the whole of one outcome rather than a random sample of anything. Then say what the comparison does establish, which is a direction and a time.`}
+  hint="Two features of a design settle two different questions. Random assignment buys a cause; random sampling buys a population. This comparison has neither, and the finding that survives is still a finding — say what it is, and say when the delays were recorded."
+  {...scopeRubric}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He types it under the conclusion and then moves the whole block up a page, so it sits above the annexes rather than in them.">
+  It reads like a concession, sir. It's on the same page as the finding and it's shorter than the finding.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Both halves. You have given away the cause and stopped, which leaves a reader with nothing to carry. Say what the nineteen are. Then say what we have: they ran later than their own owner's other hulls, and the clock on that reading was Mark 9.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-7-06-statistic", "act-7-06-pvalue", "act-7-06-conclusion", "act-7-06-scope"]}>
+
+<Scene stamp="MET 164/10:20" location="CSV Halden Reach · Lane Liaison Office · light-lag to Valhalla 24 minutes each way" condensed="Rook takes the page across himself rather than letting Ostrow find it in the relay. Ostrow reads it twice and gives the Act's strongest objection: a group selected because it was lost will be unusual, and that is why it was lost. The scope paragraph is already written and Rook reads it back to him. Then what survives: direction, and the fact that the delays were recorded at Mark 9, before the losses. Two lines of evidence now, proportions and means, from two files that share nothing but the nineteen hulls.">
+
+You carry it across yourself at ten in the morning rather than letting him find it in a relay buffer at midnight.
+
+The Lane Liaison Office on *Halden Reach* is a converted stores flat with a desk bolted to what used to be a rack frame and a Board crest screwed to the bulkhead at eye height. Ostrow takes the page, offers you the one chair, and reads standing when you do not take it.
+
+He reads it twice. The second time he goes back up to the top and reads the whole of it again, which no officer on this tender has done with anything you have handed them.
+
+<Dialogue speaker="ostrow" name="Captain Lucan Ostrow · Lane Liaison Officer" aside="He puts the page down on the desk and squares it to the edge before he speaks, the way he squares everything.">
+Your arithmetic is sound and I will say so in the covering note. Captain, you have shown that lost ships were unusual.
+
+Lost ships are unusual, Commander. That is why they were lost.
+</Dialogue>
+
+It is the best objection anybody has made to this file in eleven days, and he has made it in nineteen words.
+
+You turn the page round on his desk and put a fingernail under the paragraph beneath the conclusion, which was written last night and which says the same thing in more words than he used.
+
+The {fmtInt(NINETEEN_N)} are the whole of one outcome. They are not a random sample of {LANE_POPULATION}, nothing in the comparison was assigned by anybody, and the test establishes no cause and names no agent. All four sentences are over your name and not Ferrier's.
+
+<Dialogue speaker="ostrow" aside="He reads the paragraph without picking the page up.">
+You have written my objection into your own brief.
+</Dialogue>
+
+Then the second half, because a concession on its own is a page a reader puts down.
+
+The delays are Mark-9 readings. Mark 9 is fourteen days out from Ceres on a hundred-day run, and every one of the {fmtInt(NINETEEN_N)} filed a Mark-9 report and went on flying for weeks afterwards. Whatever made them late was in the hull at Mark 9, before the Register wrote them off, and the direction has one sign: later, by somewhere between {fmt(lostCi[0], 2)} and {fmt(lostCi[1], 2)} days on the mean against their own owner's surviving fleet, with $P$ = {fmtP(LOST_VS_SURVIVING_TEST.pValue)} on {fmt(LOST_VS_SURVIVING_WELCH_DF, 2)} degrees of freedom.
+
+<Dialogue speaker="ostrow">
+Selection would run the other way about, or run both ways. You are telling me it runs one way and that it ran early.
+
+I will carry it verbatim. I will also record that the assessing officer was in this compartment at ten twenty and that I raised the objection and that he had already answered it.
+</Dialogue>
+
+He offers his hand, which he has not done before, and his grip is dry and brief and entirely correct.
+
+Walking back through the lock you do the arithmetic that matters, which is not in the brief. Two files. The Register's loss counts, nineteen of nine hundred against twelve of seventeen hundred and twelve, from Act VI: a question about categories. The Ledger's transit times, the same nineteen hulls against the eight hundred and eighty-one that came home: a question about means. The two files share the nineteen and nothing else, not a column, not a clerk, not an office. Both point at the same nineteen hulls.
+
+What neither of them says is where the hulls went, whether any of them still exists, or whose signature is at the bottom of the docket that sent them.
+
+</Scene>
+
+<LogEntry
+  title="Two-sample t-test: the interval's dual, and its limits"
+  concept="A test and an interval for μ₁ − μ₂ run on the same point estimate and the same unpooled standard error; the interval multiplies the standard error by t* and the test divides it into the estimate. Hypotheses are written about the parameter before the statistic exists, the degrees of freedom are Welch's or the conservative min(n₁ − 1, n₂ − 1), and the p-value is the tail area the alternative points to under t on those degrees of freedom. The conclusion compares p with α, frames the result as evidence, and names the two population means and the population they belong to. Significance is a separate question from scope: random assignment is what buys a cause, random sampling is what buys a population, and a comparison with neither still establishes a direction, a size, and whatever the timing of the measurements settles."
+  formula="t = \frac{(\bar{x}_1 - \bar{x}_2) - 0}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}, \qquad P = P(T_{df} \geq t) \ \text{(one tail)} \quad\text{or}\quad 2P(T_{df} \geq |t|)"
+  mistake="Concluding about the samples — “the lost ships were slower” — instead of about the parameters: “the mean Mark-9 delay of lost hulls exceeds that of surviving hulls of the same owner.” The first describes nineteen rows already known exactly and needs no procedure. The second is the claim the test supports, and it is the one a hearing can argue with."
+  tags={['two-sample t-test', 'hypotheses about μ₁ − μ₂', 'Welch df', 'p-value', 'conclusion in context', 'scope of inference', 'selection effect', '7.8', '7.9']}
+/>
+
+</Gated>

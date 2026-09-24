@@ -1,0 +1,402 @@
+---
+id: act-7-07
+act: 7
+title: "The Inference Brief"
+kind: module
+ap_topics: ["7.10"]
+objectives:
+  - "Select the inference procedure from the question and the structure of the data, across one-proportion, two-proportion, one-sample, paired and two-sample cases"
+  - "Choose between an interval and a test from what the question asks, and say what each one buys"
+  - "Write a finding as state, plan, do, conclude, with the conditions carrying their arithmetic and the limit carrying its own line"
+  - "Read a percentile bootstrap interval beside a t-interval, and say what resampling does and does not repair"
+prereqs: ["act-7-06"]
+est_minutes: 30
+calc_briefing: null
+summary: "Five findings, five procedures, and a column on the index page that is still blank at four in the morning."
+---
+
+import { bootstrapMean, fmt, fmtInt, fmtP, fmtPct, mean, oneMeanInterval, outliers, sd, skewness } from '@/lib/stats'
+import { rng } from '@/lib/rng'
+import { contextGroup, numberRegex } from '@/lib/problems/rubric'
+import {
+  BRIEF_FINDINGS,
+  MK3_SPEC_KN,
+  NINETEEN_INTERVAL,
+  NINETEEN_N,
+  NINETEEN_TEST,
+  OUTPUT_INTERVAL,
+  PROCEDURES,
+  REFIT_N,
+  REFIT_PAIRED,
+  SINK_WATCH_TEST,
+  bootstrapNineteen,
+} from '@/instruments/act-7/data'
+import { DECISION_IDS } from '@/instruments/act-7/story'
+import { ProcedureSelector } from '@/instruments/act-7/ProcedureSelector'
+import { BootstrapMachine } from '@/instruments/act-7/BootstrapMachine'
+
+export const bayRunUp = [38.4, 39.1, 39.8, 40.2, 40.6, 41.0, 41.5, 42.3, 43.6, 46.2, 51.4]
+export const bayT = oneMeanInterval(bayRunUp, { confidence: 0.95, random: true })
+export const bayBoot = bootstrapMean(bayRunUp, { rng: rng('act-7-07/worked-bay', 3), reps: 2000, confidence: 0.95 })
+export const bayStrays = outliers(bayRunUp).values
+
+export const briefBoot = bootstrapNineteen(1, 2000, 0.95)
+export const writeupAlpha = 0.01
+
+export const PROC_LABEL = Object.fromEntries(PROCEDURES.map((p) => [p.id, p.label]))
+export const mapping = (overrides = {}) =>
+  BRIEF_FINDINGS.map((f, i) => {
+    const o = overrides[i] ?? {}
+    return `**${i + 1}** ${PROC_LABEL[o.procedure ?? f.procedure]}, ${(o.form ?? f.form) === 'interval' ? 'interval' : 'test'}`
+  }).join(' · ')
+export const findingList = BRIEF_FINDINGS.map((f, i) => `**${i + 1}.** ${f.question}\n\n*Structure: ${f.structure}*`).join('\n\n')
+
+export const writeupRubric = {
+  type: 'interpretation',
+  required: [
+    {
+      label: 'STATE — the parameter and the hypotheses',
+      phrasings: ['mu', 'null', 'alt', 'parameter', 'true', 'hypothesis'],
+      minMatches: 2,
+      polarity: 'any',
+      feedback: `Open with the parameter in words and in symbols: μ_d, the true mean difference in Mark-9 delay (after the uprate minus before it) for Sulcus hulls through the Adlinda uprate. Then H₀: μ_d = 0 against Hₐ: μ_d > 0.`,
+    },
+    {
+      label: 'PLAN — the procedure by name, and the conditions with their numbers',
+      phrasings: ['paired t', 'one sample t', 'random', 'condition', 'independent', 'normal', numberRegex(10 * REFIT_N, 0, 0)],
+      minMatches: 3,
+      polarity: 'any',
+      feedback: `Name it: a paired t-test on the ${fmtInt(REFIT_N)} differences. Then Random (the yard sent every uprate it ran, which is a census and is stated as one), Independent (10 × ${fmtInt(REFIT_N)} = ${fmtInt(10 * REFIT_N)} against the Sulcus register), and Normal (the dotplot of the differences).`,
+    },
+    {
+      label: 'DO — the statistic, the degrees of freedom and the p-value',
+      phrasings: [numberRegex(REFIT_PAIRED.estimate, 2, 1), numberRegex(REFIT_PAIRED.statistic, 2, 1), numberRegex(REFIT_PAIRED.pValue, 4, 2), 'df', 'pvalue'],
+      minMatches: 2,
+      polarity: 'any',
+      feedback: `Show the arithmetic: d̄ = ${fmt(REFIT_PAIRED.estimate, 2)} days, SE = ${fmt(REFIT_PAIRED.se, 3)}, t = ${fmt(REFIT_PAIRED.statistic, 2)} on ${fmtInt(REFIT_PAIRED.df)} degrees of freedom, p = ${fmtP(REFIT_PAIRED.pValue)}.`,
+    },
+    {
+      label: 'CONCLUDE — the decision, with p beside α',
+      phrasings: ['reject', 'convincing evidence', 'significant'],
+      feedback: `p = ${fmtP(REFIT_PAIRED.pValue)} is below α = ${fmt(writeupAlpha, 2)}, so reject H₀ and put both numbers in the same sentence as the verb.`,
+    },
+    contextGroup('CONCLUDE — in context', ['Sulcus hulls through the Adlinda uprate', 'Mark-9 delay after the uprate minus before it'], {
+      feedback: 'The conclusion names whose hulls and what was measured, so that it could not be pasted into any other report.',
+    }),
+    {
+      label: 'The limit, on its own line',
+      phrasings: ['not cause', 'not causal', 'not establish cause', 'not random assign', 'not assign', 'observational'],
+      feedback: 'One line underneath saying what the finding does not establish. Nobody assigned the uprate at random, so the shift is an association and the brief says so first.',
+    },
+  ],
+  forbidden: [
+    { phrase: 'prove', label: 'Claims proof', why: 'A test returns evidence at a stated level. "Proves" is the word a hostile reader quotes back at the whole brief.' },
+    {
+      phrase: /\b(?:the )?sample (?:mean|difference)s? (?:is|are|was|were)\s+(?:greater|less|differ)/,
+      label: 'Conclusion about the sample',
+      why: `The ${fmtInt(REFIT_N)} differences are known exactly and needed no procedure. The conclusion is about μ_d, a parameter nobody has measured.`,
+    },
+  ],
+  exemplar: `State: let μ_d be the true mean difference in Mark-9 delay, after the uprate minus before it, for Sulcus hulls through the Adlinda uprate. H₀: μ_d = 0 against Hₐ: μ_d > 0, at alpha = ${fmt(writeupAlpha, 2)}. Plan: a paired t-test on the ${fmtInt(REFIT_N)} differences, which is the one-sample t procedure applied to one column. Random: the yard sent every uprate it ran, a census of the programme, stated as such. Independent: 10 x ${fmtInt(REFIT_N)} = ${fmtInt(10 * REFIT_N)} is far inside the Sulcus register, and the hulls are independent of one another. Normal: the dotplot of the ${fmtInt(REFIT_N)} differences is roughly symmetric with nothing outside the fences. Do: d̄ = ${fmt(REFIT_PAIRED.estimate, 2)} days, SE = ${fmt(REFIT_PAIRED.se, 3)}, t = ${fmt(REFIT_PAIRED.statistic, 2)} on ${fmtInt(REFIT_PAIRED.df)} degrees of freedom, p = ${fmtP(REFIT_PAIRED.pValue)}. Conclude: because p = ${fmtP(REFIT_PAIRED.pValue)} is less than alpha = ${fmt(writeupAlpha, 2)}, we reject the null hypothesis; there is convincing evidence that the true mean Mark-9 delay is greater after the uprate than before it, for Sulcus hulls through the Adlinda uprate. Nothing was randomly assigned, so this does not establish a cause.`,
+  minWords: 45,
+}
+
+<Scene stamp="MET 165/04:15" location="CSV Nightjar · bridge · docked in Halden Reach's lee, 0.12 AU sunward of the Ceres approach" condensed="Eleven pages and an index with a procedure column that is four-fifths blank. Ebele has filled in one entry and it is a two-proportion test against a question about days. Sandoval will not sign off on a normality claim made from nineteen dots and asks what the give-or-take is on the shape itself. Solberg has the relay window at twenty-two fifteen and the lag both ways. Ferrier says the brief will be read for the one procedure that was chosen wrong.">
+
+The intel bay printer jams on the third page of anything, so at a quarter past four you are on the bridge holding the feed roller open with a flat-blade screwdriver while Ebele walks eleven pages through it one at a time.
+
+Your thumb has been on the roller spring for twenty minutes and the whole hand has gone to pins. The bridge is at eleven degrees. The tender's hull hums through the deck at a pitch you stopped hearing around MET 158 and can hear again now that nothing else is running.
+
+Page one is the index. Five findings down the left, and a column headed PROCEDURE that has one entry in it.
+
+<Dialogue speaker="analyst" aside="He squares each sheet on the housing before he feeds it, which is why this takes twenty minutes.">
+So I did the last one first, sir, because it's the one he'll open at. Lost hulls against the ones that came home. Two-proportion z, one-sided, and I've got it written up.
+</Dialogue>
+
+Ferrier is in the number two chair with her boots on the rail and the draft across her knees. She has been there since the middle watch.
+
+<Dialogue speaker="xo">
+Read me the column heading on the data that finding runs on.
+</Dialogue>
+
+Days, he says. Mark-9 delay in days.
+
+<Dialogue speaker="xo">
+And a proportion is what fraction of what.
+</Dialogue>
+
+The printer takes the fourth page and the roller stops fighting you for a second.
+
+<Dialogue speaker="analyst">
+Sir. That's — yes. I had the loss-rate work open on the other slate and I wrote the procedure off the wrong window. It's a mean. It was always a mean.
+</Dialogue>
+
+He does not touch the index. He turns it face down, which is worse.
+
+Sandoval comes up the ladder with her own two pages rolled in one fist and stops at the top of it.
+
+<Dialogue speaker="engineer" aside="She unrolls her pages against the bulkhead and does not hand them over.">
+Annex on the nineteen. Your Normal line says the dotplot's near enough symmetric and nothing's stranded, and that's nineteen dots, Skipper. Nineteen dots and a claim about the shape of everything behind them.
+
+I sign numbers with a give-or-take on them. What's the give-or-take on the shape?
+</Dialogue>
+
+Nobody answers her.
+
+<Dialogue speaker="comms" aside="From the comms station, without turning round. He has had the geometry up since the middle watch.">
+Captain. Relay window at twenty-two fifteen tonight. Two point nine astronomical units to Valhalla: twenty-four minutes out, twenty-four minutes back, and nothing comes the other way before tomorrow evening.
+
+The window belongs to the tender.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="She squares the draft on her knee and puts it back on the console face up.">
+He will not argue with the arithmetic. He will go down that column, and when he finds the one that does not match the file it ran on, the covering note writes itself.
+</Dialogue>
+
+Five findings. One column, four blanks, and one entry that has to come out before the page goes anywhere.
+
+</Scene>
+
+<Briefing title="Choosing the procedure, and writing it up" topics={["7.10"]}>
+<Briefing.Intuition>
+By the end of Unit 7 there are five inference procedures in play, each with an interval form and a test form. Nothing about choosing between them depends on the numbers. The choice is settled by three facts about how the data were collected and one fact about what is being asked, in that order.
+
+**1. What was recorded on each unit?** A category, or a number. A yes/no outcome gives a proportion and the large-counts conditions; a measurement on a scale gives a mean, an $s$ in the denominator, and a $t$ distribution.
+
+**2. How many groups of units?** One group, read against a fixed published figure, or two groups compared with each other.
+
+**3. If two columns: are they the same units?** This is the question that decides paired against independent, and it is answered from the collection rule rather than from the spreadsheet. If a row is one unit measured twice, the file holds one sample of differences and $df = n - 1$ pairs. If the two columns hold different units matched by nothing, the samples are independent, the standard error adds two variance contributions, and the degrees of freedom are Welch's.
+
+**4. Magnitude or decision?** An interval answers *how large, and how precisely*. A test answers *is there evidence, at a level fixed in advance*. They run on the same estimate and the same standard error.
+
+| recorded on each unit | groups | procedure | interval | test |
+| --- | --- | --- | --- | --- |
+| a category | one | one-proportion z | margin on p̂ | p̂ against p₀ |
+| a category | two independent | two-proportion z | margin on p̂₁ − p̂₂ | p̂₁ − p̂₂ against 0 |
+| a number | one | one-sample t | x̄ ± t*·s/√n | x̄ against μ₀ |
+| a number, twice on each unit | the pairs are the units | paired t | d̄ ± t*·s_d/√n | d̄ against 0 |
+| a number | two independent | two-sample t | (x̄₁ − x̄₂) ± t*·SE | x̄₁ − x̄₂ against 0 |
+
+**The four-step write-up.** Once the procedure is chosen, the answer has a fixed shape, and a reader checking the work reads it in order.
+
+- **State.** The parameter in words and in symbols, and the hypotheses about it, or the quantity the interval estimates. Written before any statistic exists.
+- **Plan.** The procedure by name, and each condition with the evidence that carries it: how the units were obtained, the $10n$ arithmetic against the population, and what the graph shows.
+- **Do.** The standard error, the statistic, the degrees of freedom, and the p-value or the endpoints. Full precision carried to here, rounded once.
+- **Conclude.** The decision with $p$ and $\alpha$ beside each other, or the interval read in context, and then the limit: what the design does not let the finding claim.
+
+**When the Normal condition is thin.** Below thirty observations the $t$ procedure needs the sample to look plausibly Normal, and a graph of fifteen or twenty points settles that question weakly at best. A **bootstrap** offers a second reading. Treat the sample as a stand-in for the population, draw $n$ values back out of it with replacement, compute the mean, and repeat a few thousand times. The middle $C$ of those resampled means, read off directly, is the **percentile interval**.
+
+$$\left(q_{(1-C)/2},\ q_{(1+C)/2}\right) \text{ of the resampled } \bar{x}^{*}$$
+
+The bootstrap drops the Normal assumption and inherits every other one. It still needs the observations to be independent, and it still needs the sample to resemble the population, because every resample is drawn from the sample and from nowhere else. Where the two intervals agree, the honest sentence is that the conclusion does not depend on the assumption they differ in. Where a sample is biased, both are precisely centred on the wrong number.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="SE_{\text{one}} = \frac{s}{\sqrt{n}} \qquad SE_{\text{paired}} = \frac{s_d}{\sqrt{n_{\text{pairs}}}} \qquad SE_{\text{two}} = \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}" terms={{ 'SE_{\\text{one}}': 'one group of measurements; df = n − 1', 'SE_{\\text{paired}}': 'one column of differences; df = pairs − 1', 'SE_{\\text{two}}': "two independent groups; df from Welch's rule or min(n₁ − 1, n₂ − 1)" }} label="The three standard errors of Unit 7, and where each one comes from" />
+
+<Formula tex="\hat{p} \pm z^\star \sqrt{\frac{\hat{p}(1-\hat{p})}{n}} \qquad (\hat{p}_1 - \hat{p}_2) \pm z^\star \sqrt{\frac{\hat{p}_1(1-\hat{p}_1)}{n_1} + \frac{\hat{p}_2(1-\hat{p}_2)}{n_2}}" terms={{ 'z^\\star': 'the proportion procedures use z, because the standard error is built from p̂ rather than from a separate s', '\\hat{p}': 'the sample proportion, with the Large Counts condition in place of Normality' }} label="The two proportion procedures, for completeness" />
+
+**The percentile bootstrap.** Resample $n$ values from the sample with replacement, $B$ times; compute the statistic on each resample; take the $(1-C)/2$ and $(1+C)/2$ quantiles of those $B$ values. Raising $B$ shrinks the simulation noise in the endpoints and buys no information about the population. The width is set by the $n$ observations that were collected.
+</Briefing.Definition>
+<Briefing.Worked>
+The Adrastea tender's quarterly return, which asks four questions and answers them with four different screens.
+
+| the question | what was recorded, and on what | procedure |
+| --- | --- | --- |
+| How common are amended departure plots at this berth? | for each of a random sample of departures: amended, or not | one-proportion z-interval |
+| Do the day and night watches differ in amendment rate? | the same yes/no outcome, in two independent samples of departures | two-proportion z-test |
+| Does the reclaimer bay's mean run-up time exceed the shop standard? | run-up seconds on each of a random sample of pumps, against a published figure | one-sample t-test |
+| Did the bearing change alter run-up time? | run-up seconds on each pump before the change and again after it | paired t-test on the differences |
+
+Nothing in that column came from a number. Each row was settled by reading the middle column and asking what a row of the file is.
+
+**The bootstrap on the third question.** The bay logged run-up time, in seconds, for **{fmtInt(bayRunUp.length)}** pumps drawn at random from the quarter's rebuilds: {bayRunUp.map((v) => fmt(v, 1)).join(', ')}.
+
+$\bar{x}$ = {fmt(mean(bayRunUp), 3)} s, $s$ = {fmt(sd(bayRunUp), 3)} s, $n$ = {fmtInt(bayRunUp.length)}. The Normal condition is the awkward one: skewness is {fmt(skewness(bayRunUp), 2)}, the {fmtInt(bayRunUp.length)} values run from {fmt(Math.min(...bayRunUp), 1)} to {fmt(Math.max(...bayRunUp), 1)}, and the $1.5 \times \text{IQR}$ rule flags {fmtInt(bayStrays.length)} of them. On {fmtInt(bayRunUp.length)} observations a graph like that is a weak argument in either direction.
+
+*The t-interval.* At {fmtPct(0.95, 0)} on {fmtInt(bayT.df)} degrees of freedom, $t^\star$ = {fmt(bayT.criticalValue, 3)} and the margin is {fmt(bayT.marginOfError, 3)} s:
+
+<Formula tex={`(${fmt(bayT.ci[0], 3)},\\ ${fmt(bayT.ci[1], 3)})\\ \\text{s}`} label="One-sample t-interval for the mean run-up time" />
+
+*The bootstrap interval.* {fmtInt(bayBoot.reps)} resamples of {fmtInt(bayRunUp.length)} values drawn with replacement, the mean of each, and the middle {fmtPct(0.95, 0)} read off:
+
+<Formula tex={`(${fmt(bayBoot.ci[0], 3)},\\ ${fmt(bayBoot.ci[1], 3)})\\ \\text{s}`} label="Percentile bootstrap interval for the same mean" />
+
+Widths {fmt(bayT.ci[1] - bayT.ci[0], 3)} and {fmt(bayBoot.ci[1] - bayBoot.ci[0], 3)} seconds. The bootstrap standard error, {fmt(bayBoot.se, 4)}, sits beside the $s/\sqrt{n}$ of {fmt(sd(bayRunUp) / Math.sqrt(bayRunUp.length), 4)}.
+
+*What that buys.* The two intervals were built on different assumptions about shape and they land in the same place, so the report quotes the $t$-interval, adds one line saying a percentile bootstrap on {fmtInt(bayBoot.reps)} resamples gave {fmt(bayBoot.ci[0], 2)} to {fmt(bayBoot.ci[1], 2)}, and moves on. Had they disagreed, the report would owe the reader an explanation rather than a choice.
+
+*What it does not buy.* If the quarter's rebuilds were logged only when a fitter remembered to, the sample is unlike the population and both intervals are wrong by the same amount. Resampling redistributes the {fmtInt(bayRunUp.length)} values in hand. It collects nothing.
+</Briefing.Worked>
+<Briefing.Caution>
+**Choosing by the number of columns.** Two columns on a screen are two columns. They are two independent samples when a unit in the first has no partner in the second, and one sample of differences when each row is one unit measured twice. The spreadsheet looks identical either way, and the two procedures can return opposite answers on the same twenty-four numbers.
+
+**Skipping the conditions because the software ran.** No package and no calculator screen checks a condition. Every screen in the TESTS menu accepts whatever is in the lists and prints a p-value, including for procedures the data cannot support. Random, the 10% arithmetic and the graph are the operator's, every time, and the conditions block is where an examiner and a hearing both start.
+
+**Naming a procedure without naming the parameter.** "A two-sample t-test" is half a plan. The other half is $\mu_1 - \mu_2$, named in words, with the order of subtraction fixed and the population attached.
+
+**Treating a bootstrap as extra data.** Four thousand resamples of eleven observations contain eleven observations. What the replications buy is stability in the percentile endpoints; the width comes from $n$, and a biased sample resampled four thousand times is a biased sample four thousand times.
+
+**Picking the form after seeing the result.** An interval that happens to exclude zero is not a test at a level nobody stated, and a p-value that happens to be small is not a magnitude. Write down which one the question asked for before running either.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="Which screen, and why">
+<Calculator.Step keys={['STAT', '▸ TESTS']} note="Worked case throughout: the Adrastea reclaimer bay's run-up times above, not the brief's findings below.">One menu, and it does not ask what your question is. Four of its entries carry the whole of the mean side of Unit 7, and the entry is chosen from the structure of the data before the lists are typed in.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '2:T-Test']} note="Inpt: Data · List: L1 · μ₀ · Freq: 1 · μ: ≠μ₀ <μ₀ >μ₀">**One group of measurements**, read against a fixed figure. Also the screen for **paired data**, run on the list of differences. It reports t, p, x̄, Sx and n, and the n it reports counts whatever is in the list.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '8:TInterval']} note="Inpt: Data · List: L1 · Freq: 1 · C-Level: .95">**The same structure, magnitude instead of a decision.** On the bay's {fmtInt(bayRunUp.length)} pumps it returns the endpoints below, together with x̄, Sx, n and the degrees of freedom.</Calculator.Step>
+<Calculator.Read label="( , )" value={`(${fmt(bayT.ci[0], 4)}, ${fmt(bayT.ci[1], 4)})`}>the interval for μ, in seconds.</Calculator.Read>
+<Calculator.Read label="x̄" value={fmt(mean(bayRunUp), 4)} />
+<Calculator.Read label="Sx" value={fmt(sd(bayRunUp), 4)} />
+<Calculator.Read label="df" value={String(bayT.df)}>n − 1, and the only degrees of freedom either of the one-sample screens will ever print.</Calculator.Read>
+<Calculator.Step keys={['STAT', '▸ TESTS', '4:2-SampTTest']} note="Inpt: Data · List1 · List2 · Freq1: 1 · Freq2: 1 · μ1: ≠μ2 <μ2 >μ2 · Pooled: No">**Two independent groups of different units.** Two lists, usually of different lengths, and a fractional df from Welch's rule.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '0:2-SampTInt']} note="Inpt: Data · List1 · List2 · Freq1: 1 · Freq2: 1 · C-Level: .95 · Pooled: No">**The same structure, magnitude instead of a decision.** It sits at the bottom of the menu, below `9:2-PropZInt`.</Calculator.Step>
+<Calculator.Watch>**The paired procedure is `2:T-Test`, run on `L3` = `L1` − `L2`.** There is no paired screen in the menu, because a paired analysis is a one-sample analysis on a column you build yourself: on the home screen, `L2` `−` `L1` `STO▸` `L3`, or type `L2-L1` onto the `L3` header in the editor. Reaching for `4:2-SampTTest` because there are two columns on the screen is the single most common wrong key press in this unit, and it runs without a warning, prints a df near twice what you expected, and answers a question nobody asked.</Calculator.Watch>
+<Calculator.Watch>**The calculator never checks a condition.** `Pooled: No` stays your decision, the df it reports stays yours to name in the write-up, and Random, the 10% arithmetic and the graph are not on any screen in this menu. Every entry accepts the lists it is given and returns a number. Deciding whether that number means anything happens before `STAT` and after `Calculate`, and never in between.</Calculator.Watch>
+</Calculator>
+
+<ProcedureSelector />
+
+<BootstrapMachine />
+
+<Drill generator="act-7/select-procedure" count={1} />
+<Drill generator="act-7/procedure-from-design" count={1} />
+<Drill generator="act-7/interval-or-test" count={1} />
+<Drill generator="act-7/conditions-audit" count={1} />
+<Drill generator="act-7/bootstrap-vs-t" count={1} />
+<Drill generator="act-7/four-step-writeup" count={1} />
+
+<MissionBeat id="act-7-07-column" kind="choice" label="THE PROCEDURE COLUMN"
+  prompt={`The index page, with the column filled in. Five findings, each with the question the brief asks and the structure of the file behind it.\n\n${findingList}\n\n**Which row of the column is correct all the way down?**`}
+  options={[
+    mapping(),
+    mapping({ 3: { procedure: 'two-mean' } }),
+    mapping({ 1: { form: 'test' }, 2: { form: 'test' } }),
+    mapping({ 0: { procedure: 'one-prop' }, 4: { procedure: 'paired' } }),
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    `Finding 4 is the Adlinda file, and the two columns in it hold the same twelve hulls before and after the uprate. A two-sample procedure is told they are twenty-four different hulls; it runs, and on those numbers it reports nothing. Everything else in this row is right, which is what makes it the dangerous one.`,
+    `Findings 2 and 3 ask how large: a loss rate with a margin, and where the mean output sits against ${fmtInt(MK3_SPEC_KN)} kilonewtons. A test would hand the Board a yes and no magnitude, and the Board is being asked what the numbers are.`,
+    `Two errors. Finding 1 compares two independent groups of transits, so the parameter is a difference of proportions and not a single one. Finding 5 compares different hulls with no rule matching one to another, so there are no differences to subtract and pairing them would invent both the column and its standard error.`,
+  ]}
+  hint="Go down the middle column of the table, not the left. What was recorded on each unit, how many groups of units, and whether the two columns hold the same units. Only the last question, interval against test, comes from what the brief is asking.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes the column in by hand rather than reprinting the page, in small capitals, and initials the bottom of it.">
+  Five procedures, sir, and I can tell you why for all five now. The one I had wrong was the one I'd have defended hardest, because I'd already written it up.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  One row at a time and read the file, not the question. Category or number. One group or two. And if there are two columns, whether the same hull is in both of them. The Board's counsel will do exactly that and he will start at the bottom.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-07-writeup" kind="interpretation" label="ONE FINDING, ALL FOUR STEPS"
+  prompt={`Write finding 4 out in full, the way every page of the brief is set out: **state, plan, do, conclude**, with the limit on its own line underneath.\n\nThe Adlinda file: ${fmtInt(REFIT_N)} Sulcus hulls, Mark-9 delay on the run before the yard signed the uprate off and on the run after it. The yard sent every uprate it ran between 2181 and 2183. The dotplot of the differences is roughly symmetric with nothing outside the fences. At $\\alpha$ = ${fmt(writeupAlpha, 2)}, the paired procedure returns\n\n$$\\bar{d} = ${fmt(REFIT_PAIRED.estimate, 2)}\\ \\text{d} \\qquad SE = ${fmt(REFIT_PAIRED.se, 3)} \\qquad t = ${fmt(REFIT_PAIRED.statistic, 2)} \\qquad df = ${fmtInt(REFIT_PAIRED.df)} \\qquad p = ${fmtP(REFIT_PAIRED.pValue)}$$`}
+  hint="Four labelled moves and each owes something specific. State owes a parameter and hypotheses about it. Plan owes the procedure by name and three conditions with numbers in them. Do owes the arithmetic. Conclude owes a decision, a context and a limit."
+  {...writeupRubric}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it against the first page of the brief, line for line, and then puts the two side by side on the console.">
+  That is the template. Every page in the folder gets that shape, including the ones that found nothing, and especially the one about the eight hundred and eighty-one.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Backwards. You have led with the statistic, and a man checking your work needs the parameter and the conditions before he knows whether you were entitled to compute it. Parameter, hypotheses, procedure, conditions with their arithmetic, then the numbers, then the sentence, then the limit.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id={DECISION_IDS.refit} kind="decision" label="THE ACCEPTANCE FORM"
+  prompt={`Sandoval's annex goes in either way: ${fmt(SINK_WATCH_TEST.estimate, 1)} hours of Watch endurance against the design figure, standard error ${fmt(SINK_WATCH_TEST.se, 2)}, four matched profiles, her signature. The tender's acceptance form is still unsigned on your slate, and *Halden Reach*'s engineering department knows it.\n\n**What do you do with the refit?**`}
+  options={[
+    'Sign the acceptance. The cellar is back in the cradle and shimmed, the work is done, and a quarrel about capacity is a quarrel you fight at Valhalla with the annex in your hand.',
+    'Refuse the acceptance on the record, and route the annex to Lane Operations under your own signature as a capacity discrepancy.',
+  ]}>
+  <Outcome option={0}>
+  You sign it at 05:02 and the form goes back across the lock inside ten minutes. The yard's line and Sandoval's line sit two pages apart in the same folder, in each other's plain sight, which is the whole of the argument and none of the noise.
+  </Outcome>
+  <Outcome option={1}>
+  Sandoval reads the refusal before it goes and changes one word in it, from *shortfall* to *discrepancy*, because the first one is an accusation and the second one is a number. *Halden Reach*'s engineering department will hear about it before the forenoon watch.
+  </Outcome>
+</MissionBeat>
+
+<MissionBeat id={DECISION_IDS.relay} kind="decision" label="THE WINDOW AT TWENTY-TWO FIFTEEN"
+  prompt={`The only relay inside three astronomical units belongs to the tender, and it puts the brief in a buffer eleven metres from Captain Ostrow's cabin for as long as it takes to spool. Solberg has the window at twenty-two fifteen tonight and the next Board convening date after it.\n\n**How does the brief travel?**`}
+  options={[
+    "Send it tonight on Halden Reach's window, with a copy to the Flag Secretary addressed separately in the same burst.",
+    'Hold the brief. Nothing goes out until the ship has open space around her and a transmitter of her own pointing at Valhalla.',
+  ]}>
+  <Outcome option={0}>
+  Solberg reads the addressee blocks back twice before he spools it, which he does with every transmission and has done since Callisto. The second copy is addressed to the Flag Secretary and not to the Board, and he does not ask why.
+  </Outcome>
+  <Outcome option={1}>
+  Ferrier logs the decision with the reason next to it. The Board's next convening window is on the far side of that delay, and she writes that down too, in the same hand, without comment.
+  </Outcome>
+</MissionBeat>
+
+<MissionBeat id={DECISION_IDS.kettle} kind="decision" label="THE VECTOR"
+  prompt={`Ebele has propagated *Marius Regio*'s last logged vector forward through the whole of her missing interval. It passes within a hundred thousand kilometres of a six-kilometre body at 3.41 AU that the chart carries as a prospector's abandoned claim.\n\nFourteen days' coast to reach it, the last two of them cold, on a cellar ${fmt(SINK_WATCH_TEST.estimate, 1)} hours shorter than the one you left Callisto with.\n\n**Where does Nightjar go?**`}
+  options={[
+    'Run the vector. Undock on a resupply pretext, burn once, and coast fourteen days to the rock.',
+    'Turn for Ceres and wait for the Board to convene on the brief before taking this ship anywhere near that rock.',
+  ]}>
+  <Outcome option={0}>
+  Ferrier puts the fourteen days on the plot without being asked and then puts the sink curve underneath it, so that the two cold days and the capacity line are on the same sheet of paper. She does not say anything about the capacity line.
+  </Outcome>
+  <Outcome option={1}>
+  The vector goes on the plot and stays there, and the ship's head comes round for Ceres. The rock does not move, and neither does anything that may be sitting on it.
+  </Outcome>
+</MissionBeat>
+
+<Gated by={["act-7-07-column", "act-7-07-writeup", DECISION_IDS.refit, DECISION_IDS.relay, DECISION_IDS.kettle]}>
+
+<Scene stamp="MET 165/18:40" location="CSV Nightjar · bridge · docked, 0.12 AU sunward of the Ceres approach" condensed="Eleven pages signed: five findings, each with its procedure, its conditions, its conclusion and one line saying what it does not establish, with the bootstrap on the nineteen annexed beside the t-interval because they agree. Then Ebele's navigation: Marius Regio's vector, propagated through the whole missing interval, passes a six-kilometre body at 3.41 AU that the chart lists as an abandoned claim. Fourteen days' coast. The resupply request goes across the lock and Lindqvist-Oduya puts it in the signature stack without opening it.">
+
+The brief is signed at eighteen forty. Eleven pages, five findings, and the shape of every page is the same shape.
+
+Mean certified thrust of the {fmtInt(REFIT_N)} uprated hulls: {fmt(OUTPUT_INTERVAL.ci[0], 1)} to {fmt(OUTPUT_INTERVAL.ci[1], 1)} kilonewtons against a specification of {fmtInt(MK3_SPEC_KN)}, one-sample $t$, conditions at Annex B. The same twelve hulls before and after, paired: {fmt(REFIT_PAIRED.estimate, 2)} days later after the refit, $t$ = {fmt(REFIT_PAIRED.statistic, 2)} on {fmtInt(REFIT_PAIRED.df)} degrees of freedom, $P$ = {fmtP(REFIT_PAIRED.pValue)}, with Annex C on why the two-sample reading of the same twenty-four numbers finds nothing. The loss rates from Act VI's file. The two difference-of-means findings from the Ledger. Under each one, a line that begins *This finding does not establish*.
+
+The Normal line on the nineteen has an annex of its own now, because Sandoval asked for a give-or-take on the shape and there was one to be had. The one-sample $t$-interval for their mean delay runs {fmt(NINETEEN_INTERVAL.ci[0], 2)} to {fmt(NINETEEN_INTERVAL.ci[1], 2)} days on {fmtInt(NINETEEN_TEST.df)} degrees of freedom. A percentile bootstrap on {fmtInt(briefBoot.reps)} resamples of the same {fmtInt(NINETEEN_N)} values, which assumes nothing at all about the shape, runs {fmt(briefBoot.ci[0], 2)} to {fmt(briefBoot.ci[1], 2)}. Two methods, two sets of assumptions, one answer.
+
+<Dialogue speaker="engineer" aside="She reads the annex standing at the plot with her thumb holding the page flat against the housing.">
+Right. Then the bell curve isn't carrying it on its own, and I'll sign that.
+</Dialogue>
+
+Ebele has been on the navigation console since the middle of the afternoon and nobody put him there.
+
+He has *Marius Regio*'s last logged vector, from the survey window at MET 102, and he has propagated it forward through the whole of the interval in which she stopped reporting. Not statistics. Two-body arithmetic with a torch-off assumption and an error cone that widens to four hundred thousand kilometres by the far end of it.
+
+<Dialogue speaker="analyst" aside="He puts the cone on the plot and then puts the chart's object catalogue over it, which nobody asked him to do either.">
+Sir. The line passes inside a hundred thousand kilometres of something at three point four one astronomical units. Six kilometres across, low albedo, and the chart carries it as a prospector's claim that lapsed in 2171.
+
+The catalogue name is a survey number. The Ceres pilots call it Kettle.
+</Dialogue>
+
+Fourteen days at thirty kilometres a second from the moment the torch goes out. The last two of them cold, on a cellar that gives up {fmt(SINK_WATCH_TEST.estimate, 1)} hours against the book, give or take {fmt(SINK_WATCH_TEST.se, 2)}.
+
+Ferrier writes the resupply request herself, one page, Hygiea Hold as the destination and a consumables schedule that would survive a reading.
+
+You take it across the lock at nineteen twenty. Lindqvist-Oduya is at her desk with the bound book open in front of her and a pen across it. She takes the folder, puts it on the signature stack without opening it, and squares the stack against the edge of the desk.
+
+<Dialogue speaker="lindqvist" name="Commander Petra Lindqvist-Oduya · CSV Halden Reach" aside="She does not look up from the log she is writing.">
+Morning watch clears the stack at oh three twenty, Commander. I read what is in front of me at the time.
+
+My log is my own and I keep it myself. I have said that to everybody on this ship every day for six days, and I am saying it to you.
+</Dialogue>
+
+Going back through the lock you can hear both hulls at once, the tender's pumps through your boots and *Nightjar*'s own loops through the coaming, and for about four metres the two of them beat against each other.
+
+</Scene>
+
+<LogEntry
+  title="Selecting the procedure, and the four steps"
+  concept="The procedure follows from three facts about collection and one about the question, and never from how many columns are on the screen: what was recorded on each unit (a category gives a proportion procedure, a measurement gives a t procedure), how many groups of units, and — where there are two columns of measurements — whether the two hold the same units, which decides paired against independent. Only the last choice, interval or test, comes from what is being asked: an interval returns a magnitude with its precision, a test a decision at a level fixed in advance. The write-up then has a fixed shape: state the parameter and the hypotheses, plan the named procedure with each condition carrying its arithmetic, do the statistic and the p-value or endpoints, conclude in context with the limit. Where the Normal condition rests on a small graph, a percentile bootstrap resamples the data with replacement and reads the middle C of the resampled statistics; agreement with the t interval shows the conclusion does not depend on the Normal model, and neither method repairs a sample that is unlike its population."
+  formula="SE_{\text{one}} = \frac{s}{\sqrt{n}} \qquad SE_{\text{paired}} = \frac{s_d}{\sqrt{n}} \qquad SE_{\text{two}} = \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}"
+  mistake="Choosing the procedure by counting groups. Two columns are two independent samples only when a unit in the first has no partner in the second; when each row is one unit measured twice the file holds one sample of differences, and on data with a large unit-to-unit spread the two procedures return opposite answers. Read the collection rule, then pick."
+  tags={['procedure selection', 'four-step write-up', 'interval vs test', 'conditions', 'bootstrap', 'percentile interval', 'robustness', '7.10']}
+/>
+
+</Gated>
