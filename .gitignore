@@ -28,3 +28,6 @@ playwright-report
 .playwright
 
 .tmp
+
+# Agent worktrees (cloud/isolated agents)
+.claude/
