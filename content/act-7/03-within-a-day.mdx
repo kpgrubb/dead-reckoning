@@ -1,0 +1,376 @@
+---
+id: act-7-03
+act: 7
+title: "Within a Day"
+kind: module
+ap_topics: ["7.4", "7.5"]
+objectives:
+  - "State hypotheses about a population mean, check the conditions, and carry out a one-sample t-test with s in place of σ"
+  - "Interpret a p-value as a probability computed under H₀, and give a conclusion in context at a stated α"
+  - "Compute what a pooled mean reads when a late subset is averaged into its population, and say why the subset disappears"
+  - "Compute the power of a two-group comparison against a specified effect, and read a null result as the Type II error it is"
+prereqs: ["act-7-02"]
+est_minutes: 30
+calc_briefing: null
+summary: "Ostrow brings the Board's transit-time analysis to the bridge. His number is right, and Ferrier asks what nineteen hulls would have had to do to show up in it."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct, mean, sd, oneMeanTest, pValueT, pValueZ } from '@/lib/stats'
+import { contextGroup, numberRegex } from '@/lib/problems/rubric'
+import {
+  LANE_DELAY_SD,
+  NINETEEN_EXCESS_DILUTED,
+  NINETEEN_N,
+  NINETEEN_TEST,
+  OSTROW_POWER,
+  OSTROW_SE,
+  OSTROW_TEST,
+  OTHER_N,
+  PERRINE_N,
+  divertedCountForPower,
+  lostPerrineDelays,
+  powerTwoMean,
+  survivingPerrineDelays,
+} from '@/instruments/act-7/data'
+import { TPValueVisualiser } from '@/instruments/act-7/TPValueVisualiser'
+import { PoolingExplorer } from '@/instruments/act-7/PoolingExplorer'
+
+export const buoyRuns = [48.4, 45.1, 50.2, 47.6, 44.9, 49.8, 46.3, 51.1]
+export const buoyFiled = 46
+export const buoyTest = oneMeanTest(buoyRuns, { mu0: buoyFiled, alt: 'greater', random: true })
+export const buoySe = sd(buoyRuns) / Math.sqrt(buoyRuns.length)
+export const demoLate = 12
+export const demoFleet = 600
+export const demoExcess = 4
+export const demoDilution = (demoLate * demoExcess) / demoFleet
+export const demoSe = 0.05
+export const demoPower = powerTwoMean({ effect: demoDilution, se: demoSe, alpha: 0.05, alt: 'greater' })
+export const perHullExcess = mean(lostPerrineDelays) - mean(survivingPerrineDelays)
+
+<Scene stamp="MET 157/10:15" location="CSV Nightjar · bridge · docked alongside CSV Halden Reach · light-lag to Callisto 24 minutes each way" condensed="Captain Ostrow brings the Board's transit-time analysis onto the bridge in person and requires it minuted that he did. All 900 Perrine transits against all 1,712 others: the mean time against the filed plot for Perrine tonnage is within a day of the Lane mean, which the Board finds inconsistent with the hidden-mass hypothesis, and the report is referred for review. Ebele reproduces the figure from the Ledger in four minutes and it agrees. Ferrier asks what nineteen hulls would have had to do to show up in a mean of nine hundred, and nobody on the bridge can answer her.">
+
+The tender's people have run a cable bundle across the bridge deck at the hatch coaming, orange, taped down in four places, and for two days everyone aboard has been stepping over it without thinking about it.
+
+Ostrow comes up through the hatch at 10:15 and steps over it without looking down.
+
+You are standing because he is standing, and your back has been wrong since Ceres, and the chair is four feet away with nothing in it.
+
+<Dialogue speaker="ostrow" name="Captain Lucan Ostrow · Lane Liaison Officer" aside="He sets a Board slate flat on the plot, square to the edge, and does not turn it towards anybody.">
+Captain Rook. The Board has completed its transit-time analysis and directs me to put the result to you in person. I am also to record that I have done so. Lieutenant Commander, if you would note the time.
+</Dialogue>
+
+Ferrier notes the time. She does not look at the slate.
+
+<Dialogue speaker="ostrow">
+Two thousand six hundred and twelve transits of the Hundred-Day Lane, 2178 to 2184, from the relay archive. Perrine-owned tonnage against all other tonnage, mean time filed against mean time made. The Perrine mean sits within a day of the Lane mean. The Board's view is that a fleet running with undeclared mass would not produce that, and the officer's report is therefore referred for review under standing order 40, clause two. I regret the wording, Captain. It is not mine.
+</Dialogue>
+
+The wording is precise and the manner is faultless and he has taken four sentences to tell you the Board has stopped reading.
+
+Ebele has the Ledger up before Ostrow has finished. He does not ask permission and nobody stops him, and the only sound on the bridge for four minutes is the plot fan and Ostrow declining to fill a silence.
+
+<Dialogue speaker="analyst" aside="He runs it twice, the second time with the owner column re-derived from the registry rather than from the Ledger's own field.">
+Sir. What's the sampling frame? Because if it's every transit in the archive then I've got it and it agrees. Nine hundred Perrine, one thousand seven hundred and twelve everyone else, and the two means sit inside a day of each other. The Captain's number is right.
+</Dialogue>
+
+Ostrow inclines his head about a centimetre and says nothing.
+
+Ferrier steps up to the plot and turns the slate ninety degrees so it faces her.
+
+<Dialogue speaker="xo">
+Within a day of the Lane mean. That is the whole comparison?
+</Dialogue>
+
+<Dialogue speaker="ostrow">
+It is every transit on the corridor, Lieutenant Commander. I am not aware of a larger one.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="She does not raise her voice. She gets more precise.">
+Nineteen hulls. If nineteen of those nine hundred were running heavy and the other eight hundred and eighty-one were flying exactly the profiles they filed, what would this column read?
+</Dialogue>
+
+Ostrow considers it with every appearance of good faith.
+
+<Dialogue speaker="ostrow">
+I am not a statistician, Lieutenant Commander. I am the officer the Board has on this Lane, and what I am able to record is what the analysis says. If you have an objection to the method I will carry it to Valhalla verbatim and it will be on the file under your name.
+</Dialogue>
+
+He takes the slate back, squares it under his arm, and asks to be told when *Nightjar*'s sink comes back out of the tender's hands so that he can note that too.
+
+<Dialogue speaker="ostrow" aside="At the hatch. He steps over the cable again.">
+I file at eleven hundred. Valhalla has it twenty-four minutes later, and I will have their acknowledgement twenty-four minutes after that. Good morning, Captain.
+</Dialogue>
+
+The hatch shuts. Ferrier is still at the plot with her hand flat on it.
+
+<Dialogue speaker="xo">
+His arithmetic is right and I have no idea what it was capable of finding. Those are two different sentences and I want both of them on the log by the end of the watch.
+</Dialogue>
+
+Nineteen hulls out of nine hundred. Ebele is already at the intel terminal and he has not said anything for a while.
+
+</Scene>
+
+<Briefing title="Testing a mean, and what a comparison could have seen" topics={["7.4", "7.5"]}>
+<Briefing.Intuition>
+**Hypotheses.** A significance test about a mean starts with two statements about the parameter $\mu$, written before the data are read.
+
+$$H_0: \mu = \mu_0 \qquad H_a: \mu > \mu_0 \ \text{ or } \ \mu < \mu_0 \ \text{ or } \ \mu \neq \mu_0$$
+
+$\mu_0$ is the hypothesised value: a published figure, a filed plot, a specification. Both hypotheses are about the population. Neither mentions $\bar{x}$, which is already known and needs no test.
+
+**The statistic.** Unit 5 standardized a sample mean against a known $\sigma$ and read the result off a normal table. That step is gone. With $\sigma$ estimated by $s$ from the same sample,
+
+$$t = \frac{\bar{x} - \mu_0}{s / \sqrt{n}}, \qquad df = n - 1$$
+
+and the p-value is a tail area under $t$ with that many degrees of freedom. The contrast is worth naming because it is the whole difference between Unit 5 and this one: **σ known gives z, s estimated gives t.** Nothing else changed. The hypotheses, the conditions, the conclusion and the interpretation are the same work in the same order.
+
+**Conditions.** Random, 10% or independence, and Normal/Large Sample, with numbers attached to each, exactly as for the interval.
+
+**The p-value.** Assume $H_0$ is exactly true. The p-value is the probability that a sample of this size would produce a statistic at least as extreme as the one observed. It is conditional on $H_0$ from its first word to its last. It is not the probability that $H_0$ is true, and it is not the probability that the result arose by chance; both of those would require something the procedure never computed.
+
+**The conclusion.** Compare $p$ with $\alpha$. If $p < \alpha$, reject $H_0$ and say there is convincing evidence of the alternative, named in context. If $p \ge \alpha$, fail to reject, and never write *accept*. A test that fails to reject has found the data consistent with $H_0$, which is a far weaker statement than $H_0$ being true.
+
+**Why a subset vanishes into its population.** Suppose $N$ units in a fleet, of which $k$ run late by $d$ on average and the remaining $N - k$ fly their filed plots. The fleet mean is the weighted average, so it sits above the honest mean by
+
+$$\frac{k \, d}{N}$$
+
+and that fraction $k/N$ is the whole story. A large effect on a small subset arrives at the fleet mean already divided by the size of the fleet. The subset did not become less late. The average stopped being able to see it.
+
+**What a comparison could have seen: power.** A test that reports nothing is telling you one of two things, and the arithmetic cannot tell you which: either there is nothing there, or the test could not have found what is there. **Power** settles it. Power is the probability of rejecting $H_0$ when a *specified* alternative is true, and it needs three inputs, none of which is the data you collected:
+
+1. the effect you care about detecting;
+2. the standard error the design gives you;
+3. $\alpha$.
+
+For a one-sided comparison of two means with groups large enough that $t$ is the normal:
+
+$$\text{reject when the observed difference exceeds } z^\star \cdot SE, \qquad \text{power} = P\!\left(Z > \frac{z^\star SE - \text{effect}}{SE}\right)$$
+
+When the cutoff sits well above the effect, the power is small and a null result carries no information at all. Computing it is the only honest way to read "we found nothing", and it is the same Type I / Type II machinery Unit 6 used on proportions, in the units of a mean.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={`t = \\frac{\\bar{x} - \\mu_0}{s / \\sqrt{n}}, \\qquad df = n - 1`} terms={{ '\\mu_0': 'the hypothesised mean — a published figure, never the sample mean', 's': 'sample standard deviation: σ is unknown, which is what makes this t and not z' }} label="One-sample t-test statistic" />
+
+<Formula tex={`\\bar{x}_{\\text{all}} = \\bar{x}_{\\text{honest}} + \\frac{k \\, d}{N}`} terms={{ 'k': 'units carrying the excess', 'd': 'the excess each of them carries', 'N': 'units in the whole population the mean is taken over' }} label="A late subset averaged into its population" />
+
+<Formula tex={`\\text{power} = P\\!\\left(Z > \\frac{z^\\star SE - \\delta}{SE}\\right)`} terms={{ '\\delta': 'the specified effect the test is being asked to detect', 'z^\\star SE': 'the observed difference the test needs before it rejects', 'SE': 'standard error of the difference in sample means' }} label="Power of a one-sided comparison against a specified effect" />
+</Briefing.Definition>
+<Briefing.Worked>
+**A test about a mean.** *Halden Reach*'s navigation office timed **{fmtInt(buoyRuns.length)}** of her own boats from the lock to the outer buoy, in minutes, against a filed transit of {fmtInt(buoyFiled)}: {buoyRuns.map((v) => fmt(v, 1)).join(', ')}. The office wants to know whether the boats are running long.
+
+*Hypotheses.* $H_0: \mu = \mu_0$ against $H_a: \mu > \mu_0$, with $\mu_0$ = {fmtInt(buoyFiled)} minutes and $\mu$ the true mean lock-to-buoy time for boats on this run.
+
+*Conditions.* The {fmtInt(buoyRuns.length)} runs were the office's whole week of traffic, so it is a census of that week and the scope of the conclusion is that week's conditions. Ten times {fmtInt(buoyRuns.length)} is far below the boats' annual movements. With $n$ = {fmtInt(buoyRuns.length)} under thirty, the dotplot is what carries Normality, and it has nothing stranded and no tail.
+
+*Statistic.* $\bar{x}$ = {fmt(mean(buoyRuns), 4)} min and $s$ = {fmt(sd(buoyRuns), 4)}, so $s/\sqrt{n}$ = {fmt(buoySe, 4)} min.
+
+<Formula tex={`t = \\frac{${fmt(mean(buoyRuns), 4)} - ${buoyFiled}}{${fmt(buoySe, 4)}} = ${fmt(buoyTest.statistic, 4)}`} label={`One-sample t on ${buoyRuns.length - 1} degrees of freedom`} />
+
+*p-value.* The area above that statistic under t on {fmtInt(buoyRuns.length - 1)} degrees of freedom is **{fmtP(buoyTest.pValue)}**. Off a normal table the same statistic would have read {fmtP(pValueZ(buoyTest.statistic, 'greater'))}, smaller, and smaller in the direction that flatters the finding.
+
+*Conclusion at $\alpha$ = {fmt(0.05, 2)}.* {fmtP(buoyTest.pValue)} < {fmt(0.05, 2)}, so reject $H_0$. There is convincing evidence that the true mean lock-to-buoy time for boats on this run is greater than {fmtInt(buoyFiled)} minutes.
+
+*The p-value in words.* Assuming the null hypothesis is true, so that the true mean is exactly {fmtInt(buoyFiled)} minutes, about {fmtP(buoyTest.pValue)} of all samples of {fmtInt(buoyRuns.length)} runs would produce a sample mean at least as far above {fmtInt(buoyFiled)} minutes as the {fmt(mean(buoyRuns), 2)} these eight produced.
+
+**A subset, and the power to see it.** A different office, a different corridor. Of {fmtInt(demoFleet)} transits on a run, suppose {fmtInt(demoLate)} carry an average excess of {fmt(demoExcess, 1)} days and the rest are honest. On the fleet mean that excess arrives as
+
+<Formula tex={`\\frac{${demoLate} \\times ${fmt(demoExcess, 1)}}{${demoFleet}} = ${fmt(demoDilution, 4)}\\ \\text{days}`} label="The excess after the fleet has been averaged over it" />
+
+Compare that run against a second group, and suppose the comparison's standard error is {fmt(demoSe, 2)} days. At $\alpha$ = {fmt(0.05, 2)} one-sided, the test rejects only when the observed gap exceeds {fmt(demoPower.rejectAbove, 4)} days, and the power against a real gap of {fmt(demoDilution, 4)} days is **{fmt(demoPower.power, 3)}**.
+
+Read that as it deserves to be read. With {fmtInt(demoLate)} genuinely late transits sitting in the file the whole time, this comparison reports nothing {fmtPct(demoPower.beta, 0)} of the time. Nothing about its arithmetic is wrong. It was asked a question it had no instrument for.
+</Briefing.Worked>
+<Briefing.Caution>
+**Reading a small-sample p-value off a normal table.** On {buoyRuns.length - 1} degrees of freedom the statistic above gives {fmtP(buoyTest.pValue)}; the normal table gives {fmtP(pValueZ(buoyTest.statistic, 'greater'))}. The t tail is always the heavier one, so the normal reading always understates the p-value, and it understates it most when the sample is smallest.
+
+**$\mu_0$ set to the sample mean.** The hypothesised value comes from outside the data: a filed figure, a plate, a standard. Entering $\bar{x}$ in its place gives $t = 0$ and $p = 1$ every time, which is a reliable sign the wrong number went in the wrong field.
+
+**"Not significant" read as "no difference".** Failing to reject means the data are consistent with $H_0$. It does not mean $H_0$ is true, and a comparison with low power against the effect in question was never able to say anything else. Before reading a null result as an absence, price the miss: what effect were you looking for, what standard error did the design give you, and what was the power against it?
+
+**A pooled mean read as a clean bill.** An average over a mixed population is exactly what it should be when a small subset is badly wrong. The average agreeing with expectation is not evidence that every unit does. The fix is to stop pooling and compare the groups.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="T-Test on the TI-84">
+<Calculator.Step keys={['STAT', '▸ TESTS', '2:T-Test']} note={`Worked case: the ${buoyRuns.length} lock-to-buoy runs above, not the Ledger on the panels below.`}>The one-sample t-test for a mean. Item 2, directly under `1:Z-Test`.</Calculator.Step>
+<Calculator.Step keys={['Inpt:', 'Stats']}>**Data** reads a list from the editor and computes $\bar{x}$ and $S_x$ for you; **Stats** takes them typed in. Same test either way. With the data to hand, `Data` is safer, because it cannot be fed a stale summary.</Calculator.Step>
+<Calculator.Read label="μ₀" value={String(buoyFiled)}>the **hypothesised** value, from the filed plot.</Calculator.Read>
+<Calculator.Read label="x̄" value={fmt(mean(buoyRuns), 4)} />
+<Calculator.Read label="Sx" value={fmt(sd(buoyRuns), 4)} />
+<Calculator.Read label="n" value={String(buoyRuns.length)} />
+<Calculator.Step keys={['μ:', '≠μ₀', '<μ₀', '>μ₀']}>Highlight the alternative and press `ENTER`. This is the only thing on the screen that decides which tail is reported, and it is set from the question, before the data are looked at.</Calculator.Step>
+<Calculator.Read label="t" value={fmt(buoyTest.statistic, 6)} />
+<Calculator.Read label="p" value={fmt(buoyTest.pValue, 6)}>the tail for whichever alternative is highlighted. Switch to `≠μ₀` and the same data return {fmt(pValueT(buoyTest.statistic, buoyRuns.length - 1, 'two-sided'), 6)}.</Calculator.Read>
+<Calculator.Read label="df" value={String(buoyRuns.length - 1)}>echoed back. Check it against $n - 1$ before you trust the line above it.</Calculator.Read>
+<Calculator.Watch>**μ₀ is not the sample mean.** The field sits directly above `x̄` and the two get swapped constantly. Typing {fmt(mean(buoyRuns), 2)} into μ₀ returns $t$ = 0 and $p$ = {fmt(0.5, 1)} on a one-sided alternative, which looks like a finding of no effect and is a data-entry error.</Calculator.Watch>
+<Calculator.Watch>**`1:Z-Test` sits one line above, and it will run.** It asks for σ, and if you give it your `Sx` it returns a p-value off the normal curve: {fmtP(pValueZ(buoyTest.statistic, 'greater'))} here against T-Test's {fmtP(buoyTest.pValue)}. The calculator has no way of knowing that the σ you typed was an estimate. You do.</Calculator.Watch>
+<Calculator.Watch>**The alternative decides the tail and nothing else does.** A two-sided p is double the one-sided p for the same statistic, and the doubling is a property of the hypothesis rather than of the data. Choose the alternative from the question, before the sample is drawn; choosing it afterwards is a two-sided procedure reporting a one-sided number.</Calculator.Watch>
+</Calculator>
+
+<TPValueVisualiser />
+
+<PoolingExplorer />
+
+<Drill generator="act-7/t-test-setup" count={1} />
+<Drill generator="act-7/t-test-statistic" count={1} />
+<Drill generator="act-7/t-test-conclusion" count={1} />
+<Drill generator="act-7/interpret-p-value-mean" count={1} />
+<Drill generator="act-7/pooling-trap" count={1} />
+<Drill generator="act-7/power-of-a-comparison" count={1} />
+
+<MissionBeat id="act-7-03-nineteen" kind="numeric" answer={NINETEEN_TEST.statistic} answerKind="testStat" digits={2} label="THE NINETEEN, ON THEIR OWN"
+  prompt={`Before anything is said about Ostrow's comparison, run the procedure this module teaches on the hulls the report is actually about. The **t P-VALUE** panel above holds the ${fmtInt(NINETEEN_N)} lost Perrine hulls' Mark-9 delays in days, against the profile each of them filed, which puts $\\mu_0$ at zero.\n\nReport the **t statistic**, to **two decimal places**. Act V ran this comparison with the Lane's σ of ${fmt(LANE_DELAY_SD, 2)} days and read it off a normal table; this one uses the nineteen's own s and reads it off t.`}
+  hint={`t = (x̄ − 0) ÷ (s/√n) on ${fmtInt(NINETEEN_N - 1)} degrees of freedom. The panel prints the estimate and the standard error; the statistic is the first divided by the second.`}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He puts the t and the df beside Act V's z on the same line, which nobody asked for.">
+  Same nineteen hulls, sir, same delays. Different denominator and one degree of freedom spent, and it comes out in the same place. The Lane sigma was never mine to use on nineteen hulls anyway.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Their own spread, Captain, over the root of nineteen. Then the mean over that. If you have reached for the Lane's sigma again you have run Act Five, and Act Five is what the Board has already read.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-03-pooled" kind="numeric" answer={OSTROW_TEST.estimate} answerKind="mean" digits={2} units="d" label="WHAT HIS COLUMN READS"
+  prompt={`Now Ferrier's question, in numbers. Use the **POOLING EXPLORER** with ${fmtInt(NINETEEN_N)} of the ${fmtInt(PERRINE_N)} Perrine transits carrying the nineteen's excess and the rest flying their filed profiles.\n\nWhat is the **gap between the mean Mark-9 delay of all ${fmtInt(PERRINE_N)} Perrine transits and the mean of the other ${fmtInt(OTHER_N)}**, in days, to **two decimal places**? This is the number on Ostrow's slate.`}
+  hint={`The nineteen's excess over an honest Perrine hull, multiplied by ${fmtInt(NINETEEN_N)} and divided by ${fmtInt(PERRINE_N)}, then added to the honest Perrine mean, and the other fleet's mean subtracted. The explorer reads it out as the gap.`}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He has both means on the screen and the difference between them boxed.">
+  So it's a quarter of a day, sir, and most of that is the filing offset the Perrine masters have always had. The nineteen contribute {fmt(NINETEEN_EXCESS_DILUTED, 3)} of it. Nineteen hulls averaged over nine hundred is nineteen over nine hundred of the effect, and I can't make it be anything else.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  You have given me the excess a diverted hull carries, or one of the two means on its own. I asked what his column reads. Nineteen hulls, nine hundred transits, one average.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-03-se" kind="numeric" answer={OSTROW_SE} answerKind="mean" digits={3} units="d" label="THE STANDARD ERROR OF HIS COMPARISON"
+  prompt={`Ostrow's comparison is ${fmtInt(PERRINE_N)} transits against ${fmtInt(OTHER_N)}, with the Ledger's own spreads in each group. What is the **standard error of the difference in the two sample means**, in days, to **three decimal places**?`}
+  hint="Two independent groups: square each group's standard error and add, then take the square root. The panel reports it, and so does any two-sample t procedure run on those two columns.">
+  <Success>
+  <Dialogue speaker="analyst">
+  {fmt(OSTROW_SE, 3)} days. On two and a half thousand transits, sir. That's a very fine instrument pointed at a fleet average.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Not one group's spread. The difference of two means has a standard error of its own, and it is built from both of them. Squares add. Then the root.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-03-power" kind="numeric" answer={OSTROW_POWER.power} digits={3} tolerance={0.002} label="WHAT IT COULD HAVE FOUND"
+  prompt={`One-sided, at $\\alpha$ = ${fmt(0.05, 2)}. Against the excess that ${fmtInt(NINETEEN_N)} diverted hulls out of ${fmtInt(PERRINE_N)} put on the Perrine fleet mean, what is the **power** of Ostrow's comparison? Give a probability to **three decimal places**.`}
+  hint={`Two steps. The cutoff: the observed gap the test needs before it rejects, which is z* at ${fmt(0.05, 2)} one-sided times the standard error. Then the area above that cutoff under a distribution centred on the diluted excess, with the same standard error.`}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it, and then reads the beta beside it, and puts one finger on the second number.">
+  Then it fails to see them {fmtPct(OSTROW_POWER.beta, 0)} of the time with the nineteen sitting in the file the whole while. That is the number that goes to Valhalla, Captain. Not his, and not ours. That one.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the two curves up and is pointing at the gap between the cutoff and the peak of the second one.">
+  Sir, the cutoff first. How big a gap does his test need before it calls anything? Then how often does a world with the nineteen in it produce a gap that big? That second number is the power, and it isn't one minus alpha.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-03-typeii" kind="interpretation" label="THE SENTENCE THAT GOES TO VALHALLA"
+  prompt={`Ferrier wants two sentences on the log and you are writing the second. **Explain, in context, why "within a day of the Lane mean" is a Type II error rather than a finding.** Use the numbers you have just computed: the dilution, the standard error, and the power. Ostrow's arithmetic is correct and the sentence must not say otherwise.`}
+  hint="Four things have to be in it: that the nineteen's excess was divided by nine hundred before it reached the mean; the standard error of the comparison; the power or the miss rate against that diluted excess; and that failing to detect is not evidence of absence. Name the transits and the delay."
+  minWords={35}
+  required={[
+    {
+      label: 'Says the excess was diluted across the fleet',
+      phrasings: ['diluted', 'averaged into', 'spread across', 'divided by', 'share of', numberRegex(NINETEEN_EXCESS_DILUTED, 3, 1)],
+      polarity: 'any',
+      feedback: `Nineteen hulls' excess, averaged over ${fmtInt(PERRINE_N)} transits, reaches the fleet mean as ${fmt(NINETEEN_EXCESS_DILUTED, 3)} days. Say that the pooling did it.`,
+    },
+    {
+      label: 'Cites the standard error of the comparison',
+      phrasings: ['standard error', numberRegex(OSTROW_SE, 3, 1)],
+      polarity: 'any',
+      feedback: `The comparison's standard error is ${fmt(OSTROW_SE, 3)} days. Put it in the sentence: it is what makes the diluted excess unreachable.`,
+    },
+    {
+      label: 'Names the power or the miss rate',
+      phrasings: ['power', 'beta', 'type ii', 'type 2', 'miss', numberRegex(OSTROW_POWER.power, 3, 1), numberRegex(OSTROW_POWER.beta, 3, 1)],
+      polarity: 'any',
+      feedback: `Against that effect the power is ${fmt(OSTROW_POWER.power, 3)}, so the comparison misses ${fmtPct(OSTROW_POWER.beta, 0)} of the time. Name it.`,
+    },
+    {
+      label: 'Says failing to detect is not evidence of absence',
+      phrasings: [/\bnot evidence\b/, /\bnot mean\b/, 'not evidence absence', 'not rule out', 'cannot rule out', 'not establish'],
+      polarity: 'any',
+      feedback: 'Finish the argument: a comparison with power this low reports nothing whether or not the hulls are there, so its silence establishes nothing.',
+    },
+    contextGroup('Names the transits and the delay', ['Perrine transits on the Hundred-Day Lane', 'mean Mark-9 delay against the filed plot'], {
+      feedback: 'Say what and whom: the mean delay against the filed plot, for Perrine transits on the Lane.',
+    }),
+  ]}
+  forbidden={[
+    {
+      phrase: /\b(?:his|the board's|ostrow's) (?:analysis|arithmetic|number|figure|calculation) (?:is|was) wrong\b/,
+      label: 'Calls his arithmetic wrong',
+      why: 'His arithmetic is correct and the quarter-day gap is the right number. The objection is to what the comparison was capable of detecting, and saying otherwise hands the Board an easy reply.',
+    },
+    {
+      phrase: /\bproves?\b/,
+      label: 'Proof language',
+      why: 'A power calculation shows the comparison could not have found the effect. It proves nothing about whether the effect is there.',
+    },
+  ]}
+  exemplar={`Ostrow's comparison is arithmetically right and could not have found the nineteen. Their excess of about ${fmt(perHullExcess, 2)} days is carried by ${fmtInt(NINETEEN_N)} hulls out of ${fmtInt(PERRINE_N)}, so averaged into all ${fmtInt(PERRINE_N)} Perrine transits on the Hundred-Day Lane it reaches the mean Mark-9 delay as only ${fmt(NINETEEN_EXCESS_DILUTED, 3)} days, while the standard error of his comparison against the other ${fmtInt(OTHER_N)} transits is ${fmt(OSTROW_SE, 3)} days. Against an effect that small the test has power ${fmt(OSTROW_POWER.power, 3)}, so it fails to reject about ${fmtPct(OSTROW_POWER.beta, 0)} of the time: that is a Type II error, and its silence is not evidence that the diverted hulls are absent.`}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it once and writes the time in the margin herself.">
+  Both sentences. His number is right; his comparison had {fmtPct(OSTROW_POWER.power, 0)} chance of finding what we say is there. Solberg sends it verbatim, and it goes under my name as well as yours.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She has not raised her voice and the next sentence comes out one word at a time.">
+  You have just agreed with him. Read it back: you have told Valhalla that the Perrine mean sits where the Lane mean sits, which is exactly the finding he filed at eleven hundred. The objection is not to his number. Give me the dilution, the standard error and the power, and say what a test with that power is able to establish when it finds nothing.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-7-03-nineteen", "act-7-03-pooled", "act-7-03-se", "act-7-03-power", "act-7-03-typeii"]}>
+
+<Scene stamp="MET 157/13:40" location="CSV Nightjar · bridge · docked · light-lag to Callisto 24 minutes each way" condensed="The rebuttal goes out at 13:40: the gap is 0.25 d with a standard error of 0.111 d, and against the nineteen's diluted excess of 0.056 d the comparison had power 0.127. Ninety-four of the nine hundred would have had to be running heavy before it had a fair chance. Ostrow's analysis is correct and could not have found anything; nothing yet ties the lateness to the uprate.">
+
+Ebele writes it up as one page with four numbers on it and no adjectives.
+
+The gap between the two fleet means, {fmt(OSTROW_TEST.estimate, 2)} days, which is Ostrow's figure and is not disputed. The standard error of that comparison, {fmt(OSTROW_SE, 3)} days. The nineteen's excess after nine hundred transits have been averaged over it, {fmt(NINETEEN_EXCESS_DILUTED, 3)} days. And the power of the one against the other at five percent, {fmt(OSTROW_POWER.power, 3)}.
+
+Then the line Ferrier asked for, which is the one that will be read.
+
+<Dialogue speaker="analyst" aside="Reading his own last paragraph off the screen, flat, the way Solberg reads a signal.">
+For the comparison as constructed to have had a fair chance of detecting the excess, {fmtInt(divertedCountForPower(0.8))} of the {fmtInt(PERRINE_N)} Perrine transits would have had to be carrying it. The Register identifies {fmtInt(NINETEEN_N)}.
+</Dialogue>
+
+Ferrier reads the page twice and initials it.
+
+<Dialogue speaker="xo">
+Say the shape of it out loud once before it goes. The Board has not caught us in an error. The Board has run an instrument that cannot resolve the thing we are pointing at, and reported that it saw nothing, which is exactly what it would have reported either way.
+</Dialogue>
+
+Solberg files it at 13:40 and reads the lag out as he keys it. Twenty-four minutes each way. Ostrow will have a copy before Valhalla does, because that is the standing order, and he will read it with the same courtesy he reads everything.
+
+What the page does not say, because nothing in the Ledger supports it yet, is why the nineteen were late. Okonjo's file has twelve hulls with more thrust than their plates admit to. The Register has nineteen hulls that never arrived. Nine names appear on both lists and the page does not mention that either.
+
+On the second slate, still in the wrong shape, the delay-before and delay-after columns from Adlinda sit side by side, twelve pairs, waiting for somebody to notice that they are pairs.
+
+</Scene>
+
+<LogEntry
+  title="A subset averaged into its population disappears"
+  concept="A test about a mean uses t = (x̄ − μ₀)/(s/√n) on n − 1 degrees of freedom whenever σ is estimated from the sample; Unit 5's z applied only because σ was known, and nothing else about the procedure changes. A p-value is a probability computed under H₀, never the probability that H₀ is true. When k units out of N carry an excess d, the population mean rises by only kd/N, so a large effect on a small subset arrives at the average already divided by the size of the population. A comparison that reports nothing has to be read together with its power against the effect in question: cutoff = z*·SE, power = P(Z > (z*·SE − effect)/SE)."
+  formula="t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} \qquad \bar{x}_{\text{all}} = \bar{x}_{\text{honest}} + \frac{k\,d}{N} \qquad \text{power} = P\left(Z > \frac{z^\star SE - \delta}{SE}\right)"
+  mistake="Reading “not significant” as “no difference”. A comparison with low power against the effect in question returns a null result whether or not the effect is there, so its silence carries no information. Price the miss before you read the absence."
+  tags={['one-sample t-test', 'p-value', 'conclusion in context', 'pooling', 'power', 'Type II error', '7.4', '7.5']}
+/>
+
+</Gated>

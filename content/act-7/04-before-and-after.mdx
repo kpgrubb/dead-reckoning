@@ -1,0 +1,355 @@
+---
+id: act-7-04
+act: 7
+title: "Before and After"
+kind: module
+ap_topics: ["7.2", "7.4", "7.5"]
+objectives:
+  - "Recognise a paired design from how the data were collected, and say why two columns are not two samples"
+  - "Collapse a paired file to one sample of differences and run the one-sample t procedure on it, with df = n − 1 pairs"
+  - "Check the conditions for a paired t procedure on the differences rather than on either raw column"
+  - "Explain when pairing buys precision, and what it costs when the pairs are not really matched"
+prereqs: ["act-7-03"]
+est_minutes: 30
+calc_briefing: null
+summary: "Ebele runs the Adlinda uprate logs as two samples and finds nothing in them. Ferrier asks him what a row of that file is."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct, mean, pairedDifferences, pairedTInterval, pairedTTest, sd, twoMeanTest } from '@/lib/stats'
+import { significanceTestConclusion } from '@/lib/problems/rubrics'
+import {
+  PAIRED_SE,
+  REFIT_N,
+  REFIT_PAIRED,
+  REFIT_PAIRED_INTERVAL,
+  REFIT_TWO_SAMPLE,
+  REFIT_TWO_SAMPLE_INTERVAL,
+  SINK_GJ_DESIGN,
+  SINK_GJ_REFIT,
+  SINK_WATCH_INTERVAL,
+  SINK_WATCH_TEST,
+  TWO_SAMPLE_SE,
+  WATCH_DESIGN_AFTER_H,
+  WATCH_DESIGN_BEFORE_H,
+  refitAmong19,
+  refitDelayAfter,
+  refitDelayBefore,
+  refitDifferences,
+  refitHonest,
+  sinkRefit,
+  watchAfter,
+  watchBefore,
+  watchRuns,
+} from '@/instruments/act-7/data'
+import { PairedExplorer } from '@/instruments/act-7/PairedExplorer'
+import { SinkRefitPanel } from '@/instruments/act-7/SinkRefitPanel'
+
+export const beaconNames = ['LM-3', 'LM-7', 'LM-11', 'LM-14', 'LM-19', 'LM-22', 'LM-26']
+export const beaconBefore = [8.4, 31.2, 15.1, 43.6, 21.8, 9.3, 37.0]
+export const beaconAfter = [2.9, 23.3, 11.0, 36.8, 18.6, 3.4, 28.6]
+export const beaconN = beaconBefore.length
+export const beaconDiff = pairedDifferences(beaconAfter, beaconBefore)
+export const beaconPaired = pairedTTest(beaconAfter, beaconBefore, { alt: 'less', random: true })
+export const beaconCi = pairedTInterval(beaconAfter, beaconBefore, { confidence: 0.95, random: true })
+export const beaconTwo = twoMeanTest(beaconAfter, beaconBefore, { alt: 'two-sided', random: true })
+
+export const honestShift = mean(refitHonest.map((h) => h.delay_after - h.delay_before))
+export const among19Shift = mean(refitAmong19.map((h) => h.delay_after - h.delay_before))
+export const tierLow = Math.min(...refitAmong19.map((h) => h.hiddenMass))
+export const tierHigh = Math.max(...refitAmong19.map((h) => h.hiddenMass))
+export const watchLossPct = mean(watchRuns.map((r) => (r.before_h - r.after_h) / r.before_h))
+
+export const refitConclusion = significanceTestConclusion({
+  pValue: REFIT_PAIRED.pValue,
+  alpha: 0.01,
+  direction: 'greater',
+  parameterContext: {
+    parameter: 'mean difference',
+    population: 'Sulcus hulls through the Adlinda uprate',
+    variable: 'Mark-9 delay after the uprate minus before it',
+    units: 'days',
+    nullValue: 0,
+  },
+  directionWords: ['later', 'slower', 'longer'],
+})
+
+<Scene stamp="MET 159/09:20" location="CSV Nightjar · engineering deck, sink bay · docked, tender power" condensed="Seven days without a cellar and the sink bay is nineteen degrees with the cradle empty. Rook is on the plates with a lamp, reading the rail seats before he signs the tender's acceptance form. Ebele brings the Adlinda uprate logs down: twelve hulls, Mark-9 delay before the uprate and after it, run as two samples and coming out at nothing. Ferrier asks him what a row of that file is, and he cannot finish the answer.">
+
+The cradle is empty and the bay is nineteen degrees.
+
+Seven days of *Halden Reach* breathing for the ship, and the rail seats that have carried frost since Callisto are dry and warm to the back of the hand. You are flat on the plates with a lamp because the acceptance form is on your slate and you would rather read the seats than read about them. Sixty tonnes of lithium comes back in the morning. If a rail is scored you want that now, with the cradle empty and a tender's machine shop forty metres aft.
+
+The tender's fitter is working the far end of the run with a bore gauge. In seven days she has said nine words to you and six of them were the compartment number.
+
+Sandoval crouches at the coaming with the refit certificate folded in her breast pocket. She has not offered it.
+
+<Dialogue speaker="engineer" aside="She turns the gauge round so the dial faces you and says nothing about what it reads.">
+Second seat. They ground it out and re-shimmed both rails. Point one two mil, give or take four hundredths, and it was in tolerance before they touched it.
+</Dialogue>
+
+You get your shoulder under the rail and look along it anyway.
+
+Ebele comes down the ladder backwards with a slate under each arm, which is how he gets everywhere, and stops three rungs up when he sees where you are.
+
+<Dialogue speaker="analyst" aside="He reads it off the upper slate without coming the rest of the way down.">
+So the Adlinda file. Twelve hulls through the uprate, and for each one the Ledger's Mark-9 delay on the run before the yard signed it off and the run after. Two columns. I ran them against each other, sir. Two-sample t, {fmt(REFIT_TWO_SAMPLE.statistic, 1)}, p around a tenth. There's nothing in it. Whatever the uprate bought them, it didn't touch how they ran.
+</Dialogue>
+
+Ferrier is on the ladder above him with the tender's watch bill still under her arm. She does not come down either.
+
+<Dialogue speaker="xo">
+Read me the heading on your first column.
+</Dialogue>
+
+Delay before, he says.
+
+<Dialogue speaker="xo">
+Before what.
+</Dialogue>
+
+Before the uprate, ma'am.
+
+<Dialogue speaker="xo">
+On which hull.
+</Dialogue>
+
+The fitter's bore gauge clicks twice at the far end of the run. Ebele has the slate turned towards himself now and is going down the rows with a finger, and the finger stops on the fourth one.
+
+<Dialogue speaker="analyst">
+Ma'am. That's — yes. The same hull is in both columns. Every row is one ship, twice.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="Flat. She has not raised her voice at anybody since Ceres.">
+Twelve ships and twenty-four numbers. Your procedure was told twenty-four ships. Go and find out which of those two files the yard actually sent us.
+</Dialogue>
+
+He does not move. Sandoval reaches past your boot for the lamp, takes it, and holds it steady on the seat you were trying to see, and goes on holding it while the two of them work out what the file is.
+
+Twelve hulls. One question each. Whether a hull ran later after Adlinda opened its drive up than it did before, on its own record, against itself.
+
+</Scene>
+
+<Briefing title="Paired data: one sample of differences" topics={["7.4", "7.5"]}>
+<Briefing.Intuition>
+Two columns of numbers are sometimes two samples and sometimes one. The design decides, and it decides before any data exists.
+
+A design is **paired** when each observation in the first column is matched to exactly one observation in the second by something real: the same unit measured twice, the same subject before and after a treatment, the left eye and the right eye, two hulls deliberately matched on age and route. The matching rule is set in advance. If you can point to a row and say *this is one thing, measured twice*, the rows are the units.
+
+When the rows are the units, there is only one sample in the file: the **differences**. Subtract within each row and what remains is $n$ numbers, one per pair, and every procedure from a one-sample $t$ applies to them unchanged. The parameter is $\mu_d$, the mean difference in the population of pairs. The degrees of freedom are $n - 1$, where $n$ counts **pairs**, not measurements.
+
+Why this is worth doing rather than merely correct: each unit carries a level of its own that appears in both of its measurements. A navigation marker with a fast clock is fast in both columns. A hull that files a hair slow against the nominal plot is slow in both columns. That per-unit level inflates the spread of each column, and a two-sample standard error is built out of exactly those spreads. Subtracting cancels it. The standard error of $\bar{d}$ is built from the spread of the differences, which no longer contains it, and it can be a small fraction of the two-sample one on the same numbers.
+
+The hypotheses are about $\mu_d$ and they are written that way: $H_0: \mu_d = 0$ against $H_a: \mu_d > 0$, $< 0$ or $\neq 0$. Decide the order of subtraction first, write it into the hypotheses, and keep it there.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="d_i = (\text{second measurement})_i - (\text{first measurement})_i \qquad \bar{d} = \frac{1}{n}\sum_{i=1}^{n} d_i" terms={{ 'd_i': 'the difference for pair i — one number per unit', 'n': 'the number of PAIRS, not the number of measurements' }} label="Collapse the file to one column" />
+
+<Formula tex="SE(\bar{d}) = \frac{s_d}{\sqrt{n}} \qquad t = \frac{\bar{d} - \mu_0}{s_d/\sqrt{n}} \qquad df = n - 1" terms={{ 's_d': 'the standard deviation of the differences', '\\mu_0': 'the hypothesised mean difference, almost always 0' }} label="Paired t-test: the one-sample t procedure, applied to the differences" />
+
+<Formula tex="\bar{d} \pm t^\star \frac{s_d}{\sqrt{n}}" terms={{ 't^\\star': 'the critical value at the chosen level on n − 1 degrees of freedom' }} label="Paired t-interval for the mean difference" />
+
+**Conditions.** Random: the pairs were randomly sampled, or the treatment was randomly assigned within pairs. Independent: the *pairs* are independent of one another, and $10n$ is no more than the population of pairs. Normal: the sampling distribution of $\bar{d}$ is approximately Normal, justified by $n \geq 30$ or by a graph of **the differences** showing no strong skewness and no outliers.
+</Briefing.Definition>
+<Briefing.Worked>
+The Ceres Authority audited the clock drift of {fmtInt(beaconN)} Lane navigation markers before and after the 2183 timing load. Drift in milliseconds per day, marker by marker, positive meaning the marker's clock runs fast.
+
+Before: {beaconBefore.map((v) => fmt(v, 1)).join(', ')}.
+
+After: {beaconAfter.map((v) => fmt(v, 1)).join(', ')}.
+
+Those are the same {fmtInt(beaconN)} markers in both lines, in the same order, so the file has {fmtInt(beaconN)} rows and not {fmtInt(2 * beaconN)}.
+
+*The differences* (after minus before), in ms/day: {beaconDiff.map((v) => fmt(v, 1)).join(', ')}.
+
+$\bar{d}$ = **{fmt(beaconPaired.estimate, 3)} ms/day**, $s_d$ = {fmt(sd(beaconDiff), 3)}, and with $n$ = {fmtInt(beaconN)} the standard error is {fmt(sd(beaconDiff), 3)} ÷ √{fmtInt(beaconN)} = **{fmt(beaconPaired.se, 4)}**. Against $\mu_0 = 0$ that is $t$ = **{fmt(beaconPaired.statistic, 2)}** on $df$ = {fmtInt(beaconPaired.df)}, one-sided $P$ = **{fmtP(beaconPaired.pValue)}**. The {fmtPct(0.95, 0)} interval for $\mu_d$ runs from {fmt(beaconCi.ci[0], 3)} to {fmt(beaconCi.ci[1], 3)} ms/day, and every value in it is negative.
+
+Now the same fourteen numbers thrown into two buckets. The before column has mean {fmt(mean(beaconBefore), 2)} and standard deviation {fmt(sd(beaconBefore), 2)}; the after column has mean {fmt(mean(beaconAfter), 2)} and standard deviation {fmt(sd(beaconAfter), 2)}. The estimate is unchanged at {fmt(beaconTwo.estimate, 3)}, because a mean of differences and a difference of means are the same arithmetic. The standard error is not: $\sqrt{s_1^2/n_1 + s_2^2/n_2}$ = **{fmt(beaconTwo.se, 4)}**, nearly {fmt(beaconTwo.se / beaconPaired.se, 0)} times the paired one. That gives $t$ = {fmt(beaconTwo.statistic, 2)} on {fmt(beaconTwo.df, 1)} degrees of freedom and $P$ = {fmtP(beaconTwo.pValue)}.
+
+One reading finds a shift of {fmt(Math.abs(beaconPaired.estimate), 2)} ms/day that no timing office would dispute. The other finds nothing at all. The markers differ enormously from one another, from {fmt(Math.min(...beaconBefore), 1)} to {fmt(Math.max(...beaconBefore), 1)} ms/day before the load, and the two-sample reading spends all of its precision on that variation. The paired reading never sees it.
+</Briefing.Worked>
+<Briefing.Caution>
+**A two-sample procedure on paired data is the wrong procedure, and no software will warn you.** It runs, it prints, and it answers a different question: whether two independent populations have the same mean, when the file contains one population measured twice. It is almost always less sensitive, sometimes dramatically so, and on a file like the markers above it reports nothing where there is something.
+
+**Normality is checked on the differences.** Each raw column carries every unit's own level, so either one may look skewed or strung out and neither has any bearing on the procedure. Draw the differences. That is the sample.
+
+**Degrees of freedom count pairs.** With {fmtInt(beaconN)} markers measured twice, $df$ = {fmtInt(beaconN - 1)}, never {fmtInt(2 * beaconN - 2)}.
+
+**Pairing has to come from the design.** Sorting two independent samples and lining them up by rank produces a column of differences and a completely invented standard error. When there is no rule matching one observation to one other, the samples are independent and the two-sample procedure is the right one.
+
+**The order of subtraction is a decision.** After minus before, or before minus after: pick one, state it, and make the hypotheses and the conclusion agree with it. The interval and the sign of $t$ both flip if you change your mind halfway.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="Paired t-test and t-interval (the difference list)">
+<Calculator.Step keys={['STAT', '1:Edit']} note="Worked case: the seven navigation markers from the briefing — not the Adlinda file below.">Enter the **before** drifts in `L1` and the **after** drifts in `L2`, one marker per row, in the same order in both lists: {beaconBefore.map((v) => fmt(v, 1)).join(', ')} and {beaconAfter.map((v) => fmt(v, 1)).join(', ')}. Seven rows, not fourteen.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'QUIT']} note="L1 is 2nd 1, L2 is 2nd 2, L3 is 2nd 3.">On the home screen build the difference list: `L2` `−` `L1` `STO▸` `L3`. Alternatively, in the editor, arrow **onto the L3 header** and type `L2-L1` there; the column then recomputes whenever you fix a typo in L1 or L2, which is worth the extra keystroke.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '2:T-Test']} note="Inpt: Data · List: L3 · μ₀: 0 · Freq: 1 · μ: <μ₀ · Calculate">`2:T-Test` is the **one-sample** test, and running it on `L3` is the whole of the paired procedure. Set `μ₀` to 0 and pick the tail that matches the question. Here the load was meant to reduce drift, so the alternative is `μ: <μ₀`.</Calculator.Step>
+<Calculator.Read label="t" value={fmt(beaconPaired.statistic, 4)}>the standardized mean difference.</Calculator.Read>
+<Calculator.Read label="p" value={fmtP(beaconPaired.pValue)}>the one-sided P-value.</Calculator.Read>
+<Calculator.Read label="x̄" value={fmt(beaconPaired.estimate, 4)}>the calculator calls it x̄ because it is running a one-sample test. It is $\bar{d}$.</Calculator.Read>
+<Calculator.Read label="Sx" value={fmt(sd(beaconDiff), 4)}>the standard deviation of the **differences**, $s_d$.</Calculator.Read>
+<Calculator.Read label="n" value={String(beaconN)}>pairs. Check this before anything above it.</Calculator.Read>
+<Calculator.Step keys={['STAT', '▸ TESTS', '8:TInterval']} note="Inpt: Data · List: L3 · Freq: 1 · C-Level: .95">The same list again, for the interval: ({fmt(beaconCi.ci[0], 4)}, {fmt(beaconCi.ci[1], 4)}) on {fmtInt(beaconCi.df)} degrees of freedom.</Calculator.Step>
+<Calculator.Watch>**`4:2-SampTTest` on `L1` and `L2` is the wrong procedure, and the calculator will not warn you.** It will accept the two columns, run happily, and answer a question nobody asked. On these seven markers it returns $t$ = {fmt(beaconTwo.statistic, 2)} and $P$ = {fmtP(beaconTwo.pValue)}, which reads as "no evidence of anything" and is the opposite of what the file says. The screen that knows your data are paired is the screen you chose, so choose it deliberately.</Calculator.Watch>
+<Calculator.Watch>**The order of subtraction is a decision you make before you read the sign.** `L2−L1` is after minus before; `L1−L2` is the other way and flips $t$, the interval and the tail you should have selected. Write the order at the top of your answer and make `μ: <μ₀` or `μ: >μ₀` agree with it.</Calculator.Watch>
+<Calculator.Watch>**The df on the paired screen is $n - 1$ pairs minus one**, so {fmtInt(beaconN)} markers give {fmtInt(beaconN - 1)}. It is not {fmtInt(2 * beaconN - 2)}. If the df on your screen is near twice what you expected, you are on `4:2-SampTTest`.</Calculator.Watch>
+</Calculator>
+
+<PairedExplorer />
+
+<Drill generator="act-7/paired-or-two-sample" count={1} />
+<Drill generator="act-7/paired-t" count={1} />
+<Drill generator="act-7/paired-conditions" count={1} />
+<Drill generator="act-7/paired-interval" count={1} />
+<Drill generator="act-7/paired-conclusion" count={1} />
+<Drill generator="act-7/pairing-gains-power" count={1} />
+
+<MissionBeat id="act-7-04-structure" kind="choice" label="WHICH FILE THE YARD SENT"
+  prompt={`The Adlinda logs hold ${fmtInt(REFIT_N)} rows. Each row is one Sulcus hull, with the Ledger's Mark-9 delay on the run immediately before the yard signed its uprate off and the run immediately after.\n\nBefore any arithmetic: which procedure does that **design** call for, and why?`}
+  options={[
+    `A two-sample t procedure. There are two columns of delays and two means to compare, and the question is whether those means differ.`,
+    `A paired t procedure on the ${fmtInt(REFIT_N)} differences. Each row is one hull measured twice, so the hulls are the units and the differences are the sample.`,
+    `A two-sample t procedure, because both columns hold ${fmtInt(REFIT_N)} values and equal group sizes are what a two-sample comparison needs.`,
+    `A one-sample t procedure on all ${fmtInt(2 * REFIT_N)} delays together, testing whether the mean Mark-9 delay of uprated hulls differs from the profile's zero.`,
+  ]}
+  correct={1}
+  feedback={[
+    'Two columns is true of every paired file ever written. The question is whether the two numbers in a row came off the same hull, and here they did.',
+    null,
+    'Equal counts are a symptom of pairing, not a reason for a two-sample procedure. Two independent samples of the same size are still independent; twelve hulls measured twice are not.',
+    'That pools the before runs and the after runs into one pile and asks a question about their common mean. It cannot see a change, because the change is the difference between two numbers that this procedure has just added together.',
+  ]}
+  hint="Point at one row and say out loud what it is. If it is one object measured twice, the row is the unit and the file has one column in it.">
+  <Success>
+  <Dialogue speaker="xo" aside="She has the file open at the row Ebele's finger stopped on.">
+  Then the sample is {fmtInt(REFIT_N)} numbers and not {fmtInt(2 * REFIT_N)}. Subtract, Ensign, and bring me what is left.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Same hulls, Ensign. Same hulls. *Kishar Sulcus* is in your first column and *Kishar Sulcus* is in your second, and the procedure you have chosen has been told they are two different ships. Go back to the heading.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-04-dbar" kind="numeric" answer={REFIT_PAIRED.estimate} answerKind="mean" digits={2} units="d" label="THE MEAN DIFFERENCE"
+  prompt={`Set the explorer to **treat as paired**. Subtract within each row, after minus before, and report $\\bar{d}$ for the ${fmtInt(REFIT_N)} Adlinda hulls: the **mean difference in Mark-9 delay**, in days, to **two decimal places**. Keep the sign. Positive means the hull ran later after the uprate than before it.`}
+  hint="One number per hull, then the mean of those. Not the difference of the two column means computed separately — though it will come out the same, and the reason it does is worth a minute.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He has the differences on their own axis with zero marked, and he is counting the dots on the wrong side of it.">
+  So {fmtInt(refitDifferences.filter((d) => d > 0).length)} of the {fmtInt(REFIT_N)} ran later after the uprate, sir. Standard error {fmt(PAIRED_SE, 3)}, against {fmt(TWO_SAMPLE_SE, 3)} on the reading I brought you. Same twenty-four numbers. I halved the uncertainty by subtracting.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She writes two column headings on the margin of the printout and a third between them.">
+  Row by row, Captain. After, minus before, twelve times, and then the mean of those twelve. If you have given me the mean of one column you have given me a delay and not a change in one.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-04-conclusion" kind="interpretation" label="WHAT THE PAIRS SAY"
+  prompt={`Ferrier will not put a statistic into a brief without the sentence that goes under it. Test $H_0: \\mu_d = 0$ against $H_a: \\mu_d > 0$ at $\\alpha = 0.01$, where $\\mu_d$ is the mean difference in Mark-9 delay (after the uprate minus before it) for Sulcus hulls through the Adlinda uprate. The conditions hold on the differences: the yard's twelve are every uprate the program ran, and the dotplot of the differences is symmetric enough with nothing stranded.\n\nRead $t$, $df$ and the one-sided $P$ off the explorer and write the **conclusion in context**.`}
+  hint="Four moves: compare P with α; decide about H₀; frame it as evidence rather than fact; then say what the evidence is about — the mean difference, in days, for these hulls, in the direction the alternative names."
+  {...refitConclusion}>
+  <Success>
+  <Dialogue speaker="engineer" aside="She has stopped holding the lamp. The fitter's bore gauge has stopped too.">
+  Uprated drives. Slower ships. Skipper, you don't buy torch to go slower. You buy it to carry something and still make the plot, and if they are missing the plot anyway then whatever they loaded was heavier than the torch could cover.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  You have a number and no sentence. The Board's counsel reads the sentence. Say which hypothesis you are rejecting, say the P-value and the alpha beside each other, and say what it is evidence about. Mean difference. Days. These hulls.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Scene stamp="MET 161/06:05" location="CSV Nightjar · engineering deck, sink bay · sixty tonnes of lithium in the cradle" condensed="The sink comes back at first watch and the bay drops nineteen degrees in four hours. Sandoval has the tender's post-refit cold profiles beside her own pre-refit runs: eight matched loads, same profile, same instrument, before and after. She puts the table on the plates, says the acceptance form is Rook's to sign, and stands there without adding anything to it.">
+
+They bring the cellar back at 04:40 on the tender's boat crane and it is in the cradle and shimmed by 05:20, and by 06:00 the bay has fallen through nine degrees and is still falling. Frost comes back into the rail seats while you watch, a grey bloom that runs along the shim line and stops.
+
+Sandoval has a printout. Actual paper, because the tender's format does not import and she would not retype it.
+
+<Dialogue speaker="engineer" aside="She puts it on the plates under the lamp and squares the corner against the coaming.">
+Eight cold profiles. Four on Watch, three on Quiet, one on Standby. Same loads I ran off Callisto before we left, same instrument, and I have my own numbers for every one of them.
+</Dialogue>
+
+The refit certificate comes out of her breast pocket, unfolded, and goes down flat beside the printout with the yard's capacity line face up.
+
+<Dialogue speaker="engineer">
+The form is yours to sign, Skipper.
+</Dialogue>
+
+She does not say anything else. She stands at the coaming with her hands in her overall pockets and waits, and the frost goes on running along the shim line, and there are eight rows on the paper with two numbers each.
+
+</Scene>
+
+<SinkRefitPanel />
+
+<PairedExplorer
+  first={watchBefore}
+  second={watchAfter}
+  firstLabel="before the refit"
+  secondLabel="after the refit"
+  rowNames={watchRuns.map((r) => r.run_id)}
+  unitPlural="runs"
+  measure="endurance to saturation"
+  units="h"
+  differenceLabel="hours of endurance lost"
+  showSimulator={false}
+  label="ENGINEERING · THE CELLAR, PAIRED AND UNPAIRED"
+/>
+
+<MissionBeat id="act-7-04-sink" kind="numeric" answer={SINK_WATCH_TEST.estimate} answerKind="mean" digits={1} units="h" label="WHAT THE REFIT COST"
+  prompt={`Filter the cold-profile panel to **Watch**. Four matched runs, each one logged before the refit and again after it at the same load. Pair them, take the differences before minus after so that a loss reads positive, and report the **mean endurance lost on the Watch profile**, in hours, to **one decimal place**.`}
+  hint="Four rows, four differences, then a mean. The Quiet runs and the Standby run are at other loads and belong to the percentage column, not to this one.">
+  <Success>
+  <Dialogue speaker="engineer" aside="On the plates, with a bulkhead and forty metres between her and the tender's fitter.">
+  They didn't break it, Skipper. They shortened it. Nine hours against the book, give or take one. That's a decision.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="She puts one finger on the profile column and leaves it there.">
+  Watch only, sir. Four rows. A Standby run burns three times what a Quiet run burns, so it gives up a third of the hours for the same hole in the cellar, and averaging those together gets you a number with no profile attached to it. Hours for one load. Percent for all eight.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-7-04-structure", "act-7-04-dbar", "act-7-04-conclusion", "act-7-04-sink"]}>
+
+<Scene stamp="MET 161/11:15" location="CSV Halden Reach · the Commander's day cabin · 0.12 AU sunward of the Ceres approach" condensed="Ebele matches nine of the twelve uprated hulls to the Register's nineteen and to Act II's upper residual tier; the three that are not among them show no shift at all. Rook writes the sink finding to Lindqvist-Oduya as one page and hands it over rather than filing it. She reads it twice, says she was not told, and takes a bound log out of a drawer.">
+
+Ebele has the tier work done before the forenoon watch and brings it up himself rather than sending it.
+
+Nine of the {fmtInt(REFIT_N)} Adlinda hulls are in the Register as lost. Not nine of the nineteen picked at random either: he matches them against Act II's residual bands and every one of the nine sits in the upper tier, {fmtPct(tierLow, 0)} to {fmtPct(tierHigh, 0)} over declared mass, the band the uprate would have been bought for. Their mean shift is {fmt(among19Shift, 2)} days later after the refit than before it. The three that are not in the Register are *Erech Sulcus*, *Akkad Sulcus* and *Nippur Sulcus*, and their three differences average {fmt(honestShift, 2)} days, which is nothing at all. Same yard. Same uprate. Same Mk 3 drive.
+
+An uprated hull that carries nothing extra flies its filed profile and arrives when it said it would.
+
+You write the sink page yourself, one side, and you do not put it on the relay. You carry it across the lock and ask her yeoman for five minutes.
+
+Lindqvist-Oduya's day cabin has a bunk, a desk and a printed watch bill on the bulkhead squared to the millimetre. She reads the page standing up. Then she puts it on the desk, flattens it with her palm and reads it again.
+
+Design endurance on Watch, {fmt(WATCH_DESIGN_BEFORE_H, 1)} hours at {fmtInt(SINK_GJ_DESIGN)} gigajoules. After her yard's refit, {fmt(WATCH_DESIGN_AFTER_H, 1)} at {fmtInt(SINK_GJ_REFIT)}. Measured across four matched loads, {fmt(SINK_WATCH_TEST.estimate, 1)} hours gone, standard error {fmt(SINK_WATCH_TEST.se, 2)}, and a {fmtPct(0.95, 0)} interval of {fmt(SINK_WATCH_INTERVAL.ci[0], 1)} to {fmt(SINK_WATCH_INTERVAL.ci[1], 1)} hours. Against the Chief's working figure, the one she runs the ship to, five hours rather than nine. Either way it is {fmtPct(watchLossPct, 0)} of what the vault plate says.
+
+<Dialogue speaker="lindqvist" name="Commander Petra Lindqvist-Oduya · CSV Halden Reach" aside="She does not sit down and she does not offer you the chair.">
+I signed a work order for a sink overhaul. Capacity is on the third page of the yard return and I read the first two. Commander, I was not told.
+</Dialogue>
+
+She opens the second drawer of the desk and takes out a bound book with a stitched spine, the kind the Service stopped issuing eleven years ago, and squares it on the desk beside your page.
+
+<Dialogue speaker="lindqvist">
+Ten past eleven. Say it again and say the numbers slowly.
+</Dialogue>
+
+You say them slowly. She writes for a long time after you have finished.
+
+</Scene>
+
+<LogEntry
+  title="Paired data: analyse the differences"
+  concept="When each row of a file is one unit measured twice, the file holds one sample and not two: subtract within each row and run the ordinary one-sample t procedure on the n differences, with df = n − 1 pairs. The gain is not cosmetic. Every unit's own standing level sits in both columns and in the spread of both, which is what a two-sample standard error is built from; the difference cancels it, so SE = s_d/√n can be a fraction of √(s₁²/n₁ + s₂²/n₂) on the same numbers. Conditions, including normality, are checked on the differences."
+  formula="\bar{d} \pm t^\star \frac{s_d}{\sqrt{n}}, \qquad t = \frac{\bar{d} - 0}{s_d/\sqrt{n}}, \qquad df = n - 1 \text{ pairs}"
+  mistake="Running a two-sample procedure on two columns that are the same units measured twice. It executes without complaint, answers a different question, and on data like these it answers it “no”. The tell is in the design, not the arithmetic: if you can point at a row and say this is one thing measured twice, the rows are the units."
+  tags={['paired t', 'mean difference', 'differences as one sample', 'df = n − 1', 'conditions', '7.4', '7.5']}
+/>
+
+</Gated>

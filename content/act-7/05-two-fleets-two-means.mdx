@@ -1,0 +1,310 @@
+---
+id: act-7-05
+act: 7
+title: "Two Fleets, Two Means"
+kind: module
+ap_topics: ["7.6", "7.7"]
+objectives:
+  - "Build a two-sample t-interval for μ₁ − μ₂ from two independent groups, with an unpooled standard error"
+  - "State and check the conditions for a two-sample t procedure, group by group"
+  - "Choose between Welch's degrees of freedom and the conservative rule, and say in the write-up which was used"
+  - "Interpret an interval that contains zero without turning it into a claim that the two means are equal"
+prereqs: ["act-7-04"]
+est_minutes: 25
+calc_briefing: null
+summary: "The brief's Perrine paragraph names nine hundred hulls. Ferrier asks how many of them the ship has anything on."
+---
+
+import { conservativeDf, fmt, fmtInt, fmtPct, mean, sd, twoMeanInterval, welchDf } from '@/lib/stats'
+import { confidenceIntervalInterpretation } from '@/lib/problems/rubrics'
+import {
+  LANE_POPULATION,
+  LOST_VS_SURVIVING_INTERVAL,
+  LOST_VS_SURVIVING_WELCH_DF,
+  NINETEEN_N,
+  OTHER_N,
+  SURVIVING_PERRINE_N,
+  SURVIVING_VS_OTHER_INTERVAL,
+  lostPerrineDelays,
+  lostVsSurvivingInterval,
+  otherDelays,
+  survivingPerrineDelays,
+} from '@/instruments/act-7/data'
+import { DifferenceOfMeansPanel } from '@/instruments/act-7/DifferenceOfMeansPanel'
+import { OutputReader } from '@/instruments/act-7/OutputReader'
+
+export const escorted = [1.2, -0.4, 0.9, 2.1, 0.3, 1.6, -0.8, 1.1]
+export const unescorted = [2.4, 3.1, 1.8, 4.2, 0.9, 2.7, 3.6, 1.4, 2.9, 3.3, 2.0, 4.0, 2.2, 3.8, 1.6]
+export const escortWelch = twoMeanInterval(escorted, unescorted, { confidence: 0.95, random: true })
+export const escortCons = twoMeanInterval(escorted, unescorted, { confidence: 0.95, dfMethod: 'conservative', random: true })
+export const escortWelchDf = welchDf(sd(escorted), escorted.length, sd(unescorted), unescorted.length)
+export const escortConsDf = conservativeDf(escorted.length, unescorted.length)
+
+export const lostCi = LOST_VS_SURVIVING_INTERVAL.ci
+export const lostConservative = lostVsSurvivingInterval(0.95, 'conservative')
+export const honestCi = SURVIVING_VS_OTHER_INTERVAL.ci
+
+export const lostRubric = confidenceIntervalInterpretation({
+  level: 0.95,
+  parameter: 'difference in means',
+  lower: LOST_VS_SURVIVING_INTERVAL.ci[0],
+  upper: LOST_VS_SURVIVING_INTERVAL.ci[1],
+  context: {
+    population: LANE_POPULATION,
+    variable: 'in Mark-9 delay between the lost Perrine hulls and the Perrine hulls that arrived',
+    units: 'days',
+  },
+  digits: 2,
+})
+
+<Scene stamp="MET 163/07:50" location="CSV Nightjar · bridge · alongside CSV Halden Reach, 0.12 AU sunward of the Ceres approach" condensed="Two days with the cellar back and the bridge is eleven degrees again. The inference brief is on the plot in draft and one paragraph of it names every Perrine hull on the Lane. Ferrier asks how many of the nine hundred the ship actually has anything on. Ebele wants to know the sampling frame first, and then whether to pool the standard deviations, because the package has a box for it.">
+
+Two days with the cellar back and the bridge has gone to eleven degrees and the smell of cold polymer. You keep your hands out of your pockets because the plot's housing needs both of them and because Ferrier is standing at the far side of it.
+
+The brief is in draft on the plot, eleven pages, and one paragraph is boxed in amber where Ebele flagged it at 04:00 for a citation he could not find.
+
+The paragraph says Perrine. Nine hundred transits, one beneficiary, one sentence with nine hundred masters standing inside it.
+
+Ferrier reads it upside down, which she does with everything.
+
+<Dialogue speaker="xo">
+Nine hundred hulls in that paragraph. How many of them do we hold anything on.
+</Dialogue>
+
+Nineteen.
+
+<Dialogue speaker="xo">
+Then it names eight hundred and eighty-one crews we have nothing against, and Captain Ostrow will read it in four days and he will be right about it. The data says nineteen. Write nineteen.
+</Dialogue>
+
+Ebele has come up from the intel bay with his slate held against his chest, which means he has a question he has already tried to answer himself.
+
+<Dialogue speaker="analyst" aside="He does not sit down at the terminal. He asks it standing.">
+So before I build anything, sir. The sampling frame. Perrine hulls that arrived, against every other owner's hull: those are two groups of different ships, no pairing, no matching, nothing to subtract row by row. That one's clean. But the other split I'd want, lost Perrine against surviving Perrine, the nineteen aren't a sample of Perrine transits. They're the ones that stopped.
+</Dialogue>
+
+He is right and it is the thing that will be argued in a wardroom on the fourth day, and it is not this morning's problem.
+
+<Dialogue speaker="analyst">
+Second thing, and it's the package. There's a box that says *pooled*. The tender's build has it ticked and ours has it clear and the two give different degrees of freedom, so somebody at some point decided, and I can't find out who.
+</Dialogue>
+
+Never. Not ticked, not once, not on any file this ship sends anywhere.
+
+<Dialogue speaker="analyst">
+Yes, sir. That's — yes. And the degrees of freedom, then? Ours prints a number with two decimals in it. The hand rule gives a whole number and they don't agree.
+</Dialogue>
+
+Either. Not both, and not silently. Whichever one is in the arithmetic goes in the sentence next to it, so that a man reading it in four days can reproduce the number instead of asking what you did.
+
+Ferrier straightens the eleven pages by the corner and puts the amber-boxed one on top.
+
+<Dialogue speaker="xo">
+Two intervals, then. One of them is the Board's case against us. Build that one first.
+</Dialogue>
+
+The port is full of the tender's radiators, all four wings out and running orange, and the light of them comes across the plot and sits on the boxed paragraph while you read it again.
+
+</Scene>
+
+<Briefing title="Two independent samples, one difference" topics={["7.6", "7.7"]}>
+<Briefing.Intuition>
+Two groups are **independent** when knowing any value in one tells you nothing about any value in the other: different units, no matching rule, and usually different group sizes. There is no row to subtract along, so the file keeps both columns and each group keeps its own $n$, its own $\bar{x}$ and its own $s$.
+
+The parameter is $\mu_1 - \mu_2$, a difference between two population means, and the statistic that estimates it is $\bar{x}_1 - \bar{x}_2$. Its standard error comes from the rule for the variance of a difference of independent quantities: variances add. Each group contributes $s^2/n$, the two are summed, and the square root is taken at the end.
+
+$$SE = \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}$$
+
+Every symbol in that expression belongs to one group only. Nothing is averaged across the two, and in particular the two standard deviations are never combined into a single figure. Combining them is called **pooling**, and it is legitimate only when the two populations are known to have the same standard deviation, which observational data essentially never establishes. The AP two-sample procedure is the unpooled one.
+
+The price of not pooling is that $(\bar{x}_1 - \bar{x}_2)/SE$ does not follow a $t$ distribution exactly, only approximately, and the approximation needs a number of degrees of freedom. Two rules are accepted.
+
+**Welch's.** A formula that returns a real number, usually not an integer, chosen so the approximation is as close as it can be. Every calculator and every package uses it, and a printed $df$ of {fmt(escortWelchDf, 2)} is the formula working rather than a rounding fault.
+
+**The conservative rule.** $df = \min(n_1 - 1,\ n_2 - 1)$, which is always smaller than Welch's. A smaller $df$ gives a larger $t^\star$ and a wider interval, so an interval built this way captures the parameter at least as often as the stated level. It is a hand method for a table, it is safe, and it is not more accurate. Either rule is accepted; the write-up must say which one produced the number.
+
+The interval is the familiar shape, and the sentence under it names both endpoints, the parameter, the population and which group was subtracted from which.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="(\bar{x}_1 - \bar{x}_2) \pm t^\star \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}" terms={{ '\\bar{x}_1 - \\bar{x}_2': 'the point estimate of μ₁ − μ₂, in the order you chose', 's_1, s_2': "each group's own sample standard deviation — never combined", 't^\\star': 'the critical value at the chosen level, on Welch or conservative df' }} label="Two-sample t-interval for a difference of means" />
+
+<Formula tex="df_{\text{cons}} = \min(n_1 - 1,\ n_2 - 1) \qquad\text{or}\qquad df_{\text{Welch}} = \frac{\left(\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}\right)^2}{\frac{1}{n_1-1}\left(\frac{s_1^2}{n_1}\right)^2 + \frac{1}{n_2-1}\left(\frac{s_2^2}{n_2}\right)^2}" terms={{ 'df_{\\text{cons}}': 'the hand rule: always smaller, always wider, always safe', 'df_{\\text{Welch}}': 'what technology returns; real-valued, and reported as such' }} label="Two rules for the degrees of freedom" />
+
+**Conditions, checked group by group.** Random: each group is a random sample from its own population, or the two arose by random assignment. Independent: the two groups are independent of one another, and each sample is no more than 10% of its own population. Normal: for each group, $n \geq 30$, or a graph of that group showing no strong skewness and no outliers. A failure in either group stops the procedure.
+</Briefing.Definition>
+<Briefing.Worked>
+The 2176 escort trial on the Mars–Belt corridor, from the report that has your name on the cover. Delay against the filed plot, in days, for hulls that took an escort and for hulls that routed independently over the same eleven weeks. Different hulls in the two lists, assigned by the Authority's duty roster rather than by anyone's choice, and nothing matching one to another.
+
+Escorted, {fmtInt(escorted.length)} hulls: {escorted.map((v) => fmt(v, 1)).join(', ')}.
+
+Independently routed, {fmtInt(unescorted.length)} hulls: {unescorted.map((v) => fmt(v, 1)).join(', ')}.
+
+Group summaries. Escorted: $\bar{x}_1$ = {fmt(mean(escorted), 3)} d, $s_1$ = {fmt(sd(escorted), 3)}, $n_1$ = {fmtInt(escorted.length)}. Independent: $\bar{x}_2$ = {fmt(mean(unescorted), 3)} d, $s_2$ = {fmt(sd(unescorted), 3)}, $n_2$ = {fmtInt(unescorted.length)}.
+
+*Estimate.* {fmt(mean(escorted), 3)} − {fmt(mean(unescorted), 3)} = **{fmt(escortWelch.estimate, 3)} d**, escorted minus independent.
+
+*Standard error.* {fmt(sd(escorted), 3)}² ÷ {fmtInt(escorted.length)} = {fmt(sd(escorted) ** 2 / escorted.length, 5)} and {fmt(sd(unescorted), 3)}² ÷ {fmtInt(unescorted.length)} = {fmt(sd(unescorted) ** 2 / unescorted.length, 5)}. Add, take the root: **{fmt(escortWelch.se, 4)}**.
+
+*Degrees of freedom and the interval.* Welch's formula gives {fmt(escortWelchDf, 2)}, and at {fmtPct(0.95, 0)} that is $t^\star$ = {fmt(escortWelch.criticalValue, 3)} and a margin of {fmt(escortWelch.marginOfError, 3)}:
+
+<Formula tex={`(${fmt(escortWelch.ci[0], 2)},\\ ${fmt(escortWelch.ci[1], 2)})\\ \\text{days}`} label="The 95% interval for the difference in mean delay, escorted minus independently routed" />
+
+The conservative rule would use $\min$({fmtInt(escorted.length - 1)}, {fmtInt(unescorted.length - 1)}) = {fmtInt(escortConsDf)}, lifting $t^\star$ to {fmt(escortCons.criticalValue, 3)} and widening the interval to ({fmt(escortCons.ci[0], 2)}, {fmt(escortCons.ci[1], 2)}). Same estimate, same standard error, wider by {fmt(escortCons.marginOfError - escortWelch.marginOfError, 3)} days at each end.
+
+*The sentence.* We are {fmtPct(0.95, 0)} confident that the true difference in mean delay against the filed plot, escorted minus independently routed, for hulls working the Mars–Belt corridor in 2176, is between {fmt(escortWelch.ci[0], 2)} and {fmt(escortWelch.ci[1], 2)} days. Both endpoints are negative, so every difference the data are consistent with has escorted hulls arriving nearer their filed plot, by somewhere between {fmt(Math.abs(escortWelch.ci[1]), 2)} and {fmt(Math.abs(escortWelch.ci[0]), 2)} days on average. The direction is half the finding. The size is the other half, and it is the half a Board acts on.
+</Briefing.Worked>
+<Briefing.Caution>
+**Pooling.** Ticking the box replaces $s_1$ and $s_2$ with one weighted figure and claims $n_1 + n_2 - 2$ degrees of freedom for it. That is a great many more degrees of freedom than the data earned, and it rests on an assumption about two population standard deviations that nothing in an observational file supports. When the groups are also unequal in size the larger one sets the spread for the smaller, and the interval can come out badly wrong in either direction. Leave the box clear.
+
+**"Conservative df is more accurate."** It is smaller on purpose. A smaller $df$ widens the interval, and an interval wider than it needs to be captures more often than the level it advertises, which is caution rather than accuracy. Use it when you are working from a table; use Welch's when a machine is doing the arithmetic; say which one you used either way.
+
+**An interval that contains zero.** Zero inside the interval means the data have not ruled out "no difference". They have not ruled out the endpoints either, and those may be large. Report it as an absence of convincing evidence and give the range, because a reader deciding what to do next needs to know how much room is left. The two means being equal is a claim no interval can make.
+
+**The order of subtraction.** Group 1 minus group 2 reflects through zero if you swap them, and the two intervals mean the same thing. A reader who is not told which way round it goes will take the sign at face value, so the sentence has to name the order.
+
+**Two columns are not automatically two samples.** If the two values in a row came off the same unit, this is the wrong procedure entirely and the paired one from the previous module is the right one. Independence is a fact about the design, checked before the arithmetic starts.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="Two-sample t-interval">
+<Calculator.Step keys={['STAT', '1:Edit']} note="Worked case: the 2176 Mars–Belt escort trial above — not the Ledger comparisons below.">With raw data, put the escorted delays in `L1` and the independently routed delays in `L2`. The two lists have different lengths and that is correct: these are two separate groups, not two measurements of one.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '0:2-SampTInt']} note="Inpt: Data · List1: L1 · List2: L2 · Freq1: 1 · Freq2: 1 · C-Level: .95 · Pooled: No · Calculate">Scroll to the bottom of the TESTS menu; `0:2-SampTInt` sits below `9:2-PropZInt`. With summary statistics instead, set `Inpt: Stats` and type x̄1, Sx1, n1, x̄2, Sx2, n2.</Calculator.Step>
+<Calculator.Read label="( , )" value={`(${fmt(escortWelch.ci[0], 4)}, ${fmt(escortWelch.ci[1], 4)})`}>the interval for μ₁ − μ₂, in the order the lists were entered.</Calculator.Read>
+<Calculator.Read label="df" value={fmt(escortWelchDf, 4)}>Welch's degrees of freedom.</Calculator.Read>
+<Calculator.Read label="x̄1" value={fmt(mean(escorted), 4)} />
+<Calculator.Read label="x̄2" value={fmt(mean(unescorted), 4)} />
+<Calculator.Read label="Sx1" value={fmt(sd(escorted), 4)}>each group's own standard deviation. Both are printed because both are used.</Calculator.Read>
+<Calculator.Read label="Sx2" value={fmt(sd(unescorted), 4)} />
+<Calculator.Watch>**Data against Stats.** `Inpt: Stats` wants six numbers in a fixed order: x̄1, Sx1, n1, x̄2, Sx2, n2. Enter them in the wrong order and the screen still computes. If any field on your screen is asking for **σ**, you are on `9:2-SampZInt` and running a procedure that requires two known population standard deviations, which you do not have and never will.</Calculator.Watch>
+<Calculator.Watch>**`Pooled: No` is the default and the right choice.** `Yes` assumes $\sigma_1 = \sigma_2$, which nothing in a Lane file establishes. On these two groups it would replace the standard error {fmt(escortWelch.se, 4)} with a pooled one and claim {fmtInt(escorted.length + unescorted.length - 2)} degrees of freedom instead of {fmt(escortWelchDf, 2)}. Check the field before you press Calculate, every time, because the setting persists between problems.</Calculator.Watch>
+<Calculator.Watch>**The calculator reports a fractional df.** {fmt(escortWelchDf, 4)} is not an integer and is not a mistake: Welch's formula is an approximation and its answer is real-valued. The hand alternative is $\min(n_1 - 1,\ n_2 - 1)$ = {fmtInt(escortConsDf)}, which is what a $t$ table can be read at, and it gives a wider interval. Write into the answer which of the two you used.</Calculator.Watch>
+</Calculator>
+
+<DifferenceOfMeansPanel />
+
+<OutputReader
+  a={escorted}
+  b={unescorted}
+  nameA="escorted"
+  nameB="independent"
+  measure="delay against the filed plot"
+  units="d"
+  label="INTEL · READING THE PACKAGE OUTPUT · MARS–BELT 2176"
+/>
+
+<Drill generator="act-7/two-mean-interval" count={1} />
+<Drill generator="act-7/two-sample-conditions" count={1} />
+<Drill generator="act-7/conditions-dotplots" count={1} />
+<Drill generator="act-7/df-choice" count={1} />
+<Drill generator="act-7/difference-interval-interpretation" count={1} />
+<Drill generator="act-7/difference-claim" count={1} />
+
+<MissionBeat id="act-7-05-honest" kind="numeric" answer={SURVIVING_VS_OTHER_INTERVAL.ci[1]} answerKind="mean" digits={2} units="d" label="THE EIGHT HUNDRED AND EIGHTY-ONE"
+  prompt={`Set the difference-of-means panel to **surviving Perrine vs everyone else**: the ${fmtInt(SURVIVING_PERRINE_N)} Perrine-owned hulls that arrived, against the ${fmtInt(OTHER_N)} transits with any other beneficiary. Welch degrees of freedom, ${fmtPct(0.95, 0)} level, surviving Perrine minus everyone else.\n\nReport the **upper endpoint** of that interval, in days, to **two decimal places**.`}
+  hint="Two independent groups, so each keeps its own s and its own n and the standard error is the square root of the two s²/n terms added. Then the point estimate plus t* times that.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He puts the interval on the difference axis and then puts a finger on the zero line, which is inside it.">
+  So it runs {fmt(honestCi[0], 2)} to {fmt(honestCi[1], 2)} days, sir, and zero is in it. Eight hundred and eighty-one hulls and we cannot show they run late at all. Captain Ostrow is right about those. He has been right about those the whole time.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Check the standard error before the endpoint. Each group brings its own s and its own n and nothing crosses between them. If you pooled, you have answered a question about a population nobody has described.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-05-licence" kind="choice" label="WHAT THAT INTERVAL LICENSES"
+  prompt={`The amber-boxed paragraph has to be rewritten around that interval before the brief goes anywhere. **Which sentence does it support?**`}
+  options={[
+    `Perrine-owned hulls run later against the filed plot than everyone else, and the brief should say so with this interval as the evidence.`,
+    `There is no convincing evidence that Perrine hulls which completed their transits differ in mean delay from hulls with any other beneficiary. Zero is inside the interval, and so are values at both ends that these data also fail to rule out.`,
+    `The mean delay of Perrine hulls that arrived is equal to the mean delay of everyone else, since the interval is consistent with a difference of zero.`,
+    `Nothing at all can be said, because an interval that contains zero is an inconclusive result and inconclusive results are not reported.`,
+  ]}
+  correct={1}
+  feedback={[
+    'You just accused the eight hundred and eighty-one. Zero is inside that interval; the data do not place these hulls on either side of it, and the brief would be making a claim its own arithmetic refuses.',
+    null,
+    `Equality is a claim no interval can make. This one also contains ${fmt(honestCi[0], 2)} and ${fmt(honestCi[1], 2)} days and rules neither of them out. "Consistent with zero" describes what has not been pinned down.`,
+    'An interval that contains zero is a finding and it goes in. It is what clears the crews this brief would otherwise have named, and it is the sentence that makes the next one worth reading.',
+  ]}
+  hint="Put zero on the same axis as the two endpoints. Then ask what the interval fails to rule out, and notice that the answer is a range and not a point.">
+  <Success>
+  <Dialogue speaker="xo" aside="She strikes the boxed paragraph out with one line and writes the replacement herself, in the margin, initialled.">
+  Then it goes in as a finding and it goes in first. We have looked at the eight hundred and eighty-one and we found nothing, and the brief says that before it says anything else. He can read the rest afterwards.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  You just accused the eight hundred and eighty-one. Look where zero is. There are masters in that number who have never filed a late plot in their lives, and the arithmetic in front of you declines to say a word against any of them.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-05-lost" kind="numeric" answer={LOST_VS_SURVIVING_INTERVAL.ci[0]} answerKind="mean" digits={2} units="d" label="THE NINETEEN AGAINST THE REST OF THE FLEET"
+  prompt={`Now the second comparison: the ${fmtInt(NINETEEN_N)} Perrine hulls the Register carries as lost, against the ${fmtInt(SURVIVING_PERRINE_N)} Perrine hulls that arrived. Different hulls, no pairing. Welch degrees of freedom, ${fmtPct(0.95, 0)} level, lost minus surviving.\n\nReport the **lower endpoint**, in days, to **two decimal places**.`}
+  hint="The nineteen bring a large s on a small n and the eight hundred and eighty-one bring a small contribution on a large one. Add the two s²/n terms, take the root, and let the df come from Welch.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He has both intervals on one difference axis now, the second one nowhere near the first.">
+  So the lower end is {fmt(lostCi[0], 2)} days and the upper is {fmt(lostCi[1], 2)}, on {fmt(LOST_VS_SURVIVING_WELCH_DF, 2)} degrees of freedom. The conservative rule gives {fmtInt(lostConservative.df)} and moves the ends to {fmt(lostConservative.ci[0], 2)} and {fmt(lostConservative.ci[1], 2)}. Sir, it barely matters which. Neither of them comes near zero.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Nineteen and eight hundred and eighty-one. The small group carries most of the standard error and all of the degrees of freedom, so check that your $n_1$ is nineteen and not the other way about. Lower endpoint. Lost minus surviving.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-05-interpret" kind="interpretation" label="THE SECOND SENTENCE"
+  prompt={`Write the sentence that goes under the second interval, for a brief that Captain Ostrow reads before the Board does. Interpret the interval in context: the true difference in mean Mark-9 delay between the lost Perrine hulls and the Perrine hulls that arrived, among ${LANE_POPULATION}.`}
+  hint="Level, the word confident, both endpoints with their units, the TRUE difference in means, and which group was subtracted from which. Then read it back for anything that claims more than a difference in two means."
+  {...lostRubric}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He is already on the next page and does not look up while he says it.">
+  Two sentences and they point opposite ways, sir, and both of them are ours. Nothing on the eight hundred and eighty-one. A day and a half to nearly four on the nineteen. Whether that second one clears an alpha is a different procedure and I have not run it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Both endpoints, the level, and the word confident. And say whose delay it is and against whom. A sentence that says the lost ships were late has described nineteen hulls we already hold; the interval is about the mean, and the mean belongs to something larger than the file.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-7-05-honest", "act-7-05-licence", "act-7-05-lost", "act-7-05-interpret"]}>
+
+<Scene stamp="MET 163/16:20" location="CSV Nightjar · bridge · light-lag to Valhalla 24 minutes each way" condensed="The Perrine paragraph comes out and two sentences go in: nothing against the eight hundred and eighty-one, and a mean delay for the nineteen that is between a day and a half and nearly four days longer than the rest of their own owner's fleet. The concession to Ostrow is written in first, over Rook's name. Whether the second interval clears a significance level is a separate procedure, and Ebele leaves the space for it.">
+
+The paragraph is out by the end of the afternoon watch and two sentences are in its place, and the first of the two is a concession.
+
+Perrine hulls that completed their transits are indistinguishable, in mean delay against the filed plot, from every other beneficiary's hulls on the Lane. The interval runs {fmt(honestCi[0], 2)} to {fmt(honestCi[1], 2)} days and it contains zero. The Board's officer on the Lane said as much in the tender's wardroom eleven days ago, with {fmtInt(SURVIVING_PERRINE_N + NINETEEN_N)} hulls in his comparison rather than {fmtInt(SURVIVING_PERRINE_N)}, and on the honest hulls he was correct. You write that he was correct and you put your name under it rather than Ferrier's.
+
+Then the second sentence. The {fmtInt(NINETEEN_N)} hulls the Register carries as lost ran later, on average, than the {fmtInt(SURVIVING_PERRINE_N)} hulls of the same owner that arrived, by somewhere between {fmt(lostCi[0], 2)} and {fmt(lostCi[1], 2)} days. Welch's degrees of freedom, {fmt(LOST_VS_SURVIVING_WELCH_DF, 2)}, named in the line beneath it, with the conservative {fmtInt(lostConservative.df)} and its interval of {fmt(lostConservative.ci[0], 2)} to {fmt(lostConservative.ci[1], 2)} in the footnote for anyone checking it against a table.
+
+Same owner. Same lane. Same six years. One group of them stopped.
+
+<Dialogue speaker="xo" aside="She reads both sentences off the plot and then reads the first one again.">
+The anomaly is not the owner. Nine hundred hulls fly for Perrine and eight hundred and eighty-one of them file the way everybody else files. Whatever this is, it was done to nineteen of them, one at a time, by somebody choosing which.
+</Dialogue>
+
+Ebele leaves a blank line under the second sentence and a note in the margin about it, because an interval says how much and says nothing about how surprising, and the Board's counsel will ask for the second thing by name.
+
+<Dialogue speaker="analyst">
+I can run it tomorrow, sir. Same two groups, same standard error, hypotheses instead of endpoints. It won't be a new finding. It'll be the same finding with a decision attached, and he'll want the decision in the language he uses.
+</Dialogue>
+
+Twenty-four minutes to Valhalla and twenty-four back. Whatever goes into the relay tonight is forty-eight minutes from being anybody's problem but yours.
+
+</Scene>
+
+<LogEntry
+  title="Two independent samples: never pool"
+  concept="When the two groups contain different units with no rule matching them, each group keeps its own n, x̄ and s, and the standard error of x̄₁ − x̄₂ adds the two variance contributions before taking a root: SE = √(s₁²/n₁ + s₂²/n₂). The standard deviations are never combined, because pooling assumes the two populations share one σ and claims n₁ + n₂ − 2 degrees of freedom on the strength of it. The degrees of freedom come from Welch's formula (real-valued, what technology returns) or from the conservative min(n₁ − 1, n₂ − 1), which is smaller, wider and safer; the write-up names which. An interval containing zero reports an absence of convincing evidence of a difference, together with the range that has not been ruled out."
+  formula="(\bar{x}_1 - \bar{x}_2) \pm t^\star \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}, \qquad df_{\text{cons}} = \min(n_1 - 1,\ n_2 - 1)"
+  mistake="Pooling the two standard deviations because the box was ticked, and reading an interval that contains zero as evidence that the two means are equal. The first inflates the degrees of freedom on an assumption nothing supports; the second turns a statement about precision into a claim the data cannot carry."
+  tags={['two-sample t-interval', 'difference of means', 'unpooled SE', 'Welch df', 'conservative df', 'interval containing zero', '7.6', '7.7']}
+/>
+
+</Gated>

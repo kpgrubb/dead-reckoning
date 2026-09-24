@@ -12,10 +12,11 @@
  */
 import { describe, expect, it } from 'vitest'
 import { Rng } from '@/lib/rng'
-import { gradeInterpretation } from '@/lib/problems/rubric'
+import { contextGroup, gradeInterpretation, numberRegex } from '@/lib/problems/rubric'
 import { validateInstance } from '@/lib/problems/validate'
 import type { ChoiceAnswer, DisplayAnswer, InterpretationAnswer, NumericAnswer, ProblemGenerator } from '@/lib/problems/types'
-import { marginOfErrorMean, normal, oneMeanInterval, pValueT, sampleSizeForMean, tStar, zStar } from '@/lib/stats'
+import { fmt, fmtInt, fmtPct, marginOfErrorMean, mean, normal, oneMeanInterval, pValueT, sampleSizeForMean, tStar, zStar } from '@/lib/stats'
+import { NINETEEN_EXCESS_DILUTED, NINETEEN_N, OSTROW_POWER, OSTROW_SE, OTHER_N, PERRINE_N, lostPerrineDelays, survivingPerrineDelays } from '@/instruments/act-7/data'
 import { dfAndConditions, smallSampleNormality, tCriticalValue, tTailProbability, tVsZMargin, whyT } from './t-distribution'
 import { intervalJustifiesClaim, intervalWidthDrivers, marginOfErrorForMean, meanIntervalInterpretation, sampleSizeForMargin, tIntervalEndpoint } from './reactor-output'
 import { interpretPValueMean, poolingTrap, powerOfAComparison, tTestConclusion, tTestSetup, tTestStatistic } from './within-a-day'
@@ -301,6 +302,72 @@ describe('act-7/pooling-trap', () => {
       // The dilution is always smaller than the excess it hides, and by a lot.
       expect(Math.abs((k * excess) / total)).toBeLessThan(Math.abs(excess) * 0.1)
     }
+  })
+})
+
+/**
+ * act-7-03's Type II beat builds its rubric in the MDX rather than through a generator, so nothing
+ * else checks that its exemplar passes. This reconstructs it with the arguments the module passes.
+ */
+describe('mission-beat rubric (act-7-03-typeii)', () => {
+  const perHull = mean(lostPerrineDelays) - mean(survivingPerrineDelays)
+  const rubric: InterpretationAnswer = {
+    type: 'interpretation',
+    minWords: 35,
+    required: [
+      {
+        label: 'Says the excess was diluted across the fleet',
+        phrasings: ['diluted', 'averaged into', 'spread across', 'divided by', 'share of', numberRegex(NINETEEN_EXCESS_DILUTED, 3, 1)],
+        polarity: 'any',
+      },
+      { label: 'Cites the standard error of the comparison', phrasings: ['standard error', numberRegex(OSTROW_SE, 3, 1)], polarity: 'any' },
+      {
+        label: 'Names the power or the miss rate',
+        phrasings: ['power', 'beta', 'type ii', 'type 2', 'miss', numberRegex(OSTROW_POWER.power, 3, 1), numberRegex(OSTROW_POWER.beta, 3, 1)],
+        polarity: 'any',
+      },
+      {
+        label: 'Says failing to detect is not evidence of absence',
+        phrasings: [/\bnot evidence\b/, /\bnot mean\b/, 'not evidence absence', 'not rule out', 'cannot rule out', 'not establish'],
+        polarity: 'any',
+      },
+      contextGroup('Names the transits and the delay', ['Perrine transits on the Hundred-Day Lane', 'mean Mark-9 delay against the filed plot']),
+    ],
+    forbidden: [
+      { phrase: /\b(?:his|the board's|ostrow's) (?:analysis|arithmetic|number|figure|calculation) (?:is|was) wrong\b/, label: 'Calls his arithmetic wrong', why: 'His arithmetic is correct.' },
+      { phrase: /\bproves?\b/, label: 'Proof language', why: 'A power calculation proves nothing about whether the effect is there.' },
+    ],
+    exemplar: `Ostrow's comparison is arithmetically right and could not have found the nineteen. Their excess of about ${fmt(perHull, 2)} days is carried by ${fmtInt(NINETEEN_N)} hulls out of ${fmtInt(PERRINE_N)}, so averaged into all ${fmtInt(PERRINE_N)} Perrine transits on the Hundred-Day Lane it reaches the mean Mark-9 delay as only ${fmt(NINETEEN_EXCESS_DILUTED, 3)} days, while the standard error of his comparison against the other ${fmtInt(OTHER_N)} transits is ${fmt(OSTROW_SE, 3)} days. Against an effect that small the test has power ${fmt(OSTROW_POWER.power, 3)}, so it fails to reject about ${fmtPct(OSTROW_POWER.beta, 0)} of the time: that is a Type II error, and its silence is not evidence that the diverted hulls are absent.`,
+  }
+
+  it('passes its own exemplar', () => {
+    const r = gradeInterpretation(rubric, rubric.exemplar)
+    expect(r.rubric?.filter((g) => !g.met).map((g) => g.label) ?? []).toEqual([])
+    expect(r.correct).toBe(true)
+  })
+
+  it('fails the answer that agrees with him', () => {
+    const r = gradeInterpretation(
+      rubric,
+      'The mean delay of the Perrine transits on the Hundred-Day Lane sits within a day of the mean delay of every other hull on the corridor, so the Board is right that the transit-time record shows nothing unusual about that tonnage.',
+    )
+    expect(r.correct).toBe(false)
+  })
+
+  it('fails an answer that calls his arithmetic wrong', () => {
+    const r = gradeInterpretation(
+      rubric,
+      `His analysis is wrong: the excess was diluted to ${fmt(NINETEEN_EXCESS_DILUTED, 3)} days against a standard error of ${fmt(OSTROW_SE, 3)} days, so the power was only ${fmt(OSTROW_POWER.power, 3)} and the Perrine transits on the Hundred-Day Lane were never going to show a mean Mark-9 delay he could detect, which is not evidence of absence.`,
+    )
+    expect(r.correct).toBe(false)
+    expect(r.forbidden?.length).toBeGreaterThan(0)
+  })
+
+  it('carries the three numbers the beat asks for', () => {
+    expect(rubric.exemplar).toContain(fmt(NINETEEN_EXCESS_DILUTED, 3))
+    expect(rubric.exemplar).toContain(fmt(OSTROW_SE, 3))
+    expect(rubric.exemplar).toContain(fmt(OSTROW_POWER.power, 3))
+    expect(OSTROW_POWER.power).toBeLessThan(0.2)
   })
 })
 

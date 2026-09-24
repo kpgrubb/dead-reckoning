@@ -42,7 +42,7 @@ export const crdAssignment = randomAssignment(rng('act-3-04-page', 'crd'), half)
 export const crdImbalance = ownerImbalance(crdAssignment)
 export const blockAssignment = blockedAssignment(rng('act-3-04-page', 'blocked'))
 export const blockImbalance = ownerImbalance(blockAssignment)
-/** The Lane's working loss rate per transit — the planning figure, not a measurement. */
+/** The Lane's working loss rate per transit: the planning figure, not a measurement. */
 export const lossRate = 0.01
 export const seeOneLoss = binomial.atLeast(1, BOARD_TRIAL.length, lossRate)
 
@@ -65,25 +65,25 @@ export const themisLopsided = [0, 1, 2, 3, 7, 8, 9, 10].reduce((s, x) => s + the
 
 <Scene stamp="MET 72/09:15" location="Wardroom · braking at 4 mgee · 0.81 AU from Callisto" condensed="Attachment D is the Board's 2183 escort trial: 26 transits, 14 of them escorted by Tindr because their owners asked for a cutter, 12 unescorted independents from elsewhere in the same month, zero incidents in all 26, and a finding that deterrence is established. Ferrier has had it for two days. She puts the roster on the wardroom plot and starts at the top of it.">
 
-Ferrier has had Attachment D since MET 70 and has said nothing about it, which is how you know she has read it more than twice.
+Ferrier has had Attachment D since MET 70 and has not mentioned it once in two days.
 
-She puts it up on the wardroom plot at breakfast, roster first, finding last, and stands to one side of it with her arms folded so that you are looking at the document and not at her.
+Breakfast under 4 mgee. The wardroom plot is the only display aboard big enough to take a roster whole, so you eat standing at the end of the table with the tray wedged against the coaming, and she puts the document up over the top of it. Roster first. Finding last. She stands to one side with her arms folded so that you are looking at the page and not at her.
 
 {fmtInt(BOARD_TRIAL.length)} transits, 2183, the Lane between the Marks. {fmtInt(escorted.length)} of them sailed with the cutter *Tindr* in company. {fmtInt(unescorted.length)} sailed alone. Every transit in the file came home; the incident column is {fmtInt(incidentTotal)} from top to bottom, and the Directorate has taken that column and written a sentence under it.
 
 The rest of the page is where the work is.
 
-The escorted {fmtInt(escorted.length)} are two announced convoys — {fmtInt(convoyA.length)} hulls out on day {fmtInt(convoyA[0].departureDay)} and {fmtInt(convoyB.length)} on day {fmtInt(convoyB[0].departureDay)} — and they are escorted because their owners wrote to Lane Operations and asked to be. Every one of them is a Mercantile house's hull. Every one of them is running a {escorted[0].drive} plant: {fmtInt(escortedTessera)} out of {fmtInt(escorted.length)}.
+The escorted {fmtInt(escorted.length)} are two announced convoys: {fmtInt(convoyA.length)} hulls out on day {fmtInt(convoyA[0].departureDay)}, {fmtInt(convoyB.length)} on day {fmtInt(convoyB[0].departureDay)}. They sailed with the cutter because their owners wrote to Lane Operations and asked for one. Every one of them is a Mercantile house's hull. Every one of them is running a {escorted[0].drive} plant: {fmtInt(escortedTessera)} out of {fmtInt(escorted.length)}.
 
 The unescorted {fmtInt(unescorted.length)} are independents. No convoy, no announcement, departures scattered from day {fmtInt(firstUnescorted)} to day {fmtInt(lastUnescorted)} the way independents sail, and {fmtInt(unescortedTessera)} of them on a {escorted[0].drive}.
 
-And the owner column has {fmtInt(ownerClasses.length)} values in it, not {fmtInt(OWNERS.length)}. Not one Perrine hull in the trial. {fmtInt(perrineInTrial)}. Sulcus Freight moved no cargo down the Lane in the trial month, which is a fact the Directorate did not think worth a line and which Ferrier has underlined twice.
+And the owner column has {fmtInt(ownerClasses.length)} values in it, not {fmtInt(OWNERS.length)}. Not one Perrine hull in the trial. {fmtInt(perrineInTrial)}. Sulcus Freight moved no cargo down the Lane in the trial month. The Directorate gives that no line of its own. Ferrier has underlined it twice.
 
 "Attachment D," she says. "Read the finding out loud, Ensign. All of it, including the last sentence."
 
 </Scene>
 
-<Scene variant="transmission" stamp="Attachment D" location="Admiralty Board · Directorate of Lane Operations · Lane escort trial 2183 · finding" condensed="The Board's finding: zero incidents among the escorted transits, zero among the comparison transits, deterrence assessed as established, escort continued at present levels, no further trial commissioned — and the assessing officer's diligence noted, which is how the Board says be careful.">
+<Scene variant="transmission" stamp="Attachment D" location="Admiralty Board · Directorate of Lane Operations · Lane escort trial 2183 · finding" condensed="The Board's finding: zero incidents among the escorted transits, zero among the comparison transits, deterrence assessed as established, escort continued at present levels, no further trial commissioned, and the assessing officer's diligence noted.">
 
 **LANE ESCORT TRIAL 2183 · FINDING · SHEET 1 OF 1**
 
@@ -93,15 +93,23 @@ And the owner column has {fmtInt(ownerClasses.length)} values in it, not {fmtInt
 
 </Scene>
 
-<Scene stamp="MET 72/10:40" location="Wardroom · braking at 4 mgee · 0.81 AU from Callisto" condensed="Ferrier loads the Board's own assignment onto the design builder and names the parts of it: units, factor, levels, response. The confounding indicator sits on its stop. She presses randomize and it comes off; she presses randomize-within-owner and it reads zero. She says nothing about either, and tells you to say it back to her. Ebele, waiting, puts up the office tally he has been keeping since MET 59; she tells him to park it.">
+<Scene stamp="MET 72/10:40" location="Wardroom · braking at 4 mgee · 0.81 AU from Callisto" condensed="Ferrier loads the Board's own assignment onto the design builder and works down the roster naming each column as she checks it. She stops at the one the Directorate called the response: the incident count never moves, so there is nothing to compare. She puts the advisory column up instead, then presses the Board's assignment, randomize, and randomize-within-owner, and lets the indicator answer. She wants the column that rode with the cutter named out loud and written on the plot. Ebele, waiting, puts up the office tally he has been keeping since MET 59; she tells him to park it.">
 
-The builder takes the roster straight off Attachment D, one row per transit, and Ferrier walks it the way she walks a damage-control board — top to bottom, naming each thing before she touches anything.
+The builder takes the roster straight off Attachment D, one row per transit. Ferrier works down it the way she works a damage-control board: name the thing, check the thing, move on, and touch nothing until the whole board has been read.
 
-"Units. {fmtInt(BOARD_TRIAL.length)} transits. Not {fmtInt(BOARD_TRIAL.length)} hulls and not {fmtInt(BOARD_TRIAL.length)} masters — transits, because a transit is what got the cutter and a transit is what got logged."
+"Units." She taps the row count. "{fmtInt(BOARD_TRIAL.length)} transits. Not {fmtInt(BOARD_TRIAL.length)} hulls. Not {fmtInt(BOARD_TRIAL.length)} masters. A transit is what got the cutter and a transit is what got logged."
 
-"Factor. Escort. Two levels: *Tindr* in company, or not. One factor, so a treatment is just a level, and there are two of them."
+"Factor. Escort. *Tindr* in company, or not."
 
-"Response." She stops on that one longer than the others. "The Directorate says incidents. The incident column is {fmtInt(incidentTotal)}, {fmtInt(BOARD_TRIAL.length)} times over. A column that does not vary is not a response; it is a constant, and you cannot compare two groups on a constant. The only column in this file that moves is the advisory count." She brings it up. "Escorted, {fmt(boardMeans.escorted, 2)} off-nominal advisories a transit. Unescorted, {fmt(boardMeans.unescorted, 2)}. A gap of {fmt(boardGap, 2)}, which nobody at Valhalla has mentioned, because it is the wrong way round for the sentence they wanted."
+"Response." She stops there. "The Directorate says incidents."
+
+She runs the stylus down that column from the head of the roster to the foot of it, all {fmtInt(BOARD_TRIAL.length)} rows, and the figure under the tip does not change once. {fmtInt(incidentTotal)} at the top. {fmtInt(incidentTotal)} at the bottom.
+
+"You cannot put two groups either side of that and get anything out of it."
+
+She clears the incident column and puts the advisory counts up in its place.
+
+"This one moves. Escorted, {fmt(boardMeans.escorted, 2)} off-nominal advisories a transit. Unescorted, {fmt(boardMeans.unescorted, 2)}. A gap of {fmt(boardGap, 2)}, which nobody at Valhalla has mentioned, because it runs the wrong way for the sentence they wanted."
 
 "Assignment." She does not editorialise. She reads the method line off the attachment. "*Escort provision allocated on application by the owner.*"
 
@@ -109,17 +117,17 @@ Then she presses **THE BOARD'S ASSIGNMENT**, which is where the builder already 
 
 It reads {fmt(boardImbalance, 2)}. It is on its stop. It cannot read higher than that.
 
-She presses **RANDOMIZE**. The roster reshuffles and the indicator comes off the stop and reads {fmt(crdImbalance, 2)}.
+She presses **RANDOMIZE**. The roster reshuffles and the indicator comes off the stop: {fmt(crdImbalance, 2)}.
 
 She presses **RANDOMIZE WITHIN OWNER**. {fmt(blockImbalance, 2)}.
 
-She does not say anything about any of it. She puts her hands flat on the table on either side of the plot and lets you watch the number, and after a while Ebele stops looking at the plot and starts looking at you, because he has worked out that this is not a demonstration, it is a question.
+She says nothing about any of the three. She puts her hands flat on the table on either side of the plot and waits. After a while Ebele stops watching the indicator and starts watching you.
 
 <Dialogue speaker="xo" aside="She has not raised her voice once this morning and she is not going to. The roster is still on the plot behind her with the indicator on its stop.">
-Say it back to me, Captain. Not what the indicator does — what the indicator is about. There is a column in that file that the cutter never left the side of, and the Directorate has written a sentence that assumes it isn't there.
+Name it, Captain. Out loud first, then up on the plot where the Ensign can copy it into the draft. There is a column in that file the cutter never left the side of, and the Directorate has written a sentence that assumes it isn't there.
 </Dialogue>
 
-Ebele has been holding something since the middle of it and gets it out while she is drawing breath, which is brave of him.
+Ebele has been holding something since the middle of it. He gets it out while she is drawing breath.
 
 "Sir — not on the trial. On the other thing. I said at MET 59 I'd started counting which office writes which word, and I've finished counting. All {fmtInt(REGISTER_LOSSES)} losses in the Register, by the office that wrote the classification. It's a census, not a sample, so there's nothing to test. It's just what is."
 
@@ -127,7 +135,7 @@ Ebele has been holding something since the middle of it and gets it out while sh
 
 <RegisterOfficeTable />
 
-Two offices, one register, {fmtInt(REGISTER_LOSSES)} losses between them, and the rows do not look like two clerks doing the same job. Ferrier reads it once, tells him to date it, sign it and put it in the appendix, and turns the plot back to Attachment D. A census is described, not tested, and it is not what the Board asked this ship for this week.
+Two offices, one register, {fmtInt(REGISTER_LOSSES)} losses between them, and the rows do not look like two clerks doing the same job. Ferrier reads it once and tells him to date it, sign it and put it in the appendix. Then she turns the plot back to Attachment D, which is what the Board asked this ship for this week.
 
 <Briefing title="An experiment is something you did; a study is something you watched" topics={["3.5", "3.6"]}>
 <Briefing.Intuition>
@@ -135,14 +143,14 @@ In an **observational study** you record the groups as you find them. In an **ex
 
 The vocabulary is exact and the Board's finding gets three of the five words wrong:
 
-- **Experimental units** — the things the treatment is applied to (human subjects, if they are people). One transit, one unit. Count them before anything else.
-- **Factor** — an explanatory variable the experimenter sets. **Levels** are its settings. A **treatment** is one combination of levels, one from each factor. Two factors at {fmtInt(themis.levels)} and {fmtInt(dutyLevels)} levels make {fmtInt(themisTreatments)} treatments, not {fmtInt(themis.levels + dutyLevels)}.
-- **Response variable** — what you measure afterwards. A column that never varies is not a response. It measures nothing, and no design on earth can compare two groups on it.
+- **Experimental units.** The things the treatment is applied to (human subjects, if they are people). One transit, one unit. Count them before anything else.
+- **Factor.** An explanatory variable the experimenter sets. **Levels** are its settings. A **treatment** is one combination of levels, one from each factor. Two factors at {fmtInt(themis.levels)} and {fmtInt(dutyLevels)} levels make {fmtInt(themisTreatments)} treatments, not {fmtInt(themis.levels + dutyLevels)}.
+- **Response variable.** What you measure afterwards. A column that never varies is not a response. It measures nothing, and no design on earth can compare two groups on it.
 
 Five principles, and a trial that drops one of them drops the conclusion with it:
 
 1. **Comparison.** At least two levels, run over the *same window*, in the *same conditions*. A treated group with no comparison group is an anecdote with a sample size.
-2. **Random assignment.** The units are allocated to treatments by a chance device. This is the whole engine: it makes the groups alike, before the treatment, in every variable — the ones you thought of, the ones you did not, and the ones nobody has a name for.
+2. **Random assignment.** The units are allocated to treatments by a chance device. This is the whole engine: it makes the groups alike, before the treatment, in every variable, including the ones nobody thought of and the ones nobody has a name for.
 3. **Control.** Holding the other conditions fixed so that the only thing differing between the groups is the factor. The **control group** is the comparison arm: it may be untreated, or given a placebo, or given the current standard. Control is not a synonym for "nothing".
 4. **Replication.** Enough units per treatment that an ordinary difference can be told from a real one, and the whole trial repeatable by somebody else.
 5. **Blinding.** Units who do not know their level; assessors who do not know it either. **Double-blind** means both. An *announced* escort is unblinded to everybody on the Lane, including whoever the escort is supposed to deter.
@@ -152,11 +160,11 @@ Five principles, and a trial that drops one of them drops the conclusion with it
 Three designs, in order of how much you already know:
 
 - **Completely randomized.** Every unit assigned to a treatment purely by chance. Balances everything *on average*, over the runs you did not do.
-- **Randomized block.** Sort the units into **blocks** — groups alike in a variable known *before* assignment and related to the response — then randomize separately inside each block. Balance on that variable stops being luck and becomes construction. Block what you can; randomize what you cannot.
+- **Randomized block.** Sort the units into **blocks**, groups alike in a variable known *before* assignment and related to the response, then randomize separately inside each block. Balance on that variable stops being luck and becomes construction. Block what you can; randomize what you cannot.
 - **Matched pairs.** Blocks of two: two units matched on everything you can match on, with the coin decided inside the pair; or one unit measured under both levels, with the *order* randomized. The comparison is made within the pair, so everything the pair shares cancels.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="t = \prod_{j=1}^{f} L_j" terms={{ t: 'treatments — one per combination of levels', f: 'how many factors', 'L_j': 'levels of factor j' }} label="Factors and levels make treatments" />
+<Formula tex="t = \prod_{j=1}^{f} L_j" terms={{ t: 'treatments, one per combination of levels', f: 'how many factors', 'L_j': 'levels of factor j' }} label="Factors and levels make treatments" />
 
 <Formula tex="\binom{N}{k} \quad\text{completely randomized} \qquad\qquad \prod_{\text{blocks}} \binom{N_b}{k_b} \quad\text{randomized block}" terms={{ N: 'experimental units in the trial', k: 'units allocated to the treatment', 'N_b': 'units in one block', 'k_b': 'treated units inside that block' }} label="How many ways the labels can fall" />
 
@@ -165,20 +173,20 @@ Three designs, in order of how much you already know:
 <Briefing.Worked>
 The Themis Reach, 2179, and a trial nobody argued about at the time.
 
-**Units:** {fmtInt(themis.transits)} transits. **Factor:** the scrubber cartridge, at {fmtInt(themis.levels)} levels — the Mk 4 and the Mk 2 it replaced. **Response:** off-nominal advisories logged per transit. {fmtInt(themisPerLevel)} transits a level.
+**Units:** {fmtInt(themis.transits)} transits. **Factor:** the scrubber cartridge, at {fmtInt(themis.levels)} levels: the Mk 4 and the Mk 2 it replaced. **Response:** off-nominal advisories logged per transit. {fmtInt(themisPerLevel)} transits a level.
 
 The Ceres yard fitted the Mk 4 to whichever hulls came through refit that quarter, and every hull through refit that quarter was working the **outer leg**. So: {fmtInt(themis.outerOnMk4)} of the {fmtInt(themisPerLevel)} Mk 4 transits were outer-leg, and {fmtInt(themis.outerOnMk2)} of the {fmtInt(themisPerLevel)} Mk 2 transits were. Indicator: |{fmt(themis.outerOnMk4 / themisPerLevel, 2)} − {fmt(themis.outerOnMk2 / themisPerLevel, 2)}| = **{fmt(themisGap, 2)}**. The cartridge column and the leg column are the same column, written twice under different headings, and the outer leg carries more debris and longer thermal soaks than the inner. Whatever the advisory counts came out at, the yard could not say which column produced them.
 
-Now count the label-deals. Completely randomized over all {fmtInt(themis.transits)} transits, {fmtInt(themisPerLevel)} to a level: {fmtInt(themisWays)} assignments, every one equally likely. Of those, {fmtInt(themisBlockWays)} put exactly {fmtInt(themisBlockedPerCell)} outer-leg transits on each cartridge — **{fmtPct(themisBalanced, 0)}** of them. Chance balances the leg *most runs*, and lands {fmtPct(themisLopsided, 0)} of the time on a split of seven-three or worse.
+Now count the label-deals. Completely randomized over all {fmtInt(themis.transits)} transits, {fmtInt(themisPerLevel)} to a level: {fmtInt(themisWays)} assignments, every one equally likely. Of those, {fmtInt(themisBlockWays)} put exactly {fmtInt(themisBlockedPerCell)} outer-leg transits on each cartridge. That is **{fmtPct(themisBalanced, 0)}** of them. Chance balances the leg *most runs*, and lands {fmtPct(themisLopsided, 0)} of the time on a split of seven-three or worse.
 
-Block on the leg instead — {fmtInt(themis.legSize)} outer, {fmtInt(themis.legSize)} inner, {fmtInt(themisBlockedPerCell)} of each block to each cartridge, drawn inside the block — and the {fmtInt(themisBlockWays)} balanced assignments are the *only* assignments. Indicator {fmt(themisBlockedGap, 2)}, every run, by construction. You have not made the trial bigger. You have deleted every deal that would have embarrassed it.
+Block on the leg instead. {fmtInt(themis.legSize)} outer, {fmtInt(themis.legSize)} inner, {fmtInt(themisBlockedPerCell)} of each block to each cartridge, drawn inside the block: now the {fmtInt(themisBlockWays)} balanced assignments are the *only* assignments. Indicator {fmt(themisBlockedGap, 2)}, every run, by construction. You have not made the trial bigger. You have deleted every deal that would have embarrassed it.
 </Briefing.Worked>
 <Briefing.Caution>
-*Random sampling and random assignment are two different dice.* Random **sampling** decides who is in the study, and it buys **generalization** — the right to talk about the population the sample came from. Random **assignment** decides who gets what, and it buys **causation** — the right to say *because*. Neither substitutes for the other. A perfect simple random sample of the Lane, with escorts handed out on request, still cannot say escorts did anything; a lottery run on {fmtInt(BOARD_TRIAL.length)} volunteers can say what the escort did to those {fmtInt(BOARD_TRIAL.length)}, and nothing about anyone else.
+*Random sampling and random assignment are two different dice.* Random **sampling** decides who is in the study, and it buys **generalization**: the right to talk about the population the sample came from. Random **assignment** decides who gets what, and it buys **causation**, the right to say *because*. Neither substitutes for the other. A perfect simple random sample of the Lane, with escorts handed out on request, still cannot say escorts did anything; a lottery run on {fmtInt(BOARD_TRIAL.length)} volunteers can say what the escort did to those {fmtInt(BOARD_TRIAL.length)}, and nothing about anyone else.
 
-*"Control group" read as "untreated group".* Control is the comparison arm, held at a known level of the factor, in the same window, under the same conditions. Sometimes that level is nothing; often it is a placebo or the existing standard. A comparison group drawn from a different month, a different route or a different class of owner is not a control, whatever the report calls it — it is a second study glued to the first.
+*"Control group" read as "untreated group".* Control is the comparison arm, held at a known level of the factor, in the same window, under the same conditions. Sometimes that level is nothing; often it is a placebo or the existing standard. A comparison group drawn from a different month, a different route or a different class of owner is a second study glued to the first, whatever the report calls it.
 
-*Blocking on the response.* A block is formed on a variable known **before** assignment and related to the response — owner, route, drive, hull age, the mark the transit starts from. Group the units by the thing you are about to measure and you have not controlled for it; you have arranged the answer in advance, and the trial will confirm whatever the grouping asserted.
+*Blocking on the response.* A block is formed on a variable known **before** assignment and related to the response: owner, route, drive, hull age, the mark the transit starts from. Group the units by the thing you are about to measure and you have not controlled for it; you have arranged the answer in advance, and the trial will confirm whatever the grouping asserted.
 </Briefing.Caution>
 </Briefing>
 
@@ -191,8 +199,8 @@ Block on the leg instead — {fmtInt(themis.legSize)} outer, {fmtInt(themis.legS
 <Drill generator="act-3/control-replication" count={1} />
 
 <MissionBeat id="act-3-04-confound" kind="interpretation" label="WHAT TRAVELLED WITH THE CUTTER"
-  prompt={`Attachment D will be read by people who were not in this wardroom, so the rebuttal has to stand on its own. Using the roster — ${fmtInt(BOARD_TRIAL.length)} transits, ${fmtInt(escorted.length)} escorted and ${fmtInt(unescorted.length)} not — write the paragraph. Name the variable that went with the cutter everywhere it went, say how the two groups came to be formed that way, and say what follows for the Directorate's sentence. Then say why ${fmtInt(incidentTotal)} incidents in ${fmtInt(BOARD_TRIAL.length)} transits cannot be laid at the escorts' door.`}
-  hint="Two halves. First: find a column that differs between the groups and is also plausibly related to incidents — start with owner, then look at the drive column and the departure days. Say how the groups got that way: who decided which transit was escorted, and on what basis. Second: ask what this trial would have printed if escorts did nothing whatsoever."
+  prompt={`Attachment D will be read by people who were not in this wardroom, so the rebuttal has to stand on its own. Using the roster of ${fmtInt(BOARD_TRIAL.length)} transits, ${fmtInt(escorted.length)} escorted and ${fmtInt(unescorted.length)} not, write the paragraph. Name the variable that went with the cutter everywhere it went, say how the two groups came to be formed that way, and say what follows for the Directorate's sentence. Then say why ${fmtInt(incidentTotal)} incidents in ${fmtInt(BOARD_TRIAL.length)} transits cannot be laid at the escorts' door.`}
+  hint="Two halves. First: find a column that differs between the groups and is also plausibly related to incidents. Start with owner, then look at the drive column and the departure days. Say how the groups got that way: who decided which transit was escorted, and on what basis. Second: ask what this trial would have printed if escorts did nothing whatsoever."
   {...confoundRubric()}>
   <Success>
   <Dialogue speaker="xo" aside="She reads it once, marks nothing, and sets it on top of Attachment D rather than under it.">
@@ -200,16 +208,16 @@ Block on the leg instead — {fmtInt(themis.legSize)} outer, {fmtInt(themis.legS
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="analyst" aside="He has the owner column and the escort column side by side, and has shaded them the same colour to make the point to himself.">
-  Yes, sir. That's — yes. I named it and I stopped, and naming it isn't the argument. It needs three things: the column, how the column came to line up with the cutter, and then what that costs the conclusion. And the last bit, which I keep leaving out — what the trial would have shown if escorts did nothing at all. The same thing. It would have shown exactly the same thing.
+  <Dialogue speaker="analyst" aside="He has the owner column and the escort column side by side, shaded the same colour to make the point to himself, and he reads his own draft back before he says anything about it.">
+  I named the column and then I stopped, sir. Naming it is not the argument. The column, how the column came to lie under the cutter, what that costs the sentence the Directorate wrote. And the part I leave out every time I write this: what the trial would have printed if escorts did nothing at all. The same sheet. Down to the last row.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <MissionBeat id="act-3-04-design" kind="choice" label="THE TRIAL THEY SHOULD HAVE RUN"
-  prompt={`Ferrier has cleared the plot and is waiting with a stylus she is not using. Attachment D is the trial the Board ran. Specify the trial the Board should have commissioned — and be able to defend the grouping to a reviewer who has never been on the Lane. Which of these is it, and for which reason?`}
+  prompt={`Ferrier has cleared the plot and is holding a stylus over it. Attachment D is the trial the Board ran. Specify the trial the Board should have commissioned, and be able to defend the grouping to a reviewer who has never been on the Lane. Which of these is it, and for which reason?`}
   options={[
-    `A randomized block design: sort the ${fmtInt(BOARD_TRIAL.length)} transits into blocks by owner class, then assign escort at random inside each block, unannounced — because owner class rides with the hull, the drive and the route, and blocking takes it out of the comparison by construction instead of on average.`,
+    `A randomized block design: sort the ${fmtInt(BOARD_TRIAL.length)} transits into blocks by owner class, then assign escort at random inside each block, unannounced, because owner class rides with the hull, the drive and the route, and blocking takes it out of the comparison by construction instead of on average.`,
     `A completely randomized design over all ${fmtInt(BOARD_TRIAL.length)} transits, because randomization already balances everything.`,
     `A randomized block design blocked on the advisory count each transit logs, so that the escorted and unescorted groups start level on the response.`,
     `The Board's assignment again, run out to ${fmtInt(2 * BOARD_TRIAL.length)} transits across two months, because what is wrong with the finding is the number of transits behind it.`,
@@ -217,26 +225,26 @@ Block on the leg instead — {fmtInt(themis.legSize)} outer, {fmtInt(themis.legS
   correct={0}
   feedback={[
     null,
-    'Randomization balances owner *on average* — over the runs nobody did. On the one run you get, a completely randomized split of these transits balances owner exactly about ' + fmtPct(balancedShare, 0) + ' of the time. It is the right design when no variable is known to matter more than the rest; here one is, and it is sitting in the escort column already.',
+    'Randomization balances owner *on average*, over the runs nobody did. On the one run you get, a completely randomized split of these transits balances owner exactly about ' + fmtPct(balancedShare, 0) + ' of the time. It is the right design when no variable is known to matter more than the rest; here one is, and it is sitting in the escort column already.',
     'Blocks are formed on a variable known **before** assignment. Advisories are what the trial is for. Group the units by the response and the groups start level because you levelled them, and the comparison afterwards means nothing.',
     'Doubling a confounded trial doubles the confounding. Owner would still be escort, escort would still be owner, and the extra ' + fmtInt(BOARD_TRIAL.length) + ' transits would buy precision about a quantity nobody can name.',
   ]}
   hint="One of these removes a variable you can name before the trial starts. One trusts chance to remove it. One groups the units by the very thing the trial is supposed to measure. One buys more of the same mistake at twice the price.">
   <Success>
   <Dialogue speaker="xo" aside="She writes it into the recommendation in four lines and reads them back without warmth, which is how she reads back things she agrees with.">
-  Escort assigned by lot. Assignment not announced, to the owners or to the Lane. Blocks by owner class, drawn inside the block. Every transit in the window on the roster, escorted or not. — That is four lines and it is the only version of this trial that could have answered the question it was commissioned to answer.
+  Escort assigned by lot. Assignment not announced, to the owners or to the Lane. Blocks by owner class, drawn inside the block. Every transit in the window on the roster, escorted or not. Four lines, and the only version of this trial that could have answered the question it was commissioned to answer.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She does not take the roster down. She turns it so the owner column is nearest you.">
-  Assuming the design is honest — and two of those are — it still has to be the design for *this* file. Ask which variable you can name before a single hull sails, and whether you would rather have it balanced by luck or balanced by arithmetic. Then ask what happens to a trial whose blocks are cut from the column it means to measure.
+  Assuming each of those was written in good faith, and two of them were, it still has to be the design for *this* file. Ask which variable you can name before a single hull sails, and whether you would rather have it balanced by luck or balanced by arithmetic. Then ask what happens to a trial whose blocks are cut from the column it means to measure.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <Gated by={["act-3-04-confound", "act-3-04-design"]}>
 
-<Scene stamp="MET 72/16:40" location="Wardroom · braking at 4 mgee · 0.81 AU from Callisto" condensed="Ebele counts the label-deals: of the ways to split the 26 transits in half, only about three in ten balance owner, and blocking keeps only those. Ferrier prices her own design out loud — a Close Season and two cutters the Service has not got — and files it anyway. The clue: the Board's trial could not have found anything either way, and whether escorts matter at all is not in evidence. Which leaves the one cutter whose assignments you can direct.">
+<Scene stamp="MET 72/16:40" location="Wardroom · braking at 4 mgee · 0.81 AU from Callisto" condensed="Ebele counts the label-deals: of the ways to split the 26 transits in half, only about three in ten balance owner, and blocking keeps only those. Ferrier prices her own design out loud, a Close Season and two cutters the Service has not got, and files it anyway. The Board's trial could not have found anything either way, so whether escorts matter at all is still not in evidence. Which leaves the one cutter on the Lane whose escort assignments you can direct.">
 
 Ebele does the counting after supper because he wants it in the appendix with a number on it rather than an adjective.
 
@@ -246,29 +254,27 @@ Ebele does the counting after supper because he wants it in the appendix with a 
 
 She counts it on the table with two fingers, the way she prices anything she is about to file and not get.
 
-"A Close Season. Not a month — a season, with the Authority holding the schedule so that owners cannot sail early to dodge the draw and cannot apply for a cutter at all. That is the Lane Authority telling {fmtInt(FRAME_N)} masters that the Compact has taken over their sailing dates, and the Authority will not do it, because the Authority does not work for us."
+"A Close Season. Not a month. A season, with the Authority holding the schedule so that owners cannot sail early to dodge the draw and cannot apply for a cutter at all. That is the Lane Authority telling {fmtInt(FRAME_N)} masters that the Compact has taken over their sailing dates, and the Authority will not do it, because the Authority does not work for us."
 
 "Two cutters, on station, for the whole of it. One to escort the treated half and one to hold the window when the first one is elsewhere. The Service has *Asgard* and it has *Tindr*, and *Tindr* is the one that ran Attachment D, which means *Tindr* is the one Lane Operations will not release. So: two cutters, of which we have less than one."
 
 "Write it up anyway," she says. "Costed, at the front, with the four lines of design under it. When this is argued in two years I want the file to show that somebody specified the trial that would have settled it and priced it honestly, and that the price is the reason it did not happen."
 
-Which leaves the finding where it actually stands, and it is worse for the Board than a wrong answer.
+So the recommendation goes in costed, at the front, and there it will stay. Under it goes the finding: Attachment D could not have come out any other way. With {fmtInt(incidentTotal)} incidents in {fmtInt(BOARD_TRIAL.length)} transits and the Lane's working loss rate of {fmtPct(lossRate, 0)} a transit, a roster this size would have carried even one loss only {fmtPct(seeOneLoss, 0)} of the time. Run it again with both cutters tied up at Uruk High and it prints the same sheet.
 
-Attachment D is not a trial that found the wrong thing. It is a trial that could not have found anything. With escort handed out on application, owner arrives with the cutter and leaves with it; with no unescorted comparison inside the same window, there is nothing to compare against but a different month's independents; with the escorts announced in advance, anybody the escort was meant to deter knew which transits to leave alone; and with {fmtInt(incidentTotal)} incidents in {fmtInt(BOARD_TRIAL.length)} transits, a loss rate of {fmtPct(lossRate, 0)} a transit would have put even one loss on this roster only {fmtPct(seeOneLoss, 0)} of the time. Run that trial again with the cutters tied up at Uruk High and it prints the same sheet.
+You do not know that escorts work. You do not know that they do not.
 
-So you do not know that escorts work. You also do not know that they do not. That is not the same as knowing nothing — it is knowing precisely where the file runs out, which is the only useful thing anybody has learned about escorts in two years.
-
-Ferrier puts the roster away and the plot goes back to the Lane, and the Lane at MET 72 has exactly one cutter on it whose escort assignments are not the Directorate's to allocate, because the Board gave that authority to its assessing officer, and its assessing officer is sitting at this table.
+Ferrier puts the roster away and the plot goes back to the Lane. The Lane at MET 72 has one cutter on it whose escort assignments are not the Directorate's to allocate. The warrant that says so is on the slate under your hand.
 
 <Dialogue speaker="xo" aside="She says it as a statement of fact about the warrant, not as a suggestion, and then she goes to bed.">
-Your warrant covers escort assignment for *Asgard* on this corridor. It does not cover holding the schedule, it does not cover the Authority, and it does not cover a season. The data says we cannot answer the question the Board asked. It does not say we cannot answer a smaller one.
+Your warrant reaches one cutter. Which transits *Asgard* escorts on this corridor, for as long as the assessment runs. It does not reach the Authority, it does not reach the schedule, and it will never reach a season, so the Board's question is going to stay unanswered. Find the one that fits inside a cutter and a week, Captain. Put that in the file instead.
 </Dialogue>
 
 </Scene>
 
 <LogEntry
   title="Random assignment is what lets you say “because”"
-  concept="An experiment imposes a treatment on experimental units; the factors are the variables the experimenter sets, their levels combine into treatments, and the response is what is measured afterwards — a column that does not vary is not a response. A trial earns a causal conclusion only through comparison in the same window, random assignment to the treatments, control of the other conditions, enough replication to tell an ordinary difference from a real one, and blinding where the units or the assessors could otherwise be influenced; when assignment is made any other way, a lurking variable that differs between the groups and is related to the response is confounded with the treatment, and no quantity of extra data separates them. Block on a variable known before assignment and related to the response, randomize within the blocks, and that variable is balanced by construction rather than by luck."
+  concept="An experiment imposes a treatment on experimental units; the factors are the variables the experimenter sets, their levels combine into treatments, and the response is what is measured afterwards. A column that does not vary is not a response. A trial earns a causal conclusion only through comparison in the same window, random assignment to the treatments, control of the other conditions, enough replication to tell an ordinary difference from a real one, and blinding where the units or the assessors could otherwise be influenced; when assignment is made any other way, a lurking variable that differs between the groups and is related to the response is confounded with the treatment, and no quantity of extra data separates them. Block on a variable known before assignment and related to the response, randomize within the blocks, and that variable is balanced by construction rather than by luck."
   formula="t = \prod_{j} L_j, \qquad \binom{N}{k} \ \text{(completely randomized)} \ \longrightarrow \ \prod_{\text{blocks}} \binom{N_b}{k_b} \ \text{(blocked)}, \qquad \Delta = |\hat{p}_{\text{treated}} - \hat{p}_{\text{control}}|"
   mistake="Confusing random assignment with random sampling. Sampling at random decides who is in the study and buys the right to generalize to the population; assigning at random decides who gets what and buys the right to say the treatment caused the difference. A study can have either, both or neither, and the conclusion it licenses changes with each."
   tags={['experiment', 'experimental units', 'factor', 'levels', 'treatment', 'response', 'confounding', 'random assignment', 'blocking', 'matched pairs', 'blinding', '3.5', '3.6']}
