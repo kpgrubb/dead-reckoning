@@ -70,7 +70,7 @@ export const assocRubric = {
     {
       phrase: 'cause',
       label: 'Claims causation',
-      why: 'The Register is observational — thirty-one incidents recorded and coded after the fact by two offices. Unequal conditional distributions describe the file; nothing in it establishes that one variable acts on the other.',
+      why: 'The Register is observational: thirty-one incidents recorded and coded after the fact by two offices. Unequal conditional distributions describe the file. Nothing in it establishes that one variable acts on the other.',
     },
     {
       phrase: 'prove',
@@ -78,37 +78,35 @@ export const assocRubric = {
       why: 'A two-way table describes the individuals inside it. It proves nothing about the process that produced them, and the Board will strike the sentence that says otherwise.',
     },
   ],
-  exemplar: `Every Perrine loss in the Register — ${fmt(100 * pUnknownGivenPerrine, 0)} percent of them — is coded unknown, while ${fmt(100 * pUnknownGivenMercantile, 0)} percent of the Mercantile losses are. The conditional distribution of classification differs from one owner class to the next, so classification and owner class appear associated among these thirty-one losses.`,
+  exemplar: `Of the Perrine losses in the Register, ${fmt(100 * pUnknownGivenPerrine, 0)} percent are coded unknown, against ${fmt(100 * pUnknownGivenMercantile, 0)} percent of the Mercantile losses. The conditional distribution of classification differs from one owner class to the next, so classification and owner class appear associated among these thirty-one losses.`,
   minWords: 15,
 }
 
-<Scene stamp="MET 031/07:40" location="Bridge · intel terminal · 0.42 AU from Callisto, 4 mgee" condensed="The Bureau's 412 certifications are aboard but still behind a checksum. Ebele, told to wait, has cross-tabulated the Register instead: owner class against classification, thirty-one hulls in nine cells. He compares raw counts across rows of very different size; Ferrier stops him. Then he computes the conditional share upside down — dividing by the wrong total — and you make him state both directions before he computes either.">
+<Scene stamp="MET 031/07:40" location="Bridge · intel terminal · 0.42 AU from Callisto, 4 mgee" condensed="The Bureau's 412 certifications are aboard but still behind a checksum. Ebele, told to wait, has cross-tabulated the Register instead: owner class against classification, thirty-one hulls in nine cells. He compares raw counts across rows of very different size and Ferrier stops him. Then he divides the same cell by the wrong total and reports a share that answers a question nobody asked.">
 
 The Bureau's answer came in at 06:12 and is still coming in. Four hundred and twelve departure certifications behind a checksum Solberg will not release until it closes, which it will do at 09:40 or not at all. Ebele has been told to wait. He has not waited.
 
-Twenty-one days under four milligee. There is a down, and the crew stopped remarking on it somewhere around the second week: coffee sits in a cup, a dropped stylus lands where you would expect, and the wings are out and radiating because the torch has not stopped since MET 10. The lithium ticks in the cellar the way it does when it is warming and not yet in trouble. Callisto is three and a half minutes of light astern and getting further every watch, which is the only clock on this ship that matters.
+Twenty-one days under four milligee. There is a down, and the crew stopped remarking on it somewhere in the second week. Coffee sits in a cup. A dropped stylus lands where you would expect. The wings are out and radiating because the torch has not stopped since MET 10, and the lithium in the cellar ticks the way it does when it is warming and not yet in trouble. Callisto is three and a half minutes of light astern and getting further every watch, which is the only clock on this ship that matters.
 
-He has the Register up instead — the thirty-one, the file the preliminary went out from — and he has done to it the thing nobody asked him for. Two variables, not one. Owner class down the side: Perrine, Mercantile, independent. Classification across the top: accident, piracy, unknown. Thirty-one hulls sorted into nine cells, and every cell a count.
+He has the Register up instead. The thirty-one, the file the preliminary went out from, and he has done to it the thing nobody asked him for. Two variables. Owner class down the side: Perrine, Mercantile, independent. Classification across the top: accident, piracy, unknown. Thirty-one hulls sorted into nine cells, and every cell a count.
 
-"So — sir. The *unknown* column." He reads it down. "{lossCounts[ownerRow('Perrine')][classCol('unknown')]} Perrine. {lossCounts[ownerRow('independent')][classCol('unknown')]} independent. {lossCounts[ownerRow('Mercantile')][classCol('unknown')]} Mercantile. And piracy — {piracyLosses}, and every one of them an independent hull. Not a single Mercantile piracy in six years. The accidents are almost all Mercantile."
+"So. Sir. The *unknown* column." He reads it down. "{lossCounts[ownerRow('Perrine')][classCol('unknown')]} Perrine. {lossCounts[ownerRow('independent')][classCol('unknown')]} independent. {lossCounts[ownerRow('Mercantile')][classCol('unknown')]} Mercantile. And piracy: {piracyLosses}, and every one of them an independent hull. Not a single Mercantile piracy in six years. The accidents are almost all Mercantile."
 
-That is the shape, and he found it in an hour he was not given. Then he says the next thing, which is not.
+That is the shape, and he found it in an hour he was not given. Then he says the next thing.
 
 "Perrine is the problem. {lossCounts[ownerRow('Perrine')][classCol('unknown')]} against {lossCounts[ownerRow('independent')][classCol('unknown')]} against {lossCounts[ownerRow('Mercantile')][classCol('unknown')]}. It isn't close."
 
 Ferrier does not look up from the plot. "There are {perrineLosses} Perrine hulls in that table, Ensign. There are {mercantileLosses} Mercantile and {independentLosses} independent. You are holding a long row against two short ones and calling the difference a finding. Give me proportions inside each row and then say it again."
 
-He takes it the way he takes everything, and switches the display to percentages, which is the right move. Then he makes the error the Service's own summaries make twice a year. He goes to the *unknown* column, divides by the number of losses carrying that code, and reports the share of them that are Perrine hulls — and calls it the rate at which a Perrine hull goes unexplained.
+He switches the display to percentages. Then he goes to the *unknown* column, divides by the number of losses carrying that code, reports the share of them that are Perrine hulls, and calls it the rate at which a Perrine hull goes unexplained.
 
-It is not. He has divided by the wrong total. One question asks what becomes of a Perrine hull; the other asks what an *unknown* code turns out to be attached to. Both are real numbers about this table. Only one of them answers what he said out loud.
+You stop him on the word *rate*, and make him say both questions out loud before he computes either one. Then you make him find which of the two the Board quoted back at you in the *noted*, and he pulls the line up. *It is noted that a preponderance of unclassified incidents is associated with a single operator.* No number under it. No denominator. The verb buried.
 
-You make him say the two of them in words, slowly, before he computes either. Then you make him find which one the Board quoted back at you in the *noted*, and he pulls the line up: *It is noted that a preponderance of unclassified incidents is associated with a single operator.* No number, no denominator, the verb buried. But the conditioning direction is in there if you read for it, and it is not the direction the question needs.
+Then he asks whether this is the test. The chi-square thing, he says. The one with expected counts.
 
-Then he asks whether this is the test — the chi-square thing, he says, the one with expected counts.
+Months away, you tell him. Not on this ship and not on this file.
 
-Months away, you tell him. Not on this ship and not on this file. What this table can do is describe: it can say that the two variables move together among these thirty-one, and it can say how far apart the rows sit. It cannot say why, and it cannot say which way, and nothing you put in a report this week is going to change that.
-
-He writes one word in the display's margin, fast and complete, the way he writes everything. *Association.* You let him have it.
+He writes one word in the display's margin, fast and complete, the way he writes everything. *Association.*
 
 </Scene>
 
@@ -117,13 +115,13 @@ Row percent and column percent. Same nine cells, sir, and every number on the le
 </Dialogue>
 
 <Dialogue speaker="xo">
-Then keep them a minute apart on paper. Assuming the Register is complete — which it is not, and we say so every time — the table describes {lossTwoWay.total} incidents two offices wrote down. It describes nothing else. Say it back to me before it goes anywhere near a display with the Captain's name on it.
+Then keep them a minute apart on paper. Assuming the Register is complete, which it is not, and we say so every time, the table describes {lossTwoWay.total} incidents two offices wrote down. It describes nothing else. I want both denominators printed on the face of the display before the Captain's name goes anywhere near it.
 </Dialogue>
 
 <DecisionAside beat="act-1-checkpoint" match="hold">
 
 <Dialogue speaker="analyst" aside="He has been carrying this since MET 27 and picks his moment badly.">
-Ma'am — the two piles. The abrupt and the gradual. We held them out of the preliminary. This is the second variable, isn't it. Owner class. Why did we sit on it?
+Ma'am. The two piles. The abrupt and the gradual. We held them out of the preliminary. This is the second variable, isn't it. Owner class. Why did we sit on it?
 </Dialogue>
 
 <Dialogue speaker="xo">
@@ -134,20 +132,20 @@ Because a shape without a second variable is a shape, not a finding. You have yo
 
 <Briefing title="Two variables in one table" topics={["2.1", "2.2", "2.3"]}>
 <Briefing.Intuition>
-One categorical variable gives a frequency table. Two give a **two-way table**: the categories of one variable down the side, the categories of the other across the top, and in each cell the count of individuals that are both. The margins — the row totals and the column totals — are the two one-variable tables you would have had if you had never crossed them.
+One categorical variable gives a frequency table. Two give a **two-way table**: the categories of one variable down the side, the categories of the other across the top, and in each cell the count of individuals that are both. The margins (the row totals and the column totals) are the two one-variable tables you would have had if you had never crossed them.
 
 From the same cells come three different relative frequencies, and they differ only in what you divide by.
 
-A **joint** relative frequency divides a cell by the grand total: the share of *everybody* that is both things at once. A **marginal** relative frequency divides a row or column total by the grand total: the share of everybody in one category of one variable, ignoring the other. A **conditional** relative frequency divides a cell by one row's or one column's total: it throws away every individual outside that group first, and then asks the question.
+A **joint** relative frequency divides a cell by the grand total: the share of *everybody* that is both things at once. A **marginal** relative frequency divides a row or column total by the grand total: the share of everybody in one category of one variable, ignoring the other. A **conditional** relative frequency divides a cell by one row's or one column's total. It throws away every individual outside that group first, and then asks the question.
 
 Only the conditional one lets you compare groups. Counts cannot: a row with nineteen individuals in it will out-count a row with five almost whatever is going on, and the difference you are looking at is the size of the groups. Percentages inside each row put every group on the same denominator, which is the only way a comparison means anything.
 
-Displayed, that is a **segmented bar** per group — one bar per row, each bar cut into the conditional distribution of the column variable — or a **mosaic**, which does the same and lets the bar widths carry the group sizes as well.
+Displayed, that is a **segmented bar** per group: one bar per row, each bar cut into the conditional distribution of the column variable. A **mosaic** does the same and lets the bar widths carry the group sizes as well.
 
 Then the reading. If the conditional distributions are the same from group to group, the two variables **appear independent** in this file. If they differ, the two **appear associated**. Both are descriptions of the individuals in the table. Neither is an inference about anything outside it, and neither is a cause.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="P(B \mid A) = \frac{n_{AB}}{n_A} \qquad \text{and} \qquad P(A \mid B) = \frac{n_{AB}}{n_B}" terms={{ 'n_{AB}': 'the count in the cell where A and B meet — the same number in both', 'n_A': "the row total for A — every individual in A's group", 'n_B': "the column total for B — every individual in B's group" }} label="Two conditionals from one cell" />
+<Formula tex="P(B \mid A) = \frac{n_{AB}}{n_A} \qquad \text{and} \qquad P(A \mid B) = \frac{n_{AB}}{n_B}" terms={{ 'n_{AB}': 'the count in the cell where A and B meet; the same number in both', 'n_A': "the row total for A: every individual in A's group", 'n_B': "the column total for B: every individual in B's group" }} label="Two conditionals from one cell" />
 
 Same numerator, different denominators, different questions. They are equal only when $n_A = n_B$, which is an accident of the margins and never a reason.
 </Briefing.Definition>
@@ -162,26 +160,38 @@ The 2176 escort report on *Asgard*, Mars–Belt corridor: {asgard.total} losses 
 
 Take the one cell where *outer half* meets *unknown*: {asgard.table[1][1]} losses. Three relative frequencies come out of it, and they differ only in the denominator.
 
-**Joint** — {asgard.table[1][1]} over the grand total {asgard.total}: **{fmtPct(asgard.joint[1][1], 1)}** of the season's losses were both outer-half and unknown.
+**Joint.** {asgard.table[1][1]} over the grand total {asgard.total}: **{fmtPct(asgard.joint[1][1], 1)}** of the season's losses were both outer-half and unknown.
 
-**Conditional, one way** — of the {asgard.rowTotals[1]} losses in the outer half, {asgard.table[1][1]} were coded unknown. $P(\text{unknown} \mid \text{outer half})$ is {asgard.table[1][1]} over {asgard.rowTotals[1]} = **{fmtPct(asgard.rowConditional[1][1], 1)}**.
+**Conditional, one way.** Of the {asgard.rowTotals[1]} losses in the outer half, {asgard.table[1][1]} were coded unknown. $P(\text{unknown} \mid \text{outer half})$ is {asgard.table[1][1]} over {asgard.rowTotals[1]} = **{fmtPct(asgard.rowConditional[1][1], 1)}**.
 
-**Conditional, the other way** — of the {asgard.colTotals[1]} losses coded unknown, {asgard.table[1][1]} were in the outer half. $P(\text{outer half} \mid \text{unknown})$ is {asgard.table[1][1]} over {asgard.colTotals[1]} = **{fmtPct(asgard.colConditional[1][1], 1)}**.
+**Conditional, the other way.** Of the {asgard.colTotals[1]} losses coded unknown, {asgard.table[1][1]} were in the outer half. $P(\text{outer half} \mid \text{unknown})$ is {asgard.table[1][1]} over {asgard.colTotals[1]} = **{fmtPct(asgard.colConditional[1][1], 1)}**.
 
-One cell, two conditionals, {fmtPct(Math.abs(asgard.rowConditional[1][1] - asgard.colConditional[1][1]), 1)} apart — and only the arithmetic tells you they are different questions, because the sentence hides it.
+One cell, two conditionals, {fmtPct(Math.abs(asgard.rowConditional[1][1] - asgard.colConditional[1][1]), 1)} apart. Written out in English the two sentences look almost identical; only the arithmetic shows that they answer different questions.
 
-The comparison the report was actually written for is a third thing again: {fmtPct(asgard.rowConditional[1][1], 1)} of the outer-half losses were coded unknown against {fmtPct(asgard.rowConditional[0][1], 1)} of the inner-half ones. The conditional distributions differ, so cause code and corridor half *appear associated* in the escort's file — which is what the report said, and all it said.
+The comparison the report was actually written for is a third thing again: {fmtPct(asgard.rowConditional[1][1], 1)} of the outer-half losses were coded unknown against {fmtPct(asgard.rowConditional[0][1], 1)} of the inner-half ones. The conditional distributions differ, so cause code and corridor half *appear associated* in the escort's file. That is what the report said, and all it said.
 </Briefing.Worked>
 <Briefing.Caution>
 Two errors, and the second one is the expensive one.
 
 *Comparing counts across groups of different size.* Nineteen in one row and one in another says almost nothing while the rows are nineteen and five long. Convert to conditional percentages inside each row before you compare anything, every time.
 
-*Conditioning on the wrong variable.* $P(A \mid B)$ and $P(B \mid A)$ share a cell and nothing else. Write the sentence out in full before you compute — *of the hulls that are X, what share are Y* — and the denominator is whatever follows *of the*. A true number that answers a question nobody asked is the hardest kind of error to catch, because it survives every arithmetic check.
+*Conditioning on the wrong variable.* $P(A \mid B)$ and $P(B \mid A)$ share a cell and nothing else. Write the sentence out in full before you compute: *of the hulls that are X, what share are Y.* The denominator is whatever follows *of the*. A true number that answers a question nobody asked is the hardest kind of error to catch, because it survives every arithmetic check.
 
 And a third, quieter one: *appear associated* is a description of the individuals in the table. It is not evidence that owner class does anything to a hull, and the word *cause* has no business in the sentence.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="Conditional percentages from a two-way table">
+<Calculator.Step keys={['STAT', '1:Edit']}>The calculator holds no two-way tables, so work one group at a time. Type the *outer half* row of the {asgard.total}-loss table into **L1**, in column order: {asgard.table[1][0]}, then {asgard.table[1][1]}.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'MODE']}>QUIT to the home screen. List arithmetic runs from there, not from the editor.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'LIST', '▸ MATH', '5:sum(']} note="sum(L1) STO▸ R">The row total, {asgard.rowTotals[1]}. Park it in a variable with `STO▸` `ALPHA` `R` rather than writing it on your hand.</Calculator.Step>
+<Calculator.Step note="L1 ÷ R STO▸ L2">One keystroke divides the whole list. `L2` now holds the conditional distribution of cause code given *outer half*, as proportions.</Calculator.Step>
+<Calculator.Read label="L2(2)" value={fmt(asgard.rowConditional[1][1], 4)}>$P(\text{unknown} \mid \text{outer half})$: {fmtPct(asgard.rowConditional[1][1], 1)} of the outer-half losses carry that code.</Calculator.Read>
+<Calculator.Read label="sum(L2)" value="1">A conditional distribution sums to 1 across the row. If it does not, the wrong number went into `R`.</Calculator.Read>
+<Calculator.Watch>**The trap is which total you divide by.** The same cell over the *column* total answers the other question. Retype the unknown column ({asgard.table[0][1]}, {asgard.table[1][1]}) into `L1` and repeat, and you get $P(\text{outer half} \mid \text{unknown})$ = {fmt(asgard.colConditional[1][1], 4)}. Same numerator, different denominator, {fmtPct(Math.abs(asgard.rowConditional[1][1] - asgard.colConditional[1][1]), 1)} apart. Decide which sentence you are answering before you press `ENTER`.</Calculator.Watch>
+<Calculator.Watch>Dividing by the grand total instead gives a **joint** proportion, {fmt(asgard.joint[1][1], 4)} for this cell, which will not sum to 1 within the row and is not a comparison of groups.</Calculator.Watch>
+<Calculator.Watch>Clear between rows with `STAT` `4:ClrList` `L1` `,` `L2`. A list that is longer than the row you just typed leaves the old values on the end, and `sum(` adds them without comment.</Calculator.Watch>
+</Calculator>
 
 <TwoWayExplorer />
 
@@ -195,7 +205,7 @@ And a third, quieter one: *appear associated* is a description of the individual
   hint="The sentence is *of the Perrine losses, what share are unknown*. Whatever follows *of the* is the denominator: the Perrine row total, not 31 and not the unknown column.">
   <Success>
   <Dialogue speaker="analyst" aside="He looks at it for longer than the number deserves.">
-  Yes, sir. That's the whole row. Not most of it — the row. Every Perrine hull in the file went into the dark and nobody ever wrote down why.
+  Yes, sir. That's the whole row. Not most of it. The row. Every Perrine hull in the file went into the dark and nobody ever wrote down why.
   </Dialogue>
   </Success>
   <Failure>
@@ -206,26 +216,26 @@ And a third, quieter one: *appear associated* is a description of the individual
 </MissionBeat>
 
 <MissionBeat id="act-2-01-perrine-given-unknown" kind="numeric" answer={pPerrineGivenUnknown} answerKind="proportion" digits={3} label="THE UNKNOWN COLUMN"
-  prompt="Now turn it around — the direction the Board's summary quoted. Of the losses coded *unknown*, what proportion are **Perrine** hulls? Report a proportion to three decimal places."
+  prompt="Now turn it around, the direction the Board's summary quoted. Of the losses coded *unknown*, what proportion are **Perrine** hulls? Report a proportion to three decimal places."
   hint="Same cell as before, different denominator. Now the group you are conditioning on is the unknown column, so its total goes underneath.">
   <Success>
   <Dialogue speaker="xo">
-  Two numbers from one cell, and they are not the same number. That is the sentence the Board wrote, and it is not the sentence the Ensign said. Put both in the file with their denominators spelled out, and never let anyone quote one of them for the other.
+  Two numbers from one cell, and they are different numbers. The Board wrote the second one. The Ensign said the first. Put both in the file with their denominators spelled out, and never let anyone quote one of them for the other.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She does not raise her voice. She gets more precise.">
-  You conditioned on the answer, Captain. That is the share of the Perrine losses that are unknown, and I asked for the share of the unknown losses that are Perrine. Column total underneath. Say it back to me.
+  You conditioned on the answer, Captain. That is the share of the Perrine losses that are unknown, and I asked for the share of the unknown losses that are Perrine. Column total underneath. Again, out loud, before you touch the key.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <MissionBeat id="act-2-01-association" kind="interpretation" label="WHAT THE TABLE SAYS" {...assocRubric}
   prompt="Ferrier wants one sentence for the file, and she will strike it if it reaches past the table. Using the row percentages, say whether **classification** and **owner class** appear associated among these 31 losses. Quote the two conditional percentages that carry your comparison — the share of Perrine losses coded *unknown* against the share of Mercantile losses coded *unknown* — name both variables, and claim nothing the Register cannot support."
-  hint="Two variables appear associated when the conditional distribution of one changes as you move across the categories of the other. Compare rows, not cells — and stop at *appear associated*. Nobody assigned a hull its owner.">
+  hint="Two variables appear associated when the conditional distribution of one changes as you move across the categories of the other. Compare rows, not cells, and stop at *appear associated*. Nobody assigned a hull its owner.">
   <Success>
   <Dialogue speaker="xo">
-  That will survive a hostile reader. It says what the table says, it says whose table it is, and it does not say a word about why. Log it.
+  A staff officer can attack that and get nowhere. It says what the table says, it says whose table it is, and it does not say a word about why. Log it.
   </Dialogue>
   </Success>
   <Failure>
@@ -237,27 +247,31 @@ And a third, quieter one: *appear associated* is a description of the individual
 
 <Gated by={["act-2-01-unknown-given-perrine", "act-2-01-perrine-given-unknown", "act-2-01-association"]}>
 
-<Scene stamp="MET 031/09:40" location="Bridge · intel terminal · 0.42 AU from Callisto, 4 mgee" condensed="The sentence goes in the file with both denominators spelled out: classification depends on owner class, descriptively — every piracy an independent, every Perrine loss unknown. What is not proven is that owner class causes anything. The checksum closes and the Bureau's 412 certifications open behind it.">
+<Scene stamp="MET 031/09:40" location="Bridge · intel terminal · 0.42 AU from Callisto, 4 mgee" condensed="The sentence goes in the file with both denominators spelled out: classification depends on owner class, descriptively. Every piracy an independent hull, every Perrine loss unknown. What is not proven is that owner class causes anything. The checksum closes and the Bureau's 412 certifications open behind it.">
 
-It goes in the file the way Ferrier wants it, which is to say with both denominators written out where a hostile reader will trip over them before he trips over anything else. {fmtPct(pUnknownGivenPerrine, 1)} of the Perrine losses are coded *unknown*. {fmtPct(pPerrineGivenUnknown, 1)} of the losses coded *unknown* are Perrine hulls. Two sentences, two denominators, one cell.
+It goes in the file with both denominators written out, because Ferrier wants a hostile reader to trip over those before he trips over anything else. {fmtPct(pUnknownGivenPerrine, 1)} of the Perrine losses are coded *unknown*. {fmtPct(pPerrineGivenUnknown, 1)} of the losses coded *unknown* are Perrine hulls. Two sentences, two denominators, one cell.
 
-And the three things the table is willing to say. Classification depends on owner class in this file — descriptively, in the sense that the conditional distributions are not the same from row to row. Every *piracy* in six years is an independent hull; the Mercantile fleet has not lost one to piracy and neither has Perrine. And every Perrine loss on the Register is *unknown* — not most, not nearly all. Every one.
+Then what the table is willing to say. Classification depends on owner class in this file, descriptively, in the sense that the conditional distributions are not the same from row to row. Every *piracy* in six years is an independent hull; the Mercantile fleet has not lost one to piracy and neither has Perrine. And every Perrine loss on the Register is coded *unknown*. Every one.
 
-What the table will not say is the thing Ebele wants it to. It does not say that being a Perrine hull does anything to a ship. The Register is what two offices wrote down; owner class was not assigned to anyone by anybody running an experiment; and a hundred honest reasons could put one row where it sits. Different hulls. Different routes. Different cutters sent to look, or not sent. Of the {unknownLosses} losses on the file that nobody ever explained, the table says which hulls they were and nothing whatever about what happened to them.
+What the table will not say is the thing Ebele wants it to. It does not say that being a Perrine hull does anything to a ship. The Register is what two offices wrote down. Owner class was not assigned to anyone by anybody running an experiment, and a hundred honest reasons could put one row where it sits. Different hulls. Different routes. Different cutters sent to look, or not sent. Of the {unknownLosses} losses on the file that nobody ever explained, the table says which hulls they were and nothing whatever about what happened to them.
 
 "So we need a variable that isn't a code," Ebele says. "Something measured."
 
-At 09:38 the checksum closes. Solberg reads the header off verbatim, with the lag on it, and releases the file: four hundred and twelve departure certifications from the Bureau of Hulls and Cargo at Uruk High. Declared mass. Fuel loaded. Drive model. An examiner's signature on every one. And in the Authority's archive beside it, for each of those four hundred and twelve hulls, a state vector at Mark 2 — an acceleration, to half a percent.
+At 09:38 the checksum closes. Solberg reads the header off verbatim, with the lag on it, and releases the file: four hundred and twelve departure certifications from the Bureau of Hulls and Cargo at Uruk High. Declared mass. Fuel loaded. Drive model. An examiner's signature on every one. In the Authority's archive beside it, for each of those four hundred and twelve hulls, a state vector at Mark 2, and an acceleration good to half a percent.
 
-Ferrier looks at the two files sitting open next to each other and says the only thing worth saying about them, which is that a number somebody wrote down and a number somebody measured are not the same kind of thing, and that the whole of this Act is going to be the difference between them.
+Ferrier stands and looks at the two files open side by side for long enough that Solberg asks whether she wants them closed.
 
 </Scene>
 
+<Dialogue speaker="xo" aside="Not to him. To the display.">
+A number somebody wrote down. A number somebody measured. They are two different kinds of thing, Captain, and everything we do between here and Mark 9 is the distance between them.
+</Dialogue>
+
 <LogEntry
   title="Condition on the group you are asking about"
-  concept="A two-way table holds three relative frequencies that differ only in the denominator: joint (cell over grand total), marginal (a row or column total over the grand total), and conditional (cell over one group's total). Only conditional proportions compare groups of different size, and two variables *appear associated* when the conditional distribution of one changes across the categories of the other — a description of the individuals in the table, never a cause."
+  concept="A two-way table holds three relative frequencies that differ only in the denominator: joint (cell over grand total), marginal (a row or column total over the grand total), and conditional (cell over one group's total). Only conditional proportions compare groups of different size, and two variables *appear associated* when the conditional distribution of one changes across the categories of the other. That is a description of the individuals in the table, never a cause."
   formula="P(B \mid A) = \frac{n_{AB}}{n_A} \qquad P(A \mid B) = \frac{n_{AB}}{n_B} \qquad n_A \neq n_B \Rightarrow P(B \mid A) \neq P(A \mid B)"
-  mistake="Reporting $P(A \mid B)$ when the question asked for $P(B \mid A)$ — the same cell divided by the wrong total. Write the sentence out first: whatever follows *of the* is the denominator."
+  mistake="Reporting $P(A \mid B)$ when the question asked for $P(B \mid A)$: the same cell divided by the wrong total. Write the sentence out first, and whatever follows *of the* is the denominator."
   tags={['two-way table', 'joint', 'marginal', 'conditional', 'association', 'segmented bar', '2.1', '2.2', '2.3']}
 />
 

@@ -213,6 +213,25 @@ describe('content MDX lint', () => {
     expect(offences).toEqual([])
   })
 
+  /**
+   * The em dash as a default connector. Two independent clauses joined by one almost always want to
+   * be two sentences, and most of the rest introduce an aside that adds nothing; leaning on the dash
+   * flattens sentence architecture until every paragraph has the same shape. Eight per module is a
+   * budget, not a target: keep the dash for a speaker cut off mid-word or a hard self-interruption.
+   * Scoped to the Acts revised to the prose standard — Acts II–IX still run to 30-70 a module, and
+   * each joins REVISED as the sweep reaches it. Numeric ranges (2178–84) use an en dash and are fine.
+   */
+  it('keeps em dashes under budget', () => {
+    const REVISED = ['act-0/', 'act-1/']
+    const BUDGET = 8
+    const offences: string[] = []
+    for (const file of files.filter((f) => REVISED.some((a) => rel(f).startsWith(a)))) {
+      const count = (fs.readFileSync(file, 'utf8').match(/—/g) ?? []).length
+      if (count > BUDGET) offences.push(`${rel(file)}: ${count} em dashes (max ${BUDGET})`)
+    }
+    expect(offences).toEqual([])
+  })
+
   /** Every module MDX needs the frontmatter the manifest and router rely on. Calc bodies have none. */
   it('gives every module file the required frontmatter, and every calc body none', () => {
     const offences: string[] = []

@@ -44,23 +44,21 @@ export const lowShelf = highIdx.filter((i) => residualPct(i) < 9.5).length
 export const highShelf = highIdx.length - lowShelf
 export const lostTotal = manifest.filter((d) => d.laterLost).length
 
-<Scene stamp="MET 036/13:40" location="Bridge · main display · 0.66 AU from Callisto, 4 mgee" condensed="Ebele subtracts the line and puts the residual plot on the main display. The band is flat and even from the lightest hull to the heaviest — and a knot of hulls sits above it, clear of it, holding a height across the whole mass range. He colours by later-lost and stops talking.">
+<Scene stamp="MET 036/13:40" location="Bridge · main display · 0.66 AU from Callisto, 4 mgee" condensed="Ebele subtracts the line and puts the residual plot on the main display. The band is flat and even from the lightest hull to the heaviest, and a knot of hulls sits above it, clear of it, holding a height across the whole mass range. He colours by later-lost and stops talking.">
 
-The bridge at the back of the forenoon watch is four people and a great many instruments doing nothing in particular. Oyelaran has the Eyes back on the sweep schedule and resents every one of the four hours in twelve she has lent to archive work. Solberg has nothing to send. Ferrier has the plot.
+The bridge at the back of the forenoon watch is four people and a great many instruments doing nothing in particular. Oyelaran has the Eyes back on the sweep schedule and resents every one of the four hours in twelve she lent to archive work. Solberg has nothing to send. Ferrier has the plot.
 
-Ebele puts the residual display on the intel terminal, and then, because he wants it seen, on the main. Two panels, stacked. On top, the scatter with the line through it: four hundred and twelve hulls laid against the diagonal so tightly that the line is hard to pick out from the cloud. Underneath, the same file with the line subtracted — residual against declared mass, a horizontal zero, a shaded band for the ordinary spread.
+Ebele puts the residual display on the intel terminal, and then, because he wants it seen, on the main. Two panels, stacked. On top, the scatter with the line through it: four hundred and twelve hulls laid against the diagonal so tightly that the line is hard to pick out of the cloud. Underneath, the same file with the line subtracted. Residual against declared mass, a horizontal zero, a shaded band for the ordinary spread.
 
-Under the line, the cloud should be featureless. That is the whole point of subtracting it. Take the model out and what is left is what the model could not account for, and if the model is right, what is left is noise: no bend, no funnel, no run of one sign. What is left is a flat grey band, hulls above and below it in roughly equal number, the same width at the lightest departure in the file as at the heaviest.
+The band is flat. Same width at the lightest departure in the file as at the heaviest, about as many hulls under it as over, nothing in it that the eye stops on.
 
-Except that is not all that is left.
-
-Above the band, clear of it, with nothing in between, sits a knot of hulls. Not one hull. Not a scatter reaching up. A group, holding a height, spread the whole width of the declared-mass axis from the light end to the heavy. Nobody says anything for a moment, because everyone on the bridge has now seen the same thing and is waiting to find out whether somebody will say it wrong first.
+Above it, clear of it, with nothing in between, sits a knot of hulls. Not one hull. Not a scatter reaching up. A group, holding a height, spread the whole width of the declared-mass axis from the light end to the heavy. Nobody says anything for a moment, because everyone on the bridge has now seen the same thing and is waiting to find out whether somebody will say it wrong first.
 
 Ebele reaches past the unit toggle and sets COLOUR BY to *later-lost*.
 
 The band does not change. The knot changes colour. All of it, at once.
 
-He stops talking. It is the first time you have known him to.
+He stops talking.
 
 </Scene>
 
@@ -68,43 +66,37 @@ He stops talking. It is the first time you have known him to.
 Before anyone writes anything. Tell me the high ones aren't just big ships.
 </Dialogue>
 
-It is a fair question, and the display answers it. If heavy hulls were simply measured worse than light ones, the band would open out toward the right: a funnel, narrow at the light end, wide at the heavy, with the worst misses belonging to the biggest ships because the biggest ships have the most to be wrong about. It does not open out. The band is the same width at fourteen thousand tonnes as at twenty-seven, and the knot above it sits at the same height over the light hulls as over the heavy ones. Whatever is happening to those hulls is not a measurement error that grows with mass.
+The display answers her without anybody touching a control. The band does not open out toward the heavy end. It is the same width at fourteen thousand tonnes as at twenty-seven, and the knot sits at the same height over the light hulls as over the heavy ones.
 
 <Dialogue speaker="analyst" aside="Fast, and not steady.">
 So — then the data are wrong, sir. The telemetry or the certificates, one of the two, because both of them can't —
 </Dialogue>
 
-You stop him there, because it is the sentence the entire report turns on.
-
-The model is not wrong. A bend in this plot, or a funnel, would mean the line was the wrong description and the fault was ours: we would go and find a better curve and say so. This plot has neither. The line describes four hundred and twelve hulls as well as anything could, and the band beneath it is flat and even, and the model has nothing left to answer for.
-
-The data are not wrong either. The relay net measured what it measured, to half a percent, and the Bureau printed what it printed.
-
-What is wrong is the declarations. A signed certificate and an independent measurement disagree, for a particular set of hulls and for nobody else in four hundred and twelve. *The data are wrong* is a complaint. *These hulls declared wrong* is a finding — and the distance between those two sentences is the whole report.
+You stop him there. He is four words from putting it in a draft, and it is the sentence the whole report turns on.
 
 <Briefing title="Residuals" topics={["2.7"]}>
 <Briefing.Intuition>
-A residual is what the line missed by, for one individual: **actual minus predicted**, $e = y - \hat{y}$, measured vertically. The order is a convention and the convention is not negotiable, because the sign carries the meaning. A positive residual says the individual sits *above* the line — the model gave it too little, it underestimates that point. A negative residual says the opposite. Reverse the subtraction and every conclusion downstream inverts.
+A residual is what the line missed by, for one individual: **actual minus predicted**, $e = y - \hat{y}$, measured vertically. The order is a convention and the convention is not negotiable, because the sign carries the meaning. A positive residual says the individual sits *above* the line: the model gave it too little, and underestimates that point. A negative residual says the opposite. Reverse the subtraction and every conclusion downstream inverts.
 
-The **residual plot** puts those misses on their own axes: residual up the side, the explanatory variable along the bottom, a horizontal line at zero. It is the scatterplot with the model taken out, magnified — and it is the only honest way to look at what a line could not explain, because on the original scatterplot a strong relationship squashes every interesting deviation flat against the trend.
+The **residual plot** puts those misses on their own axes: residual up the side, the explanatory variable along the bottom, a horizontal line at zero. It is the scatterplot with the model taken out and magnified. On the original scatterplot a strong relationship squashes every interesting deviation flat against the trend, so the residual plot is the only honest place to look at what a line could not explain.
 
 What you are looking for, in order:
 
 - **A bend.** One sign at both ends of the x-range and the other through the middle. That is curvature: the true relationship is not a straight line, and the residuals are tracing the part of the curve the line could not follow. The **model** is wrong.
-- **A funnel.** The band widening (or narrowing) steadily across the x-range. The form may be fine, but the line predicts precisely at one end and loosely at the other, and equal spread — a condition that every interval and every test built on this line will quietly assume — fails. Again, the **model**.
-- **Individuals standing clear.** No bend, no funnel, a band of constant width — and then a point, or a group of points, well outside it. The model has passed. What is unusual is not the description; it is those individuals, and the next question is about *them*.
+- **A funnel.** The band widening (or narrowing) steadily across the x-range. The form may be fine, but the line predicts precisely at one end and loosely at the other, so equal spread fails. Equal spread is a condition every interval and every test built on this line will quietly assume. Again, the **model**.
+- **Individuals standing clear.** No bend, no funnel, a band of constant width, and then a point, or a group of points, well outside it. The model has passed. Those individuals are the unusual thing, and the next question is about *them*.
 
 That last distinction is the one that separates a competent report from a useless one. A pattern indicts the model. A clean band with a cluster above it indicts the members of the cluster. Neither indicts the data for being inconvenient.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="e_i = y_i - \hat{y}_i, \qquad \hat{y}_i = a + bx_i" terms={{ 'e_i': 'residual of the i-th individual — actual minus predicted', 'y_i': 'the observed response', '\\hat{y}_i': 'the response the line predicts at that x' }} label="Residual" />
+<Formula tex="e_i = y_i - \hat{y}_i, \qquad \hat{y}_i = a + bx_i" terms={{ 'e_i': 'residual of the i-th individual: actual minus predicted', 'y_i': 'the observed response', '\\hat{y}_i': 'the response the line predicts at that x' }} label="Residual" />
 
-For a least-squares line, $\sum e_i = 0$ always: the misses above exactly pay for the misses below, which is why their sum is no test of anything. The useful summary of their size is the standard deviation of the residuals, $s = \sqrt{\sum e_i^2 / (n-2)}$ — the typical vertical distance from the line, in the units of the response. A band of $\pm 2s$ about zero holds most of an honest residual plot.
+For a least-squares line, $\sum e_i = 0$ always: the misses above exactly pay for the misses below, which is why their sum is no test of anything. The useful summary of their size is the standard deviation of the residuals, $s = \sqrt{\sum e_i^2 / (n-2)}$, the typical vertical distance from the line, in the units of the response. A band of $\pm 2s$ about zero holds most of an honest residual plot.
 
 Units matter twice here. A residual is in the units of $y$; a residual expressed as a percentage of $x$ is a different quantity with a different meaning, and a display that offers both will let you compare hulls of very different sizes on the same footing. Say which one you are quoting.
 </Briefing.Definition>
 <Briefing.Worked>
-The Adlinda proving run again — eight Tessera-C hulls, declared mass against fuel loaded for the yard's 2.4-AU track, both in kilotonnes. The yard's terminal prints its fit to five places: ŷ = {fmt(provingFit.intercept, 5)} + {fmt(provingFit.slope, 5)}x, with $s$ = {fmt(provingFit.s, 4)} kt.
+The Adlinda proving run again: eight Tessera-C hulls, declared mass against fuel loaded for the yard's 2.4-AU track, both in kilotonnes. The yard's terminal prints its fit to five places: ŷ = {fmt(provingFit.intercept, 5)} + {fmt(provingFit.slope, 5)}x, with $s$ = {fmt(provingFit.s, 4)} kt.
 
 Take *{proving[worst].hull}*: declared {fmt(proving[worst].declared, 1)} kt, loaded {fmt(proving[worst].fuel, 2)} kt.
 
@@ -112,20 +104,33 @@ Take *{proving[worst].hull}*: declared {fmt(proving[worst].declared, 1)} kt, loa
 
 <Formula tex={`e = y - \\hat{y} = ${fmt(proving[worst].fuel, 2)} - ${fmt(provingFit.fitted[worst], 3)} = ${fmt(provingFit.residuals[worst], 3)}`} label="Her residual, in kilotonnes of fuel" />
 
-In words: *{proving[worst].hull}* loaded {fmt(Math.abs(provingFit.residuals[worst]), 3)} kt {provingFit.residuals[worst] > 0 ? 'more' : 'less'} fuel than the line predicts for a hull of her declared mass, so the model {provingFit.residuals[worst] > 0 ? 'underestimates' : 'overestimates'} her. That is {fmt(Math.abs(provingFit.residuals[worst]) / provingFit.s, 2)} times the typical miss — {Math.abs(provingFit.residuals[worst]) / provingFit.s > 1.8 ? 'the largest miss in the file, though still well inside the ordinary band' : 'unremarkable, which is what an honest file looks like'}.
+In words: *{proving[worst].hull}* loaded {fmt(Math.abs(provingFit.residuals[worst]), 3)} kt {provingFit.residuals[worst] > 0 ? 'more' : 'less'} fuel than the line predicts for a hull of her declared mass, so the model {provingFit.residuals[worst] > 0 ? 'underestimates' : 'overestimates'} her. That is {fmt(Math.abs(provingFit.residuals[worst]) / provingFit.s, 2)} times the typical miss, {Math.abs(provingFit.residuals[worst]) / provingFit.s > 1.8 ? 'the largest in the file and still well inside the ordinary band' : 'which is unremarkable, and unremarkable is what an honest file looks like'}.
 
 The eight residuals, in yard order (kt): {provingFit.residuals.map((e) => fmt(e, 3)).join(', ')}.
 
-They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-squares residuals always do. Their signs run {provingFit.residuals.map((e) => (e > 0 ? '+' : '−')).join(' ')} — no run of one sign at the ends, no widening from the light hulls to the heavy ones, nothing standing clear. Eight rows is too few to certify a model, but there is nothing here arguing against a line, and that is all a residual plot is ever asked to say.
+They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-squares residuals always do. Their signs run {provingFit.residuals.map((e) => (e > 0 ? '+' : '−')).join(' ')}. No run of one sign at the ends, and no widening from the light hulls to the heavy. Nothing stands clear. Eight rows is too few to certify a model, but there is nothing here arguing against a line, and that is all a residual plot is ever asked to say.
 </Briefing.Worked>
 <Briefing.Caution>
 *Predicted minus actual.* The right magnitude, the wrong sign, and a report that says a hull ran light when it ran heavy. Actual minus predicted. Always.
 
-*"There's a pattern in the residual plot, so the data are bad."* No. A pattern is the model speaking, not the data confessing. Curvature means fit a curve; fanning means the precision is not constant and the conditions for later inference do not hold. Neither is a reason to discard a row, and a report that discards rows because they disagree with a line is not a report.
+*"There's a pattern in the residual plot, so the data are bad."* A pattern is the model speaking, not the data confessing. Curvature means fit a curve; fanning means the precision is not constant and the conditions for later inference do not hold. Neither is a reason to discard a row, and a report that discards rows because they disagree with a line is not a report.
 
 *Reading the band as a rule.* The $\pm 2s$ band is the ordinary spread, not a fence. Honest individuals fall outside it; roughly one in twenty should. What earns attention is a *group* outside it, on one side, with a gap between them and everyone else.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="The RESID list, and a residual plot">
+<Calculator.Step keys={['STAT', '▸ CALC', '8:LinReg(a+bx)']} note="Xlist: L1 · Ylist: L2 · Calculate">Run the regression on the eight proving hulls first. The calculator writes the residuals into a list called `RESID` as a side effect, and that list does not exist until it has.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'STAT', '▸ NAMES']}>`2nd` `STAT` is LIST. `RESID` sits in the NAMES column with the other named lists. Highlight it and press `ENTER` to paste the name wherever the cursor is.</Calculator.Step>
+<Calculator.Step note="RESID STO▸ L3">Copy it into `L3` from the home screen. `RESID` is overwritten by the next regression you run; `L3` is not.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'Y=', '2:Plot2']} note="On · Type: scatter · Xlist: L1 · Ylist: L3">Plot2 is the residual plot: the same explanatory variable along the bottom, the misses up the side. Turn **Plot1 off** while you read it, or the two scatters share one window and neither is legible.</Calculator.Step>
+<Calculator.Step keys={['ZOOM', '9:ZoomStat']}>The vertical scale is now the residuals alone, which is the magnification the whole technique depends on.</Calculator.Step>
+<Calculator.Read label="L3 (largest)" value={fmt(provingFit.residuals[worst], 4)}>*{proving[worst].hull}*, the biggest miss on the proving file, in kilotonnes of fuel.</Calculator.Read>
+<Calculator.Read label="sum(L3)" value="≈ 0">`2nd` `LIST` `▸ MATH` `5:sum(`. Least-squares residuals sum to zero, so this is an arithmetic check and never a verdict on the model.</Calculator.Read>
+<Calculator.Watch>**`RESID` belongs to the last regression you ran, and to nothing else.** Change a list, fit a different pair of variables, or run `LinReg` on someone else's data, and the old residuals are gone without a message. Re-run the regression immediately before you trust `RESID`, every time.</Calculator.Watch>
+<Calculator.Watch>Setting `Ylist` to `RESID` directly works and is fragile for the same reason. Store to `L3` when the plot has to survive anything else you do.</Calculator.Watch>
+<Calculator.Watch>`ZoomStat` rescales the residual axis to the residuals, so a flat band and a bent one fill the screen equally. Read the **shape**, not how tall it looks.</Calculator.Watch>
+</Calculator>
 
 <ResidualExplorer />
 
@@ -140,7 +145,7 @@ They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-
   prompt={`Start with the hull at the top of the knot. *${nick.hull}*, ${nick.ownerClass}, Mk 3, examined at Uruk High: declared mass ${fmtInt(nick.declaredMass)} t, and the relay net's Mark 2 telemetry infers ${fmtInt(nick.inferredMass)} t.\n\nThe fit over all ${fmtInt(manifest.length)} departures is\n\n$$\\hat{y} = ${fmt(massFit.intercept, 2)} + ${fmt(massFit.slope, 6)}x$$\n\nReport her **residual**, in tonnes, to the nearest tonne. Keep the sign.`}>
   <Success>
   <Dialogue speaker="analyst" aside="Writing it into a third column he has just made.">
-  So — she departed heavier than the line says a hull of her certificate should. By that much. Signed by Examiner Dacre.
+  So. She departed heavier than the line says a hull of her certificate should. By that much. Signed by Examiner Dacre.
   </Dialogue>
   <Dialogue speaker="xo">
   One hull is an anecdote, Ensign. Note the examiner and say nothing about him.
@@ -159,12 +164,12 @@ They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-
   {...residualInterpretation({ residual: nickResid, yVar: 'inferred mass', yUnits: 't', xVar: 'declared mass', xValue: nick.declaredMass, digits: 0 })}>
   <Success>
   <Dialogue speaker="xo">
-  That will survive a hostile reader. It says what was measured, which way, and against what. It does not say why, and you will not let the Ensign add it.
+  Nothing in that a staff officer can pull on. It says what was measured, which way, and against what. It does not say why, and you will not let the Ensign add it.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="To the Ensign, whose draft says the same thing.">
-  A magnitude is not an interpretation. Which side of the line is she on, and what did the line get wrong about her — too much, or too little? Say the number, say the direction, and name what was underestimated. Three things, one sentence.
+  A magnitude is not an interpretation. Which side of the line is she on, and what did the line get wrong about her: too much, or too little? Say the number, say the direction, and name what was underestimated. Three things, one sentence.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -180,7 +185,7 @@ They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  Count them again, Captain, and check the axis while you do. Five percent of declared mass is not five hundred tonnes for every hull — that is the point of putting it in percent. The instrument will give you the number outright once it is coloured.
+  Count them again, Captain, and check the axis while you do. Five percent of declared mass is not five hundred tonnes for every hull, which is the point of putting it in percent. The instrument will give you the number outright once it is coloured.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -196,7 +201,7 @@ They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  Set COLOUR BY to later-lost and count the coloured ones inside the group you already found, Captain. Not the lost hulls in the whole file — the lost hulls *among those*. The denominator is the group, not the four hundred and twelve.
+  Set COLOUR BY to later-lost and count the coloured ones inside the group you already found, Captain. Not the lost hulls in the whole file. The lost hulls *among those*. The denominator is the group, not the four hundred and twelve.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -207,27 +212,27 @@ They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-
 
 So it stands, and it will still stand in the morning.
 
-The Manifest file holds {highLost.length} hulls that departed between {fmt(min(highPct), 0)} and {fmt(max(highPct), 0)} percent heavier than the mass their Bureau certificate declares. Every one of them is a hull that never arrived. Nothing else in the four hundred and twelve comes within a percent of them; below five percent the file is a flat, even band of honest scatter, and there is a clear gap in between with nobody in it.
+The Manifest file holds {highLost.length} hulls that departed between {fmt(min(highPct), 0)} and {fmt(max(highPct), 0)} percent heavier than the mass their Bureau certificate declares. Every one of them is a hull that never arrived. Nothing else in the four hundred and twelve comes within a percent of them; below five percent the file is a flat, even band of honest scatter, with a clear gap in between and nobody in it.
 
-It is the first hard fact of this deployment. Not a shape, not a pattern, not an observation regarding the distribution of something. A number, with a denominator, from two independent files that were never meant to be read against each other — the Bureau's signatures on one side, the Lane Authority's telemetry on the other, neither office with any reason to expect the comparison and neither able to have arranged it.
+It is the first hard fact of this deployment. A number, with a denominator, out of two files that were never meant to be read against each other: the Bureau's signatures on one side, the Lane Authority's telemetry on the other, and neither office in any position to have arranged the agreement.
 
 You take a minute with it, on the deck, where they can all see you take it. Six years. Thirty-one hulls and their crews, most of them never recovered, every file closed with a word that means nobody found out. And what reopens them is a column of arithmetic that has been sitting in two archives the whole time, waiting for somebody to subtract one from the other.
 
 Ebele finds the other thing within the minute, because he is looking for it.
 
-The group is not one group. It is two. There are {lowShelf} of them on a shelf at the lower end of that range and {highShelf} on a second shelf above it, and there is nothing between the shelves either. He runs the obvious checks — owner class, drive model, Lane length, departure year — and none of them separates the shelves, and he says so instead of inventing a reason, which is the most professional thing he does all watch.
+The group is two groups. There are {lowShelf} of them on a shelf at the lower end of that range and {highShelf} on a second shelf above it, and there is nothing between the shelves either. He runs the obvious checks, owner class and drive model and Lane length and departure year, and none of them separates the shelves. He says so rather than inventing a reason.
 
 You let it stand unexplained in the file. It will keep.
 
-The last thing is the one nobody wants to look at. The Register has {lostTotal} losses in it. Of those, {highLost.length} are up here. The other {lostTotal - highLost.length} are down in the band with everybody else — ordinary hulls, ordinary certificates, ordinary scatter, and gone. Whatever happened to this file did not happen to all of them.
+The last thing is the one nobody wants to look at. The Register has {lostTotal} losses in it. Of those, {highLost.length} are up here. The other {lostTotal - highLost.length} are down in the band with everybody else: ordinary hulls, ordinary certificates, ordinary scatter, and gone. Whatever happened to this file did not happen to all of them.
 
 </Scene>
 
 <Dialogue speaker="xo" aside="She has not written anything down. She wants it out loud first.">
-Say it back to me, Captain. One sentence. What we know, and nothing we don't.
+One sentence, Captain. What we know, and nothing we don't.
 </Dialogue>
 
-You give it to her the way it will have to go to the Board: that {highLost.length} hulls subsequently recorded as losses departed with an inferred mass between {fmt(min(highPct), 0)} and {fmt(max(highPct), 0)} percent above their certified declared mass, that no other departure in the file does so, and that the residual plot shows no curvature and no change in spread — so the discrepancy lies in the declarations and not in the model or the measurement.
+You give it to her the way it will have to go to the Board: that {highLost.length} hulls subsequently recorded as losses departed with an inferred mass between {fmt(min(highPct), 0)} and {fmt(max(highPct), 0)} percent above their certified declared mass, that no other departure in the file does so, and that the residual plot shows no curvature and no change in spread, so the discrepancy lies in the declarations rather than in the model or the measurement.
 
 Ferrier makes you say the second half twice: what is *not* proven. Who signed a false figure knowing it. Why. What the extra mass was. Where those hulls went, or whether they went anywhere. None of that is in the file, and the file is all you have.
 
@@ -237,9 +242,9 @@ Skipper. When you have the plus or minus on that, tell me before you tell them.
 
 <LogEntry
   title="Residual = actual − predicted; its sign is a direction"
-  concept="A residual is $e = y - \hat{y}$, actual minus predicted, measured vertically: positive means the individual sits above the line and the model underestimates it, negative the reverse. A residual plot shows what the line could not account for, and it is read in one order — a bend or a fan means the **model** is wrong (wrong form, or unequal spread), while a flat band of constant width with a cluster of large residuals standing clear of it means the model is fine and those **individuals** are unlike the rest."
+  concept="A residual is $e = y - \hat{y}$, actual minus predicted, measured vertically: positive means the individual sits above the line and the model underestimates it, negative the reverse. A residual plot shows what the line could not account for, and it is read in one order. A bend or a fan means the **model** is wrong (wrong form, or unequal spread), while a flat band of constant width with a cluster of large residuals standing clear of it means the model is fine and those **individuals** are unlike the rest."
   formula="e_i = y_i - \hat{y}_i, \qquad \sum e_i = 0, \qquad s = \sqrt{\frac{\sum e_i^2}{n-2}}"
-  mistake="Computing predicted − actual. The magnitude is right and the sign is inverted, so a hull that departed heavy is reported light — and every sentence built on it says the opposite of what the data say."
+  mistake="Computing predicted − actual. The magnitude is right and the sign is inverted, so a hull that departed heavy is reported light, and every sentence built on it says the opposite of what the data say."
   tags={['residual', 'residual-plot', 'curvature', 'fanning', 'outliers', '2.7']}
 />
 

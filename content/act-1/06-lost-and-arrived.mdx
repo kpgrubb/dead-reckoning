@@ -23,7 +23,7 @@ import { compareDistributions } from '@/lib/problems/generators/act-1/_rubrics'
 export const ageGap = median(arrivedAges) - median(lostAges)
 export const valueGap = median(arrivedValues) - median(lostValues)
 
-<Scene stamp="MET 023/09:40" location="Wardroom · 0.165 AU from Callisto, 4 mgee" condensed="Twenty-three days out, Ebele lays out the obvious comparison — the 31 lost hulls against the ones that arrived, on mark, hull age and cargo value. Ferrier asks one question, what an arrived hull's mark at last contact is, and the answer is twelve, every time: arrived cannot say anything about where. The honest baseline for where is the Board's own flat file of all 2,200 incidents. Ferrante wants the base rate before the patient, and asks what these people take.">
+<Scene stamp="MET 023/09:40" location="Wardroom · 0.165 AU from Callisto, 4 mgee" condensed="Twenty-three days out, Ebele lays out the obvious comparison: the 31 lost hulls against the ones that arrived, on mark, hull age and cargo value. Ferrier asks one question, what an arrived hull's mark at last contact is, and the answer is twelve, every time: arrived cannot say anything about where. The honest baseline for where is the Board's own flat file of all 2,200 incidents. Ferrante wants the base rate before the patient, and asks what these people take.">
 
 The wardroom is the only compartment aboard with a table long enough to lay three displays side by side, so this is where the comparison gets built. Twenty-three days. Callisto a hundred and sixty-five thousandths of an astronomical unit astern, forty-four kilometres a second and opening, a minute and twenty-two seconds of light each way. Nobody has asked Valhalla anything since the preliminary went into draft.
 
@@ -64,56 +64,56 @@ So the second paragraph is doing the comparing in the reader's head instead of o
 </Dialogue>
 
 <Dialogue speaker="xo">
-There is no comparison in the document. There are two descriptions in the same document, which is what every report the Board ignores looks like. One sentence, Ensign, with *than* in it. If you cannot get both groups into one sentence, you have not compared them — you have listed them.
+There is no comparison in the document. There are two descriptions in the same document, which is what every report the Board ignores looks like. One sentence, Ensign, with *than* in it. If you cannot get both groups into one sentence, you have listed them.
 </Dialogue>
 
 <Briefing title="One sentence, with both groups in it" topics={["1.9"]}>
 <Briefing.Intuition>
-Comparing two distributions uses the same four headings as describing one — **shape, centre, variability, unusual features** — but every clause must be **comparative**. Not "A is centred at 40 and B is centred at 62", but "A is centred *lower than* B, 40 against 62". The word doing the work is *than*, or *versus*, or *while*; without one of them you have written two descriptions and left the reader to do the comparison.
+Comparing two distributions uses the same four headings as describing one, **shape, centre, variability, unusual features**, but every clause must be **comparative**. Not "A is centred at 40 and B is centred at 62", but "A is centred *lower than* B, 40 against 62". The word doing the work is *than*, or *versus*, or *while*; without one of them you have written two descriptions and left the reader to do the comparison.
 
 Three displays put two groups on one scale, and all three share an axis on purpose:
 
-- **Parallel boxplots** — two boxes on one axis. Best for centre and spread, and the only one that reads well when the groups are wildly different in size. It hides shape: a box cannot show you two peaks.
-- **Back-to-back stemplot** — one stem down the middle, leaves growing left and right. It shows every value, so it is only usable for small groups; a large group must be subsampled, and the subsample must be declared.
-- **Histograms on a shared axis and a shared bin width** — the only one that shows shape honestly. Change either the axis or the bin width between the two panels and you have drawn a comparison of your own choices.
+- **Parallel boxplots:** two boxes on one axis. Best for centre and spread, and the only one that reads well when the groups are wildly different in size. It hides shape: a box cannot show you two peaks.
+- **Back-to-back stemplot:** one stem down the middle, leaves growing left and right. It shows every value, so it is only usable for small groups; a large group must be subsampled, and the subsample must be declared.
+- **Histograms on a shared axis and a shared bin width:** the only one that shows shape honestly. Change either the axis or the bin width between the two panels and you have drawn a comparison of your own choices.
 
-Groups of very different size are compared on **shape, centre and spread — never on bar height or count**. Thirty-one hulls beside two thousand two hundred records will always look like a rounding error in counts, and that says nothing about where they sit.
+Groups of very different size are compared on **shape, centre and spread, never on bar height or count**. Thirty-one hulls beside two thousand two hundred records will always look like a rounding error in counts, and that says nothing about where they sit.
 
-**Choosing the baseline.** Before any of that, the comparison group has to be capable of answering the question. A baseline is useless if the variable cannot vary within it. Compare the position at which hulls were lost against the position at which hulls arrived, and the second group takes one value — the destination — for every individual in it, because that is what arriving means. The difference between the groups is then a property of the definition, not a finding about the corridor.
+**Choosing the baseline.** Before any of that, the comparison group has to be capable of answering the question. A baseline is useless if the variable cannot vary within it. Compare the position at which hulls were lost against the position at which hulls arrived, and the second group takes one value, the destination, for every individual in it, because that is what arriving means. The difference between the groups is then a property of the definition, not a finding about the corridor.
 
 The test is mechanical. Look at the baseline group alone and ask whether the variable has a distribution in it. No spread, no baseline. Pick another comparison group in which the variable is free to take any of its values, and say which group you chose and why, because a reader who disagrees with the baseline disagrees with everything built on it.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula
   tex="\Delta_{\text{centre}} = \text{median}_A - \text{median}_B \qquad\text{and}\qquad \text{IQR}_A \;\text{against}\; \text{IQR}_B"
-  terms={{ '\\Delta_{\\text{centre}}': 'how much higher A sits than B, in the variable’s own units', '\\text{IQR}': 'interquartile range — the width of the middle half of a group', 'A, B': 'the two groups, both named, both with their n' }}
+  terms={{ '\\Delta_{\\text{centre}}': 'how much higher A sits than B, in the variable’s own units', '\\text{IQR}': 'interquartile range: the width of the middle half of a group', 'A, B': 'the two groups, both named, both with their n' }}
   label="The two numbers every comparison carries"
 />
 
-A complete comparison, in order: **shape** (both), **centre** with both values and a comparative word, **variability** with both values, **unusual features** (outliers, gaps, clusters), and the **context** — what was measured, on whom, in what units.
+A complete comparison, in order: **shape** (both), **centre** with both values and a comparative word, **variability** with both values, **unusual features** (outliers, gaps, clusters), and the **context**: what was measured, on whom, in what units.
 </Briefing.Definition>
 <Briefing.Worked>
 Take the variable that is *not* the question: **hull age**, the {fmtInt(lostAges.length)} lost hulls against the {fmtInt(arrivedAges.length)} arrived transits.
 
-Medians: {fmt(median(lostAges), 1)} years lost, {fmt(median(arrivedAges), 1)} years arrived — a difference of {fmt(Math.abs(ageGap), 1)} years. IQRs: {fmt(iqr(lostAges), 1)} years against {fmt(iqr(arrivedAges), 1)}. Means {fmt(mean(lostAges), 1)} and {fmt(mean(arrivedAges), 1)}, SDs {fmt(sd(lostAges), 1)} and {fmt(sd(arrivedAges), 1)}.
+Medians: {fmt(median(lostAges), 1)} years lost, {fmt(median(arrivedAges), 1)} years arrived, a difference of {fmt(Math.abs(ageGap), 1)} years. IQRs: {fmt(iqr(lostAges), 1)} years against {fmt(iqr(arrivedAges), 1)}. Means {fmt(mean(lostAges), 1)} and {fmt(mean(arrivedAges), 1)}, SDs {fmt(sd(lostAges), 1)} and {fmt(sd(arrivedAges), 1)}.
 
 The sentence: *the lost hulls are about as old as the hulls that arrived (median {fmt(median(lostAges), 1)} years against {fmt(median(arrivedAges), 1)}), and about as variable in age (IQR {fmt(iqr(lostAges), 1)} against {fmt(iqr(arrivedAges), 1)} years); both distributions are roughly symmetric with no outliers.*
 
-That is a complete comparison and its finding is **no difference** — the gap between the centres is {fmt(Math.abs(ageGap) / iqr(lostAges), 2)} of a single IQR, which is nothing. A comparison that comes out flat is a result, and it is reported in the same words as one that does not. It rules out the tidiest explanation anybody had: that whoever is losing hulls is losing old ones.
+That is a complete comparison and its finding is **no difference**. The gap between the centres is {fmt(Math.abs(ageGap) / iqr(lostAges), 2)} of a single IQR, which is nothing. A comparison that comes out flat is a result, and it is reported in the same words as one that does not. It rules out the tidiest explanation anybody had: that whoever is losing hulls is losing old ones.
 </Briefing.Worked>
 <Briefing.Caution>
 *Two descriptions instead of a comparison.* "The Deimos office's cases have a median of 41 days and an IQR of 12. The Pallas office's cases have a median of 63 days and an IQR of 26." Both sentences are true; neither is a comparison, and an AP reader scores the pair as one description. Fix it by forcing both groups into one clause and putting *than* between them.
 
-*Reading a box's size as a count.* A wide box means a large IQR — the middle half of that group is spread out. It does not mean more individuals. Two boxplots drawn from 31 values and from 2,200 values can be the same width, or the small group can be the wider one. The only place a count lives on a boxplot is the label, which is why every group on a comparative display carries its n.
+*Reading a box's size as a count.* A wide box means a large IQR: the middle half of that group is spread out. It does not mean more individuals. Two boxplots drawn from 31 values and from 2,200 values can be the same width, or the small group can be the wider one. The only place a count lives on a boxplot is the label, which is why every group on a comparative display carries its n.
 
-*Comparing bar heights across groups of different size.* On two histograms of 31 and {fmtInt(REGISTER_META.records)} records, every bar in the second is taller. Compare where the mass sits and how wide it is spread, not how tall the bars are — or draw both as relative frequencies.
+*Comparing bar heights across groups of different size.* On two histograms of 31 and {fmtInt(REGISTER_META.records)} records, every bar in the second is taller. Compare where the mass sits and how wide it is spread, not how tall the bars are, or draw both as relative frequencies.
 </Briefing.Caution>
 </Briefing>
 
 <Calculator title="Two boxplots, one window">
 <Calculator.Step keys={['STAT', '1:Edit']}>Group A into **L1**, group B into **L2**. The two lists may be different lengths; nothing on this machine requires them to match.</Calculator.Step>
 <Calculator.Step keys={['2nd', 'Y=', '1:Plot1']} note="On · Type: modified boxplot (2nd row, first icon) · Xlist: L1 · Freq: 1">The first group.</Calculator.Step>
-<Calculator.Step keys={['2nd', 'Y=', '2:Plot2']} note="On · Type: modified boxplot · Xlist: L2 · Freq: 1">The second group. Both plots stay **On** — that is what puts the two groups on one scale.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'Y=', '2:Plot2']} note="On · Type: modified boxplot · Xlist: L2 · Freq: 1">The second group. Both plots stay **On**. That is what puts the two groups on one scale.</Calculator.Step>
 <Calculator.Step keys={['ZOOM', '9:ZoomStat']}>Frames every switched-on plot together, so both boxes are drawn against the same axis. Plot1 draws on the upper track, Plot2 below it.</Calculator.Step>
 <Calculator.Step keys={['TRACE', '▾']}>`▸` steps through the five numbers of one plot; `▾` and `▴` jump between Plot1 and Plot2. Read both five-number summaries without leaving the graph.</Calculator.Step>
 <Calculator.Read label="Med (Plot1)" value={fmt(median(lostAges), 2)}>the lost hulls' median age, in years.</Calculator.Read>
@@ -126,7 +126,7 @@ That is a complete comparison and its finding is **no difference** — the gap b
 <ComparativeDisplay />
 
 <Dialogue speaker="medic" aside="He has the cargo-value panel up and is reading the two medians off it, one after the other.">
-There it is. The Lane's median declared cargo is {fmt(median(arrivedValues), 1)} million; the thirty-one were carrying {fmt(median(lostValues), 1)}. Whoever is taking these hulls is taking the cheap ones — by a factor of better than two, and the middle half of the losses does not even reach the Lane's middle. That is not what piracy looks like. Pirates have overheads.
+There it is. The Lane's median declared cargo is {fmt(median(arrivedValues), 1)} million; the thirty-one were carrying {fmt(median(lostValues), 1)}. Whoever is taking these hulls is taking the cheap ones. Better than a factor of two, and the middle half of the losses does not even reach the Lane's middle. That is not what piracy looks like. Pirates have overheads.
 </Dialogue>
 
 <Dialogue speaker="xo" aside="She writes nothing down.">
@@ -140,7 +140,7 @@ It is what the two medians say. It is not yet a finding, because we have one num
 <Drill generator="act-1/comparative-sentence" count={1} />
 
 <MissionBeat id="act-1-06-compare" kind="interpretation" label="THE COMPARISON"
-  prompt={`Set the panel's variable to **Lane mark**. Group A is *the lost hulls* (${fmtInt(lossMarks.length)}); the baseline, group B, is *all Register incidents* — every one of the ${fmtInt(allMarks.length)} records, because an arrived hull's last contact is Mark 12 by definition and can say nothing about where.\n\nWrite the comparison Ferrier will accept: **one sentence, with *than* in it**. Name both groups and the variable, compare the centres and cite both medians, compare the variability and cite both IQRs, and say something about the shape of each. Read the numbers off the panel's summary table.`}
+  prompt={`Set the panel's variable to **Lane mark**. Group A is *the lost hulls* (${fmtInt(lossMarks.length)}); the baseline, group B, is *all Register incidents*: every one of the ${fmtInt(allMarks.length)} records, because an arrived hull's last contact is Mark 12 by definition and can say nothing about where.\n\nWrite the comparison Ferrier will accept: **one sentence, with *than* in it**. Name both groups and the variable, compare the centres and cite both medians, compare the variability and cite both IQRs, and say something about the shape of each. Read the numbers off the panel's summary table.`}
   hint="Centre first: which group sits later along the Lane, and by how much? Then spread: one group's middle half is a fraction of a mark wide, the other's is most of the corridor. Then shape: a tight pile against a flat spread. Every clause needs both groups in it."
   {...compareDistributions({ groupA: 'the lost hulls', groupB: 'all Register incidents', variable: 'mark at last contact', units: 'Lane marks', centerA: median(lossMarks), centerB: median(allMarks), spreadA: iqr(lossMarks), spreadB: iqr(allMarks), shapeNote: 'The losses pile tightly at Mark 9 to 10 with a few low outliers, while all incidents are spread almost uniformly from Mark 1 to 12.' })}>
   <Success>
@@ -157,11 +157,11 @@ It is what the two medians say. It is not yet a finding, because we have one num
 
 <Gated by="act-1-06-compare">
 
-<Scene stamp="MET 023/11:15" location="Wardroom · 0.165 AU from Callisto, 4 mgee" condensed="The comparison goes into the preliminary: the losses sit later along the Lane and in a far narrower band than incidents in general, and they carry cheaper cargo than the Lane does — while hull age says nothing at all. Three findings, none of them proof; Ferrier logs all three as comparisons and refuses to let anyone call them a pattern.">
+<Scene stamp="MET 023/11:15" location="Wardroom · 0.165 AU from Callisto, 4 mgee" condensed="The comparison goes into the preliminary: the losses sit later along the Lane and in a far narrower band than incidents in general, and they carry cheaper cargo than the Lane does, while hull age says nothing at all. Three findings, none of them proof; Ferrier logs all three as comparisons and refuses to let anyone call them a pattern.">
 
 Three comparisons on the table. Nobody has touched the coffee. Ferrante has stopped turning pages.
 
-Where: the thirty-one sit late on the corridor and sit *tight* — the middle half of them inside a fraction of a mark, against a baseline whose middle half is most of the Lane. Ordinary incidents happen everywhere because ships are everywhere. These did not.
+Where: the thirty-one sit late on the corridor and sit *tight*, the middle half of them inside a fraction of a mark, against a baseline whose middle half is most of the Lane. Ordinary incidents happen everywhere because ships are everywhere. These did not.
 
 What they were carrying: {fmt(median(lostValues), 1)} million against the Lane's {fmt(median(arrivedValues), 1)}, a gap of {fmt(valueGap, 1)} million in the medians, with the losses' whole box below the baseline's. The cheap ones.
 
@@ -185,9 +185,9 @@ Out on the hull, the wings are still out and the Lane is still empty, and somewh
 
 <LogEntry
   title="A comparison is one sentence with *than* in it"
-  concept="To compare two distributions, address shape, centre, variability and unusual features for both groups on a shared scale — and make every clause comparative, citing both values and naming both groups, the variable and the units. A comparison that comes out flat is a finding too, and is written the same way."
+  concept="To compare two distributions, address shape, centre, variability and unusual features for both groups on a shared scale. Make every clause comparative, citing both values and naming both groups, the variable and the units. A comparison that comes out flat is a finding too, and is written the same way."
   formula="\Delta_{\text{centre}} = \text{median}_A - \text{median}_B, \qquad \text{IQR}_A \;\text{vs}\; \text{IQR}_B, \qquad \text{both groups in one clause}"
-  mistake="Writing two separate descriptions — a paragraph for each group — and leaving the reader to do the comparing. The other one: reading a wider box as more data. Box width is spread; the count lives in the label."
+  mistake="Writing two separate descriptions, a paragraph for each group, and leaving the reader to do the comparing. The other one: reading a wider box as more data. Box width is spread; the count lives in the label."
   tags={['comparing distributions', 'parallel boxplots', 'back-to-back stemplot', 'shared axis', 'comparative language', 'baseline', '1.9']}
 />
 

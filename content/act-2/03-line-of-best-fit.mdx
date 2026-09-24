@@ -48,15 +48,13 @@ The engineering deck sits two metres below the wardroom and four degrees warmer,
 
 Ebele has brought the terminal down because Ferrier told him to stop reading the file at the intel station, where the whole watch could see him do it. Four hundred and twelve departures. Declared mass along the bottom, the mass the Lane's own telemetry infers up the side, and a cloud so tight it looks ruled.
 
-Oyelaran has surrendered four of her twelve hours to the archive again this watch and entered the fact on the log in units. Ferrier entered the four hours back at her, also in units. The Board's answer to the preliminary — *noted; continue within the assigned profile* — has been open on the intel terminal since MET 30, eleven lines of it, because Ferrier will not let anyone close it.
+Oyelaran has surrendered four of her twelve hours to the archive again this watch and entered the fact on the log in units. Ferrier entered the four hours back at her, also in units. The Board's answer to the preliminary, *noted; continue within the assigned profile*, has been open on the intel terminal since MET 30, eleven lines of it, because Ferrier will not let anyone close it.
 
-What is on this screen is no longer a shape. The Register was shapes: a histogram with two piles in it, a fence, a box and its whiskers. This is two numbers for every hull, one from a signature and one from a telescope, and two numbers for every hull make a claim that can be checked against itself.
+"So. Sir. A line through this has a slope in tonnes per tonne." He says it the way a man says something he has checked twice. "Inferred tonnes per declared tonne. And the intercept has to sit on zero, or near enough, because a hull that declares nothing should infer nothing. There is no certificate for an empty ship that still weighs something."
 
-"So — sir. A line through this has a slope in tonnes per tonne." He says it the way a man says something he has checked twice. "Inferred tonnes per declared tonne. And the intercept has to sit on zero, or near enough, because a hull that declares nothing should infer nothing. There is no certificate for an empty ship that still weighs something."
+He drags a candidate line across the cloud with two fingers. The display answers by drawing a square on every hull, the residual squared, as an area, and the squares swell and shrink together as he moves. He is chasing a single number under the plot: the total of all four hundred and twelve areas. He finds the bottom of it by feel, overshoots, comes back, overshoots the other way.
 
-He drags a candidate line across the cloud with two fingers. The display answers by drawing a square on every hull — the residual, squared, as an area — and the squares swell and shrink together as he moves. He is chasing a single number under the plot: the total of all four hundred and twelve areas. He finds the bottom of it by feel, overshoots, comes back, overshoots the other way.
-
-Then he stops chasing and presses the button. The line steps a hair to the left and settles, and the total stops falling, and no push he gives it afterwards makes the squares smaller. That, and not anything he believes about freighters, is what makes it the line.
+Then he stops chasing and presses the button. The line steps a hair to the left and settles. The total stops falling, and no push he gives it afterwards makes the squares smaller.
 
 </Scene>
 
@@ -64,21 +62,21 @@ Then he stops chasing and presses the button. The line steps a hair to the left 
 That slope. What's the plus or minus on it?
 </Dialogue>
 
-Nobody has asked that yet. Not the Register, not the preliminary, not six years of incident files. You tell her the truth: that a standard error for a slope is a real number, that it exists, that it is the next honest thing to want — and that it is months away, because it comes after a distribution the Service does not teach until the crew has a reason to need it, and you will not hand her a figure you cannot defend to the Board.
+Nobody has asked that yet. Not the Register, not the preliminary, not six years of incident files. You tell her the truth: a standard error for a slope exists, it is the next honest thing to want, and it is months away, because it comes after a distribution the Service does not teach until a crew has a reason to need it.
 
 She does not argue. She writes *SE(b) — pending* on the card taped over the yard's brass plate, under her own numbers, and goes back to the gauge.
 
 <Dialogue speaker="analyst" aside="Typing a mass into the prediction field.">
-Sixty thousand tonnes. *Cyrene Ore* — Mercantile, bulk hauler, works the outer end of the Lane. She declares more in one departure than three Sulcus hulls together.
+Sixty thousand tonnes. *Cyrene Ore*. Mercantile, bulk hauler, works the outer end of the Lane. She declares more in one departure than three Sulcus hulls together.
 </Dialogue>
 
-The line answers him at once, because a line always answers.
+The line answers him at once.
 
 <Dialogue speaker="xo" aside="She has come down the ladder without either of them hearing her.">
 Does the file go that far, Ensign?
 </Dialogue>
 
-He checks. It does — barely. *Cyrene Ore* is one of the four hundred and twelve, alone at the top of the range, with nothing else inside thirty thousand tonnes of her. At sixty thousand the line is resting on one hull. Ferrier makes him say that out loud, and then makes him say what the line would be resting on at ninety thousand, which is nothing at all.
+He checks. It does, barely. *Cyrene Ore* is one of the four hundred and twelve, alone at the top of the range, with nothing else inside thirty thousand tonnes of her. At sixty thousand the line is resting on one hull. Ferrier makes him say that out loud, and then makes him say what the line would be resting on at ninety thousand, which is nothing at all.
 
 <Dialogue speaker="xo">
 Then you may quote the first and not the second, and you will say which one you are doing. Every time. The Board reads a prediction as a measurement unless you stop them.
@@ -88,14 +86,14 @@ Then you may quote the first and not the second, and you will say which one you 
 <Briefing.Intuition>
 Any straight line you lay across a scatterplot misses most of the points. The miss for one individual is its **residual**: how far the observed response sits above or below the line, measured vertically, $e = y - \hat{y}$. A line that is too high misses low on everything; a line that is too steep misses low at one end and high at the other.
 
-So there are many candidate lines, and you need a rule for choosing one. Add the residuals and they cancel — the misses above pay for the misses below. Add their absolute values and the total has a corner at the bottom instead of a floor, and no formula comes out of it. **Square them and add**: every miss counts, big misses count disproportionately, and the total is a smooth bowl with exactly one lowest point. The line that makes $\sum e^2$ as small as any line can is the **least-squares regression line**, and it is what the instrument below snaps to.
+So there are many candidate lines, and you need a rule for choosing one. Add the residuals and they cancel, because the misses above pay for the misses below. Add their absolute values and the total has a corner at the bottom instead of a floor, and no formula comes out of it. **Square them and add**: every miss counts, big misses count disproportionately, and the total is a smooth bowl with exactly one lowest point. The line that makes $\sum e^2$ as small as any line can is the **least-squares regression line**, and it is what the instrument below snaps to.
 
-Two things follow from that rule and are worth holding on to. The least-squares line always passes through the point of averages $(\bar{x}, \bar{y})$ — the balance point of the cloud. And its slope is the correlation, rescaled from standard deviations into real units: $b = r\,s_y/s_x$. Correlation says how tightly; slope says how much, in tonnes per tonne.
+Two things follow from that rule and are worth holding on to. The least-squares line always passes through the point of averages $(\bar{x}, \bar{y})$, the balance point of the cloud. And its slope is the correlation, rescaled from standard deviations into real units: $b = r\,s_y/s_x$. Correlation says how tightly; slope says how much, in tonnes per tonne.
 
-Reading the line out loud takes discipline. The slope is the **predicted** change in the response for a one-unit increase in the explanatory variable — on average, across the individuals in the file, and true of no single one of them. The intercept is the **predicted** response when the explanatory variable is zero: always that, whether or not zero is a place the data have ever been. And the whole line is evidence only across the range of $x$ the file covers. Off the end of it, the line still answers, but nothing observed is holding it down.
+Reading the line out loud takes discipline. The slope is the **predicted** change in the response for a one-unit increase in the explanatory variable, on average across the individuals in the file, and true of no single one of them. The intercept is the **predicted** response when the explanatory variable is zero, whether or not zero is a place the data have ever been. And the whole line is evidence only across the range of $x$ the file covers. Off the end of it, the line still answers, but nothing observed is holding it down.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="\text{SSE} = \sum_{i=1}^{n}\left(y_i - \hat{y}_i\right)^2 \;\longrightarrow\; \text{minimum}" terms={{ '\\hat{y}_i': "the line's prediction for the i-th individual", 'y_i': 'the i-th observed response', '\\text{SSE}': 'sum of squared residuals — the total area of the squares' }} label="The least-squares criterion" />
+<Formula tex="\text{SSE} = \sum_{i=1}^{n}\left(y_i - \hat{y}_i\right)^2 \;\longrightarrow\; \text{minimum}" terms={{ '\\hat{y}_i': "the line's prediction for the i-th individual", 'y_i': 'the i-th observed response', '\\text{SSE}': 'sum of squared residuals: the total area of the squares' }} label="The least-squares criterion" />
 
 <Formula tex="b = r\,\frac{s_y}{s_x} \qquad\qquad a = \bar{y} - b\,\bar{x}" terms={{ '\\bar{x}': 'mean of the explanatory variable', '\\bar{y}': 'mean of the response', 's_x': 'standard deviation of the explanatory variable', 's_y': 'standard deviation of the response' }} label="Slope and intercept of the least-squares line" />
 
@@ -112,13 +110,13 @@ The slope comes first, because the intercept depends on it:
 
 <Formula tex={`b = r\\,\\frac{s_y}{s_x} = ${fmt(provingSummary.r, 4)} \\times \\frac{${fmt(provingSummary.sy, 4)}}{${fmt(provingSummary.sx, 4)}} = ${fmt(fromSummary.slope, 6)}`} label="Slope of the proving-run fit (kt of fuel per kt of declared mass)" />
 
-<Formula tex={`a = \\bar{y} - b\\bar{x} = ${fmt(provingSummary.yMean, 3)} - (${fmt(fromSummary.slope, 6)})(${fmt(provingSummary.xMean, 3)}) = ${fmt(fromSummary.intercept, 4)}`} label="Intercept — the line is pinned through the point of averages" />
+<Formula tex={`a = \\bar{y} - b\\bar{x} = ${fmt(provingSummary.yMean, 3)} - (${fmt(fromSummary.slope, 6)})(${fmt(provingSummary.xMean, 3)}) = ${fmt(fromSummary.intercept, 4)}`} label="Intercept: the line is pinned through the point of averages" />
 
-So the fitted line is ŷ = {fmt(fromSummary.intercept, 3)} + {fmt(fromSummary.slope, 3)}x, and it reads: **for each additional kilotonne of declared mass, the predicted fuel loaded for the proving run increases by about {fmt(fromSummary.slope, 3)} kt.** Not "a hull one kilotonne heavier burns {fmt(fromSummary.slope, 3)} kt more" — the line predicts; the hulls do as they like.
+So the fitted line is ŷ = {fmt(fromSummary.intercept, 3)} + {fmt(fromSummary.slope, 3)}x, and it reads: **for each additional kilotonne of declared mass, the predicted fuel loaded for the proving run increases by about {fmt(fromSummary.slope, 3)} kt.** The sentence "a hull one kilotonne heavier burns {fmt(fromSummary.slope, 3)} kt more" says something else and says it wrongly. The line predicts; the hulls do as they like.
 
 The intercept, {fmt(fromSummary.intercept, 3)} kt, is the predicted fuel for a hull declaring nothing. Zero is well outside the observed range ({fmt(min(provingX), 1)} to {fmt(max(provingX), 1)} kt), so the honest reading is that the number sits close to zero, as the physics says it should, and that the yard holds no data on empty hulls.
 
-Least squares earns its name here. Pin the line through the point of averages — every candidate has to pass through it — and swing it. At a slope of 0.195 the total is {fmt(sseForLine(provingX, provingY, 0.195, provingFit.yMean - 0.195 * provingFit.xMean), 4)} kt². At 0.170 it is {fmt(sseForLine(provingX, provingY, 0.17, provingFit.yMean - 0.17 * provingFit.xMean), 4)} kt². At the fitted {fmt(provingFit.slope, 4)} it is $\sum e^2$ = {fmt(provingFit.sse, 4)} kt², and nothing you do to the line brings it lower. Being worse at nothing else is the entire claim this line makes.
+Least squares earns its name here. Pin the line through the point of averages, which every candidate has to pass through, and swing it. At a slope of 0.195 the total is {fmt(sseForLine(provingX, provingY, 0.195, provingFit.yMean - 0.195 * provingFit.xMean), 4)} kt². At 0.170 it is {fmt(sseForLine(provingX, provingY, 0.17, provingFit.yMean - 0.17 * provingFit.xMean), 4)} kt². At the fitted {fmt(provingFit.slope, 4)} it is $\sum e^2$ = {fmt(provingFit.sse, 4)} kt², and nothing you do to the line brings it lower. Being worse at nothing else is the entire claim this line makes.
 </Briefing.Worked>
 <Briefing.Caution>
 Three ways to lose the marks, and the report.
@@ -127,9 +125,23 @@ Three ways to lose the marks, and the report.
 
 *"A hull declaring nothing burns {fmt(fromSummary.intercept, 3)} kt."* The intercept is always the predicted response at $x = 0$; it is only a physical statement when zero lies inside the observed range. Here it does not, and the yard's file cannot testify about a ship that does not exist.
 
-*Swapping the axes.* The least-squares line of $y$ on $x$ and the line of $x$ on $y$ are different lines — the first minimises vertical misses, the second horizontal ones — and only one of them answers the question you asked. Regressing declared mass on inferred mass would give a slope with units of declared tonnes per inferred tonne, which is not the question the Bureau's file is being asked.
+*Swapping the axes.* The least-squares line of $y$ on $x$ and the line of $x$ on $y$ are different lines. The first minimises vertical misses and the second horizontal ones, and only one of them answers the question you asked. Regressing declared mass on inferred mass would give a slope in declared tonnes per inferred tonne, which is not what the Bureau's file is being asked.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="LinReg(a+bx): the fitted line, and storing it">
+<Calculator.Step keys={['STAT', '1:Edit']}>The eight declared masses into **L1**, the eight fuel loads into **L2**, paired by row.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ CALC', '8:LinReg(a+bx)']} note="Xlist: L1 · Ylist: L2 · FreqList: (blank)">Stop on the `Store RegEQ:` line before you calculate. It is worth the four extra keystrokes.</Calculator.Step>
+<Calculator.Step keys={['VARS', '▸ Y-VARS', '1:Function', '1:Y1']}>With the cursor on `Store RegEQ:`, this pastes `Y1` into it. Arrow down to `Calculate` and press `ENTER`. The fitted line is now graphed over the scatterplot and can be evaluated at any $x$.</Calculator.Step>
+<Calculator.Read label="a" value={fmt(provingFit.intercept, 6)}>the **y-intercept**, in kilotonnes of fuel.</Calculator.Read>
+<Calculator.Read label="b" value={fmt(provingFit.slope, 6)}>the **slope**, in kilotonnes of fuel per kilotonne of declared mass.</Calculator.Read>
+<Calculator.Read label="r²" value={fmt(provingFit.r2, 6)} />
+<Calculator.Read label="r" value={fmt(provingFit.r, 6)} />
+<Calculator.Watch>**If `r²` and `r` are missing from that screen**, the calculator is not printing them. Run `DiagnosticOn` once: `2nd` `0` for CATALOG, then `ALPHA` `D` to jump into the D entries, scroll to `DiagnosticOn`, `ENTER`, `ENTER`. Re-run the regression. Nothing else on the screen changes, and no warning is given when they are switched off.</Calculator.Watch>
+<Calculator.Watch>**`4:LinReg(ax+b)` is a different command, four menu lines up.** It fits the same line and names the coefficients the other way round: there `a` is the slope and `b` is the intercept. Writing down `a` as the intercept out of habit inverts the equation. Use `8:LinReg(a+bx)`, which matches how the AP formula sheet writes $\hat{y} = a + bx$.</Calculator.Watch>
+<Calculator.Step keys={['VARS', '▸ Y-VARS', '1:Function', '1:Y1']} note="Y1(20.4)">From the home screen, paste `Y1` and follow it with an $x$ in brackets to get a prediction. At {fmt(proving[4].declared, 1)} kt the line predicts {fmt(provingFit.predict(proving[4].declared), 4)} kt of fuel. Use the stored equation rather than retyping rounded coefficients.</Calculator.Step>
+<Calculator.Watch>`Y1` will answer at any $x$ you hand it, including {fmt(3 * max(provingX), 0)} kt, where the file holds nothing. The calculator has no concept of the observed range. You do.</Calculator.Watch>
+</Calculator>
 
 <LeastSquaresVisual />
 
@@ -151,7 +163,7 @@ Three ways to lose the marks, and the report.
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="To the Ensign, who wrote the same sentence an hour ago. She is not looking at you.">
-  Read it back, Ensign. Does your sentence describe the line, or does it describe a ship? A slope is a predicted change, on average, for each additional tonne — and it needs both variables in it by name, or the Board will supply its own. Say the number, say which way, say per what, say of what.
+  Read it back, Ensign. Does your sentence describe the line, or does it describe a ship? A slope is a predicted change, on average, for each additional tonne, and it needs both variables in it by name or the Board will supply its own. Say the number, say which way, say per what, say of what.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -162,7 +174,7 @@ Three ways to lose the marks, and the report.
   prompt={`Ebele wants one worked prediction in the file before anything else goes into the report. *${target.hull}*, ${target.ownerClass}, certified at Uruk High with a declared mass of ${fmtInt(target.declaredMass)} t.\n\nUsing the fitted line above, what **inferred mass** does the line predict for her? Answer in tonnes, to the nearest tonne.`}>
   <Success>
   <Dialogue speaker="analyst">
-  So — that's the predicted figure, sir, not her telemetry. I'll log them in separate columns, and the difference in a third.
+  So. That's the predicted figure, sir, not her telemetry. I'll log them in separate columns, and the difference in a third.
   </Dialogue>
   <Dialogue speaker="xo">
   The third column is the only one anybody will read. Keep it empty until the Captain says otherwise.
@@ -179,11 +191,9 @@ Three ways to lose the marks, and the report.
 
 <Scene stamp="MET 034/09:05" location="Engineering deck · the sink vault" condensed="The honest Lane infers one tonne of mass for every tonne declared. Sandoval asks for the give-or-take and is told again that it is months away. Nothing has yet been proven about the hulls that sit above the line.">
 
-So that is the Lane, as the Bureau and the Lane Authority describe it between them: for every tonne a certificate declares, the Lane infers {fmt(massFit.slope, 2)} tonnes of mass, across four hundred and twelve departures — with an intercept of {fmt(massFit.intercept, 0)} tonnes on a fleet whose lightest hull declares fourteen thousand, which is to say, nothing.
+So that is the Lane, as the Bureau and the Lane Authority describe it between them: for every tonne a certificate declares, the Lane infers {fmt(massFit.slope, 2)} tonnes of mass, across four hundred and twelve departures, with an intercept of {fmt(massFit.intercept, 0)} tonnes on a fleet whose lightest hull declares fourteen thousand.
 
-It is a dull result. It is supposed to be. A corridor where the certificates match the telemetry is a corridor where the certificates are worth reading, and until this morning nobody in the Service had checked. Six years of losses, four Senior Examiners, two and a half thousand transits, and nobody had ever laid the Authority's telemetry beside the Bureau's signatures and asked whether the two files agreed. They agree. That is the finding, and it is worth exactly one line of the report.
-
-The line is also, now, a measuring instrument. A rule you lay against a hull. Every departure in the file has a figure the line predicts for it and a figure the Lane actually measured, and the difference between those two figures is a quantity nobody in this ship has looked at yet.
+It is a dull result. It is supposed to be. A corridor where the certificates match the telemetry is a corridor where the certificates are worth reading, and until this morning nobody in the Service had checked. Six years of losses and two and a half thousand transits, and nobody had ever laid the Authority's telemetry beside the Bureau's signatures and asked whether the two files agreed. They agree. That is the finding, and it is worth exactly one line of the report.
 
 Ebele writes the slope into the draft with the units on it and the word *predicted* in front of it twice, once in each sentence, because he has been told. The draft has one paragraph and no findings.
 
@@ -195,17 +205,17 @@ Sandoval reads the slope off the display and does not write it down.
 One point oh oh, give or take what?
 </Dialogue>
 
-You tell her again: months away. She accepts it the way she accepts a gauge she cannot yet read — by noting where it is and when she will come back to it. *SE(b) — pending* stays on the card. Under it she writes the date.
+You tell her again: months away. She accepts it the way she accepts a gauge she cannot yet read, by noting where it is and when she will come back to it. *SE(b) — pending* stays on the card. Under it she writes the date.
 
 <Dialogue speaker="xo" aside="At the ladder, on her way up.">
 Then here is what we have, and it is less than the Ensign thinks. We have a line. We have not looked at what the line missed. There are hulls above it and hulls below it and we have said nothing about either, and until we do, every word of this is arithmetic.
 </Dialogue>
 
-Which is true. The fit describes the file; it does not yet accuse anyone of anything. Four hundred and twelve hulls sit around that line at distances nobody has measured, and the distances — not the line — are where the six years are.
+Four hundred and twelve hulls sit around that line at distances nobody has measured. Ebele starts a fourth column and leaves the heading blank.
 
 <LogEntry
   title="A slope is a predicted change per unit of x"
-  concept="The least-squares line is the one line that makes the sum of the squared residuals as small as any line can: its slope is $b = r\,s_y/s_x$ and it passes through the point of averages $(\bar{x}, \bar{y})$, which fixes the intercept at $a = \bar{y} - b\bar{x}$. The slope is the **predicted** change in the response for each one-unit increase in the explanatory variable — an average over the individuals in the file, true of none of them in particular — and the intercept is the predicted response at $x = 0$, physical only when zero lies inside the observed range."
+  concept="The least-squares line is the one line that makes the sum of the squared residuals as small as any line can: its slope is $b = r\,s_y/s_x$ and it passes through the point of averages $(\bar{x}, \bar{y})$, which fixes the intercept at $a = \bar{y} - b\bar{x}$. The slope is the **predicted** change in the response for each one-unit increase in the explanatory variable, an average over the individuals in the file and true of none of them in particular; the intercept is the predicted response at $x = 0$, physical only when zero lies inside the observed range."
   formula="\hat{y} = a + bx, \qquad b = r\,\frac{s_y}{s_x}, \qquad a = \bar{y} - b\bar{x}, \qquad \text{minimising}\ \sum (y_i - \hat{y}_i)^2"
   mistake="Dropping “predicted.” “Inferred mass rises by one tonne per declared tonne” claims every hull does it; the line only says what it predicts, on average. The same error, applied to an intercept off the end of the data, turns arithmetic into a physical claim."
   tags={['regression', 'least-squares', 'slope', 'intercept', 'extrapolation', '2.6', '2.8']}

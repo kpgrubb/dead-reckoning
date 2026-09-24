@@ -32,13 +32,13 @@ export const cellarRMinutes = correlation(cellarTemp, cellarMinutes)
 export const cellarRSwapped = correlation(cellarHours, cellarTemp)
 export const cellarPoints = cellarTemp.map((t, i) => ({ x: t, y: cellarHours[i] }))
 
-<Scene stamp="MET 032/10:20" location="Engineering deck · sink vault · 0.46 AU from Callisto, 4 mgee" condensed="The Bureau's 412 certifications are open and joined to the relay net's Mark 2 accelerations. Sandoval works the arithmetic on a card: thrust over acceleration is a mass, plus or minus two percent — a mass nobody declared. Ebele puts inferred against declared for all 412, reads the correlation off the display and says it proves the Bureau's numbers cause the acceleration; Sandoval corrects him. Oyelaran wants the axis in terawatts and r does not move. A few points sit above the cloud. Nobody names them.">
+<Scene stamp="MET 032/10:20" location="Engineering deck · sink vault · 0.46 AU from Callisto, 4 mgee" condensed="The Bureau's 412 certifications are open and joined to the relay net's Mark 2 accelerations. Sandoval works the arithmetic on a card: thrust over acceleration is a mass, plus or minus two percent, and nobody declared it. Ebele puts inferred against declared for all 412, reads the correlation off the display and says it proves the Bureau's numbers cause the acceleration; Sandoval corrects him. Oyelaran wants the axis in terawatts and r does not move. A few points sit above the cloud. Nobody names them.">
 
 The sink vault is the warmest compartment on the ship and the only one where the Chief will talk to you like a person. Sixty tonnes of lithium behind the bulkhead at thirty-one percent and climbing, the wings out, the torch steady. Callisto is three minutes fifty out. Anything you ask Valhalla this watch, you will hear about at lunch tomorrow.
 
 Sandoval has the arithmetic on a card taped over the yard's brass plate, in pencil, in her own hand, because that is where she puts numbers she intends to defend.
 
-Thrust over acceleration. That is all of it. The relay net logs a state vector at Mark 2 for every hull that ever entered the Lane, and the difference between two of them is an acceleration, good to half a percent. The Eyes — or in this case the Authority's own archive — give the plume, and the plume with the drive model gives the thrust: five hundred and eighty-eight kilonewtons off a Mk 3 at full profile. Divide the one by the other and you have a mass. Not a declared mass. A mass.
+Thrust over acceleration. That is all of it. The relay net logs a state vector at Mark 2 for every hull that ever entered the Lane, and the difference between two of them is an acceleration, good to half a percent. The Authority's own archive gives the plume, and the plume with the drive model gives the thrust: five hundred and eighty-eight kilonewtons off a Mk 3 at full profile. Divide the one by the other and you have a mass. Not a declared mass. A mass.
 
 "Plus or minus two percent, Skipper," she says, and she says the plus or minus before she says anything else, the way she always does. "That's one standard deviation of the honest spread, near enough. Call it four hundred tonnes on a twenty-thousand-tonne hull and don't let anybody quote it tighter."
 
@@ -46,7 +46,7 @@ Ebele has been at the intel terminal since 05:00 and has the display ready befor
 
 He reads the correlation off the readout and says the number twice, which is how he sounds when he is pleased with something.
 
-"So — that's it, sir. That's the whole file agreeing with itself. The Bureau's numbers cause the acceleration."
+"So. That's it, sir. That's the whole file agreeing with itself. The Bureau's numbers cause the acceleration."
 
 Sandoval does not look up from the card. "The physics causes the acceleration, Ensign. Mass and thrust. The Bureau writes it down afterwards on a different day in a different building. Those hulls would fly exactly the same if the Bureau had never opened."
 
@@ -54,13 +54,13 @@ He takes it. Oyelaran, who has been in the hatchway for a minute with an inspect
 
 "Put the vertical axis in terawatts, sir. I can't check a tonne. I can check a terawatt."
 
-Ebele rescales it — the same four hundred and twelve hulls, the same ordering, a different unit on one axis — and the correlation readout does not move. Not a digit. He says so out loud and then stops, because he can hear that he does not know why, and that not knowing why is worse than being wrong about the Bureau.
+Ebele rescales it. Same four hundred and twelve hulls, same ordering, a different unit up the side, and the correlation readout does not move. Not a digit. He says so out loud and then stops, because he can hear that he does not know why.
 
-Then he points at the top of the cloud. A handful of points sit above the rest of it — not far off the plot, not obviously anything, just a little high and all on the same side. Six or eight of them, maybe more. At this scale you cannot count them and nobody tries.
+Then he points at the top of the cloud. A handful of points sit above the rest of it, a little high and all on the same side. Six or eight of them, maybe more. At this scale you cannot count them and nobody tries.
 
 Nobody names them. Ferrier, on the intercom from the bridge, wants the description before the arithmetic: direction, form, strength, and anything unusual, said in tonnes and hulls and not in symbols.
 
-Sandoval has one more sheet pinned beside the card, and it is not one of the four hundred and twelve. *Harpagia Sulcus*, Sulcus-class, declared nineteen thousand four hundred tonnes, signed by Senior Examiner R. Dacre, arrived MET 26. She is still in transit; she has not departed and arrived inside the window the Bureau extracted. She sits on the bulkhead by herself, a single certificate with no cloud to belong to.
+Sandoval has one more sheet pinned beside the card, and it is not one of the four hundred and twelve. *Harpagia Sulcus*, Sulcus-class, declared nineteen thousand four hundred tonnes, signed by Senior Examiner R. Dacre, arrived MET 26. She is still in transit. She has not departed and arrived inside the window the Bureau extracted, so she sits on the bulkhead by herself, a single certificate with no cloud to belong to.
 
 </Scene>
 
@@ -69,38 +69,38 @@ Before the Ensign asks, sir: the Eyes are four hours in every twelve, and that i
 </Dialogue>
 
 <Dialogue speaker="analyst">
-So the correlation doesn't move when you change units. And it wouldn't move if we swapped the axes either — I checked. I can tell you that it's true, sir. I can't yet tell you what it's measuring.
+So. The correlation doesn't move when you change units. And it wouldn't move if we swapped the axes either. I checked. I can tell you that it's true, sir. I can't yet tell you what it's measuring.
 </Dialogue>
 
 <Dialogue speaker="engineer" aside="Still on the card. She has drawn a straight line on it with a ruler and rubbed it out again.">
-Then say what it measures before you say what it proves. And describe the picture first, Ensign. Numbers last. That is not sentiment, it is the order the Board reads in.
+Then say what it measures before you say what it proves. And describe the picture first, Ensign. Numbers last. That is the order the Board reads in.
 </Dialogue>
 
 <Briefing title="Two quantitative variables, and one number for the cloud" topics={["2.4", "2.5"]}>
 <Briefing.Intuition>
 Two quantitative variables on the same individuals give a **scatterplot**: the **explanatory** variable on the horizontal axis, the **response** on the vertical, one point per individual. Describing it is four things, always in the variables' own words.
 
-**Direction** — as the explanatory variable increases, does the response tend to rise (positive) or fall (negative)? **Form** — does the cloud follow a straight line, or a curve? **Strength** — how tightly do the points hug that form? **Unusual features** — points off the pattern, gaps, clusters, anything the eye stops on.
+**Direction.** As the explanatory variable increases, does the response tend to rise (positive) or fall (negative)? **Form.** Does the cloud follow a straight line, or a curve? **Strength.** How tightly do the points hug that form? **Unusual features.** Points off the pattern, gaps, clusters, anything the eye stops on.
 
-The **correlation coefficient** $r$ puts a number on two of those four, and only two: direction and the strength of the *linear* part. It is built by standardising both variables — turning every value into how many standard deviations it sits from its own mean — and averaging the products. When a point is above average on both, the product is positive; above on one and below on the other, negative. Sum them and you have a number between $-1$ and $1$.
+The **correlation coefficient** $r$ puts a number on two of those four, and only two: direction and the strength of the *linear* part. It is built by standardising both variables, turning every value into how many standard deviations it sits from its own mean, and averaging the products. When a point is above average on both, the product is positive; above on one and below on the other, negative. Sum them and you have a number between $-1$ and $1$.
 
 Three consequences follow from that construction and they are the whole of what $r$ is for.
 
 $r$ **has no units.** Both variables were divided by their own standard deviations on the way in, and the units cancelled. Tonnes, kilotonnes or terawatts on one axis: the same $r$.
 
-$r$ **is symmetric.** The product $z_x z_y$ does not care which factor is written first, so exchanging the axes leaves $r$ alone. The regression slope does not have that property — it is the thing that changes.
+$r$ **is symmetric.** The product $z_x z_y$ does not care which factor is written first, so exchanging the axes leaves $r$ alone. The regression slope has no such property, and it is the thing that changes.
 
 $r$ **is a mean, so it is not resistant.** One point far from the pattern can raise it or collapse it.
 
-And one thing it is not. $r$ describes the individuals plotted. It says nothing about what produced the pattern, and in observational records — hulls somebody logged rather than hulls somebody assigned — there is no arithmetic anywhere that turns an association into a cause.
+And one thing it is not. $r$ describes the individuals plotted. It says nothing about what produced the pattern, and in observational records, where hulls were logged rather than assigned, no arithmetic anywhere turns an association into a cause.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="r = \frac{1}{n-1}\sum_{i=1}^{n}\left(\frac{x_i - \bar{x}}{s_x}\right)\left(\frac{y_i - \bar{y}}{s_y}\right)" terms={{ 'r': 'correlation coefficient, always between −1 and 1', 'z_x': 'the standardised explanatory value — how many SDs from its own mean', 's_x': 'standard deviation of the explanatory variable', 's_y': 'standard deviation of the response' }} label="Correlation" />
+<Formula tex="r = \frac{1}{n-1}\sum_{i=1}^{n}\left(\frac{x_i - \bar{x}}{s_x}\right)\left(\frac{y_i - \bar{y}}{s_y}\right)" terms={{ 'r': 'correlation coefficient, always between −1 and 1', 'z_x': 'the standardised explanatory value: how many SDs from its own mean', 's_x': 'standard deviation of the explanatory variable', 's_y': 'standard deviation of the response' }} label="Correlation" />
 
 Strength, by the usual convention: $|r| \geq 0.8$ strong, $0.4$ to $0.8$ moderate, below $0.4$ weak. The bands are a courtesy, not a law; the plot decides.
 </Briefing.Definition>
 <Briefing.Worked>
-Eight hours of one Quiet-profile run out of Sandoval's cellar log — sink temperature at the top of the hour against the quiet hours the cellar still had in it.
+Eight hours of one Quiet-profile run out of Sandoval's cellar log: sink temperature at the top of the hour against the quiet hours the cellar still had in it.
 
 <Plot
   spec={{ kind: 'scatter', points: cellarPoints, xLabel: 'sink temperature (K)', yLabel: 'remaining quiet hours (h)' }}
@@ -113,22 +113,36 @@ The means are {fmt(mean(cellarTemp), 1)} K and {fmt(mean(cellarHours), 2)} h; th
 
 $r$ = **{fmt(cellarR, 3)}**.
 
-Strong, negative, linear: as the cellar warms, the quiet hours left in it fall, and the eight points hold that line tightly. In context — *the remaining quiet hours of a Quiet-profile run have a strong negative linear association with sink temperature* — and not one word about what the temperature does to the clock, because this is a log of one run, not eight runs somebody arranged.
+Strong, negative, linear: as the cellar warms, the quiet hours left in it fall, and the eight points hold that line tightly. Written for a reader: *the remaining quiet hours of a Quiet-profile run have a strong negative linear association with sink temperature.* Not one word in that sentence about what the temperature does to the clock, because this is a log of one run rather than eight runs somebody arranged.
 
-Now the two properties, on the same eight points. Read the vertical axis in minutes instead of hours — multiply every value by 60 — and $r$ = **{fmt(cellarRMinutes, 3)}**. Put temperature on the vertical axis and hours on the horizontal — the same eight hours, the plot turned over — and $r$ = **{fmt(cellarRSwapped, 3)}**. Three plots, one number. That is what "unitless and symmetric" means when you actually do it.
+Now the two properties, on the same eight points. Read the vertical axis in minutes instead of hours, multiplying every value by 60, and $r$ = **{fmt(cellarRMinutes, 3)}**. Put temperature on the vertical axis and hours on the horizontal, the same eight hours with the plot turned over, and $r$ = **{fmt(cellarRSwapped, 3)}**. Three plots, one number. That is what "unitless and symmetric" means when you actually do it.
 </Briefing.Worked>
 <Briefing.Caution>
 Four errors, and a career of reports is built out of them.
 
 *"$r$ is near zero, so there is no relationship."* $r$ near zero means no **linear** relationship. A perfect arch has $r \approx 0$ and a relationship you could set a watch by. Look at the plot.
 
-*"$r$ changed when we converted the units."* It cannot. If it did, something else changed too — a filter, a dropped row, a variable that is not a rescaling of the old one. Plume power is not inferred mass in different units; it folds in each hull's own acceleration, so it is a different variable and it may well have a different $r$.
+*"$r$ changed when we converted the units."* It cannot. If it did, something else changed too: a filter, a dropped row, a variable that is not a rescaling of the old one. Plume power is not inferred mass in different units; it folds in each hull's own acceleration, so it is a different variable and it may well have a different $r$.
 
-*"$r$ is large, so the relationship is linear."* Curved data can return $r$ above $0.9$. Only the plot — and, from the next module, the residuals — can rule a curve out.
+*"$r$ is large, so the relationship is linear."* Curved data can return $r$ above $0.9$. Only the plot, and from the next module the residuals, can rule a curve out.
 
 *"$r$ is large, so one causes the other."* These hulls were logged, not assigned. Every causal sentence written off an observational correlation is a sentence somebody else will strike, and they will be right to.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="A scatterplot, and r from it">
+<Calculator.Step keys={['STAT', '1:Edit']}>The eight sink temperatures into **L1**, the remaining quiet hours into **L2**, in the same row order. The pairing is the data; a row typed out of order is a different point.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'Y=', '1:Plot1']} note="On · Type: scatter (first icon) · Xlist: L1 · Ylist: L2 · Mark: □">`2nd` `Y=` is STAT PLOT. Turn Plot1 **On** and take the first of the six Type icons, which is the scatter. `Xlist` is `2nd` `1` and `Ylist` is `2nd` `2`.</Calculator.Step>
+<Calculator.Step keys={['ZOOM', '9:ZoomStat']}>Sets the window from the lists themselves. `ZoomStat` is how you find a plot that has been drawn off-screen, and it is faster than guessing at `WINDOW`.</Calculator.Step>
+<Calculator.Watch>**`ERR:DIM MISMATCH`** means `L1` and `L2` are different lengths: a missed row, or a stray value left on the end of a list from earlier work. `STAT` `4:ClrList` `L1` `,` `L2` and retype rather than hunting for it.</Calculator.Watch>
+<Calculator.Watch>An equation still live in `Y=` draws itself over the plot and will be mistaken for a fitted line. Clear it, or turn it off by moving onto its `=` sign and pressing `ENTER`.</Calculator.Watch>
+<Calculator.Step keys={['STAT', '▸ CALC', '8:LinReg(a+bx)']} note="Xlist: L1 · Ylist: L2 · Calculate">Fitting the line is the next module's business. Run it here for one output only.</Calculator.Step>
+<Calculator.Read label="r" value={fmt(cellarR, 4)}>strong, negative, and the only number on that screen this module needs.</Calculator.Read>
+<Calculator.Watch>**No `r` on the screen at all?** The calculator suppresses it until `DiagnosticOn` has been run once: `2nd` `0` for CATALOG, `ALPHA` `D` to jump, scroll to `DiagnosticOn`, `ENTER`, `ENTER`. It survives a reset of the lists and not a reset of the memory.</Calculator.Watch>
+<Calculator.Step note="60 × L2 STO▸ L3">Rescale the response to minutes in one keystroke from the home screen, point `Ylist` at `L3`, and run both the plot and `LinReg` again.</Calculator.Step>
+<Calculator.Read label="r" value={fmt(cellarRMinutes, 4)}>unchanged to every printed digit. The axis labels moved; the standardised values did not.</Calculator.Read>
+<Calculator.Watch>Exchanging `Xlist` and `Ylist` leaves `r` at {fmt(cellarRSwapped, 4)} as well, and it does **not** leave `a` and `b` alone. Correlation is symmetric. The line is not, which is the whole of the next module.</Calculator.Watch>
+</Calculator>
 
 <MassScatter />
 
@@ -160,13 +174,13 @@ It goes in the log in one line, and the line is smaller than the work. Across {f
 
 Which is the finding, and you make Ebele write it as one. Four hundred and twelve hulls weigh very nearly what they said they weighed. Whatever is wrong on the Lane is not a filing system that is wrong about everything.
 
-And then the other thing, the one the description earned and did not resolve: a handful of points sit above the cloud. Above, not below, and on the same side, which is not what a symmetric instrument error looks like — but eight points out of four hundred and twelve is also exactly what two percent of scatter would put at the top of a picture this size. Nobody on this deck can yet say which hulls they are. Nobody can say how far above the pattern they sit, because "above the pattern" needs a line and there is no line yet. And nobody can rule out that the Authority's archive is simply noisier for some hulls than others.
+Then the other thing, the one the description earned and did not resolve. A handful of points sit above the cloud. Above, and on the same side, and eight points out of four hundred and twelve is also about what two percent of honest scatter would put at the top of a picture this size. Nobody on this deck can yet say which hulls they are. Nobody can say how far above the pattern they sit, because "above the pattern" needs a line and there is no line yet. And nobody can rule out that the Authority's archive is simply noisier for some hulls than for others.
 
 "I can get you the residuals," Ebele says, and then corrects himself before anyone else does: "I can get you the residuals once there is a line to take them from."
 
 Sandoval taps the card. "Two percent, Ensign. Whatever you find, find it against two percent."
 
-Oyelaran has opened the slate at last, which means she wants an answer and not a conversation. The archive cross-check is four telescope-hours a day for a week: not the Lane, not the sweep, not the thing the Eyes were built for. She will do it if she is told to. She would rather be told something else.
+Oyelaran has opened the slate at last, which means she wants an answer and not a conversation. The archive cross-check is four telescope-hours a day for a week, and those are the hours the sweep runs on. She will do it if she is told to. She would rather be told something else.
 
 </Scene>
 
@@ -183,17 +197,17 @@ Oyelaran has opened the slate at last, which means she wants an answer and not a
   </Outcome>
   <Outcome option={1}>
   <Dialogue speaker="sensors">
-  Sweep schedule stands. Thank you, sir. The Ensign gets the archive out of the relay net the slow way — he tells me that is two days longer. I have told him it is two days he can spend being right.
+  Sweep schedule stands. Thank you, sir. The Ensign gets the archive out of the relay net the slow way, and he tells me that is two days longer. I have told him it is two days he can spend being right.
   </Dialogue>
   <Dialogue speaker="analyst">
-  Two days, sir. I'll have the cross-check by MET 34 instead of 32. It'll be the same file either way — just later.
+  Two days, sir. I'll have the cross-check by MET 34 instead of 32. It'll be the same file either way. Just later.
   </Dialogue>
   </Outcome>
 </MissionBeat>
 
 <LogEntry
   title="r measures linear association, nothing more"
-  concept="A scatterplot is described by direction, form, strength and unusual features, in context; the correlation r puts a number on the direction and on the strength of the LINEAR part only. Because both variables are standardised first, r carries no units, is unchanged when the axes are exchanged, and — being a mean of products — is not resistant to a single point far from the pattern."
+  concept="A scatterplot is described by direction, form, strength and unusual features, in context; the correlation r puts a number on the direction and on the strength of the LINEAR part only. Because both variables are standardised first, r carries no units, is unchanged when the axes are exchanged, and, being a mean of products, is not resistant to a single point far from the pattern."
   formula="r = \frac{1}{n-1}\sum_{i=1}^{n}\left(\frac{x_i-\bar{x}}{s_x}\right)\left(\frac{y_i-\bar{y}}{s_y}\right), \qquad -1 \leq r \leq 1"
   mistake="Reading a strong r as a cause. These hulls were recorded, not assigned; r describes how the points sit, never what produced them. The near relative: reading $r \approx 0$ as “no relationship” when it means no *linear* relationship."
   tags={['scatterplot', 'direction', 'form', 'strength', 'correlation', 'units', 'causation', '2.4', '2.5']}

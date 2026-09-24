@@ -34,7 +34,7 @@ export const silenceFences = outliers(timeToSilence)
 export const abrupt = losses.filter((l) => l.fade === 'abrupt').map((l) => l.time_to_silence)
 export const gradual = losses.filter((l) => l.fade === 'gradual').map((l) => l.time_to_silence)
 
-<Scene stamp="MET 021/09:25" location="Sensor bay · 0.118 AU from Callisto, 4 mgee · light-lag 59 s" condensed="Twenty-one days out, a minute of light astern, Ebele draws boxplots because boxplots are what he was taught. The plume-ratio box puts one contact on its own beyond the upper whisker, and Oyelaran logs the hull id and signals Uruk High for its departure certification. Then he boxes the thirty-one times to silence and the display says nothing at all — a box, two whiskers, no flags — for a variable the ship watched split in half two days ago.">
+<Scene stamp="MET 021/09:25" location="Sensor bay · 0.118 AU from Callisto, 4 mgee · light-lag 59 s" condensed="Twenty-one days out, a minute of light astern, Ebele draws boxplots because boxplots are what he was taught. The plume-ratio box puts one contact on its own beyond the upper whisker, and Oyelaran logs the hull id and signals Uruk High for its departure certification. Then he boxes the thirty-one times to silence and the display says nothing at all. A box, two whiskers, no flags, for a variable the ship watched split in half two days ago.">
 
 Fifty-nine seconds to Callisto. Call it a minute, which is what Solberg calls it, with the small dry pleasure he takes in the moment a conversation becomes correspondence. Thirty-seven kilometres a second. Eleven hundredths of an AU.
 
@@ -49,7 +49,7 @@ A box, a median line in it, a whisker each side. And then, out past the upper wh
 Oyelaran says nothing about it. She reaches across Ebele, opens the contact record, and writes the hull id into the outgoing log with a request against it.
 
 <Dialogue speaker="sensors" aside="She types it rather than saying it, and reads it back once, flat.">
-Signal {HARPAGIA_CERTIFICATION.departure}, Bureau of Lane Survey. Request the departure certification for MV *{harpagia.hull}*, most recent survey — declared mass, drive rating, examiner's name. Routine format, no priority.
+Signal {HARPAGIA_CERTIFICATION.departure}, Bureau of Lane Survey. Request the departure certification for MV *{harpagia.hull}*, most recent survey: declared mass, drive rating, examiner's name. Routine format, no priority.
 </Dialogue>
 
 Routine format means nobody at the Bureau hurries, and the reply will chase the ship down the Lane for a week. It is also the first thing anybody aboard has asked the world for instead of computing out of what they already had.
@@ -78,24 +78,24 @@ So: what the box is for, and what it costs.
 <Briefing.Intuition>
 The **five-number summary** is the minimum, $Q_1$, the median, $Q_3$ and the maximum. Five positions in the sorted list, and between them they cut the batch into four quarters, each holding about a quarter of the observations.
 
-Quartiles in this course follow the **AP / TI-84 convention**, stated once and used everywhere: sort the values, split the list at the median, and take $Q_1$ as the median of the lower half and $Q_3$ as the median of the upper half — with the overall median excluded from both halves when $n$ is odd. Other software uses other conventions and gets slightly different quartiles from the same data; say which you used.
+Quartiles in this course follow the **AP / TI-84 convention**, stated once and used everywhere: sort the values, split the list at the median, and take $Q_1$ as the median of the lower half and $Q_3$ as the median of the upper half. The overall median is excluded from both halves when $n$ is odd. Other software uses other conventions and gets slightly different quartiles from the same data; say which you used.
 
-A **boxplot** draws those five numbers: a box from $Q_1$ to $Q_3$ with the median marked inside it, and a whisker out each side. A **modified boxplot** — the one this course draws — cuts the whiskers back at the **fences** and plots anything beyond them as a point of its own.
+A **boxplot** draws those five numbers: a box from $Q_1$ to $Q_3$ with the median marked inside it, and a whisker out each side. A **modified boxplot**, the one this course draws, cuts the whiskers back at the **fences** and plots anything beyond them as a point of its own.
 
-The **1.5 × IQR rule** is a convention, not a law of nature. It flags values far enough out that somebody should look again. A flagged value may be a transcription error, an instrument fault, a genuinely unusual individual, or the most important thing in the file — the fence cannot tell you which, and it never claims to. **A fence flags; it does not convict.**
+The **1.5 × IQR rule** is a convention, not a law of nature. It flags values far enough out that somebody should look again. A flagged value may be a transcription error, an instrument fault, a genuinely unusual individual, or the most important thing in the file. The fence cannot tell you which, and it never claims to. **A fence flags; it does not convict.**
 
 Now the cost. A boxplot is *only* those five numbers plus the flags. It is very good at spread (the box and the whiskers), at skew (compare the two halves of the box, and the two whiskers), and at pointing at extremes. It is blind to everything between the five:
 
-- **modes** — one pile or three, the box is the same;
-- **gaps** — an empty middle is invisible, because the box is drawn *across* it;
-- **sample size** — nothing in a boxplot's geometry tells you whether it came from eleven observations or eleven thousand, which is why a comparison of two groups must print both $n$'s.
+- **modes:** one pile or three, the box is the same;
+- **gaps:** an empty middle is invisible, because the box is drawn *across* it;
+- **sample size:** nothing in a boxplot's geometry tells you whether it came from eleven observations or eleven thousand, which is why a comparison of two groups must print both $n$'s.
 
 Use a boxplot to compare several groups at once, or to flag extremes. Use a dotplot, a stemplot or a histogram when the question is about shape. When it matters, draw the box and put the dots back on top of it.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="\text{five-number summary} = \left(\, x_{\min},\; Q_1,\; M,\; Q_3,\; x_{\max} \,\right), \qquad \text{IQR} = Q_3 - Q_1" terms={{ 'Q_1': 'median of the lower half of the sorted values', 'Q_3': 'median of the upper half', 'M': 'the median — the middle of the sorted list' }} label="The five numbers" />
+<Formula tex="\text{five-number summary} = \left(\, x_{\min},\; Q_1,\; M,\; Q_3,\; x_{\max} \,\right), \qquad \text{IQR} = Q_3 - Q_1" terms={{ 'Q_1': 'median of the lower half of the sorted values', 'Q_3': 'median of the upper half', 'M': 'the middle of the sorted list' }} label="The five numbers" />
 
-<Formula tex="\text{lower fence} = Q_1 - 1.5 \times \text{IQR}, \qquad \text{upper fence} = Q_3 + 1.5 \times \text{IQR}" terms={{ '1.5': 'a convention — one and a half box-widths out from each end of the box' }} label="The 1.5 × IQR rule" />
+<Formula tex="\text{lower fence} = Q_1 - 1.5 \times \text{IQR}, \qquad \text{upper fence} = Q_3 + 1.5 \times \text{IQR}" terms={{ '1.5': 'a convention: one and a half box-widths out from each end of the box' }} label="The 1.5 × IQR rule" />
 
 An observation outside either fence is flagged as an **outlier** and drawn as its own point; the whiskers then run only as far as the most extreme observation that is *not* flagged.
 </Briefing.Definition>
@@ -110,9 +110,9 @@ Five-number summary: {fmt(elevenFive.min, 1)}, {fmt(elevenFive.q1, 1)}, {fmt(ele
 
 Fences: {fmt(elevenFive.q1, 1)} − 1.5 × {fmt(elevenBox, 1)} = **{fmt(elevenFences.lowFence, 2)}** and {fmt(elevenFive.q3, 1)} + 1.5 × {fmt(elevenBox, 1)} = **{fmt(elevenFences.highFence, 2)}**.
 
-And now the thing worth noticing. The largest of those eleven is {fmt(elevenFive.max, 1)} percent — the hull that has been sitting out on the right of every ratio display since MET 13 — and it is **not flagged**, because {fmt(elevenFive.max, 1)} is inside a fence at {fmt(elevenFences.highFence, 2)}. The rule found {fmtInt(elevenFences.values.length)} outliers among these eleven.
+And now the thing worth noticing. The largest of those eleven is {fmt(elevenFive.max, 1)} percent, the hull that has been sitting out on the right of every ratio display since MET 13, and it is **not flagged**, because {fmt(elevenFive.max, 1)} is inside a fence at {fmt(elevenFences.highFence, 2)}. The rule found {fmtInt(elevenFences.values.length)} outliers among these eleven.
 
-Nothing is wrong with the arithmetic. The fence is built from the batch's own IQR, and eleven contacts — one of them the hot one — make a wide middle half, which pushes the fence far out. Add more honest contacts and the middle half tightens, the fence comes in, and the same value can cross it without changing at all. **A fence is a statement about the batch, not about the observation.** Which is exactly why the same hull deserves a second look now that the log holds {fmtInt(REGISTER_META.contacts)} contacts instead of {fmtInt(ratioFirstEleven.length)}.
+Nothing is wrong with the arithmetic. The fence is built from the batch's own IQR. Eleven contacts, one of them the hot one, make a wide middle half, and a wide middle half pushes the fence far out. Add more honest contacts and the middle half tightens, the fence comes in, and the same value can cross it without changing at all. **A fence is a statement about the batch, not about the observation.** Which is exactly why the same hull deserves a second look now that the log holds {fmtInt(REGISTER_META.contacts)} contacts instead of {fmtInt(ratioFirstEleven.length)}.
 </Briefing.Worked>
 <Briefing.Caution>
 *"The box holds 50 percent of the range."* It holds 50 percent of the **observations**. Those are different claims and they are usually very different pictures: a tight batch with one far value can have a box covering a tenth of the axis and still hold half the individuals. Every quarter of a boxplot carries about a quarter of the data; a wide quarter means those observations are spread thin, which is what a tail is.
@@ -126,7 +126,7 @@ Nothing is wrong with the arithmetic. The fence is built from the batch's own IQ
 <Calculator title="A modified boxplot, and the icon that hides outliers">
 <Calculator.Step keys={['STAT', '1:Edit']}>Type the {fmtInt(ratioFirstEleven.length)} ratios into **L1**.</Calculator.Step>
 <Calculator.Step keys={['2nd', 'Y=', '1:Plot1']} note="On · Type: modified boxplot (2nd row, FIRST icon) · Xlist: L1 · Freq: 1 · Mark: □">There are **two** box icons on the second row of the Type menu. The **first** is the modified boxplot: it cuts the whiskers back at the fences and draws anything beyond them as its own mark. That is the one this course draws and the one AP expects.</Calculator.Step>
-<Calculator.Step keys={['ZOOM', '9:ZoomStat']}>Frames the plot to the data. For a boxplot, unlike a histogram, `ZoomStat` chooses nothing that changes the display's meaning — there is no bin width to get wrong.</Calculator.Step>
+<Calculator.Step keys={['ZOOM', '9:ZoomStat']}>Frames the plot to the data. For a boxplot, unlike a histogram, `ZoomStat` chooses nothing that changes the display's meaning: there is no bin width to get wrong.</Calculator.Step>
 <Calculator.Step keys={['TRACE', '▸']}>Steps left to right through the five numbers, one press each.</Calculator.Step>
 <Calculator.Read label="minX" value={fmt(elevenFive.min, 2)} />
 <Calculator.Read label="Q1" value={fmt(elevenFive.q1, 2)} />
@@ -134,7 +134,7 @@ Nothing is wrong with the arithmetic. The fence is built from the batch's own IQ
 <Calculator.Read label="Q3" value={fmt(elevenFive.q3, 2)} />
 <Calculator.Read label="maxX" value={fmt(elevenFive.max, 2)} />
 <Calculator.Watch>**The second box icon is a plain boxplot and it hides outliers.** It runs both whiskers all the way out to the extreme values, so a flagged observation is swallowed into the end of a whisker and the display shows nothing unusual at all. Two plots of the same list, drawn one icon apart, disagree about whether the batch has an outlier in it. Choose the first icon, every time.</Calculator.Watch>
-<Calculator.Watch>**The IQR is not printed anywhere.** `TRACE` gives you Q1 and Q3 and stops. IQR = Q3 − Q1 = {fmt(elevenFive.q3, 2)} − {fmt(elevenFive.q1, 2)} = **{fmt(elevenBox, 2)}**. Nor are the fences drawn: compute them yourself, Q1 − 1.5 × IQR = {fmt(elevenFences.lowFence, 2)} and Q3 + 1.5 × IQR = {fmt(elevenFences.highFence, 2)}, and then compare every value to them. On these {fmtInt(ratioFirstEleven.length)} the rule flags {fmtInt(elevenFences.values.length)}, and the two icons therefore draw the same picture — which is exactly the case in which you cannot tell which icon you used.</Calculator.Watch>
+<Calculator.Watch>**The IQR is not printed anywhere.** `TRACE` gives you Q1 and Q3 and stops. IQR = Q3 − Q1 = {fmt(elevenFive.q3, 2)} − {fmt(elevenFive.q1, 2)} = **{fmt(elevenBox, 2)}**. Nor are the fences drawn: compute them yourself, Q1 − 1.5 × IQR = {fmt(elevenFences.lowFence, 2)} and Q3 + 1.5 × IQR = {fmt(elevenFences.highFence, 2)}, and then compare every value to them. On these {fmtInt(ratioFirstEleven.length)} the rule flags {fmtInt(elevenFences.values.length)}, so the two icons draw the same picture. When they agree, nothing on the screen records which one you chose.</Calculator.Watch>
 <Calculator.Watch>Nothing in this plot records $n$. A boxplot of {fmtInt(ratioFirstEleven.length)} values and one of {fmtInt(REGISTER_META.contacts)} can be the same width and the same shape, and `TRACE` will not tell you which you are looking at. Write the count into the caption yourself.</Calculator.Watch>
 </Calculator>
 
@@ -147,23 +147,23 @@ Nothing is wrong with the arithmetic. The fence is built from the batch's own IQ
 <Drill generator="act-1/box-hides" count={1} />
 
 <MissionBeat id="act-1-05-fence" kind="numeric" answer={ratioFences.highFence} answerKind="other" digits={2} units="% of expected" label="THE UPPER FENCE"
-  prompt={`Set the builder to the plume ratio with all ${fmtInt(REGISTER_META.contacts)} contacts and the fences shown. Report the **upper fence** — Q3 plus one and a half IQRs — in percent of the class-table expectation, to two decimal places.`}
+  prompt={`Set the builder to the plume ratio with all ${fmtInt(REGISTER_META.contacts)} contacts and the fences shown. Report the **upper fence**, Q3 plus one and a half IQRs, in percent of the class-table expectation, to two decimal places.`}
   hint="Read Q1 and Q3 off the readouts, take their difference, multiply by 1.5 and add it to Q3. The fence is not a value in the data and it need not look like one.">
   <Success>
   <Dialogue speaker="analyst" aside="He writes the fence on the display itself, with the arithmetic beside it.">
-  So that's the line, sir. Q3 plus one and a half boxes. Everything under it is inside what this batch calls ordinary, and the line moved when the batch grew — it was further out when we had eleven.
+  So that's the line, sir. Q3 plus one and a half boxes. Everything under it is inside what this batch calls ordinary, and the line moved when the batch grew. It was further out when we had eleven.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  Quartiles first, Captain, on the convention we use — median of the lower half, median of the upper half. Then Q3 plus one and a half times their difference. Not the largest whisker, not two standard deviations. If the fence is wrong, the hull id Oyelaran signalled for is a guess.
+  Quartiles first, Captain, on the convention we use: median of the lower half, median of the upper half. Then Q3 plus one and a half times their difference. Not the largest whisker, not two standard deviations. If the fence is wrong, the hull id Oyelaran signalled for is a guess.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <MissionBeat id="act-1-05-count" kind="numeric" answer={ratioFences.values.length} answerKind="count" label="HOW MANY BEYOND IT"
   prompt={`Using that fence and the lower one, how many of the ${fmtInt(REGISTER_META.contacts)} contacts does the 1.5 × IQR rule flag? Give a whole number.`}
-  hint="Both ends. Count every contact outside either fence — and count, do not estimate off the plot.">
+  hint="Both ends. Count every contact outside either fence. Count them; do not estimate off the plot.">
   <Success>
   <Dialogue speaker="sensors" aside="She has the contact record open already and does not need to look for it.">
   One, sir. Out of {fmtInt(REGISTER_META.contacts)}. And the certification request for that hull went out at the top of the watch.
@@ -177,9 +177,9 @@ Nothing is wrong with the arithmetic. The fence is built from the batch's own IQ
 </MissionBeat>
 
 <MissionBeat id="act-1-05-display" kind="choice" label="THE DISPLAY THAT WOULD HAVE SHOWN IT"
-  prompt={`Now the other box. Switch the builder to **time to silence** — the ${fmtInt(timeToSilence.length)} lost hulls — and look at the box with the dots hidden, then with the dots shown. Which display would have revealed what that boxplot conceals?`}
+  prompt={`Now the other box. Switch the builder to **time to silence**, the ${fmtInt(timeToSilence.length)} lost hulls, and look at the box with the dots hidden, then with the dots shown. Which display would have revealed what that boxplot conceals?`}
   options={[
-    'A dotplot or a histogram of the thirty-one intervals — a display that keeps every value, or counts them into bins narrow enough to show an empty middle.',
+    'A dotplot or a histogram of the thirty-one intervals: a display that keeps every value, or counts them into bins narrow enough to show an empty middle.',
     'The same modified boxplot with the fences drawn in: the 1.5 × IQR rule is what finds structure a plain box conceals.',
     'A boxplot of the same intervals drawn separately for each classifying office, so the two groups sit side by side.',
     'A bar chart with one bar per lost hull, the bars ordered from the shortest interval to the longest.',
@@ -187,9 +187,9 @@ Nothing is wrong with the arithmetic. The fence is built from the batch's own IQ
   correct={0}
   feedback={[
     null,
-    'The fences are already drawn, and they flag nothing here — every interval is comfortably inside them. A fence finds values far from the middle. It cannot find an empty middle.',
+    'The fences are already drawn, and they flag nothing here. Every interval is comfortably inside them. A fence finds values far from the middle. It cannot find an empty middle.',
     'That is the display you would draw once you already knew which variable splits the batch. Nothing in the file names one: the split was found on an axis, not looked up. And office does not separate these two groups.',
-    'One bar per individual is not a distribution — it is thirty-one facts in a row, and a bar chart of a quantitative variable throws the scale away. Sorting the bars makes the jump visible by accident, but the display is still wrong for the question.',
+    'One bar per individual gives thirty-one facts in a row rather than a distribution, and a bar chart of a quantitative variable throws the scale away. Sorting the bars makes the jump visible by accident, but the display is still wrong for the question.',
   ]}
   hint="Ask what the boxplot threw away. It kept five positions and a rule; the thing you are looking for lives in the ninety percent of observations between them.">
   <Success>
@@ -199,24 +199,24 @@ Nothing is wrong with the arithmetic. The fence is built from the batch's own IQ
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  The box is not broken and reading it harder will not help. Ask what it kept — five numbers and a flagging rule — and then ask where the thing we found two days ago actually lives. It lives between the five. Which display keeps what is between the five?
+  The box is not broken and reading it harder will not help. Ask what it kept. Five numbers and a flagging rule. Then ask where the thing we found two days ago actually lives. It lives between the five. Which display keeps what is between the five?
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <Gated by={["act-1-05-fence", "act-1-05-count", "act-1-05-display"]}>
 
-<Scene stamp="MET 021/14:10" location="Sensor bay · 0.118 AU from Callisto, 4 mgee · light-lag 59 s" condensed="One contact of sixty is beyond the fence, and its hull id is now on a signal to the Bureau of Lane Survey at Uruk High — the first thing the ship has asked the world for. The boxplot of time to silence stays in the annex with its dotplot underneath it. A fence flags; it does not convict; and the reply will take days.">
+<Scene stamp="MET 021/14:10" location="Sensor bay · 0.118 AU from Callisto, 4 mgee · light-lag 59 s" condensed="One contact of sixty is beyond the fence, and its hull id is now on a signal to the Bureau of Lane Survey at Uruk High, the first thing the ship has asked the world for. The boxplot of time to silence stays in the annex with its dotplot underneath it. A fence flags; it does not convict; and the reply will take days.">
 
 The fence sits at {fmt(ratioFences.highFence, 2)} percent of expectation, and {fmtInt(ratioFences.values.length)} contact of {fmtInt(REGISTER_META.contacts)} is beyond it: MV *{harpagia.hull}*, at {fmt(harpagia.ratio_pct, 1)}. A rule invented for flagging bad transcriptions, applied to a clean sensor log, has put a name on the outgoing traffic.
 
-Solberg confirms it away at 09:41 — Uruk High, Bureau of Lane Survey, routine format, and a minute of light each way growing by about two seconds every hour the torch stays lit. Nobody expects an answer this week.
+Solberg confirms it away at 09:41. Uruk High, Bureau of Lane Survey, routine format, and a minute of light each way growing by about two seconds every hour the torch stays lit. Nobody expects an answer this week.
 
 <Dialogue speaker="xo" aside="She says it for the log, which means she says it slowly.">
 For the record: the rule flags, it does not convict. That contact is past a fence built out of the other fifty-nine. That is a reason to ask the Bureau what the hull weighs. It is not a finding about the hull, and it is not a finding about the Lane, and nothing we write goes further than the request we have already sent.
 </Dialogue>
 
-Ebele makes up the annex properly. The plume-ratio boxplot with its fences and its one flagged point, five numbers under it. Then the second one, the {fmtInt(timeToSilence.length)} times to silence: five numbers ({fmt(silenceFive.min, 3)}, {fmt(silenceFive.q1, 3)}, {fmt(silenceFive.median, 2)}, {fmt(silenceFive.q3, 2)}, {fmt(silenceFive.max, 2)} hours), fences at {fmt(silenceFences.lowFence, 2)} and {fmt(silenceFences.highFence, 2)}, {fmtInt(silenceFences.values.length)} flagged — and directly beneath it, on the same axis, the dotplot with all {fmtInt(timeToSilence.length)} hulls on it and the empty stretch between {fmt(maxOf(abrupt), 2)} and {fmt(minOf(gradual), 2)} hours you could put a hand through.
+Ebele makes up the annex properly. The plume-ratio boxplot with its fences and its one flagged point, five numbers under it. Then the second one, the {fmtInt(timeToSilence.length)} times to silence: five numbers ({fmt(silenceFive.min, 3)}, {fmt(silenceFive.q1, 3)}, {fmt(silenceFive.median, 2)}, {fmt(silenceFive.q3, 2)}, {fmt(silenceFive.max, 2)} hours), fences at {fmt(silenceFences.lowFence, 2)} and {fmt(silenceFences.highFence, 2)}, {fmtInt(silenceFences.values.length)} flagged. Directly beneath it, on the same axis, the dotplot with all {fmtInt(timeToSilence.length)} hulls on it and the empty stretch between {fmt(maxOf(abrupt), 2)} and {fmt(minOf(gradual), 2)} hours you could put a hand through.
 
 The box is arithmetically perfect and it spans the gap without a mark on it. Its lower whisker reaches down into the {fmtInt(abrupt.length)} hulls that went silent in under a minute; its upper whisker reaches up through the {fmtInt(gradual.length)} that faded for hours; and the box in the middle, holding half the losses on the Lane, is drawn straight across a stretch of axis where no hull was lost at all.
 
@@ -232,9 +232,9 @@ The annex goes into the preliminary with both displays on the same axis, and the
 
 <LogEntry
   title="Fences flag; boxes hide"
-  concept="The five-number summary — minimum, Q1, median, Q3, maximum, with the quartiles taken as the medians of the two halves of the sorted list on the AP convention — cuts a batch into four quarters that each hold about a quarter of the observations, and a modified boxplot draws it with the whiskers cut back at the 1.5 × IQR fences and anything beyond them plotted as its own point. A boxplot is therefore excellent at spread, skew and flagged extremes and blind to everything between the five numbers: modes, gaps and the sample size itself."
+  concept="The five-number summary is the minimum, Q1, the median, Q3 and the maximum, with the quartiles taken as the medians of the two halves of the sorted list on the AP convention. Between them the five cut a batch into four quarters that each hold about a quarter of the observations, and a modified boxplot draws them with the whiskers cut back at the 1.5 × IQR fences and anything beyond them plotted as its own point. A boxplot is therefore excellent at spread, skew and flagged extremes and blind to everything between the five numbers: modes, gaps and the sample size itself."
   formula="Q_1 - 1.5\,\text{IQR} \;\lt\; \text{not flagged} \;\lt\; Q_3 + 1.5\,\text{IQR}, \qquad \text{IQR} = Q_3 - Q_1"
-  mistake="Assuming a boxplot shows modes. A batch in two piles with an empty middle draws exactly the same box as one smooth mound — the box is drawn straight across the gap. If the question is about shape, put the dots back on."
+  mistake="Assuming a boxplot shows modes. A batch in two piles with an empty middle draws exactly the same box as one smooth mound. The box is drawn straight across the gap. If the question is about shape, put the dots back on."
   tags={['five-number summary', 'boxplot', 'quartiles', 'IQR', '1.5 IQR rule', 'outlier', 'fences', 'what a display hides', '1.8']}
 />
 
