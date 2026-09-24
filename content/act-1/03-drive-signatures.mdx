@@ -7,7 +7,7 @@ ap_topics: ["1.5", "1.6"]
 objectives:
   - "Build a dotplot, a stemplot and a histogram of the same quantitative variable and say what each one keeps and what each one throws away"
   - "Treat bin width as a decision: check a shape at more than one width before describing it, and report the width"
-  - "Describe a distribution in context — shape, centre, variability, unusual features — with numbers and units"
+  - "Describe a distribution in context (shape, centre, variability, unusual features) with numbers and units"
   - "Name the skew from the direction of the tail, not from where the peak sits"
 prereqs: ["act-1-01"]
 est_minutes: 30
@@ -33,7 +33,7 @@ export const valleyBin = fineBins.bins
 export const nominalMk3 = expectedPlumeTW('Mk 3', 20000, 3)
 export const hotExcess = harpagia.ratio_pct - 100
 
-<Scene stamp="MET 015/07:40" location="Sensor bay · 0.025 AU from Callisto, 4 mgee · light-lag 12 s" condensed="Three days on, twelve seconds of light astern, Oyelaran has sixty drive plumes in the contact log. Plotted as measured power the sixty make two humps, one per drive family, exactly as the class table says they should. Plotted as a ratio to what the table expects for each hull's declared mass they make one hump — and one point out on the right, alone. Oyelaran says the table is wrong; Sandoval says the table has a rated spread; you ask Ebele what bin width he used, and he does not know.">
+<Scene stamp="MET 015/07:40" location="Sensor bay · 0.025 AU from Callisto, 4 mgee · light-lag 12 s" condensed="Three days on, twelve seconds of light astern, Oyelaran has sixty drive plumes in the contact log. Plotted as measured power the sixty make two humps, one per drive family, exactly as the class table says they should. Plotted as a ratio to what the table expects for each hull's declared mass they make one hump, and one point out on the right, alone. Oyelaran says the table is wrong; Sandoval says the table has a rated spread; you ask Ebele what bin width he used, and he does not know.">
 
 Twenty-five thousandths of an astronomical unit astern of Callisto, and twelve seconds of light between this ship and anyone who could answer her. Seventeen kilometres a second and building.
 
@@ -70,7 +70,7 @@ Ebele has the histogram up and is already reaching to describe it. You stop him 
 He does not know. The terminal chose it.
 
 <Dialogue speaker="analyst" aside="He is scrolling back through the display's own settings looking for a number that was never his.">
-So — the default, sir. It picked it off the range. I didn't set it.
+So. The default, sir. It picked it off the range. I didn't set it.
 </Dialogue>
 
 Then set it three times, you tell him. Wide, narrow, and something a person would defend. And do not describe anything to me until the shape survives all three.
@@ -85,16 +85,16 @@ A **dotplot** puts one dot over every value on a number line. Nothing is lost an
 
 A **stemplot** splits each value into a **stem** (the leading digits) and a **leaf** (the next digit), and states the **leaf unit** so the plot can be read back into numbers. Every value survives, sorted, which makes medians and quartiles readable straight off the page.
 
-A **histogram** divides the axis into bins of equal **width**, counts how many individuals fall in each, and draws a bar of that height. Bars touch, because the axis is continuous and there is nothing between two bins. The individual values inside a bar are gone — that is the trade, and what you buy with it is a shape you can see at sixty values, or at six thousand.
+A **histogram** divides the axis into bins of equal **width**, counts how many individuals fall in each, and draws a bar of that height. Bars touch, because the axis is continuous and there is nothing between two bins. The individual values inside a bar are gone. That is the trade, and what you buy with it is a shape you can see at sixty values, or at six thousand.
 
 **Bin width is a decision, not a property of the data.** One batch of numbers makes a different picture at every width. Too wide and two piles merge into one; too narrow and the display becomes a comb of ones and twos, and you are reading sampling noise as structure. Report the width, and look at the shape at more than one of them before you describe it.
 
-Then describe it, and describe it in this order — **shape, centre, spread, unusual features (SOCS)**, every one of them with the units of the variable and the name of the individuals:
+Then describe it, and describe it in this order: **shape, centre, spread, unusual features (SOCS)**, every one of them with the units of the variable and the name of the individuals:
 
 1. **Shape.** Symmetric, or skewed, or bimodal. Skew is named for the direction of the **long tail**, not for where the peak sits: a batch piled at the low end with a tail running to the right is *skewed right*.
 2. **Centre.** A median or a mean, with its value.
 3. **Spread.** An IQR, a standard deviation or a range, with its value.
-4. **Unusual features.** Outliers, gaps, clusters — named, with their values.
+4. **Unusual features.** Outliers, gaps, clusters. Name them, with their values.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula tex="\text{bar height}_j = \#\{\, x_i : e_j \le x_i \lt e_{j+1} \,\}, \qquad e_{j+1} - e_j = w" terms={{ 'e_j': 'the jth bin edge — the jth bar covers everything from that edge up to the next one', 'w': 'the bin width: the analyst’s decision, not the data’s' }} label="What one histogram bar counts" />
@@ -108,12 +108,12 @@ At a bin width of 0.1 TW there are {fmtInt(coarseBins.bins.length)} bars, and th
 
 At a bin width of 0.025 TW there are {fmtInt(fineBins.bins.length)} bars, and the same sixty numbers make two piles with a trough between them: the bar at {fmt(valleyBin.lo, 3)} to {fmt(valleyBin.hi, 3)} TW holds {fmtInt(valleyBin.count)}, while the piles on either side of it run to {fmtInt(maxOf(fineBins.bins.map((b) => b.count)))}. Nothing about the data changed. The first display could not resolve two drive families and the second can.
 
-So: **shape** — bimodal, two piles with a gap; **centre** — the median plume power is {fmt(median(plumeTW), 2)} TW and the mean {fmt(mean(plumeTW), 2)} TW, and here is the trouble, because {fmt(mean(plumeTW), 2)} TW falls in the trough, and no hull on the Lane burns it; **spread** — the sixty run from {fmt(minOf(plumeTW), 2)} to {fmt(maxOf(plumeTW), 2)} TW, an IQR of {fmt(iqr(plumeTW), 2)}; **unusual features** — none beyond the two piles themselves, which are the {fmtInt(mk3Plume.length)} Mk 3 hulls at a mean of {fmt(mean(mk3Plume), 2)} TW and the {fmtInt(tesseraPlume.length)} Tessera-C at {fmt(mean(tesseraPlume), 2)}.
+So, in order. **Shape:** bimodal, two piles with a gap. **Centre:** the median plume power is {fmt(median(plumeTW), 2)} TW and the mean {fmt(mean(plumeTW), 2)} TW, and here is the trouble, because {fmt(mean(plumeTW), 2)} TW falls in the trough, and no hull on the Lane burns it. **Spread:** the sixty run from {fmt(minOf(plumeTW), 2)} to {fmt(maxOf(plumeTW), 2)} TW, an IQR of {fmt(iqr(plumeTW), 2)}. **Unusual features:** none beyond the two piles themselves, which are the {fmtInt(mk3Plume.length)} Mk 3 hulls at a mean of {fmt(mean(mk3Plume), 2)} TW and the {fmtInt(tesseraPlume.length)} Tessera-C at {fmt(mean(tesseraPlume), 2)}.
 
 Naming the shape first is what makes the centre reportable at all. Had the order been reversed, "mean plume power {fmt(mean(plumeTW), 2)} TW" would have gone into the report as a description of the Lane, and no hull on the Lane burns it.
 </Briefing.Worked>
 <Briefing.Caution>
-*Naming the skew from the peak.* A distribution piled on the left with a long tail to the right is **skewed right**. Learners — and staff officers — read the peak, see it sitting low on the axis, and write "skewed left". The name belongs to the tail. When you are unsure, compare the mean with the median: the mean is dragged toward the tail.
+*Naming the skew from the peak.* A distribution piled on the left with a long tail to the right is **skewed right**. Learners (and staff officers) read the peak, see it sitting low on the axis, and write "skewed left". The name belongs to the tail. When you are unsure, compare the mean with the median: the mean is dragged toward the tail.
 
 *Treating a histogram as a bar chart.* Its bars touch because the axis is continuous, so they may never be reordered by height, the gaps between them are values and not categories, and a display without its bin width in the caption cannot be checked by anyone. A bar chart's categories have no order and no width; a histogram's bins have both.
 
@@ -144,8 +144,8 @@ Naming the shape first is what makes the centre reportable at all. Had the order
 <Drill generator="act-1/describe-signature-histogram" count={1} />
 
 <MissionBeat id="act-1-03-describe" kind="interpretation" label="SAY WHAT IT IS"
-  prompt={`Set the builder to the plume **ratio** — measured plume power as a percent of the class-table expectation — with all ${fmtInt(REGISTER_META.contacts)} contacts on the axis and no grouping. Describe that distribution in context: shape, centre with its value, variability with its value, and any unusual feature with its value. Two or three sentences, with units.`}
-  hint="Shape first, then centre, then spread, then the thing that does not fit. Take the centre and the spread off the readouts — a median with an IQR, or a mean with an SD — and check the shape at more than one bin width before you commit to a word for it."
+  prompt={`Set the builder to the plume **ratio** (measured plume power as a percent of the class-table expectation) with all ${fmtInt(REGISTER_META.contacts)} contacts on the axis and no grouping. Describe that distribution in context: shape, centre with its value, variability with its value, and any unusual feature with its value. Two or three sentences, with units.`}
+  hint="Shape first, then centre, then spread, then the thing that does not fit. Take the centre and the spread off the readouts, a median with an IQR or a mean with an SD, and check the shape at more than one bin width before you commit to a word for it."
   {...describeDistribution({
     variable: 'plume-power ratio',
     units: 'percent of the class-table expectation',
@@ -163,7 +163,7 @@ Naming the shape first is what makes the centre reportable at all. Had the order
   </Success>
   <Failure>
   <Dialogue speaker="sensors" aside="She has the three bin widths up side by side and is pointing at the middle one.">
-  Four things, sir, in order. Shape — is it one pile or two, and if one, does either tail run longer than the other. Then the centre, with a number on it. Then the spread, with a number on it. Then anything that is not in the pile, with *its* number on it. And the units on all of them, because a ratio without "percent of expectation" after it is not a measurement of anything.
+  Four things, sir, in order. Shape. Is it one pile or two, and if one, does either tail run longer than the other. Then the centre, with a number on it. Then the spread, with a number on it. Then anything that is not in the pile, with *its* number on it. And the units on all of them, because a ratio without "percent of expectation" after it is not a measurement of anything.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -183,7 +183,7 @@ Contact {harpagia.contact_id}, logged {harpagia.met}. MV *{harpagia.hull}*. Mk 3
 Sandoval finally looks at the slate she came in with.
 
 <Dialogue speaker="engineer">
-The table's rated spread is {fmt(RATED_SPREAD_PCT, 1)} percent, Skipper. Plus or minus. That is the yard's number, not mine — it covers pump wear, nozzle erosion, a cold start, a bad mass declaration made by an honest clerk. Against {fmt(RATED_SPREAD_PCT, 1)} percent that contact is not impossible. It is only unlikely.
+The table's rated spread is {fmt(RATED_SPREAD_PCT, 1)} percent, Skipper. Plus or minus. That is the yard's number, not mine. It covers pump wear, nozzle erosion, a cold start, a bad mass declaration made by an honest clerk. Against {fmt(RATED_SPREAD_PCT, 1)} percent that contact is not impossible. It is only unlikely.
 </Dialogue>
 
 <Dialogue speaker="sensors" aside="Quieter still. She has the ratio plot up and will not take it down.">
@@ -199,7 +199,7 @@ There is a preliminary going to Valhalla, and a line in it that has to say somet
 </Scene>
 
 <MissionBeat id="act-1-03-trust" kind="decision" label="THE CLASS TABLE"
-  prompt="The contact log goes into the preliminary with a note against it. Which reading does the note take as its working assumption — the class table, or your sensors officer?"
+  prompt="The contact log goes into the preliminary with a note against it. Which reading does the note take as its working assumption: the class table, or your sensors officer?"
   options={["Trust the class table", "Trust Oyelaran"]}>
   <Outcome option={0}>
   <Dialogue speaker="engineer" aside="She writes the rated spread into the margin herself, with the yard's document number beside it.">
@@ -213,7 +213,7 @@ There is a preliminary going to Valhalla, and a line in it that has to say somet
   <Dialogue speaker="sensors" aside="She does not sound vindicated. She sounds like someone who has been handed something heavy.">
   Then the note says the measurement stands and the expectation is suspect, sir. I will want every Sulcus hull we see from here logged with its declared mass. If I am wrong, that will show too.
   </Dialogue>
-  <Dialogue speaker="engineer" aside="Silence, and then a gauge — she turns the slate round so you can see the yard's tolerance on it before she goes below.">
+  <Dialogue speaker="engineer" aside="Silence, and then a gauge. She turns the slate round so you can see the yard's tolerance on it before she goes below.">
   Noted, Skipper. For the record: a rated spread of {fmt(RATED_SPREAD_PCT, 1)} percent, plus or minus, and a preliminary that sets it aside on one contact. I am not saying you are wrong. I am saying that is what the page will look like at Valhalla.
   </Dialogue>
   </Outcome>
@@ -221,7 +221,7 @@ There is a preliminary going to Valhalla, and a line in it that has to say somet
 
 <Gated by="act-1-03-trust">
 
-<Scene variant="log" stamp="MET 015/16:20" location="CSV Nightjar · commanding officer's log" condensed="One Sulcus hull runs about nine percent over the class table's expectation for the mass she declared. That is one contact, one display and no comparison — nothing yet says that hot means heavy.">
+<Scene variant="log" stamp="MET 015/16:20" location="CSV Nightjar · commanding officer's log" condensed="One Sulcus hull runs about nine percent over the class table's expectation for the mass she declared. That is one contact, one display and no comparison. Nothing yet says that hot means heavy.">
 
 Sixty contacts on the Lane in four days. Fifty-nine of them sit in one pile around what their own paperwork predicts, and one does not.
 
@@ -235,9 +235,9 @@ Noted for the preliminary. Continuing on profile.
 
 <LogEntry
   title="Shape first, then centre, then spread, then the thing that doesn't fit"
-  concept="Dotplots, stemplots and histograms all display one quantitative variable, and they differ in what survives: a dotplot and a stemplot keep every value, a histogram trades them for a shape by counting individuals into bins of a width the analyst chooses and must report. Describe what you see in the order shape, centre, spread, unusual features — each with a number, its units and the individuals it belongs to — and check the shape at more than one bin width before naming it."
+  concept="Dotplots, stemplots and histograms all display one quantitative variable, and they differ in what survives: a dotplot and a stemplot keep every value, a histogram trades them for a shape by counting individuals into bins of a width the analyst chooses and must report. Describe what you see in the order shape, centre, spread, unusual features (each with a number, its units and the individuals it belongs to), and check the shape at more than one bin width before naming it."
   formula="\text{bar height}_j = \#\{\, x_i : e_j \le x_i \lt e_{j+1} \,\}, \qquad e_{j+1} - e_j = w"
-  mistake="Describing the peak and calling it the skew. A batch piled on the left with a long tail to the right is skewed RIGHT — skew is named for the tail, not the pile. When in doubt, compare the mean with the median: the mean is pulled toward the tail."
+  mistake="Describing the peak and calling it the skew. A batch piled on the left with a long tail to the right is skewed RIGHT. Skew is named for the tail, not the pile. When in doubt, compare the mean with the median: the mean is pulled toward the tail."
   tags={['dotplot', 'stemplot', 'histogram', 'bin width', 'shape', 'SOCS', 'skew', 'outlier', '1.5', '1.6']}
 />
 

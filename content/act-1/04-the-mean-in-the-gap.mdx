@@ -28,18 +28,18 @@ export const elevenFive = fiveNumber(elevenWith)
 export const abrupt = losses.filter((l) => l.fade === 'abrupt').map((l) => l.time_to_silence)
 export const gradual = losses.filter((l) => l.fade === 'gradual').map((l) => l.time_to_silence)
 
-<Scene stamp="MET 019/08:15" location="Bridge · intel terminal · 0.079 AU from Callisto, 4 mgee · light-lag 40 s" condensed="Nineteen days out and forty seconds of light astern, Ebele has the transponder-degradation intervals for all thirty-one lost hulls reduced to one number — a mean of 3.4 hours — and a sentence ready to go into the preliminary under it. You decline the number and ask for the thirty-one values, then take them to the plot yourself. In the sensor bay the flagged contact is doing something to the sixty ratios that it did more loudly to the first eleven, and Ebele is set to computing every summary twice.">
+<Scene stamp="MET 019/08:15" location="Bridge · intel terminal · 0.079 AU from Callisto, 4 mgee · light-lag 40 s" condensed="Nineteen days out and forty seconds of light astern, Ebele has the transponder-degradation intervals for all thirty-one lost hulls reduced to one number (a mean of 3.4 hours) and a sentence ready to go into the preliminary under it. You decline the number and ask for the thirty-one values, then take them to the plot yourself. In the sensor bay the flagged contact is doing something to the sixty ratios that it did more loudly to the first eleven, and Ebele is set to computing every summary twice.">
 
 Forty seconds each way to Callisto this morning. Thirty kilometres a second. Solberg reads the lag out at the top of every watch whether anyone has asked for it or not, and nobody has told him to stop.
 
-Your back has been wrong since the middle watch — the plot housing is set for an officer four inches shorter and you have been leaning on it for eleven days — so you take the forenoon standing, one hand on the overhead rail, which is worse but differently.
+Your back has been wrong since the middle watch. The plot housing is set for an officer four inches shorter and you have been leaning on it for eleven days, so you take the forenoon standing, one hand on the overhead rail, which is worse but differently.
 
 Ebele has been in the file since 04:00 and he has found something with a number on it.
 
-Every one of the thirty-one lost hulls has a transponder record: the moment its signal first began to degrade, and the moment the Authority logged the last packet. Subtract one from the other and you have an interval — the time from the first sign of trouble to silence. Thirty-one intervals. He has reduced them.
+Every one of the thirty-one lost hulls has a transponder record: the moment its signal first began to degrade, and the moment the Authority logged the last packet. Subtract one from the other and you have an interval: the time from the first sign of trouble to silence. Thirty-one intervals. He has reduced them.
 
 <Dialogue speaker="analyst" aside="He has the line already drafted, in the preliminary's own typeface.">
-So the mean time to silence across all thirty-one losses is {fmt(mean(timeToSilence), 1)} hours, sir. That's the number. It's ready to send — "hulls lost on the Lane fell silent, on average, {fmt(mean(timeToSilence), 1)} hours after the first transponder degradation." That gives the Board something to compare an interdiction against.
+So the mean time to silence across all thirty-one losses is {fmt(mean(timeToSilence), 1)} hours, sir. That's the number. It's ready to send. "Hulls lost on the Lane fell silent, on average, {fmt(mean(timeToSilence), 1)} hours after the first transponder degradation." That gives the Board something to compare an interdiction against.
 </Dialogue>
 
 It does. That is exactly what it gives them, and it will go into a paragraph about boarding times and cutter response, and somebody at Valhalla will divide it by something.
@@ -58,7 +58,7 @@ Before that goes anywhere: the data says a mean exists. A mean always exists. It
 
 There is a second thing this morning, from the sensor bay, and it is the same question wearing different clothes.
 
-Oyelaran's contact log is up to {fmtInt(REGISTER_META.contacts)} plumes and the flagged Sulcus hull is still in it, still out on the right of the ratio axis. Set that one contact aside and the sixty's *mean* ratio moves; the *median* does not. On the first {fmtInt(REGISTER_META.firstContacts)} contacts, back when Oyelaran had barely a watch's work in the log, setting the same hull aside moved the mean by nearly a whole point of expectation — one contact, on eleven, rewriting the fleet's average by an amount the Board would have read as a finding.
+Oyelaran's contact log is up to {fmtInt(REGISTER_META.contacts)} plumes and the flagged Sulcus hull is still in it, still out on the right of the ratio axis. Set that one contact aside and the sixty's *mean* ratio moves; the *median* does not. On the first {fmtInt(REGISTER_META.firstContacts)} contacts, back when Oyelaran had barely a watch's work in the log, setting the same hull aside moved the mean by nearly a whole point of expectation. One contact out of eleven rewrote the fleet's average by an amount the Board would have read as a finding.
 
 So you give Ebele something better to do than drafting. Mean, median, range, IQR, standard deviation, on the ratios, twice: once with the flagged hull in and once with it out. Then say which pair he would put in front of the Board, and why.
 
@@ -70,17 +70,17 @@ He starts on it. He is still on it when you leave the bridge.
 <Briefing.Intuition>
 Five summaries, and the whole of this topic is knowing which of them a single strange value can drag.
 
-The **mean** $\bar{x}$ is the balance point: add every value, divide by how many. It uses every observation, which is its strength and its weakness — move one value ten units farther out and the mean follows it, by ten divided by $n$.
+The **mean** $\bar{x}$ is the balance point: add every value, divide by how many. It uses every observation, which is its strength and its weakness. Move one value ten units farther out and the mean follows it, by ten divided by $n$.
 
-The **median** is the middle of the *sorted list* — the value with as many observations below it as above. It uses only positions. Move the largest value to the far side of the display and the median does not notice, because nothing changed places. Summaries that behave this way are called **resistant**.
+The **median** is the middle of the *sorted list*: the value with as many observations below it as above. It uses only positions. Move the largest value to the far side of the display and the median does not notice, because nothing changed places. Summaries that behave this way are called **resistant**.
 
 The **range** is maximum minus minimum. It is built out of the two most extreme observations, so it is the least resistant summary there is: one bad reading sets it single-handed.
 
 The **interquartile range** is $Q_3 - Q_1$, the width of the middle half. On the AP convention $Q_1$ is the median of the lower half of the sorted values and $Q_3$ the median of the upper half, with the overall median excluded from both halves when $n$ is odd. Resistant, for the same reason the median is.
 
-The **standard deviation** $s$ is the typical distance of an observation from the mean, in the units of the variable. Take each deviation $x_i - \bar{x}$, square it (the deviations themselves always sum to exactly zero, so their average is useless), average the squares over $n - 1$, and take the square root to get back into the original units. The $n-1$ — one degree of freedom spent on estimating $\bar{x}$ from the same data — is stated once and used always for a sample. Because it is built from distances to the mean, $s$ is not resistant either; it moves further than the mean does, because the distances are squared first.
+The **standard deviation** $s$ is the typical distance of an observation from the mean, in the units of the variable. Take each deviation $x_i - \bar{x}$, square it (the deviations themselves always sum to exactly zero, so their average is useless), average the squares over $n - 1$, and take the square root to get back into the original units. The $n-1$ (one degree of freedom spent on estimating $\bar{x}$ from the same data) is stated once and used always for a sample. Because it is built from distances to the mean, $s$ is not resistant either; it moves further than the mean does, because the distances are squared first.
 
-So the rule: **symmetric with nothing stranded — mean and standard deviation. A long tail or an outlier — median and IQR.** And a shape with two piles in it earns neither, because a centre is only a centre if there is one.
+So the rule. **Symmetric with nothing stranded: mean and standard deviation. A long tail or an outlier: median and IQR.** And a shape with two piles in it earns neither, because a centre is only a centre if there is one.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula tex="\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i" terms={{ '\\bar{x}': 'sample mean — the balance point of every observation' }} label="The mean" />
@@ -90,22 +90,22 @@ So the rule: **symmetric with nothing stranded — mean and standard deviation. 
 <Formula tex="\text{IQR} = Q_3 - Q_1 \qquad \text{range} = x_{\max} - x_{\min}" terms={{ 'Q_1': 'median of the lower half of the sorted values', 'Q_3': 'median of the upper half' }} label="Two spreads, one resistant and one not" />
 </Briefing.Definition>
 <Briefing.Worked>
-Oyelaran's **first {fmtInt(elevenWith.length)} contacts**, before the log had grown — plume ratios in percent of the class-table expectation, with the flagged Sulcus hull among them.
+Oyelaran's **first {fmtInt(elevenWith.length)} contacts**, before the log had grown: plume ratios in percent of the class-table expectation, with the flagged Sulcus hull among them.
 
 All {fmtInt(elevenWith.length)}: mean {fmt(mean(elevenWith), 2)}, median {fmt(median(elevenWith), 2)}, range {fmt(rangeOf(elevenWith), 2)}, IQR {fmt(iqr(elevenWith), 2)}, SD {fmt(sd(elevenWith), 2)} percent of expectation.
 
-The same batch with that one hull set aside — {fmtInt(elevenWithout.length)} contacts: mean {fmt(mean(elevenWithout), 2)}, median {fmt(median(elevenWithout), 2)}, range {fmt(rangeOf(elevenWithout), 2)}, IQR {fmt(iqr(elevenWithout), 2)}, SD {fmt(sd(elevenWithout), 2)}.
+The same batch with that one hull set aside, {fmtInt(elevenWithout.length)} contacts: mean {fmt(mean(elevenWithout), 2)}, median {fmt(median(elevenWithout), 2)}, range {fmt(rangeOf(elevenWithout), 2)}, IQR {fmt(iqr(elevenWithout), 2)}, SD {fmt(sd(elevenWithout), 2)}.
 
-One contact out of {fmtInt(elevenWith.length)} moves the **mean** by {fmt(elevenShift, 2)} percentage points and the **standard deviation** by {fmt(sd(elevenWith) - sd(elevenWithout), 2)} — that is the fleet's apparent average rewritten by a single hull. The **median** moves {fmt(Math.abs(median(elevenWith) - median(elevenWithout)), 2)} and the **IQR** {fmt(Math.abs(iqr(elevenWith) - iqr(elevenWithout)), 2)}: the resistant pair barely registers that anything happened.
+One contact out of {fmtInt(elevenWith.length)} moves the **mean** by {fmt(elevenShift, 2)} percentage points and the **standard deviation** by {fmt(sd(elevenWith) - sd(elevenWithout), 2)}. That is the fleet's apparent average rewritten by a single hull. The **median** moves {fmt(Math.abs(median(elevenWith) - median(elevenWithout)), 2)} and the **IQR** {fmt(Math.abs(iqr(elevenWith) - iqr(elevenWithout)), 2)}: the resistant pair barely registers that anything happened.
 
 Interpret the standard deviation before you leave it: *the plume ratios of these {fmtInt(elevenWithout.length)} contacts typically vary by about {fmt(sd(elevenWithout), 2)} percent of expectation from their mean of {fmt(mean(elevenWithout), 2)} percent.* That sentence has a number, the word *typically*, a distance, the mean, and the context. Drop any one of them and it stops being an interpretation.
 
-Note what dilutes with size: the same hull, in a log of {fmtInt(REGISTER_META.contacts)} contacts rather than {fmtInt(elevenWith.length)}, moves the mean only {fmt(sixtyShift, 2)} percentage points. A single value's grip on the mean is its distance divided by $n$ — which is why a strange value in a small file is a much bigger problem than a strange value in a large one.
+Note what dilutes with size: the same hull, in a log of {fmtInt(REGISTER_META.contacts)} contacts rather than {fmtInt(elevenWith.length)}, moves the mean only {fmt(sixtyShift, 2)} percentage points. A single value's grip on the mean is its distance divided by $n$, which is why a strange value in a small file is a much bigger problem than a strange value in a large one.
 </Briefing.Worked>
 <Briefing.Caution>
-*"The standard deviation is the average deviation."* It is not. The deviations $x_i - \bar{x}$ sum to zero by construction, so their average is zero for every batch of numbers ever recorded. The SD squares them first, averages the squares over $n-1$, and takes a square root — a root-mean-square distance. Say **typical distance from the mean**, never *average distance*.
+*"The standard deviation is the average deviation."* It is not. The deviations $x_i - \bar{x}$ sum to zero by construction, so their average is zero for every batch of numbers ever recorded. The SD squares them first, averages the squares over $n-1$, and takes a square root: a root-mean-square distance. Say **typical distance from the mean**, never *average distance*.
 
-*Dividing by $n$.* That is the population standard deviation. For a sample — which is everything in this file — the divisor is $n - 1$, and it makes the answer slightly larger.
+*Dividing by $n$.* That is the population standard deviation. For a sample, which is everything in this file, the divisor is $n - 1$, and it makes the answer slightly larger.
 
 *The median as the middle of the graph.* The median is the middle of the **sorted list of values**, not the midpoint of the axis and not the tallest bar. In a batch with a long right tail the median sits well to the left of the axis's midpoint, and it is still correct.
 
@@ -141,7 +141,7 @@ Note what dilutes with size: the same hull, in a log of {fmtInt(REGISTER_META.co
 <Drill generator="act-1/sd-interpretation" count={1} />
 
 <MissionBeat id="act-1-04-median" kind="numeric" answer={median(timeToSilence)} answerKind="mean" digits={2} units="h" label="THE MIDDLE HULL"
-  prompt={`Set the explorer to **time to silence** — the ${fmtInt(timeToSilence.length)} lost hulls, hours from the first transponder degradation to the last packet. Report the **median** of those ${fmtInt(timeToSilence.length)} intervals, in hours, to two decimal places.`}
+  prompt={`Set the explorer to **time to silence**: the ${fmtInt(timeToSilence.length)} lost hulls, hours from the first transponder degradation to the last packet. Report the **median** of those ${fmtInt(timeToSilence.length)} intervals, in hours, to two decimal places.`}
   hint="The median is the middle of the sorted list of values, not the middle of the axis. With an odd count there is exactly one middle hull; find its position first, then read its interval.">
   <Success>
   <Dialogue speaker="analyst" aside="He has the sorted list open beside the summary he drafted at 04:00 and is looking from one to the other.">
@@ -160,7 +160,7 @@ Note what dilutes with size: the same hull, in a log of {fmtInt(REGISTER_META.co
   hint="Q3 minus Q1, on the AP convention: sort, split at the median and leave the median out of both halves (n is odd), then take the median of the lower half and the median of the upper half.">
   <Success>
   <Dialogue speaker="analyst" aside="He puts the IQR next to the mean and then, without being asked, next to the standard deviation.">
-  That's the width of the middle half. Sir — that's wider than I would get if I made up a batch to match the mean I sent. The middle half of this file is nearly as wide as the whole of it.
+  That's the width of the middle half. Sir. That's wider than I would get if I made up a batch to match the mean I sent. The middle half of this file is nearly as wide as the whole of it.
   </Dialogue>
   </Success>
   <Failure>
@@ -173,19 +173,19 @@ Note what dilutes with size: the same hull, in a log of {fmtInt(REGISTER_META.co
 <MissionBeat id="act-1-04-summary" kind="choice" label="WHAT GOES TO THE BOARD"
   prompt={`Now look at the dotplot itself rather than at any number taken from it. The preliminary has one line for time to silence across the ${fmtInt(timeToSilence.length)} losses. **What is the honest thing to put in it?**`}
   options={[
-    `The mean, ${fmt(mean(timeToSilence), 1)} hours, with its standard deviation — it uses every hull in the file and throws nothing away.`,
-    'The median with the IQR — resistant summaries, unmoved by whatever sits at the ends.',
+    `The mean, ${fmt(mean(timeToSilence), 1)} hours, with its standard deviation. It uses every hull in the file and throws nothing away.`,
+    'The median with the IQR: resistant summaries, unmoved by whatever sits at the ends.',
     'Neither on its own: report a count and a centre for each of the groups the dotplot shows, and say plainly that no single centre describes this file.',
-    'The range, from the shortest interval to the longest — it is the only summary that reports what actually happened at both extremes.',
+    'The range, from the shortest interval to the longest. It is the only summary that reports what actually happened at both extremes.',
   ]}
   correct={2}
   feedback={[
     'It uses every hull and describes none of them. Look at where that number falls on the axis and ask which hull is near it.',
     'Resistance is the right instinct for a long tail or a stranded value, and it is the wrong instinct here: the median lands in the same empty stretch of axis the mean does. Nothing is dragging the centre. There are two centres, and every summary that reports one of them is hiding the other.',
     null,
-    'A range is two values wide and tells the Board nothing about how the thirty-one are arranged between them — and a range is the least resistant summary there is. It would not even flag what is wrong with the mean.',
+    'A range is two values wide and tells the Board nothing about how the thirty-one are arranged between them, and a range is the least resistant summary there is. It would not even flag what is wrong with the mean.',
   ]}
-  hint="Ask the question a centre is supposed to answer — which hull is typical? — and then look for a hull near the answer.">
+  hint="Ask the question a centre is supposed to answer. Which hull is typical? Then look for a hull near the answer.">
   <Success>
   <Dialogue speaker="xo" aside="She strikes the drafted sentence out with one line and does not replace it.">
   Then the line comes out and two lines go in. The data says there are two processes in this file, Captain, and it does not yet say what either of them is. Both of those sentences go to Valhalla, in that order.
@@ -208,9 +208,9 @@ Ebele comes back to the plot at the end of the forenoon watch and looks at the a
 It's two piles, sir, and the mean is sitting in the gap.
 </Dialogue>
 
-Two piles. {fmtInt(abrupt.length)} hulls went from a clean transponder to nothing in under a minute — the longest of them {fmt(maxOf(abrupt) * 3600, 0)} seconds, the shortest {fmt(minOf(abrupt) * 3600, 0)}, which is not a fade at all but a switch being thrown. And {fmtInt(gradual.length)} hulls degraded for hours, {fmt(minOf(gradual), 1)} to {fmt(maxOf(gradual), 1)} of them, signal thinning like something running out.
+Two piles. {fmtInt(abrupt.length)} hulls went from a clean transponder to nothing in under a minute: the longest of them {fmt(maxOf(abrupt) * 3600, 0)} seconds, the shortest {fmt(minOf(abrupt) * 3600, 0)}, which is not a fade at all but a switch being thrown. And {fmtInt(gradual.length)} hulls degraded for hours, {fmt(minOf(gradual), 1)} to {fmt(maxOf(gradual), 1)} of them, signal thinning like something running out.
 
-Between {fmt(maxOf(abrupt), 2)} hours and {fmt(minOf(gradual), 2)} hours there is not one hull. Not one. And the Board's mean — {fmt(mean(timeToSilence), 1)} hours, arithmetically impeccable, computed from every value in the file — lands squarely in that emptiness. It describes no loss on the Lane. It is the average of two things that do not average.
+Between {fmt(maxOf(abrupt), 2)} hours and {fmt(minOf(gradual), 2)} hours there is not one hull. Not one. And the Board's mean of {fmt(mean(timeToSilence), 1)} hours, arithmetically impeccable, computed from every value in the file, lands squarely in that emptiness. It describes no loss on the Lane. It is the average of two things that do not average.
 
 <Dialogue speaker="xo">
 Two processes, then. One that takes a hull in under a minute and one that takes most of a working day. Whatever is happening out there, it is not one thing happening thirty-one times.
@@ -221,7 +221,7 @@ The sensor-bay arithmetic comes back at the same time and says the same thing in
 Ebele writes both findings up without being told, and puts the denominators and the counts in the headings, and does not draft a sentence for either of them until he has shown you the display it came from.
 
 <Dialogue speaker="analyst" aside="He is looking at the struck-out line in the preliminary, not at the new ones.">
-I'd have sent one number for two things. True, and the wrong shape of true, and nobody at Valhalla catches that — the arithmetic is right.
+I'd have sent one number for two things. True, and the wrong shape of true, and nobody at Valhalla catches that. The arithmetic is right.
 </Dialogue>
 
 Nobody answers him. Ferrier writes the two lines into the preliminary herself and initials the margin, and the file still does not say what either process is. It says there are two of them, both ending in a lost hull.
@@ -230,7 +230,7 @@ Nobody answers him. Ferrier writes the two lines into the preliminary herself an
 
 <LogEntry
   title="A centre is only a centre if there is one"
-  concept="The mean and the standard deviation use every observation — the mean is the balance point and the SD is a typical distance from it, in the variable's units, with the sample's squared deviations divided by n − 1 — so a single extreme value drags both. The median and the IQR depend only on positions in the sorted list and are resistant, which makes them the honest pair for a skewed batch or one with an outlier; but when a display shows two separate piles, every single-centre summary lands in the gap between them and describes nothing, and the honest report is a count and a centre for each group."
+  concept="The mean and the standard deviation use every observation (the mean is the balance point and the SD is a typical distance from it, in the variable's units, with the sample's squared deviations divided by n − 1), so a single extreme value drags both. The median and the IQR depend only on positions in the sorted list and are resistant, which makes them the honest pair for a skewed batch or one with an outlier; but when a display shows two separate piles, every single-centre summary lands in the gap between them and describes nothing, and the honest report is a count and a centre for each group."
   formula="\bar{x} = \frac{1}{n}\sum x_i, \qquad s = \sqrt{\frac{\sum (x_i - \bar{x})^2}{n-1}}, \qquad \text{IQR} = Q_3 - Q_1"
   mistake="Reporting a mean for a two-humped variable. Arithmetic never refuses: the mean of two piles is computable, correct, and a description of no individual in the file. Name the shape before you choose the summary."
   tags={['mean', 'median', 'range', 'IQR', 'standard deviation', 'resistance', 'bimodal', 'n − 1', '1.7']}
