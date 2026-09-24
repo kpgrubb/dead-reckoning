@@ -1,5 +1,5 @@
-/**
- * BarChart — categorical counts or proportions. Optional expected values (χ² displays) drawn as
+﻿/**
+ * BarChart â€” categorical counts or proportions. Optional expected values (Ï‡Â² displays) drawn as
  * ticks in the reference colour; optional per-bar colours; horizontal layout for long labels.
  */
 import { useMemo } from 'react'
@@ -16,12 +16,12 @@ export interface BarChartProps {
   expected?: readonly number[]
   /** Colour per category (defaults to series-1 for all; pass `seriesColor(i)` to differentiate). */
   colors?: readonly string[]
-  /** Highlight indices (e.g. the category driving the χ² statistic) in the observed colour. */
+  /** Highlight indices (e.g. the category driving the Ï‡Â² statistic) in the observed colour. */
   highlight?: readonly number[]
   label?: string
   valueLabel?: string
   horizontal?: boolean
-  /** Write the value on each bar cap. Default: only when ≤ 8 bars. */
+  /** Write the value on each bar cap. Default: only when â‰¤ 8 bars. */
   showValues?: boolean
   height?: number
   ariaLabel: string
@@ -70,9 +70,9 @@ export function BarChart({ categories, values, expected, colors, highlight, labe
               const w = Math.max(0, v(values[i]))
               const fill = hl.has(i) ? chartTheme.color.observed : (colors?.[i] ?? seriesColor(0))
               return (
-                <g key={c}>
+                <g key={i}>
                   <text x={-8} y={y0 + layout.thickness / 2} dy="0.32em" textAnchor="end" fill={chartTheme.color.label} fontFamily={chartTheme.font.mono} fontSize={chartTheme.fontSize.tick}>
-                    {c.length > 14 ? c.slice(0, 13) + '…' : c}
+                    {c.length > 14 ? c.slice(0, 13) + 'â€¦' : c}
                   </text>
                   <rect className="dr-mark dr-mark--bar" x={0} y={y0} width={w} height={layout.thickness} fill={fill} fillOpacity={chartTheme.mark.alpha} rx={chartTheme.mark.barRadius}>
                     <title>
@@ -98,7 +98,7 @@ export function BarChart({ categories, values, expected, colors, highlight, labe
               const top = v(values[i])
               const fill = hl.has(i) ? chartTheme.color.observed : (colors?.[i] ?? seriesColor(0))
               return (
-                <g key={c}>
+                <g key={i}>
                   <rect className="dr-mark dr-mark--bar" x={x0} y={top} width={layout.thickness} height={Math.max(0, frame.innerHeight - top) + chartTheme.mark.barRadius} fill={fill} fillOpacity={chartTheme.mark.alpha} rx={chartTheme.mark.barRadius}>
                     <title>
                       {c}: {fmtTick(values[i])}

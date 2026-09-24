@@ -1,5 +1,5 @@
-/**
- * Boxplot — one or more groups, horizontal, AP/TI-84 quartiles with 1.5×IQR whiskers and outlier
+﻿/**
+ * Boxplot â€” one or more groups, horizontal, AP/TI-84 quartiles with 1.5Ã—IQR whiskers and outlier
  * dots. Pass `values` to compute geometry locally, or `stats` (from `@/lib/stats`) to draw exactly
  * what the course computed.
  */
@@ -23,7 +23,7 @@ export interface BoxplotProps {
   domain?: [number, number]
   /** Show the raw points jittered above each box. */
   showPoints?: boolean
-  /** Draw the 1.5×IQR fences as faint reference lines. */
+  /** Draw the 1.5Ã—IQR fences as faint reference lines. */
   showFences?: boolean
   references?: { x: number; label?: string }[]
   height?: number
@@ -69,7 +69,7 @@ export function Boxplot({ groups, label, domain, showPoints = false, showFences 
   const table = useMemo(
     () => ({
       columns: ['group', 'n', 'min', 'Q1', 'median', 'Q3', 'max', 'outliers'],
-      rows: computed.map((c) => (c.stats ? [c.name, c.stats.n || c.values.length, c.stats.min, c.stats.q1, c.stats.median, c.stats.q3, c.stats.max, c.stats.outliers.map(fmtTick).join(', ') || '—'] : [c.name, 0, '—', '—', '—', '—', '—', '—'])),
+      rows: computed.map((c) => (c.stats ? [c.name, c.stats.n || c.values.length, c.stats.min, c.stats.q1, c.stats.median, c.stats.q3, c.stats.max, c.stats.outliers.map(fmtTick).join(', ') || 'â€”'] : [c.name, 0, 'â€”', 'â€”', 'â€”', 'â€”', 'â€”', 'â€”'])),
       caption: label,
     }),
     [computed, label],
@@ -85,17 +85,17 @@ export function Boxplot({ groups, label, domain, showPoints = false, showFences 
         {references?.map((r, i) => (
           <ReferenceLine key={i} x={xb(r.x)} height={frame.innerHeight} label={r.label} />
         ))}
-        {computed.map((c) => {
+        {computed.map((c, gi) => {
           const y0 = band(c.name) ?? 0
           const bh = band.bandwidth()
           const boxH = Math.min(showPoints ? bh * 0.5 : bh, 26)
           const cy = y0 + (showPoints ? bh - boxH / 2 : bh / 2)
           const s = c.stats
           return (
-            <g key={c.name} className="dr-boxgroup">
+            <g key={gi} className="dr-boxgroup">
               {boxLeft > 0 && (
                 <text x={boxLeft - 8} y={cy} dy="0.32em" textAnchor="end" fill={chartTheme.color.label} fontFamily={chartTheme.font.mono} fontSize={chartTheme.fontSize.tick}>
-                  {c.name.length > 16 ? c.name.slice(0, 15) + '…' : c.name}
+                  {c.name.length > 16 ? c.name.slice(0, 15) + 'â€¦' : c.name}
                 </text>
               )}
               {s && (
@@ -114,7 +114,7 @@ export function Boxplot({ groups, label, domain, showPoints = false, showFences 
                   {/* box */}
                   <rect className="dr-mark dr-mark--box" x={xb(s.q1)} y={cy - boxH / 2} width={Math.max(1, xb(s.q3) - xb(s.q1))} height={boxH} fill={c.color} fillOpacity={0.28} stroke={c.color} strokeWidth={1.5}>
                     <title>
-                      {c.name}: min {fmtTick(s.min)} · Q1 {fmtTick(s.q1)} · med {fmtTick(s.median)} · Q3 {fmtTick(s.q3)} · max {fmtTick(s.max)}
+                      {c.name}: min {fmtTick(s.min)} Â· Q1 {fmtTick(s.q1)} Â· med {fmtTick(s.median)} Â· Q3 {fmtTick(s.q3)} Â· max {fmtTick(s.max)}
                     </title>
                   </rect>
                   {/* median */}

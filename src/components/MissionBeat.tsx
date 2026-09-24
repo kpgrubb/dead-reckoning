@@ -68,7 +68,20 @@ export type MissionBeatProps = NumericBeat | ChoiceBeat | InterpBeat | DecisionB
 function toAnswer(p: MissionBeatProps): Answer | null {
   switch (p.kind) {
     case 'numeric':
-      return { type: 'numeric', value: p.answer, tolerance: p.tolerance, relativeTolerance: p.relativeTolerance, units: p.units, digits: p.digits, kind: p.answerKind, allowInequality: p.allowInequality }
+      return {
+        type: 'numeric',
+        value: p.answer,
+        tolerance: p.tolerance,
+        relativeTolerance: p.relativeTolerance,
+        units: p.units,
+        digits: p.digits,
+        kind: p.answerKind,
+        // Match `numericAnswer()`: a p-value below 0.001 accepts a "< 0.0001" style bound, which is
+        // how AP expects it to be reported and what our own prompts invite. Act VIII found that a
+        // beat was rejecting the bound its prompt asked for, because this defaulting lived only in
+        // the generator helper and not here.
+        allowInequality: p.allowInequality ?? (p.answerKind === 'pValue' && p.answer < 0.001 ? true : undefined),
+      }
     case 'choice':
       return { type: 'choice', options: p.options, correct: p.correct, feedback: p.feedback }
     case 'interpretation':

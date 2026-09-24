@@ -24,10 +24,12 @@ export function XAxis({ scale, height, ticks = 6, label, format = fmtTick, grid 
   return (
     <g className="dr-axis dr-axis--x" transform={`translate(0,${height})`} aria-hidden="true">
       <line x1={r0} x2={r1} stroke={chartTheme.color.axis} strokeWidth={chartTheme.stroke.hair} shapeRendering="crispEdges" />
-      {values.map((t) => {
+      {/* Key by index, not value: a narrow domain can round two ticks to the same number, and a
+          duplicate key makes React drop or duplicate a tick. */}
+      {values.map((t, i) => {
         const x = scale(t)
         return (
-          <g key={t} transform={`translate(${x},0)`}>
+          <g key={i} transform={`translate(${x},0)`}>
             {grid && <line y1={-height} y2={0} stroke={chartTheme.color.grid} strokeWidth={1} shapeRendering="crispEdges" />}
             <line y2={5} stroke={chartTheme.color.axis} strokeWidth={1} shapeRendering="crispEdges" />
             <text y={18} textAnchor="middle" {...tickTextProps}>
@@ -64,10 +66,10 @@ export function YAxis({ scale, width, ticks = 4, label, format = fmtTick, grid =
   return (
     <g className="dr-axis dr-axis--y" aria-hidden="true">
       {!bare && <line y1={r0} y2={r1} stroke={chartTheme.color.axis} strokeWidth={chartTheme.stroke.hair} shapeRendering="crispEdges" />}
-      {values.map((t) => {
+      {values.map((t, i) => {
         const y = scale(t)
         return (
-          <g key={t} transform={`translate(0,${y})`}>
+          <g key={i} transform={`translate(0,${y})`}>
             {grid && <line x1={0} x2={width} stroke={chartTheme.color.grid} strokeWidth={1} shapeRendering="crispEdges" />}
             {!bare && <line x1={-4} x2={0} stroke={chartTheme.color.axis} strokeWidth={1} shapeRendering="crispEdges" />}
             <text x={-8} dy="0.32em" textAnchor="end" {...tickTextProps}>

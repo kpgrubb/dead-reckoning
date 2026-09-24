@@ -90,8 +90,9 @@ export interface ConditionRow {
 export function ConditionList({ conditions }: { conditions: readonly ConditionRow[] }) {
   return (
     <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--dr-sp-1)' }}>
-      {conditions.map((c) => (
-        <li key={c.name} style={{ display: 'flex', gap: 'var(--dr-sp-2)', alignItems: 'baseline', fontSize: 'var(--dr-fs-xs)' }}>
+      {/* Key by index: a two-sample panel checks the same condition once per group, so names repeat. */}
+      {conditions.map((c, i) => (
+        <li key={i} style={{ display: 'flex', gap: 'var(--dr-sp-2)', alignItems: 'baseline', fontSize: 'var(--dr-fs-xs)' }}>
           <span aria-hidden style={{ fontFamily: 'var(--dr-font-mono)', color: c.met ? 'var(--dr-phosphor)' : 'var(--dr-alert)' }}>{c.met ? '✓' : '✗'}</span>
           <span>
             <strong style={{ color: 'var(--dr-fg-1)' }}>{c.name}</strong>
