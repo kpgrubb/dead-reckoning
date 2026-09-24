@@ -1,20 +1,20 @@
 import { GeometricSeriesStack } from '@/instruments/act-4/GeometricSeriesStack'
 
-Two claims get made about the geometric distribution and neither is obvious. The probabilities add to one even though there are infinitely many of them. And the average wait is $1/p$, which nobody derives on a bridge. Both fall out of one series, and the second one falls out of the first if you are willing to differentiate it.
+Two claims get made about the geometric distribution and neither is obvious. The probabilities add to one even though there are infinitely many of them. And the average wait is $1/p$, which nobody derives on a bridge. Both fall out of one series, and the second falls out of the first if you are willing to differentiate it.
 
 The setting: independent trials, the same success probability $p$ each time, and $X$ is the number of trials **up to and including** the first success. To wait exactly $k$ trials is to fail $k-1$ times and then succeed:
 
 <Formula
   tex="P(X = k) = (1-p)^{k-1}\,p, \qquad k = 1, 2, 3, \ldots"
-  terms={{ '(1-p)^{k-1}': 'the first k − 1 trials all fail — independent, so the failures multiply', p: 'the k-th trial succeeds', k: 'trials counted from 1, not 0 — the AP and calculator convention' }}
+  terms={{ '(1-p)^{k-1}': 'the first k − 1 trials all fail — independent, so the failures multiply', p: 'the k-th trial succeeds', k: 'trials counted from 1, not 0: the AP and calculator convention' }}
   label="The geometric pmf"
 />
 
-**It sums to 1.** Write $q = 1 - p$. The total is $p + pq + pq^2 + \cdots$ — a geometric series with first term $p$ and common ratio $q$. Its partial sum telescopes: multiply $S_n = p(1 + q + \cdots + q^{n-1})$ by $q$, subtract, and everything in the middle cancels, leaving $S_n(1-q) = p(1 - q^n)$. So
+**It sums to 1.** Write $q = 1 - p$. The total is $p + pq + pq^2 + \cdots$, a geometric series with first term $p$ and common ratio $q$. Its partial sum telescopes: multiply $S_n = p(1 + q + \cdots + q^{n-1})$ by $q$, subtract, and everything in the middle cancels, leaving $S_n(1-q) = p(1 - q^n)$. So
 
 $$\sum_{k=1}^{n} p\,q^{k-1} = \frac{p(1 - q^{n})}{1 - q} = 1 - q^{n} \;\xrightarrow[\;n \to \infty\;]{}\; 1 \quad (|q| < 1)$$
 
-Two things arrive at once. The total is 1, so this is a legitimate distribution. And the amount still missing after $n$ terms is exactly $q^{n}$ — which is $P(X > n)$, the probability the first success has *not* happened yet. That is the survival function, and you did not have to add anything up to get it:
+Two things arrive at once. The total is 1, so this is a legitimate distribution. And the amount still missing after $n$ terms is exactly $q^{n}$, which is $P(X > n)$, the probability the first success has not happened yet. That is the survival function, and you did not have to add anything up to get it:
 
 $$P(X > n) = (1-p)^{n}$$
 
@@ -34,12 +34,12 @@ Multiply by $p$ and the left-hand side is $\sum k \cdot P(X = k)$, which is the 
   label="The mean of a geometric variable"
 />
 
-One differentiation of a sum you already knew. The same move a second time gives the variance, $\sigma^2 = (1-p)/p^2$, and hence $\sigma = \sqrt{1-p}\,/\,p$ — which for small $p$ is very nearly $1/p$ again. **The spread is the size of the mean.** That is not a decoration; it is why a wait of fifty passages tells you almost nothing about the next fifty.
+One differentiation of a sum you already knew. The same move a second time gives the variance, $\sigma^2 = (1-p)/p^2$, and hence $\sigma = \sqrt{1-p}\,/\,p$, which for small $p$ is very nearly $1/p$ again. **The spread is the size of the mean.** That is why a wait of fifty passages tells you almost nothing about the next fifty.
 
-**The shape nobody expects.** Every term is the previous one times $q < 1$, so the pmf is strictly decreasing. The single most likely wait is always **one trial**, whatever $p$ is. The mean $1/p$ sits far out in a long right tail, and $P(X > 1/p) = (1-p)^{1/p} \to e^{-1} \approx 0.37$ as $p$ gets small — more than a third of waits run longer than the average, every time.
+**The shape nobody expects.** Every term is the previous one times $q < 1$, so the pmf is strictly decreasing. The single most likely wait is always **one trial**, whatever $p$ is. The mean $1/p$ sits far out in a long right tail, and $P(X > 1/p) = (1-p)^{1/p} \to e^{-1} \approx 0.37$ as $p$ gets small: more than a third of waits run longer than the average, every time.
 
-Add terms below and watch the bar fill; the gap left over is $(1-p)^k$, the chance you are still waiting.
+Add terms below and watch the bar fill. The gap left over is $(1-p)^k$, the chance you are still waiting.
 
 <GeometricSeriesStack />
 
-**Why this matters here.** Sandoval is buying a window with lithium, and the thing she is buying is a wait. The expected wait is $1/p$ and the rate $p$ is the one number nobody on this ship knows — which is why Ebele's drill is a sensitivity and not an answer. The tail $(1-p)^{k}$ is what actually sets the window's length: you choose $k$ so that the chance of being seen, or of waiting through the whole window for nothing, is a number you are willing to write in the log.
+**Why this matters here.** What a loiter buys with lithium is a wait, and the expected wait is $1/p$ where $p$ is the one number nobody aboard can measure. Because the mean is a reciprocal, a rate known only to within a factor of five gives a wait known only to within a factor of five, which is why the honest report is a sensitivity across a bracket of rates. The tail $(1-p)^{k}$ is what sets a window's length: choose $k$ so that the chance of waiting through the whole window for nothing is a number somebody is willing to sign.
