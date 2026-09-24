@@ -46,35 +46,31 @@ export const nineFit = linearRegression(
   [...proving.map((p) => p.fuel), tug.fuel],
 )
 
-<Scene stamp="MET 040/09:10" location="Intel terminal · 0.86 AU from Callisto, 4 mgee" condensed="MV Cyrene Ore, sixty thousand tonnes, sits alone at the top of the declared-mass axis with nothing inside thirty thousand tonnes of her. Ebele wants her out of the fit because she is distorting it. Ferrier will not have a row deleted for being inconvenient and tells him to run it both ways. Then the Bureau's cover note surfaces: a routine quality figure, an r-squared, and no measure of how far a hull can sit off the line.">
+<Scene stamp="MET 040/09:10" location="Intel terminal · 0.86 AU from Callisto, 4 mgee" condensed="MV Cyrene Ore, sixty thousand tonnes, sits alone at the top of the declared-mass axis with nothing inside thirty thousand tonnes of her. Ebele wants her out of the fit because she is distorting it. Ferrier will not have a row deleted for being inconvenient and tells him to run it both ways. Then the Bureau's cover note surfaces: a routine quality figure, an r-squared, and nothing else.">
 
 The intel terminal is the worst station on the ship for a long argument, because it has one chair and the chair is bolted where the bulkhead cuts the light. Ebele has been in it since the end of the middle watch. He has the scatter up with the line through it and the cursor parked on a single point, far out to the right of everything else, and he has been parked on it long enough that the display has dimmed twice.
 
-MV *Cyrene Ore*. Mercantile flag, bulk carrier, Tessera-C in a hull built for ore and nothing else. Sixty thousand tonnes declared. The next heaviest departure in four hundred and twelve is {fmtInt(nextBiggest)} tonnes, which means she sits out at the end of the axis with more empty plot between her and the fleet than the fleet occupies altogether.
+MV *Cyrene Ore*. Mercantile flag, bulk carrier, Tessera-C in a hull built for ore and nothing else. Sixty thousand tonnes declared. The next heaviest departure in four hundred and twelve is {fmtInt(nextBiggest)} tonnes, so she sits out at the end of the axis with more empty plot between her and the fleet than the fleet occupies altogether.
 
 "She's distorting the fit, sir." He says it the way a man says something he has decided rather than found. "The line has to go through her. One hull in four hundred and twelve, and she's got her hand on the slope."
-
-It is not a stupid thing to say. It is very nearly the right thing to say, which is worse, because the difference between *she is far out on the axis* and *she is bending the line* is a difference he has not made yet, and the whole report rests on the distinction. A point far from the centre of the x-range has **leverage**: the arithmetic gives it a long arm. Whether it uses that arm depends entirely on where it sits vertically — on whether it landed near the line the rest of the file already draws, or a long way off it.
-
-There is exactly one way to find out, and it is not a rule of thumb.
 
 <Dialogue speaker="xo" aside="She has come in behind him and has not sat down, because there is nowhere to sit.">
 Run it both ways, Ensign. With her and without her, and put the two lines side by side where the Captain can see them. Then tell me what changed and by how much, and I will tell you whether she goes.
 </Dialogue>
 
 <Dialogue speaker="analyst">
-So — and if the slope moves, sir? Then she is distorting it, and out she goes.
+So. And if the slope moves, sir? Then she is distorting it, and out she goes.
 </Dialogue>
 
 <Dialogue speaker="xo">
-Then she is doing something, and the report says so, and shows both. A row leaves a file because it is wrong — a transcription error, a fault in the instrument, a ship that does not belong in the population we are describing. Not because the picture is tidier without it. The Bureau deletes rows it does not like. That is the habit we are here to find.
+Then she is doing something, and the report says so, and shows both. A row leaves a file because it is wrong: a transcription error, a fault in the instrument, a ship that does not belong in the population we are describing. Not because the picture is tidier without it. The Bureau deletes rows it does not like. That is the habit we are here to find.
 </Dialogue>
 
-Solberg has been holding something back through all of this, and produces it now: the cover note that came attached to the Bureau file at MET 30 and that nobody read, because it is a form. Two paragraphs of transmittal and a quality line. *Routine QA, declared-to-inferred agreement across the sampled period: r² = {fmt(massFit.r2, 2)}.*
+Solberg has been holding something back through all of this and produces it now: the cover note that came attached to the Bureau file at MET 30 and that nobody read, because it is a form. Two paragraphs of transmittal and a quality line. *Routine QA, declared-to-inferred agreement across the sampled period: r² = {fmt(massFit.r2, 2)}.*
 
 That is a true number. Ebele checks it against his own terminal in about four seconds and it is, to two places, exactly what the file gives.
 
-It is also, on its own, unusable. It says what share of the variation in inferred mass the line accounts for. It does not say — and the cover note carries nothing else that could — how many *tonnes* an ordinary honest hull sits from its own prediction. A reader who wants to know whether a fifteen-hundred-tonne discrepancy is remarkable or routine cannot get there from a share of variation, in either direction, by any arithmetic at all. The number that answers it exists. It is printed on the same output block the Bureau's own terminal produced. It was not sent.
+Ferrier reads it upside down and asks him what else the Bureau's output block would have printed.
 
 </Scene>
 
@@ -82,46 +78,62 @@ It is also, on its own, unusable. It says what share of the variation in inferre
 <Briefing.Intuition>
 A fitted line comes with two summaries, and they answer questions that sound alike and are not.
 
-**r² — how much.** The response varies. Some of that variation tracks the explanatory variable, and the line captures it; the rest is left in the residuals. $r^2$ is the first as a share of the whole: the proportion of the variation in $y$ that the linear model accounts for. It is a proportion, so it is unitless, it lies between 0 and 1, and it is the square of the correlation — never the correlation itself. It is also, and this matters here, sensitive to the *range* of $x$ in the file: widen the range and there is more variation for the line to explain, so $r^2$ rises without the fit becoming one tonne more accurate about anybody.
+**r², how much.** The response varies. Some of that variation tracks the explanatory variable, and the line captures it; the rest is left in the residuals. $r^2$ is the first as a share of the whole: the proportion of the variation in $y$ that the linear model accounts for. It is a proportion, so it is unitless, it lies between 0 and 1, and it is the square of the correlation, never the correlation itself. It is also, and this matters here, sensitive to the *range* of $x$ in the file: widen the range and there is more variation for the line to explain, so $r^2$ rises without the fit becoming one tonne more accurate about anybody.
 
-**s — how far.** The standard deviation of the residuals, $s = \sqrt{\sum e_i^2/(n-2)}$, is the typical vertical distance from an individual to its own prediction, **in the units of the response**. It is the number you quote when somebody asks how big a miss is ordinary. Unlike $r^2$ it does not care how wide the file's $x$-range is; it cares only how tightly the individuals hug the line. A report that gives $r^2$ and withholds $s$ has told the reader that the model is good and left them no way to judge any particular departure from it.
+**s, how far.** The standard deviation of the residuals, $s = \sqrt{\sum e_i^2/(n-2)}$, is the typical vertical distance from an individual to its own prediction, **in the units of the response**. It is the number you quote when somebody asks how big a miss is ordinary. Unlike $r^2$ it does not care how wide the file's $x$-range is; it cares only how tightly the individuals hug the line. A report that gives $r^2$ and withholds $s$ has told the reader that the model is good and left them no way to judge any particular departure from it.
 
-**Leverage and influence.** Leverage is a property of $x$ alone: $h_i = 1/n + (x_i - \bar{x})^2/S_{xx}$, large for individuals far from the centre of the explanatory variable. A high-leverage point *can* move the line a long way, because the fit's balance point pivots and a long arm needs little force. Whether it *does* depends on its residual against the line the rest of the file makes. Far out in $x$ and close to that line: high leverage, no influence — the point stretches the plot, inflates $r^2$, and changes nothing anybody would report. Far out in $x$ and well off the line: **influential**, and the slope you quote is partly a statement about one individual.
+**Leverage and influence.** Leverage is a property of $x$ alone: $h_i = 1/n + (x_i - \bar{x})^2/S_{xx}$, large for individuals far from the centre of the explanatory variable. A high-leverage point *can* move the line a long way, because the fit's balance point pivots and a long arm needs little force. Whether it *does* depends on its residual against the line the rest of the file makes. Far out in $x$ and close to that line: high leverage, no influence, and the point stretches the plot, inflates $r^2$ and changes nothing anybody would report. Far out in $x$ and well off the line: **influential**, and the slope you quote is partly a statement about one individual.
 
 The only honest test is the one Ferrier asked for. Fit it with. Fit it without. Report both.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula tex="r^2 = 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2} = 1 - \frac{\text{SSE}}{\text{SST}}" terms={{ '\\text{SSE}': 'variation the line did not account for', '\\text{SST}': 'total variation in the response about its mean', 'r^2': 'the share of the variation in y explained by the linear model' }} label="Coefficient of determination" />
 
-<Formula tex="s = \sqrt{\frac{\sum (y_i - \hat{y}_i)^2}{n-2}} \qquad h_i = \frac{1}{n} + \frac{(x_i - \bar{x})^2}{S_{xx}}" terms={{ 's': 'standard deviation of the residuals — a typical miss, in the units of y', 'n-2': 'degrees of freedom: two were spent estimating the slope and intercept', 'h_i': 'leverage of the i-th individual — a property of its x value alone' }} label="Residual standard deviation, and leverage" />
+<Formula tex="s = \sqrt{\frac{\sum (y_i - \hat{y}_i)^2}{n-2}} \qquad h_i = \frac{1}{n} + \frac{(x_i - \bar{x})^2}{S_{xx}}" terms={{ 's': 'standard deviation of the residuals: a typical miss, in the units of y', 'n-2': 'degrees of freedom: two were spent estimating the slope and intercept', 'h_i': 'leverage of the i-th individual: a property of its x value alone' }} label="Residual standard deviation, and leverage" />
 
 A regression **computer-output table** carries both, and the equation. The `Coef` column holds the intercept (the *Constant* row) and the slope (the predictor's row); `SE Coef` says how precisely each is pinned down; `S` is the residual standard deviation and `R-Sq` is $r^2$ as a percentage. The equation is read out of `Coef` and nowhere else.
 </Briefing.Definition>
 <Briefing.Worked>
-Adlinda Yards again — the eight Tessera-C acceptance runs, declared mass against fuel loaded on the yard's 2.4-AU proving track, both in kilotonnes. Over those eight hulls the fit is ŷ = {fmt(provingFit.intercept, 4)} + {fmt(provingFit.slope, 4)}x, with $r^2$ = {fmt(provingFit.r2, 4)} and $s$ = {fmt(provingFit.s, 4)} kt.
+Adlinda Yards again: the eight Tessera-C acceptance runs, declared mass against fuel loaded on the yard's 2.4-AU proving track, both in kilotonnes. Over those eight hulls the fit is ŷ = {fmt(provingFit.intercept, 4)} + {fmt(provingFit.slope, 4)}x, with $r^2$ = {fmt(provingFit.r2, 4)} and $s$ = {fmt(provingFit.s, 4)} kt.
 
 In words: about {fmt(100 * provingFit.r2, 1)} % of the variation in fuel loaded is explained by the linear relationship with declared mass, and a hull's actual fuel typically lands about {fmt(provingFit.s, 3)} kt from the line's prediction for her.
 
-Now the yard's ninth acceptance: the tug *{tug.hull}*, {fmt(tug.declared, 1)} kt — two thirds again as heavy as anything else on the file — loading {fmt(tug.fuel, 2)} kt, which is within a few kilograms of what the eight-hull line predicts for her. Refit and compare:
+Now the yard's ninth acceptance. The tug *{tug.hull}* is {fmt(tug.declared, 1)} kt, two thirds again as heavy as anything else on the file, and she loaded {fmt(tug.fuel, 2)} kt, which is within a few kilograms of what the eight-hull line predicts for her. Refit and compare:
 
 <Formula tex={`b: ${fmt(provingFit.slope, 4)} \\rightarrow ${fmt(nineFit.slope, 4)} \\qquad r^2: ${fmt(provingFit.r2, 4)} \\rightarrow ${fmt(nineFit.r2, 4)} \\qquad s: ${fmt(provingFit.s, 4)} \\rightarrow ${fmt(nineFit.s, 4)}`} label="Eight hulls, then nine: what the distant point changed" />
 
-Her leverage is {fmt(nineFit.leverage[8], 3)}, far the largest on the file — she is {fmt(nineFit.leverage[8] / (4 / 9), 1)} times the conventional flag. And she moved the slope by {fmt(Math.abs(nineFit.slope - provingFit.slope), 4)} kt per kt, which is nothing. Her Cook's distance is {fmt(nineFit.cooks[8], 3)}.
+Her leverage is {fmt(nineFit.leverage[8], 3)}, far the largest on the file, and {fmt(nineFit.leverage[8] / (4 / 9), 1)} times the conventional flag. She moved the slope by {fmt(Math.abs(nineFit.slope - provingFit.slope), 4)} kt per kt, which is nothing. Her Cook's distance is {fmt(nineFit.cooks[8], 3)}.
 
-Look at what *did* move. $r^2$ went {nineFit.r2 > provingFit.r2 ? 'up' : 'down'}, from {fmt(provingFit.r2, 4)} to {fmt(nineFit.r2, 4)} — because she added a great deal of variation in declared mass for the line to explain, and it explained it. $s$ barely moved at all: {fmt(provingFit.s, 4)} to {fmt(nineFit.s, 4)} kt. The fit is no more accurate about any hull than it was, and the summary that says "how much" has improved while the summary that says "how far" has not. That is the whole argument for quoting both, and it is the yard's file making it, not a textbook.
+Look at what *did* move. $r^2$ went {nineFit.r2 > provingFit.r2 ? 'up' : 'down'}, from {fmt(provingFit.r2, 4)} to {fmt(nineFit.r2, 4)}, because she added a great deal of variation in declared mass for the line to explain and it explained it. $s$ barely moved at all: {fmt(provingFit.s, 4)} to {fmt(nineFit.s, 4)} kt. The fit is no more accurate about any hull than it was, and the summary that says "how much" has improved while the summary that says "how far" has not. That is the whole argument for quoting both, and it is the yard's file making it, not a textbook.
 </Briefing.Worked>
 <Briefing.Caution>
-*"r² = {fmt(provingFit.r2, 2)}, so the correlation is {fmt(provingFit.r2, 2)}."* No: $r = \sqrt{r^2}$ with the sign of the slope — here {fmt(provingFit.r, 4)}. Two different numbers on two different scales, and quoting one for the other in a report to a Board will be the last thing anybody reads of it.
+*"r² = {fmt(provingFit.r2, 2)}, so the correlation is {fmt(provingFit.r2, 2)}."* No: $r = \sqrt{r^2}$ with the sign of the slope, here {fmt(provingFit.r, 4)}. Two different numbers on two different scales, and quoting one for the other in a report to a Board will be the last thing anybody reads of it.
 
-*"s is the spread of the response."* It is not. $s_y$ is the spread of $y$ about its own mean, before any line is fitted; $s$ is the spread of what is **left over** after the line. On the proving file those are {fmt(provingFit.sy, 3)} kt and {fmt(provingFit.s, 3)} kt, and the gap between them is exactly what the line bought you.
+*"s is the spread of the response."* $s_y$ is the spread of $y$ about its own mean, before any line is fitted. $s$ is the spread of what is **left over** after the line. On the proving file those are {fmt(provingFit.sy, 3)} kt and {fmt(provingFit.s, 3)} kt, and the gap between them is exactly what the line bought you.
 
 *"s is a limit."* A typical miss is not a maximum one. Roughly a third of honest individuals sit further from the line than $s$; a band of $\pm 2s$ holds most of them, and honest rows fall outside it too.
 
 *The rule of thumb.* Flagging leverage above $4/n$, or Cook's distance above $4/n$, is a convention some software prints and a useful place to start looking. It is not a decision procedure and it is not a rule anyone is obliged to accept. The finding is always the with-and-without comparison, in the units of the problem: *the slope moves by this much when this row is removed.* Quote that, not a flag.
 
-*Deleting the inconvenient.* A row leaves the analysis for a reason outside the plot — a recording error, a fault, an individual from a different population — and the reader is told. "It was distorting the fit" describes every influential observation ever recorded, including all the true ones.
+*Deleting the inconvenient.* A row leaves the analysis for a reason outside the plot, such as a recording error, a fault, or an individual from a different population, and the reader is told which. "It was distorting the fit" describes every influential observation ever recorded, including all the true ones.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="Refitting without a point, and where s lives">
+<Calculator.Step keys={['STAT', '1:Edit']}>All nine proving hulls: declared masses in **L1**, fuel loads in **L2**, the tug *{tug.hull}* last at {fmt(tug.declared, 1)} and {fmt(tug.fuel, 2)}.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ CALC', '8:LinReg(a+bx)']} note="Xlist: L1 · Ylist: L2 · Calculate">The fit with her in.</Calculator.Step>
+<Calculator.Read label="b" value={fmt(nineFit.slope, 5)} />
+<Calculator.Read label="r²" value={fmt(nineFit.r2, 5)} />
+<Calculator.Step keys={['STAT', '▸ TESTS', 'F:LinRegTTest']} note="Xlist: L1 · Ylist: L2 · Freq: 1 · β & ρ: ≠0 · RegEQ: (blank)">`LinReg(a+bx)` never prints $s$. The one screen that does is `LinRegTTest`, several lines down the TESTS menu. Ignore the $t$ and the $p$ for now; arrow down and read `s`.</Calculator.Step>
+<Calculator.Read label="s" value={fmt(nineFit.s, 5)}>the typical miss, in kilotonnes of fuel.</Calculator.Read>
+<Calculator.Step keys={['STAT', '1:Edit', 'DEL']}>Put the cursor on the tug's row in `L1` and press `DEL`, then on the same row in `L2` and press `DEL` again. Re-run both commands on the eight that are left.</Calculator.Step>
+<Calculator.Read label="b" value={fmt(provingFit.slope, 5)}>moved by {fmt(Math.abs(nineFit.slope - provingFit.slope), 5)} kt per kt. That number, in those units, is the finding.</Calculator.Read>
+<Calculator.Read label="r²" value={fmt(provingFit.r2, 5)}>lower without her.</Calculator.Read>
+<Calculator.Read label="s" value={fmt(provingFit.s, 5)}>and the typical miss has barely moved.</Calculator.Read>
+<Calculator.Watch>**A rising r² is not a better model.** Adding one point far out in $x$ gives the line more variation to account for, so the share it accounts for goes up while the fit predicts no individual one kilotonne better. Check `s` before you believe `r²`, every time.</Calculator.Watch>
+<Calculator.Watch>`DEL` removes one entry and shifts the whole column up. Delete from `L1` and forget `L2` and you have silently re-paired every row below it. If the next `LinReg` throws `ERR:DIM MISMATCH`, that is what happened, and it is the kind version of the error.</Calculator.Watch>
+<Calculator.Watch>Nothing on these screens names a point as influential. The comparison is yours to make and yours to report, with both fits printed.</Calculator.Watch>
+</Calculator>
 
 <InfluenceExplorer />
 
@@ -137,7 +149,7 @@ Look at what *did* move. $r^2$ went {nineFit.r2 > provingFit.r2 ? 'up' : 'down'}
   prompt={`*${cyrene.hull}* declares ${fmtInt(cyrene.declaredMass)} t and the Lane infers ${fmtInt(cyrene.inferredMass)} t for her. Fitted over all ${fmtInt(manifest.length)} departures, the line of inferred mass on declared mass is\n\n$$\\hat{y} = ${fmt(massFit.intercept, 2)} + ${fmt(massFit.slope, 6)}x$$\n\nTake her out. What is the **slope** of the least-squares line fitted to the other ${fmtInt(manifest.length - 1)} departures? Four decimal places.`}>
   <Success>
   <Dialogue speaker="analyst" aside="He puts the two slopes one above the other and looks at them for a while.">
-  So — the fourth decimal place, sir. That is where she is. I said she had her hand on the slope and she has her hand on the fourth decimal place.
+  So. The fourth decimal place, sir. That is where she is. I said she had her hand on the slope and she has her hand on the fourth decimal place.
   </Dialogue>
   <Dialogue speaker="xo">
   She has a long arm and she is not pulling on it. Both facts go in the annex, Ensign, with both lines.
@@ -145,7 +157,7 @@ Look at what *did* move. $r^2$ went {nineFit.r2 > provingFit.r2 ? 'up' : 'down'}
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="Flat. She reaches past him and sets the toggle herself.">
-  That is the fit with her still in it, Captain. Set it to *without* and let it refit — every coefficient is recomputed from the four hundred and eleven that are left, and the answer is not the old slope with a hull crossed out. Four decimals. If the two lines agree to that, we have learned something, and if they do not, we have learned something else.
+  That is the fit with her still in it, Captain. Set it to *without* and let it refit. Every coefficient is recomputed from the four hundred and eleven that are left, and the answer is not the old slope with a hull crossed out. Four decimals. If the two lines agree to that, we have learned something, and if they do not, we have learned something else.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -153,36 +165,36 @@ Look at what *did* move. $r^2$ went {nineFit.r2 > provingFit.r2 ? 'up' : 'down'}
 <MissionBeat id="act-2-05-s" kind="interpretation" label="THE NUMBER THE COVER NOTE LEFT OUT"
   hint="Three things: the number with its units, what it measures a typical distance between, and what the Bureau's r² — a share of variation — therefore cannot tell a reader."
   minWords={14}
-  exemplar={`The standard deviation of the residuals is s = ${fmt(massFit.s, 1)} t: across the ${fmtInt(manifest.length)} departures, a hull's inferred mass typically sits about ${fmt(massFit.s, 1)} tonnes away from the mass the line predicts from its declared mass, so the Bureau's r² — a unitless share of the variation explained — cannot on its own tell a reader how many tonnes a hull may sit off the line and still be ordinary.`}
+  exemplar={`The standard deviation of the residuals is s = ${fmt(massFit.s, 1)} t: across the ${fmtInt(manifest.length)} departures, a hull's inferred mass typically sits about ${fmt(massFit.s, 1)} tonnes away from the mass the line predicts from its declared mass, so the Bureau's r², a unitless share of the variation explained, cannot on its own tell a reader how many tonnes a hull may sit off the line and still be ordinary.`}
   required={[
     { label: 'Cites s with its units', phrasings: [numberRegex(massFit.s, 1, 1)], polarity: 'any', feedback: `Quote the number: s = ${fmt(massFit.s, 1)} t.` },
-    { label: 'Reads s as a TYPICAL distance, not a limit', phrasings: ['typical', /\baverage\b/, 'usual', 'about'], polarity: 'any', feedback: 'Say it is how far a hull typically sits from its own prediction — not how far any hull can sit.' },
+    { label: 'Reads s as a TYPICAL distance, not a limit', phrasings: ['typical', /\baverage\b/, 'usual', 'about'], polarity: 'any', feedback: 'Say it is how far a hull typically sits from its own prediction, not how far any hull can sit.' },
     { label: 'Measures it from the PREDICTED value', phrasings: ['predict', 'residual', /\bline\b/], polarity: 'any', feedback: 'It is the typical size of actual inferred mass minus predicted inferred mass, in tonnes.' },
     contextGroup('Names both variables', ['inferred mass', 'declared mass'], { minMatches: 2, feedback: 'Name both: inferred mass and declared mass.' }),
-    { label: 'Says what r² alone cannot supply', phrasings: ['vary', 'share', 'proportion', 'percent', 'unitless', 'not tonnes'], polarity: 'any', feedback: "Name what the cover note sent — r², a share of the variation — and say what it cannot give: the size of an ordinary miss, in tonnes." },
+    { label: 'Says what r² alone cannot supply', phrasings: ['vary', 'share', 'proportion', 'percent', 'unitless', 'not tonnes'], polarity: 'any', feedback: "Name what the cover note sent, r², a share of the variation, and say what it cannot give: the size of an ordinary miss, in tonnes." },
   ]}
   prompt={`The output block for the fit over all ${fmtInt(manifest.length)} departures prints two summaries. The Bureau's cover note quotes the first: R-Sq = ${fmt(100 * massFit.r2, 1)} %. It does not quote the second: S = ${fmt(massFit.s, 1)} t.\n\nInterpret **s** in context, and say what the cover note's r², on its own, cannot tell a reader. One or two sentences, for the annex.`}>
   <Success>
   <Dialogue speaker="xo" aside="She reads it twice, which from her is the same as signing it.">
-  That is the sentence. It gives a reader a yardstick in tonnes and it does not accuse anybody of anything. Put it in the annex under the output block and put the output block in whole — every column of it, including the ones we do not use.
+  That is the sentence. It gives a reader a yardstick in tonnes and it does not accuse anybody of anything. Put it in the annex under the output block and put the output block in whole, every column of it, including the ones we do not use.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="To the Ensign, whose draft says the same thing in more words.">
-  Three parts, Captain, and you are missing one. The number, in tonnes. What the number is a typical distance *between* — an actual inferred mass and the mass the line predicts for that certificate. And then why a share of the variation, however large, cannot answer the only question a reader has: how far off is ordinary.
+  Three parts, Captain, and you are missing one. The number, in tonnes. What the number is a typical distance *between*: an actual inferred mass, and the mass the line predicts for that certificate. And then why a share of the variation, however large, cannot answer the only question a reader has, which is how far off is ordinary.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <Gated by={["act-2-05-without", "act-2-05-s"]}>
 
-<Scene stamp="MET 040/11:40" location="Intel terminal" condensed="With and without agree to the fourth decimal: Cyrene Ore has enormous leverage and no influence, and she stays in the file with both fits in the annex. r² fell slightly without her, because she was widening the mass range, and s did not move at all — which is the whole argument for quoting both. The Bureau's cover note sent the first and kept the second.">
+<Scene stamp="MET 040/11:40" location="Intel terminal" condensed="With and without agree to the fourth decimal: Cyrene Ore has enormous leverage and no influence, and she stays in the file with both fits in the annex. r² fell slightly without her, because she was widening the mass range, and s did not move at all. The Bureau's cover note sent the first number and kept the second.">
 
 So she stays, and the annex carries both lines, and the paragraph that explains why is four sentences long.
 
-Her leverage is {fmt(leverage, 3)} — {fmt(leverage / cutoff, 0)} times the conventional flag at $4/n$ = {fmt(cutoff, 4)}, and the largest in the file by a distance. Her Cook's distance is {fmt(cooks, 3)}, below the same flag. The slope moves by {fmt(Math.abs(massFit.slope - without.slope), 6)} tonnes per tonne when she is removed; the intercept moves by {fmt(Math.abs(massFit.intercept - without.intercept), 0)} tonnes on a fleet whose lightest hull declares fourteen thousand. Both differences are smaller than the width of the stroke the display draws the line with.
+Her leverage is {fmt(leverage, 3)}, which is {fmt(leverage / cutoff, 0)} times the conventional flag at $4/n$ = {fmt(cutoff, 4)} and the largest in the file by a distance. Her Cook's distance is {fmt(cooks, 3)}, below the same flag. The slope moves by {fmt(Math.abs(massFit.slope - without.slope), 6)} tonnes per tonne when she is removed; the intercept moves by {fmt(Math.abs(massFit.intercept - without.intercept), 0)} tonnes on a fleet whose lightest hull declares fourteen thousand. Both differences are smaller than the width of the stroke the display draws the line with.
 
-The two summaries behave exactly as the yard's file said they would. Without her, $r^2$ goes from {fmt(massFit.r2, 4)} to {fmt(without.r2, 4)} — she was widening the range of declared mass, and a wider range is more variation for a line to explain. And $s$ goes from {fmt(massFit.s, 1)} to {fmt(without.s, 1)} tonnes, which is to say it does not go anywhere. She was never making the fit more accurate about anybody. She was making it look better.
+The two summaries behave exactly as the yard's file said they would. Without her, $r^2$ goes from {fmt(massFit.r2, 4)} to {fmt(without.r2, 4)}, because she was widening the range of declared mass and a wider range is more variation for a line to explain. And $s$ goes from {fmt(massFit.s, 1)} to {fmt(without.s, 1)} tonnes, which is to say it does not go anywhere. She was never making the fit more accurate about anybody. She was making it look better.
 
 Ebele writes the second paragraph himself and does not need to be told what goes in it. Six hundred tonnes. That is the yardstick: on a line that agrees to a tonne per declared tonne across four hundred and twelve hulls, an honest hull sits about six hundred tonnes from its own prediction, and most of them within twelve hundred.
 
@@ -213,7 +225,7 @@ The Bureau's cover note is still open on the second panel. *Routine QA, declared
   </Outcome>
   <Outcome option={1}>
   <Dialogue speaker="xo" aside="She does not raise her voice, which is worse.">
-  Justify it or leave it, Captain. She is a certified departure on the Lane with clean telemetry, and the only thing wrong with her is that she is far away on the axis. Write the reason in the annex in full, because a reader who finds a deleted row and no reason stops reading the rest of it — and we are asking that reader to believe nineteen deletions from somebody else's file.
+  Justify it or leave it, Captain. She is a certified departure on the Lane with clean telemetry, and the only thing wrong with her is that she is far away on the axis. Write the reason in the annex in full, because a reader who finds a deleted row and no reason stops reading the rest of it, and we are asking that reader to believe nineteen deletions from somebody else's file.
   </Dialogue>
   <Dialogue speaker="analyst" aside="Logged, and he does not look happy about it.">
   Dropped and stated, sir. I have put her line in the annex anyway. It is the same line.
@@ -223,9 +235,9 @@ The Bureau's cover note is still open on the second panel. *Routine QA, declared
 
 <LogEntry
   title="r² says how much; s says how far"
-  concept="$r^2$ is the share of the variation in the response that the linear model accounts for — unitless, the square of $r$, and inflated by a wide range of $x$. $s = \sqrt{\sum e_i^2/(n-2)}$ is the standard deviation of the residuals: the typical distance from an individual to its own prediction, in the units of the response, and the only one of the two that tells a reader how large a discrepancy has to be before it stops being ordinary. A point far out in $x$ has high **leverage**; it is **influential** only if removing it moves the fit, which is settled by refitting without it — never by a rule of thumb, and never by deleting the row."
+  concept="$r^2$ is the share of the variation in the response that the linear model accounts for: unitless, the square of $r$, and inflated by a wide range of $x$. $s = \sqrt{\sum e_i^2/(n-2)}$ is the standard deviation of the residuals, the typical distance from an individual to its own prediction, in the units of the response, and the only one of the two that tells a reader how large a discrepancy has to be before it stops being ordinary. A point far out in $x$ has high **leverage**; it is **influential** only if removing it moves the fit, which is settled by refitting without it, never by a rule of thumb and never by deleting the row."
   formula="r^2 = 1 - \frac{\text{SSE}}{\text{SST}}, \qquad s = \sqrt{\frac{\sum e_i^2}{n-2}}, \qquad h_i = \frac{1}{n} + \frac{(x_i-\bar{x})^2}{S_{xx}}"
-  mistake="Quoting r² as though it were r — or as though it were a measure of how accurate a prediction is. It is a proportion of variation, and a file with a wider x-range earns a larger one without predicting any individual one unit better."
+  mistake="Quoting r² as though it were r, or as though it were a measure of how accurate a prediction is. It is a proportion of variation, and a file with a wider x-range earns a larger one without predicting any individual one unit better."
   tags={['r-squared', 's', 'computer-output', 'leverage', 'influence', '2.8']}
 />
 

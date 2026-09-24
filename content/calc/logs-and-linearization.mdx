@@ -12,13 +12,13 @@ A logarithm trades multiplication for addition. That one property is why a curve
 
 $$\log y = \log a + b \log x$$
 
-Plot $\log y$ against $\log x$ and you have a line: intercept $\log a$, **slope $b$**. The exponent is no longer something to guess — it is a slope you can fit and read off. An exponential law $y = a\cdot 10^{\,bx}$ behaves the same way with only $y$ logged: $\log y = \log a + bx$, a straight line against raw $x$. Which transformation straightens the data tells you which family of law it obeys.
+Plot $\log y$ against $\log x$ and you have a line: intercept $\log a$, **slope $b$**. The exponent is a slope you can fit and read off. An exponential law $y = a\cdot 10^{\,bx}$ behaves the same way with only $y$ logged: $\log y = \log a + bx$, a straight line against raw $x$. Which transformation straightens the data tells you which family of law it obeys.
 
 **Why the far end compresses.** The natural log grows, but its growth rate falls:
 
 <Formula
   tex="\frac{\mathrm{d}}{\mathrm{d}x}\ln x = \frac{1}{x}"
-  terms={{ '1/x': 'the slope of ln x at x — smaller the further out you go' }}
+  terms={{ '1/x': 'the slope of ln x at x: smaller the further out you go' }}
   label="The derivative that does the compressing"
 />
 
@@ -28,10 +28,10 @@ $$\int_{x}^{2x} \frac{1}{t}\,\mathrm{d}t = \ln 2x - \ln x = \ln 2 \approx 0.693$
 
 Every doubling moves the same distance along a log axis. That is the whole trick: a log axis measures **ratios**, not differences, so a variable spanning two orders of magnitude fits on one screen and its multiplicative structure shows as straight-line geometry.
 
-Switch the view below between the two ideas — a power law on linear and log–log axes, and the tangent to $\ln x$ whose slope is $1/x$.
+Switch the view below between the two ideas: a power law on linear and log–log axes, and the tangent to $\ln x$ whose slope is $1/x$.
 
 <LogLinearizer />
 
-**One caution the algebra hides.** Least squares on $\log y$ minimises squared error in the *logs*, not in the original units — it treats a 10 % miss on a small hull as equal to a 10 % miss on a large one. That is usually what you want for a multiplicative law, and it is why the residual plot you judge the model by is drawn on the transformed scale.
+**One caution the algebra hides.** Least squares on $\log y$ minimises squared error in the *logs*, not in the original units. It treats a 10 % miss on a small hull as equal to a 10 % miss on a large one. That is usually what you want for a multiplicative law, and it is why the residual plot you judge the model by is drawn on the transformed scale.
 
-**Why this matters here.** The Lane's transit geometry is a power law: a brachistochrone crossing takes $t = 2\sqrt{d/a}$, so $t \propto d^{1/2}$ and the exponent $\tfrac{1}{2}$ is a log–log slope waiting to be fitted. Straighten the curve and the residuals stop blaming the season — which is the only way a residual can start blaming a hull.
+**Why this matters here.** The Lane's transit geometry is a power law: a brachistochrone crossing takes $t = 2\sqrt{d/a}$, so $t \propto d^{1/2}$ and the exponent $\tfrac{1}{2}$ is a log–log slope waiting to be fitted. Straighten the curve and the residuals stop blaming the season. Only then can a residual blame a hull.

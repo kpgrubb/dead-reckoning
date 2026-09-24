@@ -83,7 +83,7 @@ The **residual plot** puts those misses on their own axes: residual up the side,
 What you are looking for, in order:
 
 - **A bend.** One sign at both ends of the x-range and the other through the middle. That is curvature: the true relationship is not a straight line, and the residuals are tracing the part of the curve the line could not follow. The **model** is wrong.
-- **A funnel.** The band widening (or narrowing) steadily across the x-range. The form may be fine, but the line predicts precisely at one end and loosely at the other, so equal spread fails. Equal spread is a condition every interval and every test built on this line will quietly assume. Again, the **model**.
+- **A funnel.** The band widening (or narrowing) steadily across the x-range. The form may be fine, but the line predicts precisely at one end and loosely at the other, so equal spread fails. Equal spread is a condition every interval and every test built on this line will assume without saying so. Again, the **model**.
 - **Individuals standing clear.** No bend, no funnel, a band of constant width, and then a point, or a group of points, well outside it. The model has passed. Those individuals are the unusual thing, and the next question is about *them*.
 
 That last distinction is the one that separates a competent report from a useless one. A pattern indicts the model. A clean band with a cluster above it indicts the members of the cluster. Neither indicts the data for being inconvenient.
@@ -126,7 +126,7 @@ They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-
 <Calculator.Step keys={['2nd', 'Y=', '2:Plot2']} note="On · Type: scatter · Xlist: L1 · Ylist: L3">Plot2 is the residual plot: the same explanatory variable along the bottom, the misses up the side. Turn **Plot1 off** while you read it, or the two scatters share one window and neither is legible.</Calculator.Step>
 <Calculator.Step keys={['ZOOM', '9:ZoomStat']}>The vertical scale is now the residuals alone, which is the magnification the whole technique depends on.</Calculator.Step>
 <Calculator.Read label="L3 (largest)" value={fmt(provingFit.residuals[worst], 4)}>*{proving[worst].hull}*, the biggest miss on the proving file, in kilotonnes of fuel.</Calculator.Read>
-<Calculator.Read label="sum(L3)" value="≈ 0">`2nd` `LIST` `▸ MATH` `5:sum(`. Least-squares residuals sum to zero, so this is an arithmetic check and never a verdict on the model.</Calculator.Read>
+<Calculator.Read label="sum(L3)" value="0">`2nd` `LIST` `▸ MATH` `5:sum(`, and expect zero to within rounding. Least-squares residuals always sum to zero, so this is an arithmetic check and never a verdict on the model.</Calculator.Read>
 <Calculator.Watch>**`RESID` belongs to the last regression you ran, and to nothing else.** Change a list, fit a different pair of variables, or run `LinReg` on someone else's data, and the old residuals are gone without a message. Re-run the regression immediately before you trust `RESID`, every time.</Calculator.Watch>
 <Calculator.Watch>Setting `Ylist` to `RESID` directly works and is fragile for the same reason. Store to `L3` when the plot has to survive anything else you do.</Calculator.Watch>
 <Calculator.Watch>`ZoomStat` rescales the residual axis to the residuals, so a flat band and a bent one fill the screen equally. Read the **shape**, not how tall it looks.</Calculator.Watch>

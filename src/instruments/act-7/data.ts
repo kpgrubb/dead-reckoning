@@ -37,7 +37,7 @@
  * search picks the first attempt that reproduces those targets, so both sets are identical on every
  * load and in every module.
  */
-import { rng, type Rng } from '@/lib/rng'
+import { rng } from '@/lib/rng'
 import {
   bootstrapMean,
   mean,
@@ -121,11 +121,11 @@ function drawOutputs(attempt: number): number[] {
 function outputIssues(outputs: number[]): string[] {
   const out: string[] = []
   const m = mean(outputs)
-  if (m < 610.5 || m > 613.5) out.push(`mean output ${m.toFixed(1)} not ≈ 612 kN`)
+  if (m < 611.4 || m > 612.8) out.push(`mean output ${m.toFixed(1)} not ≈ 612 kN`)
   const excess = (m - MK3_SPEC_KN) / MK3_SPEC_KN
-  if (excess < 0.038 || excess > 0.044) out.push(`output ${(excess * 100).toFixed(2)}% over spec, not ≈ 4.1%`)
+  if (excess < 0.0398 || excess > 0.0422) out.push(`output ${(excess * 100).toFixed(2)}% over spec, not ≈ 4.1%`)
   const t = oneMeanTest(outputs, { mu0: MK3_SPEC_KN, alt: 'greater' })
-  if (t.statistic < 11 || t.statistic > 13.5) out.push(`output t ${t.statistic.toFixed(2)} not ≈ 12`)
+  if (t.statistic < 11.3 || t.statistic > 12.8) out.push(`output t ${t.statistic.toFixed(2)} not ≈ 12`)
   if (oneMeanInterval(outputs, { confidence: 0.95 }).ci![0] <= MK3_SPEC_KN) out.push('output interval must exclude the 588 kN specification')
   const s = sd(outputs)
   if (outputs.some((v) => Math.abs(v - m) > 2.6 * s)) out.push('an output reading that far out would show as an outlier on twelve')
@@ -156,14 +156,19 @@ function delayIssues({ before, after }: DelayDraw): string[] {
 
   // The spine (gate review B1). Paired: a real shift. Two-sample on the same numbers: nothing.
   const paired = pairedTTest(after, before, { alt: 'greater' })
-  if (paired.estimate < 1.78 || paired.estimate > 2.04) out.push(`paired mean difference ${paired.estimate.toFixed(2)} not ≈ 1.9 d`)
-  if (sd(paired.differences) < 1.6 || sd(paired.differences) > 2.0) out.push(`s_d ${sd(paired.differences).toFixed(2)} not ≈ 1.8 d`)
-  if (paired.statistic < 3.7 || paired.statistic > 4.15) out.push(`paired t ${paired.statistic.toFixed(2)} not ≈ 3.9`)
+  if (paired.estimate < 1.80 || paired.estimate > 2.02) out.push(`paired mean difference ${paired.estimate.toFixed(2)} not ≈ 1.9 d`)
+  if (sd(paired.differences) < 1.60 || sd(paired.differences) > 1.85) out.push(`s_d ${sd(paired.differences).toFixed(2)} not ≈ 1.8 d`)
+  if (paired.statistic < 3.8 || paired.statistic > 4.05) out.push(`paired t ${paired.statistic.toFixed(2)} not ≈ 3.9`)
   if (paired.pValue! > 0.005) out.push(`paired p ${paired.pValue!.toFixed(4)} must clear α = 0.01 comfortably`)
 
-  const two = twoMeanTest(after, before, { alt: 'greater' })
-  if (two.statistic < 1.55 || two.statistic > 1.9) out.push(`two-sample t ${two.statistic.toFixed(2)} not ≈ 1.7`)
-  if (two.pValue! < 0.05) out.push(`two-sample p ${two.pValue!.toFixed(4)} must FAIL at α = 0.05 — that gap is the lesson`)
+  // The same twenty-four numbers as two independent samples. The registry quotes t ≈ 1.7, p ≈ 0.10;
+  // that p is the two-sided one, which is what the calculator's 2-SampTTest returns by default and
+  // what an analyst with no prior direction would run. The one-sided reading must also fail at 0.05.
+  const two = twoMeanTest(after, before, { alt: 'two-sided' })
+  const twoGreater = twoMeanTest(after, before, { alt: 'greater' })
+  if (two.statistic < 1.62 || two.statistic > 1.80) out.push(`two-sample t ${two.statistic.toFixed(2)} not ≈ 1.7`)
+  if (two.pValue! < 0.085 || two.pValue! > 0.125) out.push(`two-sample two-sided p ${two.pValue!.toFixed(4)} not ≈ 0.10`)
+  if (twoGreater.pValue! < 0.05) out.push(`two-sample one-sided p ${twoGreater.pValue!.toFixed(4)} must FAIL at α = 0.05 — that gap is the lesson`)
 
   // Both t-procedures need a small-sample normality check that passes on the differences and on
   // each column, or the module would be teaching a procedure whose conditions it cannot state.
@@ -185,7 +190,7 @@ function search<T>(label: string, draw: (attempt: number) => T, issues: (v: T) =
 }
 
 const outputSearch = search('DS-11 output', drawOutputs, outputIssues)
-const delaySearch = search('DS-11 delay', drawDelays, delayIssues)
+const delaySearch = search('DS-11 delay', drawDelays, delayIssues, 30_000)
 
 const refitMeta = (() => {
   const r = rng('DS-11-meta', 1)
@@ -245,11 +250,17 @@ export function refitPairedInterval(confidence = 0.95): InferenceResult & { diff
 }
 export const REFIT_PAIRED_INTERVAL = refitPairedInterval(0.95)
 
-/** The same twenty-four numbers thrown away as two independent samples. This is the wrong answer. */
-export function refitTwoSampleTest(alt: Alternative = 'greater'): InferenceResult {
+/**
+ * The same twenty-four numbers thrown away as two independent samples. This is the wrong answer,
+ * and it is the one Ebele reaches for. Default two-sided, which is what `2-SampTTest` returns
+ * unless the learner changes μ₁: ≠ μ₂, and the reading the registry's "t ≈ 1.7, p ≈ 0.10" quotes.
+ */
+export function refitTwoSampleTest(alt: Alternative = 'two-sided'): InferenceResult {
   return twoMeanTest(refitDelayAfter, refitDelayBefore, { alt, random: true })
 }
-export const REFIT_TWO_SAMPLE = refitTwoSampleTest('greater')
+export const REFIT_TWO_SAMPLE = refitTwoSampleTest('two-sided')
+/** The one-sided reading of the same two samples. It fails at α = 0.05 too. */
+export const REFIT_TWO_SAMPLE_GREATER = refitTwoSampleTest('greater')
 export function refitTwoSampleInterval(confidence = 0.95): InferenceResult {
   return twoMeanInterval(refitDelayAfter, refitDelayBefore, { confidence, random: true })
 }
@@ -404,7 +415,16 @@ export function nineteenInterval(confidence = 0.95): InferenceResult {
 }
 export const NINETEEN_INTERVAL = nineteenInterval(0.95)
 
-/** Ostrow's comparison exactly as he ran it: every Perrine transit against every other transit. */
+/**
+ * Ostrow's comparison exactly as he ran it: every Perrine transit against every other transit.
+ *
+ * NOTE FOR MODULE TEXT. His claim is about **magnitude** — "within a day of the Lane mean" — and
+ * it is true: the gap is about a quarter of a day, most of which is the Perrine fleet's filing
+ * offset that Act V already established. Do not present this result's p-value as "not significant";
+ * on 2,612 transits a quarter-day gap is detectable, and that is beside his point and ours. The
+ * dismantling in 7-03 is the SE of the comparison and the power it had against the nineteen's
+ * diluted 0.055 d excess, not a rival p-value.
+ */
 export const OSTROW_TEST = twoMeanTest(perrineDelays, otherDelays, { alt: 'greater', random: true })
 export function ostrowInterval(confidence = 0.95): InferenceResult {
   return twoMeanInterval(perrineDelays, otherDelays, { confidence, random: true })

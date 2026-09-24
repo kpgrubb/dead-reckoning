@@ -1,8 +1,8 @@
 import { SseParabola } from '@/instruments/act-2/SseParabola'
 
-"Least squares" is not a convention. It is the answer to a minimisation problem, and the derivative is what answers it.
+Least squares is the answer to a minimisation problem, and a derivative is what answers it.
 
-Fix the data. Let a candidate line be $\hat{y} = a + bx$. Every choice of $(a, b)$ has a total cost — the sum of the squared vertical misses:
+Fix the data. Let a candidate line be $\hat{y} = a + bx$. Every choice of $(a, b)$ has a total cost: the sum of the squared vertical misses.
 
 <Formula
   tex="S(a, b) = \sum_{i=1}^{n} \bigl(y_i - a - b x_i\bigr)^2"
@@ -16,7 +16,7 @@ $S$ is a smooth function of two numbers. At its lowest point both partial deriva
 
 $$\frac{\partial S}{\partial a} = -2\sum \bigl(y_i - a - b x_i\bigr) = 0 \quad\Longrightarrow\quad \sum \bigl(y_i - a - b x_i\bigr) = 0 \quad\Longrightarrow\quad \bar{y} = a + b\bar{x}$$
 
-The residuals sum to zero, and the line passes through $(\bar{x}, \bar{y})$. That is not a rule someone imposed; it is what setting one derivative to zero forces.
+The residuals sum to zero, and the line passes through $(\bar{x}, \bar{y})$. Nobody imposed that as a rule. Setting one derivative to zero forces it.
 
 **Now differentiate in $b$.** Each term carries its own $x_i$ through the chain rule:
 
@@ -32,10 +32,10 @@ Substitute $a = \bar{y} - b\bar{x}$ and the sums collapse to deviations from the
 
 The formula in the briefing is a derivative set to zero, rearranged.
 
-**Why it is a minimum and not a maximum.** Hold the intercept at its best value for each slope. Then $S$ is a quadratic in $b$ with a positive leading coefficient $S_{xx} = \sum (x_i - \bar{x})^2 > 0$ — an upward parabola. Its second derivative $\partial^2 S / \partial b^2 = 2S_{xx}$ is positive everywhere, so the one place the tangent goes flat is the bottom. There is exactly one least-squares line, and no local minimum to get trapped in.
+**Why it is a minimum and not a maximum.** Hold the intercept at its best value for each slope. Then $S$ is a quadratic in $b$ with a positive leading coefficient $S_{xx} = \sum (x_i - \bar{x})^2 > 0$, an upward parabola. Its second derivative $\partial^2 S / \partial b^2 = 2S_{xx}$ is positive everywhere, so the one place the tangent goes flat is the bottom. There is exactly one least-squares line, and no local minimum to get trapped in.
 
 Drag the slope below. The curve is $S$; the amber line is its tangent; the readout is $\mathrm{d}S/\mathrm{d}b = -2(S_{xy} - b\,S_{xx})$. Find where the tangent is flat and you have found $b$.
 
 <SseParabola />
 
-**Why this matters here.** The instrument in this module draws each residual as a literal square and asks you to shrink the total area — you are doing, by hand, the minimisation the derivative solves in one line. When the fit snaps to slope and intercept, it is not choosing a line that looks right; it is landing on the single point where both partial derivatives vanish.
+**Why this matters here.** The instrument in this module draws each residual as a literal square and asks you to shrink the total area. You are doing by hand the minimisation the derivative solves in one line. When the fit snaps to slope and intercept, it is not choosing a line that looks right; it is landing on the single point where both partial derivatives vanish.

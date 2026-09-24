@@ -170,10 +170,10 @@ describe('content MDX lint', () => {
       }
     }
 
-    // Acts revised to the post-Prologue prose standard. Acts II–IX were written before it and carry
+    // Acts revised to the post-Prologue prose standard. Acts III–IX were written before it and carry
     // known catchphrase debt ("say it back to me" is in 16 modules); the voice sweep clears it, and
     // each Act joins this list as it is revised. Guarding the revised Acts stops new instances.
-    const REVISED = ['act-0/', 'act-1/']
+    const REVISED = ['act-0/', 'act-1/', 'act-2/']
     const offences = [...seen.entries()]
       .map(([phrase, inFiles]) => [phrase, [...inFiles].filter((f) => REVISED.some((a) => f.startsWith(a)))] as const)
       .filter(([, inFiles]) => inFiles.length >= 3)
@@ -184,11 +184,11 @@ describe('content MDX lint', () => {
   /**
    * "It's not X, it's Y" — a negation followed by the real answer, used as the default way to make
    * a point. A rhetorical move standing in for a sentence, and a drone at scale. Say the positive
-   * thing. Scoped to the Acts revised to the prose standard; Acts II–IX carry 39 known instances
+   * thing. Scoped to the Acts revised to the prose standard; Acts III–IX carry 39 known instances
    * that the voice sweep clears, and each Act joins REVISED as it is revised.
    */
   it('does not lean on the corrective reframe', () => {
-    const REVISED = ['act-0/', 'act-1/']
+    const REVISED = ['act-0/', 'act-1/', 'act-2/']
     const patterns = [
       /\b(?:is|was|are|were)\s+not\s+[^.;!?]{2,45}[,;.]\s+(?:it|that|they|those|the)\s+(?:is|are|was|were)\b/i,
       /\b(?:isn't|aren't|wasn't|it's not)\s+[^.;!?]{2,45},\s+(?:it's|it is|they're|they are|that's)\b/i,

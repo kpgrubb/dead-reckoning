@@ -1,0 +1,137 @@
+---
+id: act-7-checkpoint
+act: 7
+title: "Checkpoint: Halden Reach"
+kind: checkpoint
+ap_topics: ["7.1", "7.2", "7.3", "7.4", "7.5", "7.6", "7.7", "7.8", "7.9", "7.10"]
+objectives:
+  - "Choose the inference procedure from the question and the structure of the data, before any statistic is computed"
+  - "Carry out one-sample, paired and two-sample t procedures and state each conclusion with its conditions and its limits"
+  - "Write the sentences a hostile reader would quote, so that none of them claims more than the procedure paid for"
+prereqs: ["act-7-07"]
+est_minutes: 25
+calc_briefing: null
+summary: "Ferrier and Sandoval go through the inference brief with the hatch shut, looking for the one procedure you chose wrong."
+---
+
+import { fmt, fmtInt, fmtP } from '@/lib/stats'
+import { LOST_VS_SURVIVING_INTERVAL, LOST_VS_SURVIVING_TEST, MK3_SPEC_KN, OUTPUT_INTERVAL, REFIT_PAIRED, SINK_WATCH_TEST, SURVIVING_PERRINE_N, SURVIVING_VS_OTHER_INTERVAL } from '@/instruments/act-7/data'
+import { DECISION_IDS, Decided, PassGate } from '@/instruments/act-7/story'
+
+<Scene stamp="MET 165/20:10" location="Wardroom · docked in Halden Reach's lee · 0.12 AU sunward of the Ceres approach" condensed="MET 165, two hundred minutes before the brief goes out. Eleven pages, each naming a procedure, its conditions and what it does not establish. The relay it will travel on belongs to the tender, so Ostrow reads it first and everyone in the wardroom knows it. Ferrier goes through it looking for the one procedure that was chosen wrong; Sandoval has her own two pages about the sink and will not sign a round number.">
+
+The hatch is shut. On a corvette with sixteen people in her that is a signal, and by twenty hundred the passageway outside is empty in the way passageways get when nobody wants to be seen loitering.
+
+You have the tender's hull through the deck as a hum that was not there at Ceres, forty thousand tonnes of pumps running two metres from your chair, and after thirteen days you still hear it. Your sink came back four days ago with ten gigajoules less in it.
+
+Eleven pages. Ebele set the brief out the way Ferrier taught him at MET 72: each finding, the procedure that produced it, the conditions with their arithmetic, the conclusion, and one line underneath saying what the finding does not establish. He has numbered the pages by hand because the printer numbers them in the wrong corner.
+
+Ferrier turns the first page toward herself and does not pick it up.
+
+<Dialogue speaker="xo" aside="She read it twice on the middle watch and has not said which finding she went back to.">
+He will not argue with the arithmetic. Nobody argues with arithmetic. He will read it looking for the one procedure you chose wrong, and when he finds it the covering letter writes itself: the assessing officer does not know which test to run, and the Board need not trouble itself with the rest of it.
+</Dialogue>
+
+Sandoval has her own two pages at the far end of the table, face up, with a pen on them. She has been at the sink figures since the refit came back and she has not shown them to anyone but you.
+
+<Dialogue speaker="engineer" aside="She turns her pages round so the second one faces Ferrier and puts a finger on the standard error, not on the estimate.">
+Mine says nine hours. Give or take one, and the one is in the file. I will sign that.
+
+I will not sign a round number, Commander. A round number is a thing somebody decided.
+</Dialogue>
+
+Ebele has both registers open and his hands flat on the table between them.
+
+<Dialogue speaker="analyst">
+So — every number in it is in the file, sir. What I can't defend is the choosing. I picked five procedures and I can tell you why I picked four of them.
+</Dialogue>
+
+</Scene>
+
+<Checkpoint act="act-7" />
+
+<PassGate act="act-7">
+
+<Scene stamp="MET 165/22:15" location="Bridge · comms station · docked" condensed="The brief goes out at MET 165/22:15 through Halden Reach's relay with a copy to the Flag Secretary: the reactor-output interval clear of spec, the paired shift on the same twelve hulls, the interval that contains zero for Perrine's honest crews, the interval and the test that do not for the nineteen, and a limits paragraph that gives away the causal claim before anyone can take it. Solberg calls the lag at twenty-four minutes and does not say the other thing.">
+
+Solberg sends it at twenty-two fifteen. The brief runs to eleven pages and five findings, and the five findings are these.
+
+*Mean certified thrust of the twelve hulls through the Adlinda uprate: a 95 percent one-sample t-interval of {fmt(OUTPUT_INTERVAL.ci[0], 1)} to {fmt(OUTPUT_INTERVAL.ci[1], 1)} kilonewtons against a Mk 3 specification of {fmtInt(MK3_SPEC_KN)}. The interval lies entirely above specification. Twelve hulls, {fmtInt(OUTPUT_INTERVAL.df)} degrees of freedom, conditions at Annex B.*
+
+*Mark-9 delay on the same twelve hulls, the run before the uprate against the run after: paired t on the differences, mean difference {fmt(REFIT_PAIRED.estimate, 2)} days later after the refit, t = {fmt(REFIT_PAIRED.statistic, 2)} on {fmtInt(REFIT_PAIRED.df)} degrees of freedom, P = {fmtP(REFIT_PAIRED.pValue)}. Treated as two independent samples the same numbers return nothing, and Annex C says why that reading is wrong.*
+
+*Surviving Perrine hulls ({fmtInt(SURVIVING_PERRINE_N)}) against hulls of every other owner: a 95 percent two-sample t-interval for the difference in mean delay of {fmt(SURVIVING_VS_OTHER_INTERVAL.ci[0], 2)} to {fmt(SURVIVING_VS_OTHER_INTERVAL.ci[1], 2)} days. The interval contains zero. There is no evidence that Perrine's surviving crews fly the Lane differently from anyone else, and the Board is asked to record that finding as prominently as the others.*
+
+*Lost Perrine hulls against surviving Perrine hulls: interval {fmt(LOST_VS_SURVIVING_INTERVAL.ci[0], 2)} to {fmt(LOST_VS_SURVIVING_INTERVAL.ci[1], 2)} days, t = {fmt(LOST_VS_SURVIVING_TEST.statistic, 2)}, P = {fmtP(LOST_VS_SURVIVING_TEST.pValue)}, Welch degrees of freedom {fmt(LOST_VS_SURVIVING_TEST.df, 2)}.*
+
+*The hulls lost on the Lane were late before they were lost. This analysis does not establish a cause and does not identify an agent. The nineteen are the losses themselves, not a random sample of Perrine transits, and every conclusion above is bounded by that.*
+
+Sandoval's two pages go in as Annex E under her own signature: {fmt(SINK_WATCH_TEST.estimate, 1)} hours of Watch endurance against the design figure, standard error {fmt(SINK_WATCH_TEST.se, 2)}, four matched profiles, and no adjective anywhere on either page.
+
+<Dialogue speaker="comms" aside="He has the geometry up before you ask for it.">
+Away at twenty-two fifteen, Captain. Two point nine astronomical units to Valhalla tonight, twenty-four minutes out and twenty-four back. Nobody has an opinion about this before tomorrow evening.
+
+Copy to the Flag Secretary went in the same burst, addressed separately.
+</Dialogue>
+
+He does not say the other thing. The other thing is that the brief is sitting in a tender's relay buffer eleven metres from Captain Ostrow's cabin, and has been for about four seconds.
+
+<Decided id={DECISION_IDS.relay} is="hold">
+You held it for eleven hours and sent it anyway, because there is no clear water between here and Ceres and there was never going to be. The eleven hours cost you the Board's next convening window.
+</Decided>
+
+</Scene>
+
+<Scene stamp="MET 166/04:00" location="Bridge · undocking · 0.24 AU from a rock the chart calls an abandoned claim" condensed="Nightjar undocks at 04:00 on a resupply request Lindqvist-Oduya signs without reading, burns 2.8 hours at 0.3 g to thirty kilometres a second, and goes ballistic on a line that passes Kettle and continues to Hygiea Hold. Forty seconds after separation Ostrow's slate orders her to remain in company. Solberg reads the routing and says it was not a Board transmission.">
+
+Lindqvist-Oduya signs the resupply request at 03:20 without turning the page, which is how you both agreed to do this without either of you saying so. She is at the lock when you go through it. She says the thing she has said at every watch change for six days, that her log is her own and she keeps it herself, and she says it to you this time.
+
+The clamps let go at 04:00. Two point eight hours at three-tenths of a gravity puts thirty kilometres a second under the keel and then the torch goes out and stays out, and after that *Nightjar* is a rock on a line that passes a six-kilometre body at 3.41 AU and carries on to Hygiea Hold, which is where the log says she is going.
+
+Fourteen days. The last two of them cold, on a cellar nine hours shorter against the book than the one you left Callisto with.
+
+Forty seconds after separation the board lights.
+
+</Scene>
+
+<Scene variant="transmission" stamp="MET 166/04:00:40 · CSV HALDEN REACH" condensed="A seven-word order, forty seconds after separation, from a slate rather than a signals office.">
+
+*You are directed to remain in company.*
+
+</Scene>
+
+<Scene stamp="MET 166/04:06" location="Bridge · ballistic, thirty kilometres a second, torch cold" condensed="Solberg reads the routing block: no originating reference, no addressee, no counter-signature. Ostrow's slate, not the Board. Ferrier has it logged verbatim and unacknowledged. What Nightjar has is two lines of evidence and a vector; what she does not have is a hull with a name on it, which is a question about counts and categories.">
+
+<Dialogue speaker="comms" aside="He checks the routing block twice before he says it, the way he checked the four-minute reply at Ceres.">
+Captain. That was not a Board transmission and it was not through the tender's signals office. No originating reference, no addressee block, no counter-signature.
+
+That was Captain Ostrow's slate.
+</Dialogue>
+
+<Dialogue speaker="xo">
+Then it is not an order. We don't know what it is. Log it verbatim, log the routing, and log that we did not acknowledge.
+</Dialogue>
+
+<Decided id={DECISION_IDS.refit} is="refuse">
+The refit you refused went in anyway, under a safety-inspection docket signed at Lane Operations, and the cellar is the same ten gigajoules lighter. *Halden Reach*'s engineering department noticed which way you voted, and they will remember it.
+</Decided>
+
+<Decided id={DECISION_IDS.kettle} is="wait">
+You turned for Ceres and waited, and at MET 170 Maalouf's two lines came back unsigned: the Board has not convened, proceed as your judgment dictates. The line you are on now is the line you would have flown four days ago.
+</Decided>
+
+What you have is nineteen hulls that were prepared, slowed and lost, two independent lines of evidence that say so, and a vector. What you do not have is a hull. A name matched to a shape, a cargo category, an identity at a rock nobody has visited since the claim lapsed.
+
+Counts, and the categories they fall into. Ebele has already started asking what the Lane's declared cargo mix looks like, and nobody has told him to.
+
+</Scene>
+
+<LogEntry
+  title="Act VII — the brief, and what a procedure costs"
+  concept="When σ is unknown — which is always — the standardized mean follows a t distribution with n − 1 degrees of freedom, and every interval and test for a mean is built on it. The procedure follows from two things and never from the number of columns on the page: what the question asks, and how the data are structured. One group of measurements is a one-sample t. Two measurements on the same units are paired, and the differences become one sample. Two groups of different units are independent samples, with SE = √(s₁²/n₁ + s₂²/n₂) and Welch's degrees of freedom, never pooled. An interval estimates how large a difference is; a test decides whether there is evidence of one; and a comparison that fails to find an effect has said nothing until you know what power it had."
+  formula="\bar{x} \pm t^\star\frac{s}{\sqrt{n}} \qquad t = \frac{\bar{d} - 0}{s_d/\sqrt{n}} \quad (\text{df} = n-1) \qquad t = \frac{(\bar{x}_1 - \bar{x}_2) - 0}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}"
+  mistake="Running a two-sample procedure on paired data. It is arithmetically valid, it returns a number, and on data with a large unit-to-unit nuisance term it returns 'nothing' — because the two-sample standard error carries the differences between units that pairing cancels. Read the design before the numbers: if each row of one column belongs to a row of the other, the pairs are the units."
+  tags={['unit-7', 'checkpoint', 't distribution', 'degrees of freedom', 'one-sample t', 'paired t', 'two-sample t', 'Welch df', 'pooling', 'power', 'procedure selection', 'scope of inference']}
+/>
+
+</PassGate>

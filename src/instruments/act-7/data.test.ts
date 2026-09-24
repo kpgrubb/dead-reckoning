@@ -115,14 +115,14 @@ describe('DS-12 · Nightjar’s own sink refit', () => {
   })
 
   it('reproduces the 8.9 h Watch loss against the design mean, t ≈ 8 on 3 df', () => {
-    expect(SINK_WATCH_TEST.estimate).toBeGreaterThan(8.6)
-    expect(SINK_WATCH_TEST.estimate).toBeLessThan(9.2)
-    expect(SINK_WATCH_TEST.statistic).toBeGreaterThan(6)
-    expect(SINK_WATCH_TEST.statistic).toBeLessThan(11)
+    expect(SINK_WATCH_TEST.estimate).toBeGreaterThan(8.8)
+    expect(SINK_WATCH_TEST.estimate).toBeLessThan(9.05)
+    expect(SINK_WATCH_TEST.statistic).toBeGreaterThan(7)
+    expect(SINK_WATCH_TEST.statistic).toBeLessThan(10)
     expect(SINK_WATCH_TEST.df).toBe(3)
     // The Chief's "give or take one" is the standard error of those four differences.
-    expect(SINK_WATCH_TEST.se).toBeGreaterThan(0.8)
-    expect(SINK_WATCH_TEST.se).toBeLessThan(1.4)
+    expect(SINK_WATCH_TEST.se).toBeGreaterThan(0.85)
+    expect(SINK_WATCH_TEST.se).toBeLessThan(1.25)
     expect(SINK_WATCH_INTERVAL.ci![0]).toBeGreaterThan(0)
   })
 
