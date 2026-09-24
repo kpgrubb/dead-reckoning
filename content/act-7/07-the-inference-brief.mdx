@@ -29,6 +29,7 @@ import {
   REFIT_N,
   REFIT_PAIRED,
   SINK_WATCH_TEST,
+  SURVIVING_PERRINE_N,
   bootstrapNineteen,
 } from '@/instruments/act-7/data'
 import { DECISION_IDS } from '@/instruments/act-7/story'
@@ -55,32 +56,32 @@ export const writeupRubric = {
   type: 'interpretation',
   required: [
     {
-      label: 'STATE — the parameter and the hypotheses',
+      label: 'STATE: the parameter and the hypotheses',
       phrasings: ['mu', 'null', 'alt', 'parameter', 'true', 'hypothesis'],
       minMatches: 2,
       polarity: 'any',
       feedback: `Open with the parameter in words and in symbols: μ_d, the true mean difference in Mark-9 delay (after the uprate minus before it) for Sulcus hulls through the Adlinda uprate. Then H₀: μ_d = 0 against Hₐ: μ_d > 0.`,
     },
     {
-      label: 'PLAN — the procedure by name, and the conditions with their numbers',
+      label: 'PLAN: the procedure by name, and the conditions with their numbers',
       phrasings: ['paired t', 'one sample t', 'random', 'condition', 'independent', 'normal', numberRegex(10 * REFIT_N, 0, 0)],
       minMatches: 3,
       polarity: 'any',
       feedback: `Name it: a paired t-test on the ${fmtInt(REFIT_N)} differences. Then Random (the yard sent every uprate it ran, which is a census and is stated as one), Independent (10 × ${fmtInt(REFIT_N)} = ${fmtInt(10 * REFIT_N)} against the Sulcus register), and Normal (the dotplot of the differences).`,
     },
     {
-      label: 'DO — the statistic, the degrees of freedom and the p-value',
+      label: 'DO: the statistic, the degrees of freedom and the p-value',
       phrasings: [numberRegex(REFIT_PAIRED.estimate, 2, 1), numberRegex(REFIT_PAIRED.statistic, 2, 1), numberRegex(REFIT_PAIRED.pValue, 4, 2), 'df', 'pvalue'],
       minMatches: 2,
       polarity: 'any',
       feedback: `Show the arithmetic: d̄ = ${fmt(REFIT_PAIRED.estimate, 2)} days, SE = ${fmt(REFIT_PAIRED.se, 3)}, t = ${fmt(REFIT_PAIRED.statistic, 2)} on ${fmtInt(REFIT_PAIRED.df)} degrees of freedom, p = ${fmtP(REFIT_PAIRED.pValue)}.`,
     },
     {
-      label: 'CONCLUDE — the decision, with p beside α',
+      label: 'CONCLUDE: the decision, with p beside α',
       phrasings: ['reject', 'convincing evidence', 'significant'],
       feedback: `p = ${fmtP(REFIT_PAIRED.pValue)} is below α = ${fmt(writeupAlpha, 2)}, so reject H₀ and put both numbers in the same sentence as the verb.`,
     },
-    contextGroup('CONCLUDE — in context', ['Sulcus hulls through the Adlinda uprate', 'Mark-9 delay after the uprate minus before it'], {
+    contextGroup('CONCLUDE: in context', ['Sulcus hulls through the Adlinda uprate', 'Mark-9 delay after the uprate minus before it'], {
       feedback: 'The conclusion names whose hulls and what was measured, so that it could not be pasted into any other report.',
     }),
     {
@@ -299,7 +300,7 @@ Widths {fmt(bayT.ci[1] - bayT.ci[0], 3)} and {fmt(bayBoot.ci[1] - bayBoot.ci[0],
   {...writeupRubric}>
   <Success>
   <Dialogue speaker="xo" aside="She reads it against the first page of the brief, line for line, and then puts the two side by side on the console.">
-  That is the template. Every page in the folder gets that shape, including the ones that found nothing, and especially the one about the ${fmtInt(SURVIVING_PERRINE_N)} that came home.
+  That is the template. Every page in the folder gets that shape, including the ones that found nothing, and especially the one about the {fmtInt(SURVIVING_PERRINE_N)} that came home.
   </Dialogue>
   </Success>
   <Failure>

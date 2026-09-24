@@ -199,7 +199,7 @@ The conservative rule would use $\min$({fmtInt(escorted.length - 1)}, {fmtInt(un
 <Drill generator="act-7/difference-interval-interpretation" count={1} />
 <Drill generator="act-7/difference-claim" count={1} />
 
-<MissionBeat id="act-7-05-honest" kind="numeric" answer={SURVIVING_VS_OTHER_INTERVAL.ci[1]} answerKind="mean" digits={2} units="d" label="THE EIGHT HUNDRED AND EIGHTY-ONE"
+<MissionBeat id="act-7-05-honest" kind="numeric" answer={SURVIVING_VS_OTHER_INTERVAL.ci[1]} answerKind="mean" digits={2} units="d" label="THE HULLS THAT CAME HOME"
   prompt={`Set the difference-of-means panel to **surviving Perrine vs everyone else**: the ${fmtInt(SURVIVING_PERRINE_N)} Perrine-owned hulls that arrived, against the ${fmtInt(OTHER_N)} transits with any other beneficiary. Welch degrees of freedom, ${fmtPct(0.95, 0)} level, surviving Perrine minus everyone else.\n\nReport the **upper endpoint** of that interval, in days, to **two decimal places**.`}
   hint="Two independent groups, so each keeps its own s and its own n and the standard error is the square root of the two s²/n terms added. Then the point estimate plus t* times that.">
   <Success>
