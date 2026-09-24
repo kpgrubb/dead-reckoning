@@ -6,11 +6,11 @@ kind: checkpoint
 ap_topics: ["3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7"]
 objectives:
   - "Defend every claim in the survey report about who was asked, how they were chosen, and who never answered"
-  - "State, for the Board's trial and for your own, what the design licenses — cause, generalization, or neither — and say it in one sentence that survives a hostile reader"
+  - "State, for the Board's trial and for your own, whether the design licenses cause, generalization or neither, in one sentence that survives a hostile reader"
 prereqs: ["act-3-05"]
 est_minutes: 20
 calc_briefing: null
-summary: "Ebele's brief before the report is filed. Every claim about who was asked, how, and what that licenses — and nothing in it larger than the design paid for."
+summary: "Ebele's brief before the report is filed. Every claim about who was asked, how, and what that licenses, with nothing in it larger than the design paid for."
 ---
 
 import { fmtInt, fmtPct } from '@/lib/stats'
@@ -18,18 +18,18 @@ import { CERES_SURVEY, FRAME_N } from '@/instruments/act-3/data'
 import { Decided, DECISION_IDS, SurveyFigure } from '@/instruments/act-3/story'
 import { PassGate } from '@/instruments/act-3/PassGate'
 
-<Scene stamp="MET 079/14:10" location="Wardroom · 2.3 AU out, braking at 4 mgee" condensed="MET 79, braking. The survey report is laid out on the wardroom table in three parts — the frame, the design, the trial — and Ebele wants the holes found here rather than at Valhalla. Ferrier's rule: every claim about who was asked, how, and what that licenses.">
+<Scene stamp="MET 079/14:10" location="Wardroom · 2.3 AU out, braking at 4 mgee" condensed="MET 79, braking. The survey report is laid out on the wardroom table in three parts: the frame, the design, the trial. Ebele wants the holes found here rather than at Valhalla. Ferrier's rule: every claim about who was asked, how, and what that licenses.">
 
-Thirty-three days of down, and the wardroom table still has the small rubber lip that somebody in the yard fitted for freefall and nobody has taken off.
+Thirty-three days of down, and the wardroom table still carries the small rubber lip the yard fitted for freefall. You put your knuckles on it out of habit.
 
-The report is on it in three parts, which is Ebele's idea and a good one. The frame page. The design page. The trial page. Each with its own displays, each with its own sentence at the bottom in the box he has started drawing around sentences, because Ferrier told him once that a claim should be visible from across a room.
+The report is on the table in three parts, which is Ebele's idea and a good one. The frame page. The design page. The trial page. Every page carries its displays and then one sentence at the bottom, boxed, big enough to read from the far end of the compartment, because Ferrier told him once that a claim a reader has to hunt for is a claim you are hiding.
 
 He is standing at the end of the table with his hands behind his back. That is new. He has been on this ship eleven weeks and until this morning he sat down to be corrected.
 
 </Scene>
 
 <Dialogue speaker="analyst" aside="He has read it four times since the middle watch and has stopped being able to see it.">
-So — sir. It is ready. Twenty-nine pages, six displays, and I would rather you found the holes than Valhalla.
+So. It is ready, sir. Twenty-nine pages, six displays, and I would rather you found the holes than Valhalla.
 </Dialogue>
 
 <Dialogue speaker="xo" aside="She has the frame page in front of her and has not turned it over.">
@@ -46,7 +46,7 @@ Solberg sends it at six.
 
 *The Lane Authority's survey of masters describes {fmtInt(CERES_SURVEY.n)} masters who arrived at Ceres and answered a notice at the dock office. Its frame excludes every master in transit and every hull that did not arrive. Its fourth question names a cause before it asks for one. Its figure of {fmtPct(CERES_SURVEY.pYes, 0)} is an estimate of what Ceres dock volunteers will say to a leading question and is not an estimate of anything about the Lane.*
 
-*A probability sample of the Lane schedule — {fmtInt(FRAME_N)} masters in transit, drawn <SurveyFigure of="designLower" /> — returns a materially lower figure among independent masters. <SurveyFigure of="turningLate" words /> of the masters who answered reported, unprompted, having seen a Sulcus-flag hull turn late off the plotted profile. Of the Sulcus masters contacted, <SurveyFigure of="sulcusSilent" words /> did not answer. The nonresponse is recorded as data and not as a gap.*
+*A probability sample of the Lane schedule, {fmtInt(FRAME_N)} masters in transit, drawn <SurveyFigure of="designLower" />, returns a materially lower figure among independent masters. <SurveyFigure of="turningLate" words /> of the masters who answered reported, unprompted, having seen a Sulcus-flag hull turn late off the plotted profile. Of the Sulcus masters contacted, <SurveyFigure of="sulcusSilent" words /> did not answer. The nonresponse is recorded as data and not as a gap.*
 
 *The Directorate's 2183 escort trial assigned escorts by owner request to announced convoys with no unescorted transits in the same window. Owner is confounded with escort. The observation of zero incidents is consistent with every hypothesis under test and discriminates between none of them.*
 
@@ -57,17 +57,19 @@ Four claims. No adverbs. Nothing in it larger than what the design paid for.
 </Scene>
 
 <Dialogue speaker="comms" aside="He has the lag on the board before you ask for it.">
-Valhalla. Twenty-one and a half minutes out, the same back. Timestamp is genuine, Captain. At the earliest there is an opinion about this at 06:43, and I would not look for one before tomorrow.
+Valhalla. Twenty-one and a half minutes out, the same back. Sent and acknowledged by the relay, Captain, so it is off this ship. Nobody at Valhalla can have read it before 06:22, and reading it is not the same as answering it.
 </Dialogue>
 
 <Scene variant="transmission" stamp="MET 081/09:14 · VALHALLA" condensed="The Board's reply is two words.">
 
-*Noted. Acknowledged. — For the Board, Maalouf, Cdre., Flag Secretary.*
+*Noted. Acknowledged.*
+
+*For the Board, Maalouf, Cdre., Flag Secretary.*
 
 </Scene>
 
 <Dialogue speaker="xo" aside="She reads it twice, which is one more time than it needs.">
-Two words. That is not dismissal — dismissal is a paragraph. Two words is a file being opened somewhere and nobody wanting their name on the cover.
+Two words. A dismissal runs to a paragraph and cites the tasking. Two words is a file being opened somewhere, with nobody wanting their name on the cover of it.
 </Dialogue>
 
 <Decided id={DECISION_IDS.lottery} is="order">
@@ -76,29 +78,29 @@ And the lottery is in it, under your authority, with Solberg's digits appended. 
 </Dialogue>
 </Decided>
 
-<Scene stamp="MET 080/22:40" location="Bridge · plot" condensed="What the survey bought was testimony, not evidence: six masters have seen Sulcus hulls turn late, and no survey can put a vector on a turn. To see one you must be at Mark 9, cold, when a Sulcus hull passes — 64 hours of Watch in the cellar, a picket that may be looking, and no way to know when the next one comes. Torch-off in three days.">
+<Scene stamp="MET 080/22:40" location="Bridge · plot" condensed="What the survey bought was testimony. Masters have seen Sulcus hulls turn late, and no survey can put a vector on a turn. To see one you must be at Mark 9, cold, when a Sulcus hull passes: the Watch profile in the cellar, a picket that may be looking, and no way to know when the next one comes. Torch-off in three days.">
 
 What you have bought, in nine days of Solberg's link time and one Board acknowledgement, is testimony.
 
-It is good testimony. It was collected honestly, from a list you can name, by a method a hostile reader can reconstruct, with the silences written down beside the answers. It says that masters on this Lane have watched Sulcus-flag hulls go off the plotted profile and keep burning.
+It is good testimony. Collected from a list you can name, by a method a hostile reader can reconstruct, with the silences written down beside the answers. It says that masters on this Lane have watched Sulcus-flag hulls go off the plotted profile and keep burning.
 
-It is also, precisely, what people say. Marsh said it in nine profane minutes and she was not wrong and she is not evidence. A master at 0.9 AU saying *turning late* is a memory of a light through a port. No survey ever designed can put eleven degrees and a plume vector on it.
+It is also what people say. Marsh gave you nine profane minutes and every one of them was true and none of it is evidence. A master at 0.9 AU saying *turning late* is a memory of a light through a port. No survey puts eleven degrees and a plume vector on a memory.
 
-To put a number on a turn you have to be there when one happens: at the Mark 9 region, cold, with the wings folded and the cellar taking the heat, when a Sulcus hull comes through and does whatever it is that they do. Sandoval's working figure for the Watch profile is sixty-four hours, and she says *working figure* in a particular tone that means the number in writing is smaller. Perrine hulls pass Mark 9 about twice in five days, on average, which is not a schedule.
+To put a number on a turn you have to be there when one happens. At the Mark 9 region, cold, wings folded, the cellar taking the heat, when a Sulcus hull comes through and does whatever it is that they do. You stand at the plot with the mark axis up and work out what that costs, and the arithmetic is all in Sandoval's hands and none of it in yours. Perrine hulls pass Mark 9 about twice in five days. On average.
 
 Torch-off is in three days.
 
 </Scene>
 
-<Dialogue speaker="engineer" aside="She has the cellar gauge up on the bridge repeater, which she does not normally do.">
+<Dialogue speaker="engineer" aside="She has put the cellar gauge up on the bridge repeater and is standing under it with a slate.">
 Sixty-four hours on Watch, Skipper, plus or minus four. That is not a promise, it is the middle of a distribution I can show you. And a purge is two point six hours of us being the brightest thing anyone with a naval sensor inside half an AU has seen all year.
 </Dialogue>
 
 <LogEntry
-  title="Act III — testimony, and what collecting it licenses"
+  title="Act III: testimony, and what collecting it licenses"
   concept="Data do not become evidence by being numerous; they become evidence by how they were collected. A frame is the list you could have drawn from, and no sample size repairs the wrong list: bias is a direction and it does not shrink with n, while sampling variability is a spread and it does. Random assignment is what licenses the word *because*; random sampling is what licenses *in general*; a study that has neither describes the units it happened to contain and stops there."
   formula="\text{bias} = E[\hat{\theta}] - \theta \quad\text{(does not shrink with } n), \qquad SD(\hat{p}) = \sqrt{\frac{p(1-p)}{n}} \quad\text{(does)}"
-  mistake="Reading a non-significant randomization result as evidence that the treatment does nothing. A trial that could not have detected an effect has not failed to find one — it has said nothing, and the report must say so."
+  mistake="Reading a non-significant randomization result as evidence that the treatment does nothing. A trial that could not have detected an effect has not failed to find one. It has said nothing, and the report must say so."
   tags={['unit-3', 'checkpoint', 'sampling frame', 'bias', 'random assignment', 'randomization distribution', 'scope of inference']}
 />
 

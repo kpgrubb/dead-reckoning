@@ -1,0 +1,267 @@
+---
+id: act-7-02
+act: 7
+title: "Reactor Output"
+kind: module
+ap_topics: ["7.2", "7.3"]
+objectives:
+  - "Build a one-sample t-interval for a mean from summary statistics and report both endpoints with units"
+  - "Interpret a confidence interval for a mean as a statement about the population mean, never about the individuals"
+  - "Predict how the width answers to n, to C and to s, and compute the sample size a target margin costs"
+  - "Judge whether an interval justifies a stated claim about the parameter, using the endpoint rather than the estimate"
+prereqs: ["act-7-01"]
+est_minutes: 25
+calc_briefing: null
+summary: "Twelve thrust certifications against the Mk 3 specification. Every one of them clears it, and that is not yet an argument."
+---
+
+import { fmt, fmtInt, fmtPct, mean, sd, oneMeanInterval, sampleSizeForMean, tStar, zStar } from '@/lib/stats'
+import { confidenceIntervalInterpretation } from '@/lib/problems/rubrics'
+import { MK3_SPEC_KN, OUTPUT_INTERVAL, REFIT_N, refitOutputs } from '@/instruments/act-7/data'
+import { ReactorOutputPanel } from '@/instruments/act-7/ReactorOutputPanel'
+import { TIntervalBench } from '@/instruments/act-7/TIntervalBench'
+
+export const clampLoads = [25.1, 22.4, 26.6, 24.2, 21.9, 26.8, 24.7, 23.1, 25.4]
+export const clampN = clampLoads.length
+export const clampRated = 22
+export const clampInterval = oneMeanInterval(clampLoads, { confidence: 0.95, random: true })
+export const clampSe = sd(clampLoads) / Math.sqrt(clampN)
+export const clampTarget = 0.8
+export const clampSize = sampleSizeForMean({ moe: clampTarget, confidence: 0.95, sigma: sd(clampLoads) })
+
+<Scene stamp="MET 155/14:20" location="CSV Nightjar · engineering deck · docked, sink in the tender's hands" condensed="Three days alongside and the tender's fitters have Nightjar's cellar valve gear laid out across the deck plates. Ebele brings down the Bureau's post-refit thrust certifications for Okonjo's twelve hulls: every one of them above the Mk 3 specification of 588 kilonewtons, and a drafted sentence claiming ninety-five percent of the reactors are above spec. You strike the sentence. Sandoval will not say the mean is above spec until somebody gives her the figure with its plus-or-minus attached, because twelve reactors scatter and she has no way of knowing by how much.">
+
+There is no engineering to do and the engineering deck is the busiest compartment on the ship.
+
+*Halden Reach*'s fitters have *Nightjar*'s cellar valve gear laid out on a rubber mat across the deck plates in the order it came off, twenty-two pieces, chalk numbers on the mat beside each one. You go the long way round past the lathe with your shoulder against the frame, and a rating you have never met says sir without looking up from a seat face.
+
+Sandoval is at the far end on her knees with a bore gauge, working the handle in and out of the same hole and not liking what it says.
+
+<Dialogue speaker="engineer" aside="She does not get up. She reads the gauge again first.">
+Skipper. Three thou over on the number four seat and their man wants to lap it. I want it replaced. You'll get the argument at eighteen hundred.
+</Dialogue>
+
+Ebele comes down the ladder with the slate held out in front of him and stops at the edge of the mat because he cannot see a way across.
+
+The Bureau's file came in on the tender's relay overnight. Every hull the Adlinda yard put through the Mk 3 uprate went out with a post-refit thrust certification stamped by a Bureau inspector, and Okonjo's logs have them. Twelve rows, one number each, in kilonewtons.
+
+The Mk 3 drive is rated at {fmtInt(MK3_SPEC_KN)} kilonewtons. That number is on the plate of every one of them and on the tonnage calculation of every cargo they have ever filed.
+
+All twelve certifications are above it. The lowest reads {fmt(Math.min(...refitOutputs), 1)}.
+
+<Dialogue speaker="analyst" aside="He reads it off the slate from where he is standing, on the other side of the valve gear.">
+So they all clear it, sir, every one, and the smallest margin in the file is still nearly sixteen kilonewtons. I've drafted it for the brief. Ninety-five percent of the reactors are above spec.
+</Dialogue>
+
+You tell him to strike that and read you what the file is actually of.
+
+He says it is of twelve reactors, sir. Twelve reactors that the Adlinda yard uprated. And stops, because the sentence he has drafted is about reactors and the sentence he needs is about something he has not measured.
+
+Sandoval puts the bore gauge down on the mat, in its own chalk square.
+
+<Dialogue speaker="engineer">
+Twelve of anything scatter, Ensign. I've stripped Mk 3s that came off the same line a week apart and read forty kilonewtons between them on the same test cell. What I want from you is where the fleet's mean sits and how far out you'd be prepared to be wrong about it, and I want the second half or I don't want the first.
+</Dialogue>
+
+She wipes her hands and looks at the file over Ebele's shoulder from four feet away, which is as close as she is prepared to come to it.
+
+<Dialogue speaker="engineer" aside="Flat. To the file, not to either of you.">
+Because if those hulls are pushing harder than their plates say, the plates aren't the only thing they're lying about.
+</Dialogue>
+
+Twelve numbers, all above spec. The question is whether the *mean* is above spec by more than twelve reactors' worth of scatter can account for, and nothing on the slate answers it yet.
+
+</Scene>
+
+<Briefing title="The one-sample t-interval, and what it is about" topics={["7.2", "7.3"]}>
+<Briefing.Intuition>
+An interval estimates a parameter. Here the parameter is $\mu$, the mean of the measured quantity across the whole population the sample came from, and the interval is
+
+$$\bar{x} \pm t^\star \frac{s}{\sqrt{n}}$$
+
+Three quantities decide its width and exactly three.
+
+- **$n$**, through $\sqrt{n}$ in the standard error and through $t^\star$ on $n-1$ df. Both push the same way. Four times the sample gives a little better than half the margin.
+- **$C$**, the confidence level, through $t^\star$. A higher level buys a higher long-run capture rate by covering more ground, so it widens the interval. The level is chosen before the data exist and is never something the data earn.
+- **$s$**, the spread of the individuals. It is a property of the population, not a choice.
+
+The **population size is not on that list.** It appears once, in the 10% condition, as a yes-or-no gate on whether the procedure applies. Past that gate, twelve observations out of a register of four hundred buy exactly the precision twelve observations out of four thousand buy.
+
+**Sample size for a target margin.** Set the margin you want and solve:
+
+$$n = \left(\frac{z^\star \sigma}{m}\right)^2$$
+
+rounded **up**, because a fraction of an observation buys nothing. Planning uses $z^\star$ and a $\sigma$ from history for a circular reason worth saying out loud: $t^\star$ needs the df, the df needs $n$, and $n$ is what you are solving for. The interval you eventually build will use $t^\star$ and come out a little wider, so a careful planner adds a few.
+
+**Interpretation.** One sentence, four parts, and the exam marks all four.
+
+> We are **C% confident** that the **true mean** [quantity] of **[the population]** is between **[lower]** and **[upper]** [units].
+
+*Confident*, not *probable*: the parameter is a fixed number and this interval either contains it or does not. The level describes the long-run capture rate of the **procedure** that built it. Run the procedure on sample after sample and C% of the intervals it produces will contain $\mu$; that is the whole content of the claim.
+
+**Judging a claim.** An interval supports "the mean exceeds $k$" only when the *entire* interval lies above $k$, which is a question about the **lower endpoint** and not about $\bar{x}$. A value inside the interval is a value the data cannot rule out, and the honest sentence about it says so.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={`\\bar{x} \\pm t^\\star \\frac{s}{\\sqrt{n}}, \\qquad df = n - 1`} terms={{ '\\bar{x}': 'sample mean — the centre of the interval', 't^\\star': 'critical value of t on n − 1 df at level C', '\\frac{s}{\\sqrt{n}}': 'standard error of x̄: how far a sample mean typically falls from μ' }} label="One-sample t-interval for a population mean" />
+
+<Formula tex={`n = \\left(\\frac{z^\\star \\sigma}{m}\\right)^2 \\ \\text{(round up)}`} terms={{ 'm': 'the largest margin of error you are willing to report', '\\sigma': 'a planning value for the spread, from history or a pilot run' }} label="Sample size for a target margin on a mean" />
+</Briefing.Definition>
+<Briefing.Worked>
+*Halden Reach*'s boat bay tested **{fmtInt(clampN)}** rebuilt mooring clamps to first slip, in kilonewtons, against a rated {fmtInt(clampRated)} kN: {clampLoads.map((v) => fmt(v, 1)).join(', ')}.
+
+*Summaries.* $\bar{x}$ = {fmt(mean(clampLoads), 4)} kN, $s$ = {fmt(sd(clampLoads), 4)} kN, $n$ = {fmtInt(clampN)}, $df$ = {fmtInt(clampN - 1)}.
+
+*Standard error.* $s/\sqrt{n}$ = {fmt(sd(clampLoads), 4)} ÷ √{fmtInt(clampN)} = {fmt(clampSe, 4)} kN.
+
+*Critical value.* At 95% on {fmtInt(clampN - 1)} df, $t^\star$ = {fmt(tStar(0.95, clampN - 1), 4)}.
+
+*Margin.* {fmt(tStar(0.95, clampN - 1), 4)} × {fmt(clampSe, 4)} = {fmt(clampInterval.marginOfError ?? 0, 4)} kN.
+
+*Interval.* {fmt(mean(clampLoads), 4)} ± {fmt(clampInterval.marginOfError ?? 0, 4)} = **({fmt(clampInterval.ci[0], 2)}, {fmt(clampInterval.ci[1], 2)}) kN**.
+
+*In a sentence.* We are 95% confident that the true mean first-slip load of all clamps rebuilt to this standard is between {fmt(clampInterval.ci[0], 2)} and {fmt(clampInterval.ci[1], 2)} kilonewtons.
+
+*Does it carry the claim?* The bay wants to say the rebuild holds above the {fmtInt(clampRated)} kN rating. The lower endpoint is {fmt(clampInterval.ci[0], 2)}, so every value the interval contains is above {fmtInt(clampRated)}, and the claim is carried. Had the lower endpoint come out at {fmtInt(clampRated - 1)}, the honest report would say the data are consistent with the rating and cannot improve on it, whatever $\bar{x}$ happened to be.
+
+*What would a tighter margin cost?* The bay would like ±{fmt(clampTarget, 1)} kN. Planning on $\sigma$ = {fmt(sd(clampLoads), 4)} from this batch, $n = (z^\star \sigma / m)^2$ = ({fmt(zStar(0.95), 3)} × {fmt(sd(clampLoads), 4)} ÷ {fmt(clampTarget, 1)})² = {fmt(((zStar(0.95) * sd(clampLoads)) / clampTarget) ** 2, 2)}, rounded up to **{fmtInt(clampSize)} clamps**. Roughly {fmt(clampSize / clampN, 1)} times the batch for a margin {fmt((clampInterval.marginOfError ?? 0) / clampTarget, 1)} times narrower. Precision costs the square.
+</Briefing.Worked>
+<Briefing.Caution>
+**"95% of the clamps hold between {fmt(clampInterval.ci[0], 2)} and {fmt(clampInterval.ci[1], 2)} kN."** The interval estimates one number, the population mean. The individual clamps scatter around that mean by roughly $s$ = {fmt(sd(clampLoads), 2)} kN, which is about {fmt(sd(clampLoads) / (clampInterval.marginOfError ?? 1), 1)} times the margin, so the range the individuals occupy is far wider than the interval and the two are not the same statement. Say **true mean**, every time, and the error becomes impossible to write.
+
+**The interval is not about $\bar{x}$.** {fmt(mean(clampLoads), 2)} kN is known exactly and needs no interval. The unknown is $\mu$.
+
+**"95% probability that $\mu$ is in this interval."** $\mu$ is a fixed number and this interval either contains it or does not; there is nothing left to be probabilistic about once the data are in. The 95% belongs to the procedure. It is the rate at which intervals built this way capture the parameter over many samples.
+
+**Reading a claim off the point estimate.** $\bar{x}$ clears a published figure in every sample where the true mean is anywhere near it. The lower endpoint is what says the claim survives the sample having come out differently by an ordinary amount.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="TInterval from summary statistics">
+<Calculator.Step keys={['STAT', '▸ TESTS', '8:TInterval']} note={`Worked case: the ${clampN} mooring clamps above, not the yard file on the panels below.`}>The one-sample t-interval for a mean. Item 8, below `7:ZInterval` and above `9:2-SampZInt`.</Calculator.Step>
+<Calculator.Step keys={['Inpt:', 'Stats']}>Highlight **Stats** and press `ENTER`. **Data** reads a list you have typed into the editor; **Stats** takes the three summaries directly. Both give the same interval from the same numbers.</Calculator.Step>
+<Calculator.Read label="x̄" value={fmt(mean(clampLoads), 4)} />
+<Calculator.Read label="Sx" value={fmt(sd(clampLoads), 4)}>the **sample** standard deviation. Carry the digits the calculator gave you.</Calculator.Read>
+<Calculator.Read label="n" value={String(clampN)} />
+<Calculator.Read label="C-Level" value={fmt(0.95, 2)}>a decimal, not a percentage. Typing 95 here produces an error or an absurd interval, depending on the firmware.</Calculator.Read>
+<Calculator.Read label="Calculate" value={`(${fmt(clampInterval.ci[0], 4)}, ${fmt(clampInterval.ci[1], 4)})`}>the interval, with x̄, Sx and n echoed underneath. The screen never prints $t^\star$ or the margin; halve the width for the margin, or get $t^\star$ from `invT`.</Calculator.Read>
+<Calculator.Watch>**There is no σ field on this screen, and that is the point.** If you are looking at one you are on `7:ZInterval`, which wants a population standard deviation nobody has. Handing `ZInterval` your `Sx` produces a narrower interval that captures the mean less often than its own label claims: here it would read ({fmt(mean(clampLoads) - zStar(0.95) * clampSe, 4)}, {fmt(mean(clampLoads) + zStar(0.95) * clampSe, 4)}) against TInterval's ({fmt(clampInterval.ci[0], 4)}, {fmt(clampInterval.ci[1], 4)}).</Calculator.Watch>
+<Calculator.Watch>**`Sx` against `σx` on the `1-Var Stats` screen.** If you are getting the summaries off the data first, read `Sx`. `σx` divides by $n$ and describes a population measured in full; on these {fmtInt(clampN)} clamps it reads {fmt(sd(clampLoads) * Math.sqrt((clampN - 1) / clampN), 4)} against `Sx`'s {fmt(sd(clampLoads), 4)}. Close enough to look right and far enough to move the endpoint.</Calculator.Watch>
+<Calculator.Watch>**Inpt: Data with a stale list.** `TInterval` remembers the list name from last time. If `List:` says `L1` and `L1` still holds something from another module, the screen returns an interval for the wrong data and flags nothing. Check the `n` it echoes back before you write anything down.</Calculator.Watch>
+</Calculator>
+
+<ReactorOutputPanel />
+
+<TIntervalBench />
+
+<Drill generator="act-7/t-interval-endpoint" count={1} />
+<Drill generator="act-7/margin-of-error-mean" count={1} />
+<Drill generator="act-7/mean-interval-interpretation" count={1} />
+<Drill generator="act-7/sample-size-for-margin" count={1} />
+<Drill generator="act-7/interval-width-drivers" count={1} />
+<Drill generator="act-7/interval-justifies-claim" count={1} />
+
+<MissionBeat id="act-7-02-lower" kind="numeric" answer={OUTPUT_INTERVAL.ci[0]} answerKind="mean" digits={2} units="kN" label="THE FIGURE WITH ITS PLUS-OR-MINUS"
+  prompt={`The thrust column of Okonjo's file: **${fmtInt(REFIT_N)}** post-refit certifications, in kilonewtons, on the **POST-REFIT OUTPUT** panel above. Build the **${fmtPct(0.95, 0)}** one-sample t-interval for the mean post-refit output of a hull through this uprate, and report its **lower endpoint** in kN, to **two decimal places**.\n\nThe bench opens on this file's own summary statistics. Check them against the panel before you trust them.`}
+  hint={`x̄ ± t*·s/√n on ${fmtInt(REFIT_N - 1)} degrees of freedom. Carry full precision through the standard error and round once, at the endpoint.`}>
+  <Success>
+  <Dialogue speaker="engineer" aside="She reads the two endpoints off the slate and does not write them down, because she is not the one filing anything.">
+  {fmt(OUTPUT_INTERVAL.ci[0], 2)} to {fmt(OUTPUT_INTERVAL.ci[1], 2)}, and the plate says {fmtInt(MK3_SPEC_KN)}. That's a figure I'd sign, Skipper. It's got the give-or-take on it and the give-or-take doesn't reach the plate.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="She picks the bore gauge back up, which is her way of leaving a conversation open.">
+  That's not the bottom of it. Standard error first: the spread over root twelve, not the spread. Then the multiplier off eleven degrees of freedom, not off the normal table. Then take it off the mean. I'll wait.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-02-interpret" kind="interpretation" label="WHAT THE INTERVAL SAYS"
+  prompt={`Write the sentence that goes under the interval in the brief. Interpret **(${fmt(OUTPUT_INTERVAL.ci[0], 2)}, ${fmt(OUTPUT_INTERVAL.ci[1], 2)}) kN** in context. One sentence, and Ebele's struck line is the thing to avoid.`}
+  hint="Four parts: the level, the word confident, the TRUE mean named with its population, and both endpoints with units. Then check that no part of your sentence is about the twelve individual reactors."
+  {...confidenceIntervalInterpretation({
+    level: 0.95,
+    parameter: 'mean',
+    lower: OUTPUT_INTERVAL.ci[0],
+    upper: OUTPUT_INTERVAL.ci[1],
+    context: { population: 'Sulcus hulls through the Adlinda uprate', variable: 'certified thrust after refit', units: 'kN' },
+    digits: 2,
+  })}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He types it into the brief under the interval and then reads it back off the screen rather than out of his head.">
+  True mean, all Sulcus hulls through that uprate, not these twelve. Sir, that's a sentence about a fleet I've never seen the rest of.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer">
+  About the mean, Ensign. Not about the reactors. Those twelve are spread over a good twenty-odd kilonewtons between them and your interval is nine wide; it was never describing them and it never claimed to.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-02-claim" kind="choice" label="WHAT GOES IN THE BRIEF"
+  prompt={`The brief needs a line about the uprate. **Does this interval justify the claim that the Adlinda uprate raised mean post-refit output above the Mk 3 specification of ${fmtInt(MK3_SPEC_KN)} kN?**`}
+  options={[
+    `No. ${fmtInt(REFIT_N)} hulls is too few to support a claim about a fleet, whatever the endpoints say.`,
+    `Yes. The sample mean of ${fmt(mean(refitOutputs), 1)} kN is above ${fmtInt(MK3_SPEC_KN)}, and that is what the claim asserts.`,
+    `Yes. The whole interval lies above ${fmtInt(MK3_SPEC_KN)} kN, so every value of μ the data are consistent with is above the specification.`,
+    `No. The interval estimates the mean and the claim is about the uprate, and an interval cannot speak to what caused a difference.`,
+  ]}
+  correct={2}
+  feedback={[
+    'Twelve is small, and smallness has already been paid for: it went into the standard error and into the critical value, and it is why the interval is as wide as it is. A wide interval that still clears the specification is a claim the data carry.',
+    'The sample mean clears the specification in every sample where μ is anywhere near it, so on its own it establishes nothing. The lower endpoint is what says the claim survives the twelve having come out differently by an ordinary amount.',
+    null,
+    'Half right, and the half that is right belongs in a different sentence. This interval does establish that the mean output of uprated hulls sits above the plate. Whether the *uprate* did it is a question about comparison groups, and the claim as written is about where the mean sits.',
+  ]}
+  hint={`An interval supports "the mean exceeds k" when the whole interval lies above k. Compare the lower endpoint with ${fmtInt(MK3_SPEC_KN)} and ignore the sample mean entirely.`}>
+  <Success>
+  <Dialogue speaker="analyst">
+  So the line is: mean post-refit output above spec, interval, level, and the population it's about. Four things, sir. Not a percentage of reactors anywhere in it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="She holds up two fingers, then closes one of them.">
+  The bottom end against the plate. That's the whole test. What the mean of your twelve does is not evidence of anything on its own, Skipper, and I've watched a yard get away with that exact sentence twice.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-7-02-lower", "act-7-02-interpret", "act-7-02-claim"]}>
+
+<Scene stamp="MET 155/17:50" location="CSV Nightjar · engineering deck · docked" condensed="The interval clears the plate: mean post-refit output between 607.48 and 616.47 kN against a 588 kN specification, which is about 4.1 percent over. Sandoval says what a freighter does with more torch than its plate admits to. Nothing yet ties the uprate to the nineteen, and Ebele goes looking for the delay columns.">
+
+The valve gear is going back together in reverse chalk order and the deck is loud with it.
+
+The interval sits on the slate with the specification written under it. {fmt(OUTPUT_INTERVAL.ci[0], 2)} to {fmt(OUTPUT_INTERVAL.ci[1], 2)} kilonewtons, against a plate that says {fmtInt(MK3_SPEC_KN)}. The mean of the twelve is {fmt(mean(refitOutputs), 1)}, which is {fmtPct((mean(refitOutputs) - MK3_SPEC_KN) / MK3_SPEC_KN, 1)} over the rating, and the bottom of the interval is still {fmt(OUTPUT_INTERVAL.ci[0] - MK3_SPEC_KN, 1)} kilonewtons clear of it.
+
+Sandoval reads it, then reads the refit dates beside it.
+
+<Dialogue speaker="engineer" aside="She has a seat face in one hand and has stopped turning it over.">
+Four percent. Skipper, a freighter doesn't need more torch unless it intends to carry more than it says. You can't spend it. You can't sell it. On a published profile you can't even fly it, because the profile is what the Authority plots you against and the Authority will want to know why you're early.
+</Dialogue>
+
+<Dialogue speaker="analyst" aside="Quietly, because the rating at the lathe is two metres away.">
+Unless you aren't early.
+</Dialogue>
+
+Sandoval puts the seat face down.
+
+Twelve hulls uprated four percent above their plates, and every one of them still flying the three-milligee profile they file. A hull with more thrust than it declares and no time saved on the run is a hull carrying something, and the file on the slate does not say that. It says the reactors are stronger. Nothing in it says what they are pushing.
+
+The other two columns in Okonjo's file are still untouched: the Ledger's Mark-9 delay on the run before each uprate and on the run after. Ebele has the twelve pairs up on the second slate before you have finished the sentence, and he has them in the wrong shape, side by side as two separate columns of twelve.
+
+<Dialogue speaker="engineer" aside="On her way past, not stopping.">
+Eighteen hundred, Skipper. The number four seat.
+</Dialogue>
+
+</Scene>
+
+<LogEntry
+  title="x̄ ± t*·s/√n, and the word 'true'"
+  concept="A one-sample t-interval estimates the population mean: the sample mean plus or minus a critical value from t on n − 1 degrees of freedom times the standard error s/√n. Its width answers to three things, the sample size, the confidence level and the spread of the individuals, and to nothing else; the population size enters only as the 10% condition. The interpretation names the level, the word confident, the TRUE mean of a named population, and both endpoints with units. An interval justifies a claim that the mean exceeds a published figure only when the whole interval lies above it, which makes the lower endpoint the test and the sample mean irrelevant."
+  formula="\bar{x} \pm t^\star \frac{s}{\sqrt{n}}, \quad df = n - 1 \qquad n = \left(\frac{z^\star\sigma}{m}\right)^2 \text{ (round up)}"
+  mistake="“95% of the individuals fall in the interval.” The interval is about one number, the population mean. The individuals scatter around that mean by roughly s, which is several times the width of the interval."
+  tags={['t-interval', 'confidence interval', 'interpretation', 'margin of error', 'sample size', 'claim', '7.2', '7.3']}
+/>
+
+</Gated>

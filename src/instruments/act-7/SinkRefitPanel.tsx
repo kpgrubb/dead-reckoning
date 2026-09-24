@@ -52,8 +52,8 @@ export function SinkRefitPanel({
   const n = selected.length
   const before = useMemo(() => selected.map((x) => x.before_h), [selected])
   const after = useMemo(() => selected.map((x) => x.after_h), [selected])
-  /** before − after, so a loss of endurance reads positive. */
-  const losses = useMemo(() => pairedDifferences(before, after), [before, after])
+  /** before − after, so a loss of endurance reads positive. One matched run supports no inference. */
+  const losses = useMemo(() => (before.length >= 2 ? pairedDifferences(before, after) : before.map((v, i) => v - after[i])), [before, after])
   /** The same eight runs as a fraction of each run's own design endurance. */
   const fractions = useMemo(() => selected.map((x) => (x.after_h - x.before_h) / x.before_h), [selected])
 

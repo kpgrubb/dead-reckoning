@@ -39,11 +39,11 @@ export const feederCoverage = feeder.reachable / feeder.listed
 export const feederResponse = feeder.answered / feeder.contacted
 export const feederYes = feeder.yes / feeder.answered
 
-<Scene stamp="MET 54/09:20" location="Wardroom · braking at 4 mgee · 0.61 AU from Callisto" condensed={`Eight days past turnover, the Board's third attachment is on the wardroom table: the Lane Authority's dock survey, ${fmtInt(CERES_SURVEY.n)} masters, ${fmtPct(CERES_SURVEY.pYes, 0)} of them agreeing that pirates are responsible. Ebele has taken it apart and found the mechanism — a notice at Ceres, answered by whoever wanted to answer it — and then proposes to fix it by asking twice as many masters at Ceres. Ferrier does not answer him.`}>
+<Scene stamp="MET 54/09:20" location="Wardroom · braking at 4 mgee · 0.61 AU from Callisto" condensed={`Eight days past turnover, the Board's third attachment is on the wardroom table: the Lane Authority's dock survey, ${fmtInt(CERES_SURVEY.n)} masters, ${fmtPct(CERES_SURVEY.pYes, 0)} of them agreeing that pirates are responsible. Ebele has taken it apart and found the mechanism: a notice at Ceres, answered by whoever wanted to answer it. Then he proposes to fix it by asking twice as many masters at Ceres. Ferrier does not answer him.`}>
 
-Eight days of braking and the deck still knows which way is down, which is the only thing about this passage that has not changed. Sandoval says the wings are carrying it and will keep carrying it as long as nobody asks the ship to be quiet. Nobody has asked the ship to be quiet since MET 46.
+Eight days of braking. The deck still knows which way is down and your knees have stopped arguing with it. Sandoval says the wings are carrying the load and will keep carrying it as long as nobody asks the ship to be quiet. Nobody has asked since MET 46.
 
-The wardroom table is the largest flat surface aboard and Ebele has covered two thirds of it with the Board's third attachment. He has been at it since the watch changed. There is a cup at his elbow with a skin on it.
+The wardroom table is the largest flat surface aboard and Ebele has covered two thirds of it with the Board's third attachment. He has been at it since the watch changed. There is a cup at his elbow with a skin on it. You move the cup to the fiddle rail before you sit down.
 
 "So it's a real survey, sir," he says. "That's the thing I want to say first. Somebody went out and collected it. The Authority posted a notice at the Ceres dock office, masters filled in a form, the forms were counted, the count is right. I recomputed every line of it. It is not fabricated."
 
@@ -51,15 +51,15 @@ The wardroom table is the largest flat surface aboard and Ebele has covered two 
 
 "It isn't a sample of the Lane." He turns the page round so it faces you. "It's a sample of who was bored at Ceres."
 
-Solberg puts the Callisto lag on the bulkhead board without being asked — fourteen minutes thirty-two seconds each way, and rising at about sixteen seconds a day — and goes back to the traffic log. On the Lane itself the distances are human: the corridor is twenty-five light-seconds wide here, and a master in the same slice of it is a quarter of a minute away, for about a day, and then gone.
+Solberg puts the Callisto lag on the bulkhead board without being asked. Fourteen minutes thirty-two seconds each way, rising about sixteen seconds a day. Then he goes back to the traffic log.
 
-Ebele is already onto the fix, because he is twenty-three and the fix is the interesting part.
+Ebele is already onto the fix. He has the next two dock rotations sketched on the back of the attachment, in pencil, with dates against them.
 
 "So we double it, sir. The Authority took {fmtInt(CERES_N)}. If we ask the dock office to run the notice again next rotation and get {fmtInt(doubleCeres)}, the margin halves and the number stops being soft. Two rotations, no link time, and Valhalla has a survey it can't argue with."
 
-Ferrier is at the far end of the table with the Register's index open in front of her, and she does not look up, and she does not say anything.
+Ferrier is at the far end of the table with the Register's index open in front of her. She does not look up.
 
-The ventilation runs. Somewhere aft a pump changes note and changes back. Ebele hears the silence get longer, and then hears what is in it, and stops.
+The ventilation runs. Somewhere aft a pump changes note and changes back. Ebele starts another sentence about rotations and gets four words into it.
 
 You clear the attachment off the table and put three empty circles on the plot, one inside the next, and the third one off to the side touching neither.
 
@@ -67,7 +67,7 @@ You clear the attachment off the table and put three empty circles on the plot, 
 
 </Scene>
 
-<Scene variant="transmission" stamp="Attachment C" location="Lane Authority · Ceres dock office · Master Opinion Return, Close Season 2184" condensed={`The Authority's return: a notice posted at the Ceres dock office, ${fmtInt(CERES_SURVEY.n)} masters answering of their own accord, and Q4 — which names pirates from the Free Holds before it asks anything — returning ${fmtPct(CERES_SURVEY.pYes, 0)} yes.`}>
+<Scene variant="transmission" stamp="Attachment C" location="Lane Authority · Ceres dock office · Master Opinion Return, Close Season 2184" condensed={`The Authority's return: a notice posted at the Ceres dock office, ${fmtInt(CERES_SURVEY.n)} masters answering of their own accord, and a fourth question that names pirates from the Free Holds before it asks anything, returning ${fmtPct(CERES_SURVEY.pYes, 0)} yes.`}>
 
 **LANE AUTHORITY · CERES DOCK OFFICE · MASTER OPINION RETURN**
 
@@ -75,41 +75,41 @@ You clear the attachment off the table and put three empty circles on the plot, 
 
 *Item 4.* "{CERES_Q4}"
 
-*Result.* Affirmative: **{fmtInt(CERES_SURVEY.yes)}** of {fmtInt(CERES_SURVEY.n)} — {fmtPct(CERES_SURVEY.pYes, 0)}. It is noted that the masters' view of the incidents is substantially settled.
+*Result.* Affirmative: **{fmtInt(CERES_SURVEY.yes)}** of {fmtInt(CERES_SURVEY.n)}, {fmtPct(CERES_SURVEY.pYes, 0)}. It is noted that the masters' view of the incidents is substantially settled.
 
 </Scene>
 
 <Dialogue speaker="xo" aside="She has the Authority's return and the Lane schedule side by side and is reading neither of them.">
-A bigger draw from the same list is a bigger draw from the same list. The data says {fmtPct(CERES_SURVEY.pYes, 0)} of the masters who answered a notice at a dock office; it does not say anything about the masters who did not. Say it back to me, Ensign, with the word *who* in it.
+A bigger draw from the same list is a bigger draw from the same list. The data says {fmtPct(CERES_SURVEY.pYes, 0)} of the masters who answered a notice at a dock office. It says nothing about the masters who did not. Put the word *who* into the Board's sentence, Ensign, and read me what is left of it.
 </Dialogue>
 
-<Briefing title="Population, frame, sample — and what each design licenses" topics={["3.1", "3.2"]}>
+<Briefing title="Population, frame, sample, and what each design licenses" topics={["3.1", "3.2"]}>
 <Briefing.Intuition>
 Three sets, and a study is only as honest as the gaps between them.
 
 1. **The population** is who the conclusion is about. It is fixed by the *claim*, not by the data: the moment a sentence says "the masters of the Lane", the population is the masters of the Lane, whatever list the numbers came off.
-2. **The sampling frame** is the list you could actually have drawn from — the schedule, the register, the roll of names at the counter. It is the study's real reach. What is in the population and not in the frame is **undercoverage**; what is in the frame and not in the population is **overcoverage**, and it is just as damaging, because those units answer too.
+2. **The sampling frame** is the list you could actually have drawn from: the schedule, the register, the roll of names at the counter. It is the study's real reach. What is in the population and not in the frame is **undercoverage**; what is in the frame and not in the population is **overcoverage**, and it is just as damaging, because those units answer too.
 3. **The sample** is who ended up in the data. It is always a subset of the frame. It can never repair the frame.
 
 That last sentence is the whole module. Enlarging a sample shrinks the *variability* of the estimate around whatever the frame's answer is. It moves the estimate no closer to the population's answer, because the population's answer was never on the list.
 
 Three kinds of study, and three different licences:
 
-- A **sample survey** measures units without disturbing them and is designed to describe a population. If the units were chosen at **random from a frame that covers the population**, the estimate generalizes to that population — and to nothing wider.
-- An **observational study** records units as it finds them — grouped by something they already were, like owner class or port of registry. It can show association. It cannot say *because*, because whatever sorted the units into groups may also have sorted the response.
+- A **sample survey** measures units without disturbing them and is designed to describe a population. If the units were chosen at **random from a frame that covers the population**, the estimate generalizes to that population, and to nothing wider.
+- An **observational study** records units as it finds them, grouped by something they already were, like owner class or port of registry. It can show association. It cannot say *because*, because whatever sorted the units into groups may also have sorted the response.
 - An **experiment** *imposes* a treatment on units, and if it does so **at random**, the groups differ systematically in nothing but the treatment, so a difference too large to be chance can be attributed to it.
 
 The two randomizations are different things and buy different goods. Random **selection** buys generalization. Random **assignment** buys causation. A study with neither describes the individuals in it and stops there.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="s \subseteq F, \qquad \text{undercoverage} = P \setminus F, \qquad \text{overcoverage} = F \setminus P" terms={{ 'P': 'the population — who the conclusion is about', 'F': 'the sampling frame — the list you could have drawn from', 's': 'the sample — who is in the data' }} label="The three sets" />
+<Formula tex="s \subseteq F, \qquad \text{undercoverage} = P \setminus F, \qquad \text{overcoverage} = F \setminus P" terms={{ 'P': 'the population: who the conclusion is about', 'F': 'the sampling frame: the list you could have drawn from', 's': 'the sample: who is in the data' }} label="The three sets" />
 
 <Formula tex="\text{coverage} = \frac{|P \cap F|}{|P|}, \qquad \text{response rate} = \frac{|s|}{|\text{contacted}|}" terms={{ '|P \\cap F|': 'population units the frame can reach', '|s|': 'units that gave a usable answer' }} label="Two numbers every method section owes the reader" />
 </Briefing.Definition>
 <Briefing.Worked>
-Your own 2176 return from *Asgard*, {ASGARD_2176.years}: {fmtInt(ASGARD_2176.losses)} losses in {fmtInt(ASGARD_2176.transits)} transits, a rate of {fmtPct(asgardRate, 2)} per transit. That was not a sample of anything. Every scheduled transit in those years was in the file, so the frame *was* the population and the coverage was {fmtPct(1, 0)} — a census, and an observational one: nobody assigned a hull to anything. It licensed exactly one kind of sentence, a description of {ASGARD_2176.years}, and the Directorate's staff tried to read it as a forecast anyway.
+Your own 2176 return from *Asgard*, {ASGARD_2176.years}: {fmtInt(ASGARD_2176.losses)} losses in {fmtInt(ASGARD_2176.transits)} transits, a rate of {fmtPct(asgardRate, 2)} per transit. That was not a sample of anything. Every scheduled transit in those years was in the file, so the frame *was* the population and the coverage was {fmtPct(1, 0)}. A census, and an observational one: nobody assigned a hull to anything. It licensed exactly one kind of sentence, a description of {ASGARD_2176.years}, and the Directorate's staff tried to read it as a forecast anyway.
 
-Now a case with gaps in it. The Saturn-feeder masters' return, taken the same season: the feeder registry lists {fmtInt(feeder.listed)} masters, of whom {fmtInt(feeder.reachable)} were inside relay reach in the window and could be contacted at all. Coverage is {fmtInt(feeder.reachable)} ÷ {fmtInt(feeder.listed)} = **{fmtPct(feederCoverage, 0)}**: {fmtInt(feeder.listed - feeder.reachable)} masters were not on the list the survey could draw from, whatever they think. Of the {fmtInt(feeder.contacted)} drawn at random from the reachable list, {fmtInt(feeder.answered)} answered — a response rate of **{fmtPct(feederResponse, 0)}** — and {fmtInt(feeder.yes)} of those, **{fmtPct(feederYes, 0)}**, reported a hostile approach.
+Now a case with gaps in it. The Saturn-feeder masters' return, taken the same season: the feeder registry lists {fmtInt(feeder.listed)} masters, of whom {fmtInt(feeder.reachable)} were inside relay reach in the window and could be contacted at all. Coverage is {fmtInt(feeder.reachable)} ÷ {fmtInt(feeder.listed)} = **{fmtPct(feederCoverage, 0)}**: {fmtInt(feeder.listed - feeder.reachable)} masters were not on the list the survey could draw from, whatever they think. Of the {fmtInt(feeder.contacted)} drawn at random from the reachable list, {fmtInt(feeder.answered)} answered, a response rate of **{fmtPct(feederResponse, 0)}**, and {fmtInt(feeder.yes)} of those, **{fmtPct(feederYes, 0)}**, reported a hostile approach.
 
 Write the scope honestly and it reads: *{fmtPct(feederYes, 0)} of responding masters, drawn at random from the {fmtInt(feeder.reachable)} feeder masters inside relay reach.* Not {fmtPct(feederYes, 0)} of the feeder. Now double the draw to {fmtInt(2 * feeder.contacted)}: the interval narrows by about a factor of {fmt(Math.sqrt(2), 2)}, and the {fmtInt(feeder.listed - feeder.reachable)} masters outside relay reach are still outside relay reach.
 </Briefing.Worked>
@@ -132,31 +132,31 @@ Write the scope honestly and it reads: *{fmtPct(feederYes, 0)} of responding mas
   options={[
     `Population: every master on the Lane this Close Season. Frame: the Lane schedule, ${fmtInt(FRAME_N)} masters in transit. Sample: the ${fmtInt(CERES_SURVEY.n)} who answered.`,
     `There is no frame worth naming: any master could have walked past the notice, so the ${fmtInt(CERES_SURVEY.n)} are effectively a random sample of the Lane.`,
-    `Population: the masters of the Lane, because that is who the Board's sentence is about. Frame: the ${fmtInt(ceresFrame.length)} masters who called at the Ceres dock office inside the survey window — the only masters who could have been asked. Sample: the ${fmtInt(CERES_SURVEY.n)} of them who chose to answer the notice.`,
+    `Population: the masters of the Lane, because that is who the Board's sentence is about. Frame: the ${fmtInt(ceresFrame.length)} masters who called at the Ceres dock office inside the survey window, the only masters who could have been asked. Sample: the ${fmtInt(CERES_SURVEY.n)} of them who chose to answer the notice.`,
     `The frame is sound and the sample is thin. Run the notice again for ${fmtInt(doubleCeres)} returns instead of ${fmtInt(CERES_SURVEY.n)} and the estimate becomes a Lane figure.`,
   ]}
   correct={2}
   feedback={[
     `The schedule is the frame *we* could draw from. The Authority never held it. Its list was whoever came through a door at Ceres, which is why ${fmtInt(ceresOffLane)} of its respondents are not on the Lane at all.`,
-    'A notice is a filter, not a lottery. Nobody had a known chance of being in this sample — a master had to arrive at Ceres, walk past the hall, and then want to answer.',
+    'A notice is a filter, not a lottery. Nobody had a known chance of being in this sample. A master had to arrive at Ceres, walk past the hall, and then want to answer.',
     null,
     'This is the module. Doubling the returns halves nothing that matters: the second thousand comes off the same list as the first, and every master not on that list is still not on it.',
   ]}
   hint="The population is set by the sentence the Board wrote, not by the data. Then ask the only question that finds a frame: who could physically have been asked?">
   <Success>
   <Dialogue speaker="analyst" aside="He labels the third circle last, the one that touches neither of the others, and sits looking at it.">
-  So the outer circle is the Lane and the middle one is the dock office, and they overlap, but not the way the caption assumes — {fmtInt(ceresOnLane)} of the {fmtInt(CERES_SURVEY.n)} are masters who are on the schedule now, out of {fmtInt(FRAME_N)}. That's {fmtPct(frameCoverage, 0)} coverage of the corridor. And the third circle is everyone the schedule cannot reach at all — of the {fmtInt(POPULATION_N)} masters working this Close Season, {UNREACHABLE_ORDER.map((s) => `${fmtInt(unreachableStatus[s])} ${STATUS_LABEL[s]}`).join('; ')} — {fmtInt(unreachable.length)} masters who are on nobody's tight-beam this month.
+  So the outer circle is the Lane and the middle one is the dock office. They overlap, but not the way the caption assumes. {fmtInt(ceresOnLane)} of the {fmtInt(CERES_SURVEY.n)} are masters who are on the schedule now, out of {fmtInt(FRAME_N)}. That's {fmtPct(frameCoverage, 0)} coverage of the corridor. And the third circle is everyone the schedule cannot reach at all. Of the {fmtInt(POPULATION_N)} masters working this Close Season: {UNREACHABLE_ORDER.map((s) => `${fmtInt(unreachableStatus[s])} ${STATUS_LABEL[s]}`).join('; ')}. {fmtInt(unreachable.length)} masters who are on nobody's tight-beam this month.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She puts one finger on the middle circle and leaves it there.">
-  The population is whoever the claim is about, and the claim is the Board's, not ours. Then the frame. Not the list we wish they had used — the list a master's name had to be on before anybody at that office could have collected it.
+  The population is whoever the claim is about, and the claim is the Board's, not ours. Then the frame. Not the list we wish they had used. The list a master's name had to be on before anybody at that office could have collected it.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <MissionBeat id="act-3-01-question" kind="interpretation" label="THE QUESTION WE ASK"
-  prompt="Before anybody spends a minute of link time, Ferrier wants the survey's object in the log, in one sentence. Write the question our own survey has to answer: what is being asked, of whom, and — in the same sentence — what this survey must not turn out to be a survey of."
+  prompt="Before anybody spends a minute of link time, Ferrier wants the survey's object in the log, in one sentence. Write the question our own survey has to answer: what is being asked, of whom, and, in the same sentence, what this survey must not turn out to be a survey of."
   hint="Three things and no more: the people (say which masters, and how many are on that list), the thing measured (what a master has seen with their own eyes, and what they believe), and the frame you are refusing (the volunteers who arrived at a dock and answered a notice)."
   {...frameQuestionRubric()}>
   <Success>
@@ -166,7 +166,7 @@ Write the scope honestly and it reads: *{fmtPct(feederYes, 0)} of responding mas
   </Success>
   <Failure>
   <Dialogue speaker="analyst" aside="He is writing it out again before you have finished reading it back.">
-  Yes, sir. That's — yes. I wrote what we want to *find*, not who we are asking. Whom, then what they saw, then the list. Say who is not on it.
+  I wrote what we want to *find*. Not who we are asking. Whom, then what they have seen with their own eyes, then the list they came off. And say who is not on the list.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -175,7 +175,7 @@ Write the scope honestly and it reads: *{fmtPct(feederYes, 0)} of responding mas
 
 <Scene stamp="MET 54/14:05" location="Wardroom · braking at 4 mgee · 0.61 AU from Callisto" condensed={`The preliminary gets a line that survives Valhalla: the Authority's figure is a number about Ceres dock volunteers, and what masters on the Lane have actually seen is not yet in evidence. Solberg prices a contact at ${fmtInt(COST.contactMin)} minutes plus or minus ${fmtInt(COST.contactSd)}, and counts what all ${fmtInt(FRAME_N)} would cost: ${fmt(contactHours, 0)} hours of link, ${fmt(contactDays, 1)} days of it.`}>
 
-The line goes into the preliminary in the register the Board taught you to write in, which is the register that gives them nothing to hold.
+You write the line into the preliminary in the Board's own register. Flat, passive, nothing in it to take hold of.
 
 *The Authority's return of {fmtPct(CERES_SURVEY.pYes, 0)} describes masters who called at the Ceres dock office during the survey window and chose to complete a form. It is an accurate figure about those masters. What the masters now in transit on the Lane have seen, or believe, is not in evidence before this Board.*
 
@@ -183,25 +183,23 @@ Ebele reads it twice. "It doesn't say they're wrong."
 
 "They are not wrong," Ferrier says. "They asked {fmtInt(CERES_SURVEY.n)} people a question and counted the answers correctly. We don't know what the Lane thinks. Neither do they. The difference between us is that we are about to find out and put the method on the page."
 
-Solberg has been costing it since the middle of the forenoon watch, because nobody on this ship asks him for a number twice.
+Solberg has been costing it since the middle of the forenoon watch and has the sheet in his hand before anybody asks for it.
 
 <Dialogue speaker="comms" aside="He has the schedule up with the tight-beam windows shaded in, one narrow band per hull.">
-Sir. One master, raised on tight-beam and worked through a return: fifty-five minutes of link, plus or minus fifteen. That is the acquisition, the lag, the reading and the repeat-backs. The corridor is twenty-five light-seconds wide here, so a master is inside the beam for about a day and then is not, and the window does not come back.
+Sir. One master, raised on tight-beam and worked through a return: {fmtInt(COST.contactMin)} minutes of link, plus or minus {fmtInt(COST.contactSd)}. That is the acquisition, the lag, the reading and the repeat-backs. The corridor is twenty-five light-seconds wide here, so a master is inside the beam for about a day and then is not, and the window does not come back.
 </Dialogue>
 
 <Dialogue speaker="comms" aside="He does the arithmetic on the board rather than say it, then says it.">
 All {fmtInt(FRAME_N)} of them would be {fmt(contactHours, 0)} hours. That is {fmt(contactDays, 1)} days of continuous link, and we have twenty-nine days before torch-off, and I sleep. I would like it recorded that I raised the sleeping.
 </Dialogue>
 
-Ferrier does not smile, which after eight days of braking is the same as smiling.
-
-"Then we are not asking all of them," she says. "Which means the Ensign has one more thing to learn before Tuesday, and it is the part the Authority got wrong twice."
+"Then we are not asking all of them," Ferrier says. "Which leaves the Ensign the part the Authority got wrong twice, and he has until Tuesday to have it on the plot."
 
 </Scene>
 
 <LogEntry
   title="The frame is the list you could have drawn from"
-  concept="A study has three sets: the population the claim is about, the sampling frame — the list any unit had to be on before it could possibly be asked — and the sample that ended up in the data. Population units missing from the frame are undercoverage and no amount of sampling reaches them; a sample survey with random selection generalizes to its frame's population and no wider, an observational study shows association only, and only random assignment in an experiment licenses the word because."
+  concept="A study has three sets: the population the claim is about; the sampling frame, which is the list any unit had to be on before it could possibly be asked; and the sample that ended up in the data. Population units missing from the frame are undercoverage and no amount of sampling reaches them; a sample survey with random selection generalizes to its frame's population and no wider, an observational study shows association only, and only random assignment in an experiment licenses the word because."
   formula="s \subseteq F, \qquad \text{undercoverage} = P \setminus F, \qquad \text{coverage} = \frac{|P \cap F|}{|P|}"
   mistake="Enlarging a biased sample. Sample size governs how tightly estimates cluster; the frame governs what they cluster around. Doubling a dock-office survey buys a more precise measurement of the dock."
   tags={['population', 'sampling frame', 'sample', 'undercoverage', 'survey', 'observational study', 'experiment', 'scope of inference', '3.1', '3.2']}

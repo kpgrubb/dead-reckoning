@@ -58,7 +58,10 @@ Calculator.Step = ({ keys, note, children }: { keys?: readonly string[]; note?: 
   </li>
 )
 
-/** A value to read off the screen once the command has run. */
+/**
+ * A value to read off the screen once the command has run. Children are optional, but give at
+ * least the first `Read` in a run a gloss — a column of bare screen chips looks unfinished.
+ */
 Calculator.Read = ({ label, value, children }: { label: string; value?: string; children?: ReactNode }) => (
   <li className="dr-calc84__step dr-calc84__step--read">
     <span className="dr-calc84__screen">

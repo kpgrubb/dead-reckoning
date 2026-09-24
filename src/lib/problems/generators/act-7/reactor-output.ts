@@ -190,7 +190,7 @@ export const intervalJustifiesClaim = defineGenerator({
       ({ lo, hi, a, b }) => a < b && lo > a && (bothCleared ? lo > b : b > lo && b < hi),
     )
 
-    const { n, xbar, s, lo, hi, a: figureA, b: figureB } = draw
+    const { n, xbar, lo, hi, a: figureA, b: figureB } = draw
     const digits = c.digits + 1
     const clearsA = lo > figureA
     const clearsB = lo > figureB
@@ -253,11 +253,7 @@ export const intervalWidthDrivers = defineGenerator({
       (r) => n * r.int(30, 80),
       (v) => !reservedCount(v),
     )
-    const bigN = retry(
-      rng,
-      () => 4 * n,
-      (v) => !reservedCount(v),
-    )
+    const bigN = 4 * n
 
     const cLow = 0.9
     const cHigh = 0.99

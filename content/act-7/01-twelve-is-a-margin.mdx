@@ -1,0 +1,242 @@
+---
+id: act-7-01
+act: 7
+title: "Twelve Is a Margin"
+kind: module
+ap_topics: ["7.1", "7.2"]
+objectives:
+  - "Explain why replacing σ with s changes the sampling distribution of a standardized mean, and name the distribution that results"
+  - "Find t* and tail areas for a stated confidence level on n − 1 degrees of freedom, and say how far they sit from the normal ones"
+  - "State and check the three conditions for a one-sample t procedure on a sample too small for the central limit theorem"
+prereqs: ["act-6-checkpoint"]
+est_minutes: 30
+calc_briefing: null
+summary: "A yard file of twelve hulls arrives on the tender. Ebele reaches for 1.96, and nobody in the wardroom can say what it is doing there."
+---
+
+import { fmt, fmtInt, fmtPct, mean, sd, skewness, outliers, tStar, zStar, t, normal } from '@/lib/stats'
+import { REFIT_N, MK3_SPEC_KN, refitSet } from '@/instruments/act-7/data'
+import { TvsNormal } from '@/instruments/act-7/TvsNormal'
+
+export const pumpRunUp = [41.2, 38.6, 44.1, 39.8, 42.7, 40.3, 43.5]
+export const pumpN = pumpRunUp.length
+export const pumpDf = pumpN - 1
+export const pumpSe = sd(pumpRunUp) / Math.sqrt(pumpN)
+export const pumpT = tStar(0.95, pumpDf)
+export const pumpZ = zStar(0.95)
+
+<Scene stamp="MET 152/09:40" location="CSV Nightjar · wardroom · docked in the lee of CSV Halden Reach, 0.12 AU sunward of the Ceres approach" condensed="Fifty hours alongside the tender with the heat sink signed across to her for six days, and nothing aboard to spend or watch. Sandoval's old lead fitter at Adlinda has forwarded the yard's uprate logs: twelve Sulcus hulls through a Mk 3 drive uprate, 2181–83, with the Bureau's post-refit thrust certification against each one. Ebele has a margin half built and 1.96 written at the top of it. Ferrier asks where the 1.96 came from and the wardroom goes quiet.">
+
+The tender's pumps come up through the deck at a pitch a quarter-tone off *Nightjar*'s own, and after fifty hours of it your jaw aches on the left side.
+
+Six days without a cellar. Sandoval signed the sink across to *Halden Reach* at MET 151 and the umbilical has been carrying the ship's heat out through the tender's loops ever since. Nothing to watch. Nothing to spend. The wardroom is the warmest it has been since Ceres and eleven of the sixteen have been sleeping in it in shifts, so the bench smells of people.
+
+You want the table. Ebele has the table.
+
+He has had it since 05:00, two slates out, the second one propped against the coffee flask so that reaching for the flask means going round him. You go round him.
+
+The file came aboard on the tender's relay at 04:12 with no covering note. Sandoval's old lead fitter at Adlinda, a woman named Okonjo who signed off on *Nightjar*'s own frames, heard somewhere that the assessing officer's report has been referred for review, and sent the yard's refit logs instead of waiting to be asked. Twelve Sulcus hulls through a Mk 3 drive uprate between 2181 and 2183. For each hull: the date the yard signed it off, the Bureau's thrust certification afterwards, and the Ledger's Mark-9 delay on the run before and the run after.
+
+Twelve rows. Fourteen months of a program, and the whole of it.
+
+Ebele has been on the thrust column since 06:00 and he has a margin half built. At the top of the slate, boxed, is the number he plans to multiply by.
+
+<Dialogue speaker="analyst" aside="He turns the slate so you can see it, which means he is not finished.">
+So: mean output, standard error, then the margin. It's the same shape as the loss-rate work, sir, only it's a mean now instead of a proportion. The multiplier's the multiplier.
+</Dialogue>
+
+Ferrier comes through from the lock with the tender's watch bill under her arm and reads the slate upside down on her way past. She stops.
+
+<Dialogue speaker="xo">
+Where did the 1.96 come from.
+</Dialogue>
+
+Not a question the way she says it. Ebele says the table, sir. Ninety-five percent. He has used it eleven times this quarter and nobody has queried it once.
+
+<Dialogue speaker="xo">
+Eleven times on what. How many hulls under each of those.
+</Dialogue>
+
+Hundreds, he says. Then he looks at the row count on the second slate and stops looking at anybody.
+
+Sandoval is in the doorway with a coupling in her hand, not coming in, waiting for a gap in the conversation the way she waits for a gap in traffic.
+
+<Dialogue speaker="engineer" aside="To Ebele. She does not put the coupling down.">
+Twelve is a margin, Ensign. Not a fleet.
+</Dialogue>
+
+<Dialogue speaker="analyst">
+Yes, ma'am. I know the rule. Small sample, you use t.
+</Dialogue>
+
+Ferrier sets the watch bill down on the corner of the table, squaring it with the edge.
+
+<Dialogue speaker="xo">
+Then tell me what changes at thirty.
+</Dialogue>
+
+He starts twice. The pumps go on through the deck, and the flask is empty, and nobody in the compartment can say what the 1.96 was doing at the top of the slate.
+
+</Scene>
+
+<Briefing title="What happens when s stands in for σ" topics={["7.1", "7.2"]}>
+<Briefing.Intuition>
+Unit 5 standardized a sample mean like this:
+
+$$z = \frac{\bar{x} - \mu}{\sigma / \sqrt{n}}$$
+
+and every number in the denominator was fixed before the sample was drawn. $\sigma$ was a property of the population, $n$ a property of the design. Only the numerator varied from sample to sample, and the result followed a standard normal distribution.
+
+In practice $\sigma$ is not available. You have the sample, so you estimate the population standard deviation with the sample standard deviation $s$, and the statistic becomes
+
+$$t = \frac{\bar{x} - \mu}{s / \sqrt{n}}$$
+
+Now **both** parts vary. Each new sample produces a new $\bar{x}$ *and* a new $s$, and the two are not in step. A sample that happens to come out tightly bunched gives a small $s$, which shrinks the denominator, which inflates the statistic. A sample that happens to come out spread gives a large $s$ and deflates it. The extra wobble shows up where it matters most: far more of these statistics land out in the tails than a standard normal distribution would put there.
+
+The distribution they do follow is the **t distribution**, and it comes in a family indexed by one number, the **degrees of freedom**. For a one-sample procedure, $df = n - 1$.
+
+Why $n - 1$, and why it matters here: $s$ is built from the deviations $x_i - \bar{x}$, and those deviations always sum to exactly zero, because $\bar{x}$ was computed from the same data. Fix any $n - 1$ of them and the last one is determined. Only $n - 1$ pieces of information about spread are free, which is the quantity the distribution is indexed by.
+
+Every t distribution is symmetric about zero and bell-shaped, like the normal, and shorter in the middle with heavier tails. As $df$ grows, $s$ estimates $\sigma$ more reliably, the extra wobble shrinks, and the t curve closes on the standard normal. It closes fast at first and then very slowly, and it never arrives.
+
+The practical consequence is the **critical value**. A confidence interval for a mean is
+
+$$\bar{x} \pm t^\star \frac{s}{\sqrt{n}}$$
+
+and $t^\star$ is always larger than the $z^\star$ at the same level. At 95% and $df = 6$, $t^\star$ is {fmt(tStar(0.95, 6), 3)} against $z^\star$ = {fmt(zStar(0.95), 3)}: a margin {fmtPct(tStar(0.95, 6) / zStar(0.95) - 1, 0)} wider. At $df = 60$ it is {fmt(tStar(0.95, 60), 3)}, and at $df = 500$, {fmt(tStar(0.95, 500), 3)}.
+
+**Conditions.** A t procedure for a mean needs three things, and the third is the one that changes on a small sample.
+
+- **Random.** The data come from a random sample, or from a census of the whole population, in which case say so and say what the population is.
+- **10%, or independence.** Sampling without replacement makes observations slightly dependent. If $n$ is at most a tenth of the population, the effect is negligible. State the arithmetic.
+- **Normal / Large Sample.** With $n \ge 30$ the central limit theorem carries the sampling distribution of $\bar{x}$ to approximate Normality whatever the population looks like. Below thirty it does not, and there is no substitute: graph the sample and argue from the graph. The working standard is no outliers by the $1.5 \times \text{IQR}$ rule and no strong skew. That is why a dotplot gets drawn before an interval gets quoted.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={`t = \\frac{\\bar{x} - \\mu}{s / \\sqrt{n}}, \\qquad df = n - 1`} terms={{ 's': 'sample standard deviation — an estimate of σ, computed from the same data as x̄', 'df = n - 1': 'degrees of freedom: one is spent estimating the mean, so n − 1 deviations are free', '\\bar{x}': 'sample mean' }} label="The one-sample t statistic" />
+
+<Formula tex={`\\bar{x} \\pm t^\\star \\frac{s}{\\sqrt{n}}`} terms={{ 't^\\star': 'critical value of t on n − 1 df, with the central C of the distribution between ±t*', '\\frac{s}{\\sqrt{n}}': 'standard error of the sample mean' }} label="The one-sample t-interval for a mean" />
+
+For every $df$ and every level, $t^\star > z^\star$. The gap is the price of not knowing $\sigma$.
+</Briefing.Definition>
+<Briefing.Worked>
+The tender's own workshop logged the run-up time of **{fmtInt(pumpN)}** reclaimer pumps after a bearing change, in seconds: {pumpRunUp.map((v) => fmt(v, 1)).join(', ')}.
+
+*Summaries.* $\bar{x}$ = {fmt(mean(pumpRunUp), 3)} s, $s$ = {fmt(sd(pumpRunUp), 3)} s, $n$ = {fmtInt(pumpN)}.
+
+*Degrees of freedom.* $n - 1$ = **{fmtInt(pumpDf)}**. Not {fmtInt(pumpN)}.
+
+*Standard error.* $s/\sqrt{n}$ = {fmt(sd(pumpRunUp), 3)} ÷ √{fmtInt(pumpN)} = **{fmt(pumpSe, 4)} s**.
+
+*Critical value.* At 95% the interval leaves {fmt(0.05, 2)} outside it, {fmt(0.025, 3)} in each tail, so $t^\star$ is the {fmt(0.975, 3)} quantile of t on {fmtInt(pumpDf)} df: **{fmt(pumpT, 4)}**. The normal table would have given {fmt(pumpZ, 4)}.
+
+*Margin.* {fmt(pumpT, 4)} × {fmt(pumpSe, 4)} = **{fmt(pumpT * pumpSe, 4)} s**, against {fmt(pumpZ * pumpSe, 4)} s from the normal multiplier. The same seven pumps, the same spread, and {fmt(pumpT * pumpSe - pumpZ * pumpSe, 4)} seconds of difference in what the workshop is entitled to claim.
+
+*Tails.* The cutoff ±{fmt(1.96, 2)} carries {fmt(2 * normal.sf(1.96), 4)} of a standard normal distribution outside it. On t with {fmtInt(pumpDf)} df it carries {fmt(2 * t.sf(1.96, pumpDf), 4)}, more than twice as much. A p-value read off the wrong curve here would be understated by that factor.
+
+*Conditions.* Random: the workshop tested every pump it rebuilt, a census of the batch, and that has to be written down as what it is. 10%: {fmtInt(10 * pumpN)} is far below the number of pumps of this type in service. Normal: $n$ = {fmtInt(pumpN)} is well under thirty, so the central limit theorem has nothing to offer; the seven values have {fmtInt(outliers(pumpRunUp).values.length)} outliers by the $1.5 \times \text{IQR}$ rule and a skewness of {fmt(skewness(pumpRunUp), 2)}, which is a graph a t procedure can be run on.
+</Briefing.Worked>
+<Briefing.Caution>
+**"t is for small samples, z is for large ones."** The size of the sample decides how close $t^\star$ and $z^\star$ come. It never decides which one is correct. The correct distribution is t whenever $s$ stands in the denominator, at $n$ = 7 and at $n$ = 7,000 alike, and $\sigma$ does not become known by the sample getting bigger. What happens with a large sample is that the error from using the wrong curve falls below the precision anyone is reporting to.
+
+**$df = n$.** Degrees of freedom are $n - 1$ for every one-sample t procedure. Off by one in the df is off in the third decimal of $t^\star$ on a large sample and off in the first on a small one, which is exactly where it does damage.
+
+**The central limit theorem on a sample of twelve.** The theorem describes what happens as $n$ grows without bound. Quoting it for twelve observations is citing a limit that has not been approached. On a small sample the Normal condition is settled by looking at the data and saying what the display shows.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="Critical values and tail areas for t">
+<Calculator.Step keys={['2nd', 'DISTR', '4:invT(']} note={`Worked case: the ${pumpN} reclaimer pumps above, not the yard file on the panel below.`}>`invT(area, df)` returns the value with that much of the t distribution **to its left**. For a {fmtPct(0.95, 0)} interval on {fmtInt(pumpDf)} df, type <code>invT(0.975, {pumpDf})</code>.</Calculator.Step>
+<Calculator.Read label={`invT(0.975, ${pumpDf})`} value={fmt(pumpT, 6)}>the critical value $t^\star$. Round it at the end, not here.</Calculator.Read>
+<Calculator.Watch>**`invT` wants the area to the LEFT, not the confidence level.** <code>invT(0.95, {pumpDf})</code> returns {fmt(t.quantile(0.95, pumpDf), 4)}, which is the one-tailed cutoff and is wrong for a two-sided interval. The conversion is $(1 + C)/2$: for {fmtPct(0.95, 0)} that is {fmt(0.975, 3)}, for {fmtPct(0.9, 0)} it is {fmt(0.95, 2)}, for {fmtPct(0.99, 0)} it is {fmt(0.995, 3)}.</Calculator.Watch>
+<Calculator.Watch>Older TI-84 firmware hides `invT` behind `2nd` `DISTR` and lists it as item 4. If it is not there, the OS predates it and the interval has to come off `8:TInterval` instead, which prints endpoints rather than a critical value.</Calculator.Watch>
+<Calculator.Step keys={['2nd', 'DISTR', '6:tcdf(']} note="tcdf(lower, upper, df)">Area under t between two bounds. For the upper tail beyond {fmt(1.96, 2)} on {fmtInt(pumpDf)} df: <code>tcdf(1.96, 1E99, {pumpDf})</code>.</Calculator.Step>
+<Calculator.Read label={`tcdf(1.96, 1E99, ${pumpDf})`} value={fmt(t.sf(1.96, pumpDf), 6)}>one tail. Double it for both: {fmt(2 * t.sf(1.96, pumpDf), 6)}.</Calculator.Read>
+<Calculator.Watch>**`tcdf` needs two finite-looking bounds.** There is no "to infinity" option, so use `1E99` and `-1E99`. `1E99` is typed `1` `2nd` `,` `99`, and the `2nd` `,` is the `EE` key. Typing `1^99` or `10^99` gives a different number and a wrong area.</Calculator.Watch>
+<Calculator.Watch>`normalcdf` on the same bounds returns {fmt(2 * normal.sf(1.96), 6)} for the pair of tails, against t's {fmt(2 * t.sf(1.96, pumpDf), 6)}. Both screens will produce a number without complaint. Only one of them is a statement about a mean with $s$ in the denominator.</Calculator.Watch>
+</Calculator>
+
+<TvsNormal />
+
+<Drill generator="act-7/why-t" count={1} />
+<Drill generator="act-7/t-critical-value" count={1} />
+<Drill generator="act-7/t-tail-probability" count={1} />
+<Drill generator="act-7/t-vs-z-margin" count={1} />
+<Drill generator="act-7/small-sample-normality" count={1} />
+<Drill generator="act-7/df-and-conditions" count={1} />
+
+<MissionBeat id="act-7-01-tstar" kind="numeric" answer={tStar(0.95, REFIT_N - 1)} answerKind="other" digits={3} label="THE MULTIPLIER AT THE TOP OF THE SLATE"
+  prompt={`The yard file holds **${fmtInt(REFIT_N)}** hulls: every Sulcus that went through the Adlinda Mk 3 uprate between 2181 and 2183. Ebele's margin is for the mean of the thrust column, at **${fmtPct(0.95, 0)}**.\n\nReplace the number in his box. What is **t\\*** for this file at that level? Give it to **three decimal places**.`}
+  hint={`Degrees of freedom first, and they are not ${fmtInt(REFIT_N)}. Then the area to the left of the cutoff, which is not ${fmt(0.95, 2)} either: a two-sided interval leaves half of what is left over in each tail.`}>
+  <Success>
+  <Dialogue speaker="engineer" aside="She has come in as far as the end of the bench and is looking at the two numbers written one above the other.">
+  Right. And that's on twelve hulls, which is what I said. {fmt(tStar(0.95, REFIT_N - 1), 3)} against {fmt(zStar(0.95), 3)} is {fmtPct(tStar(0.95, REFIT_N - 1) / zStar(0.95) - 1, 0)} on the margin, Skipper. That much either side is the difference between a finding and a letter back from Valhalla.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She writes two figures on the corner of the watch bill and turns it round.">
+  Two places to go wrong and you have found one. Twelve hulls, so eleven degrees of freedom. And the table wants the area below the cutoff, not the level: ninety-five percent between the two of them leaves two and a half in each tail, so you are looking up nine seven five. Put it in again.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-7-01-why" kind="choice" label="WHY THAT TABLE AND NOT THE OTHER ONE"
+  prompt={`Ferrier wants the reason on the log before the number goes anywhere. **Why is the t distribution the right one for this file?**`}
+  options={[
+    'Because the file has only twelve hulls in it. A sample this small needs the wider table; past thirty hulls the normal one is correct again.',
+    'Because the population standard deviation of post-refit thrust is unknown and has been estimated from these same twelve certifications. It always is unknown, so it is always t.',
+    'Because the twelve hulls are the whole uprate program rather than a sample of it, and a census needs a different table from a sample.',
+    'Because thrust certifications are not Normally distributed, and t is the distribution that handles data which are not Normal.',
+  ]}
+  correct={1}
+  feedback={[
+    'Twelve is why the difference is large. It is not why there is a difference. Run the sample up to three hundred hulls and t is still the correct distribution; the gap has simply shrunk to somewhere past the decimal place anyone reports to.',
+    null,
+    'A census changes what the conditions have to say and changes nothing about the distribution. The 10% condition and the Random condition are where that fact gets written down.',
+    'Backwards on both counts. The t procedure needs the population to be roughly Normal, which is what the Normal condition checks. What t handles is an unknown σ, and the shape of the data is a separate question the dotplot answers.',
+  ]}
+  hint="Ask what is different about the denominator of the standardized statistic, compared with the z work in Unit 5. Then ask whether that difference would go away if the file had three hundred rows.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He is already crossing out the line he had drafted under the margin.">
+  Yes, sir. That's — yes. I had it as a rule about the row count. It's about the sigma, and I've never once had a sigma. Eleven times this quarter, sir.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="engineer" aside="Still holding the coupling. She says it to Ebele, not to you.">
+  Because you don't know sigma. You never do. Twelve is why it hurts.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-7-01-tstar", "act-7-01-why"]}>
+
+<Scene stamp="MET 152/11:05" location="CSV Nightjar · wardroom · docked" condensed="The multiplier goes on the slate as 2.201 against the normal table's 1.960, with the degrees of freedom written beside it. Ebele states the three conditions for the file: a census of the program, twelve well under a tenth of the Sulcus register, and a dotplot of the thrust column with nothing stranded and no tail. The thrust column is now ready to be turned into an interval, and it has not been.">
+
+The slate gets two numbers at the top instead of one. {fmt(tStar(0.95, REFIT_N - 1), 3)}, and under it in Ebele's small capitals the reason, and beside that the eleven.
+
+Then the conditions, because Ferrier will not have the file used until they are written where she can read them. Ebele does them out loud while he types.
+
+<Dialogue speaker="analyst" aside="One finger held up per condition. He gets to three and puts the hand down to type.">
+Random: it isn't a sample, sir. Okonjo sent every uprate the yard did. All twelve, 2181 to 2183, no selection at all, which we say out loud because the Board will ask. Ten percent: a hundred and twenty against the Sulcus register, and the register runs to four figures. Normal: twelve is under thirty so the theorem's no use to me, and the dotplot of the thrust column has nothing stranded off either end and no tail worth the name.
+</Dialogue>
+
+<Dialogue speaker="xo">
+Then the file is usable and nothing has been found. Say the second half of that to yourself before you sleep.
+</Dialogue>
+
+She takes the watch bill back and goes forward, and Sandoval has gone without anyone noticing, and the pumps are still coming up through the deck at the wrong pitch.
+
+Twelve certifications, every one of them above the Mk 3 specification of {fmtInt(MK3_SPEC_KN)} kilonewtons. The lowest reads {fmt(Math.min(...refitSet.map((h) => h.output_kN)), 1)}. You could put a ruler along the dotplot and say the mean is above spec, and Okonjo's file would be worth exactly what one afternoon's eyeballing is worth.
+
+You have the tool now, and you have not used it on anything.
+
+</Scene>
+
+<LogEntry
+  title="t replaces z when s replaces σ"
+  concept="Standardizing a sample mean with the population standard deviation gives a z statistic; standardizing it with the sample standard deviation gives a t statistic, because the denominator is now an estimate that varies from sample to sample. The t distribution has heavier tails than the standard normal and is indexed by its degrees of freedom, n − 1 for a one-sample procedure, since the deviations used to compute s sum to zero and only n − 1 of them are free. Critical values t* always exceed z* at the same level, and converge on them as df grows without ever meeting."
+  formula="t = \frac{\bar{x} - \mu}{s/\sqrt{n}}, \quad df = n - 1 \qquad \bar{x} \pm t^\star \frac{s}{\sqrt{n}}"
+  mistake="Using df = n instead of n − 1, and treating t as a small-sample rule. σ unknown is what selects t, at every sample size; the sample size only decides how far t* sits from z*."
+  tags={['t distribution', 'degrees of freedom', 'critical value', 'conditions', 'standard error', '7.1', '7.2']}
+/>
+
+</Gated>
