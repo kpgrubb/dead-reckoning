@@ -1,0 +1,293 @@
+---
+id: act-8-01
+act: 8
+title: "Volatiles"
+kind: module
+ap_topics: ["8.1", "8.2"]
+objectives:
+  - "State the hypotheses for a goodness-of-fit test as a claim about a whole distribution, and its alternative as at least one proportion differing"
+  - "Compute expected counts as n·pᵢ, carrying their decimals, and check Random, 10% and Expected ≥ 5 on the right column"
+  - "Compute χ² = Σ(O − E)²/E from counts and give its degrees of freedom as k − 1"
+prereqs: ["act-7-checkpoint"]
+est_minutes: 30
+calc_briefing: null
+summary: "The Register records what every lost hull declared it was carrying. Ebele lays that column against the Lane's, and checks the wrong one for the condition."
+---
+
+import { chiSquareGOF, fmt, fmtInt, fmtPct } from '@/lib/stats'
+import {
+  CARGO_CATEGORIES,
+  CARGO_EXPECTED,
+  CARGO_GOF,
+  CLOSEST_APPROACH_KM,
+  LANE_CARGO_PROBS,
+  LANE_TRANSIT_TOTAL,
+  LOSS_N,
+  SHAPES_DOCKED,
+  SHAPES_STANDING_OFF,
+  SINK_PCT_AT_BRIEF,
+  SURVEY_CAMERA_KM,
+  VOLATILES_INDEX,
+  WATCH_HOURS_AT_BRIEF,
+  cargoObserved,
+} from '@/instruments/act-8/data'
+import { KeyTable } from '@/instruments/act-8/_ui'
+import { GofVisualiser } from '@/instruments/act-8/GofVisualiser'
+
+export const auditYards = ['Adlinda', 'Uruk High', 'Elara', 'elsewhere']
+export const auditProbs = [0.3, 0.45, 0.17, 0.08]
+export const auditObserved = [34, 31, 12, 7]
+export const auditN = auditObserved.reduce((a, b) => a + b, 0)
+export const auditPopulation = 1900
+export const auditGof = chiSquareGOF({ observed: auditObserved, probs: auditProbs, categories: auditYards, random: true, populationSize: auditPopulation })
+export const auditRounded = auditProbs.map((p, i) => (auditObserved[i] - Math.round(auditN * p)) ** 2 / Math.round(auditN * p)).reduce((a, b) => a + b, 0)
+export const auditFromPercent = chiSquareGOF({ observed: auditObserved.map((o) => (o / auditN) * 100), expected: auditProbs.map((p) => p * 100) })
+export const auditMinExpected = Math.min(...auditGof.expected)
+export const auditTotalExpected = auditGof.expected.reduce((a, b) => a + b, 0)
+export const auditDriver = auditGof.largestContributor
+export const cargoMinExpected = Math.min(...CARGO_EXPECTED)
+
+<Scene stamp="MET 180/22:00" location={`CSV Nightjar · intel terminal · Watch, cellar ${fmt(SINK_PCT_AT_BRIEF, 0)}%, eight hours from closest approach`} condensed={`${fmtInt(WATCH_HOURS_AT_BRIEF)} hours on Watch and the ship is holding every joule it has made. Ebele has the Register's cargo column for the ${fmtInt(LOSS_N)} lost hulls open against the Lane's declared mix over ${fmtInt(LANE_TRANSIT_TOTAL)} transits: He-3 and deuterium ${fmtPct(LANE_CARGO_PROBS[0], 0)} of traffic, volatiles ${fmtPct(LANE_CARGO_PROBS[1], 0)}, metals ${fmtPct(LANE_CARGO_PROBS[2], 0)}, the rest ${fmtPct(LANE_CARGO_PROBS[3], 0)}. Among the lost: ${cargoObserved.map((o) => fmtInt(o)).join(', ')}. He checks the smallest number in the observed column against five and says the table cannot be run; you send him back to the column he has not built. Oyelaran, at the refit array's console, does not trust what it is telling her about a reference star.`}>
+
+The intel terminal sits in the two-metre gap between the sensor bay and the frame, and at twenty-two hundred it is the warmest compartment aboard. {fmtInt(WATCH_HOURS_AT_BRIEF)} hours on Watch with the wings folded flat and the parasol out, and every joule sixteen people have made in that time is still in the ship. The cellar reads {fmt(SINK_PCT_AT_BRIEF, 0)} percent. The air down here has stopped moving and smells of hot dust off the terminal housing.
+
+Ebele has the only seat. You put your back against the frame, which runs a couple of degrees cooler than anything else in the compartment, and hold the slate flat against your chest.
+
+Kettle has been on the survey camera since half past twenty. At {fmtInt(SURVEY_CAMERA_KM / 1e6)} million kilometres the camera gives warm shapes and no names: {fmtInt(SHAPES_DOCKED)} of them alongside the rock, {fmtInt(SHAPES_STANDING_OFF)} standing off it. Names want the lidar, the lidar wants {fmtInt(CLOSEST_APPROACH_KM)} kilometres, and closest approach is at 06:00. Nothing about that can be advanced for eight hours, so Ebele has gone back into the Register.
+
+He has the screen split. Left, the loss subtable, all {fmtInt(LOSS_N)} of them with a declared cargo class beside each hull. Right, the Lane's own mix, taken off the whole Ledger.
+
+"So the Authority publishes the corridor mix over all {fmtInt(LANE_TRANSIT_TOTAL)} transits, sir. He-3 and deuterium, {fmtPct(LANE_CARGO_PROBS[0], 0)}. Volatiles, {fmtPct(LANE_CARGO_PROBS[1], 0)}. Metals, {fmtPct(LANE_CARGO_PROBS[2], 0)}. Manufactured and everything else, {fmtPct(LANE_CARGO_PROBS[3], 0)}." He taps the left panel twice. "And if what a hull is carrying has nothing to do with whether it comes home, the {fmtInt(LOSS_N)} ought to look like that."
+
+"Read me the {fmtInt(LOSS_N)}."
+
+"He-3 and deuterium, {fmtInt(cargoObserved[0])}. Volatiles, {fmtInt(cargoObserved[1])}. Metals, {fmtInt(cargoObserved[2])}. The rest, {fmtInt(cargoObserved[3])}."
+
+He reads the second figure in the same voice as the other three, and then stops.
+
+Ferrier is in the hatchway. You did not hear her come down the ladder. She reads the left panel over Ebele's shoulder with her arms folded.
+
+<Dialogue speaker="xo" aside="She has the Register's cargo definitions up on her own slate and checks what the word covers before she uses it.">
+Ammonia. Water ice, methane, CO₂, nitrogen. That is the whole class. Ammonia is the cheapest heavy thing you can put on a manifest, Captain, and a berthing master weighs the hull.
+</Dialogue>
+
+Ebele has already gone past her.
+
+"So we can't run it, sir. Metals is {fmtInt(cargoObserved[2])}. You need five in every cell and metals is {fmtInt(cargoObserved[2])}, so the table's dead."
+
+You ask him which column that rule is about.
+
+He says the observed one, sir, and the sentence comes apart in his mouth halfway through. He looks at the right-hand panel, where there are four percentages and no counts at all.
+
+<Dialogue speaker="analyst" aside="He has the cursor sitting in an empty third column before he answers.">
+Yes, sir. That's — yes. Five what, and out of how many. I'll build it.
+</Dialogue>
+
+Oyelaran's voice comes through the hatch from the sensor bay. She has not been in this conversation all evening.
+
+<Dialogue speaker="sensors" aside="Quieter than an hour ago. She has been on the refit array's console since the change of the watch.">
+Reference star reads eleven degrees warm. Third calibration, same eleven. Confirmed. Sir, I want the blister.
+</Dialogue>
+
+The Eyes are folded for the cold approach and they will stay folded. You tell her she will have an answer before the flyby. She does not acknowledge it.
+
+Four percentages on one side of the screen, four counts on the other, and nothing anywhere yet that puts the two in the same units.
+
+</Scene>
+
+<Briefing title="Goodness of fit: testing a whole distribution at once" topics={["8.1", "8.2"]}>
+<Briefing.Intuition>
+Every procedure so far has tested one number: a proportion, a mean, a difference of two. A **goodness-of-fit test** tests a whole *distribution*. One categorical variable, $k$ classes, and a claim from outside the data about what share of the population belongs in each.
+
+**The hypotheses.** $H_0$ names the entire claimed distribution at once:
+
+$$H_0:\ p_1 = \pi_1,\quad p_2 = \pi_2,\ \dots,\ p_k = \pi_k$$
+
+The $\pi_i$ come from somewhere other than the sample: a published mix, a physical model, a manufacturer's specification, an equal-shares assumption. $H_a$ is the logical negation, **at least one** $p_i$ differs from its claimed value. One class off its share already falsifies the claim, and that phrasing has a consequence at the far end of the procedure: a rejection says the distribution is wrong somewhere without saying where.
+
+Both hypotheses are about population proportions $p_i$. The sample's own shares are known exactly and there is nothing left to hypothesise about them.
+
+**Expected counts.** If the claim holds, the class sizes a sample of $n$ would produce on average are
+
+$$E_i = n \pi_i$$
+
+Those are means over repeated samples rather than predictions about one sample, and they keep their decimals. An expected count of 6.51 makes no claim that two thirds of an individual exists; it says that class averages 6.51 members in samples this size. Round it to 7 and you have altered both the numerator and the denominator of a term you are about to add up.
+
+**Conditions.** Three, and each is a sentence with a number in it.
+
+- **Random.** The data are a random sample from the population of interest, or the population entire. Say where they came from.
+- **10%.** Sampling without replacement needs $n \le 0.10N$. Write $10n$ against $N$.
+- **Large Counts.** Every **expected** count is at least 5. The check is on the $E$ column, computed from the claim. It is never on the observed counts, which may be anything at all including zero: a class the claim expected plenty of and the file barely contains is the departure the test exists to find, and discarding the table on that basis throws away the finding to protect the procedure. Where an expected count genuinely falls below 5, the repair is to merge classes that belong together, decided before anyone looks at the data.
+
+**The statistic.** One term per class:
+
+$$\chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i}$$
+
+The numerator is the gap, squared, so a class that came in low pushes the statistic the same way as one that came in high. The denominator puts each gap on the scale of what that class expected: a miss of 8 against an expectation of 6 is a different event from a miss of 8 against an expectation of 600.
+
+Both $O$ and $E$ are **counts**. Multiply the pair by a constant $c$ and each term becomes $c(O-E)^2/E$, so the whole statistic scales by $c$. Percentages inflate it by $100/n$; proportions shrink it by $n$; and the arithmetic gives no sign that anything has gone wrong.
+
+**Degrees of freedom.** $df = k - 1$. Fix the total and $k-1$ of the cells are free to move, while the last is whatever is left over. The sample size appears nowhere in it. A statistic quoted without its df cannot be read, because $\chi^2$ has no absolute size: under $H_0$ its mean *is* its df, so a value of 12 is decisive on 3 df and ordinary on 12.
+
+**Where the statistic came from.** Each term is that class's **contribution**, and the contributions sum to the statistic, so they divide it between the classes. Reading down that column says which class the departure lives in. It is a follow-up rather than part of the test, it carries no P-value, and it rarely points at the tallest bar: contribution measures distance from an expectation, and the biggest class is usually the one the claim expected to be biggest.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={`E_i = n\\pi_i, \\qquad \\chi^2 = \\sum_{i=1}^{k} \\frac{(O_i - E_i)^2}{E_i}, \\qquad df = k - 1`} terms={{ 'O_i': 'observed count in class i', 'E_i': 'count class i averages under the claimed distribution', '\\pi_i': 'the claimed proportion for class i, from outside the data', n: 'total observations: the sum of the observed counts', k: 'number of classes' }} label="Chi-square goodness of fit" />
+
+<Formula tex={`H_0:\\ p_i = \\pi_i \\ \\text{for every } i \\qquad H_a:\\ p_i \\ne \\pi_i \\ \\text{for at least one } i`} terms={{ 'p_i': 'the true population proportion in class i' }} label="Hypotheses for a claimed distribution" />
+</Briefing.Definition>
+<Briefing.Worked>
+The Ceres dock audit of 2181. The inspectorate pulled **{fmtInt(auditN)}** Bureau hull certificates at random from the {fmtInt(auditPopulation)} issued that season and recorded the yard that signed each one. The Bureau publishes its own share of certificates by yard: {auditYards.map((y, i) => `${y} ${fmtPct(auditProbs[i], 0)}`).join(', ')}.
+
+*Observed.* {auditYards.map((y, i) => `${y} ${fmtInt(auditObserved[i])}`).join(', ')}. Total {fmtInt(auditN)}.
+
+*Hypotheses.* $H_0$: the yard shares among all certificates issued that season are {auditProbs.map((p) => fmt(p, 2)).join(', ')} in that order. $H_a$: at least one of those four differs from its published value.
+
+*Expected counts.* {auditYards.map((y, i) => `${y}, ${fmtInt(auditN)} × ${fmt(auditProbs[i], 2)} = ${fmt(auditGof.expected[i], 2)}`).join('; ')}. They sum to {fmt(auditTotalExpected, 2)}, which is $n$, and that is the first check worth running.
+
+*Conditions.* Random: the {fmtInt(auditN)} were drawn at random from the season's file. Ten percent: 10 × {fmtInt(auditN)} = {fmtInt(10 * auditN)} sits below {fmtInt(auditPopulation)}. Large Counts: the smallest expected count is {fmt(auditMinExpected, 2)}, which clears 5. The smallest *observed* count is {fmtInt(Math.min(...auditObserved))} and plays no part in the check.
+
+*The statistic.*
+
+<KeyTable
+  ariaLabel="Ceres dock audit: observed certificates, expected under the Bureau's published shares, the gap, and each yard's contribution"
+  caption={`${fmtInt(auditN)} certificates against the Bureau's published yard shares`}
+  columns={['yard', 'O', 'E = nπ', 'O − E', '(O − E)² / E']}
+  rows={auditYards.map((y, i) => [y, fmtInt(auditObserved[i]), fmt(auditGof.expected[i], 2), fmt(auditObserved[i] - auditGof.expected[i], 2), fmt(auditGof.contributions[i], 3)])}
+  emphasisRow={auditDriver}
+/>
+
+<Formula tex={`\\chi^2 = ${auditGof.contributions.map((c) => fmt(c, 3)).join(' + ')} = ${fmt(auditGof.statistic, 3)}, \\qquad df = ${fmtInt(auditYards.length)} - 1 = ${fmtInt(auditGof.df)}`} label="The audit's statistic and its degrees of freedom" />
+
+*What rounding would have cost.* Round every expected count to the nearest whole certificate and the same table returns {fmt(auditRounded, 3)} against {fmt(auditGof.statistic, 3)}. On a table this size that gap is enough to move a decision.
+
+*Where it came from.* {auditYards[auditDriver]} contributes {fmt(auditGof.contributions[auditDriver], 3)} of the {fmt(auditGof.statistic, 3)}, or {fmtPct(auditGof.contributions[auditDriver] / auditGof.statistic, 0)} of the total, with {fmtInt(auditObserved[auditDriver])} certificates observed against {fmt(auditGof.expected[auditDriver], 2)} expected.
+
+What {fmt(auditGof.statistic, 2)} on {fmtInt(auditGof.df)} degrees of freedom *means* is a question about the chi-square distribution, and it cannot be answered without those degrees of freedom in hand.
+</Briefing.Worked>
+<Briefing.Caution>
+**Percentages in the statistic.** The commonest fatal error here, and it leaves no trace. $\chi^2$ runs on counts. Feed it the two percentage columns and every term picks up a factor of $100/n$, so the audit above returns {fmt(auditFromPercent.statistic, 2)} in place of {fmt(auditGof.statistic, 2)}. Feed it proportions and the statistic comes out $n$ times too small. Both screens print a P-value and neither complains.
+
+**Rounding the expected counts.** $E_i = n\pi_i$ is a mean over repeated samples and is entitled to its decimals. On a table of thirty-odd observations the rounding is not cosmetic.
+
+**Checking ≥ 5 on the observed column.** Large Counts is a statement about the expected counts. The observed counts are the evidence, and a class that came in far below what the claim expected is the signal.
+
+**"Reject means every class is off."** $H_a$ says at least one. Which one is a separate reading, taken off the contributions.
+
+**A statistic without its df.** $\chi^2$ has no absolute scale. Its mean under $H_0$ equals its degrees of freedom, so the same number is decisive on a short table and unremarkable on a long one. Quote the two together or quote neither.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="χ²GOF-Test, part one: building the lists">
+<Calculator.Step keys={['STAT', '1:Edit…']} note={`Worked case: the ${auditN} Ceres certificates above, not the Register column on the panel below.`}>Type the **observed counts** into `L1`, in a fixed class order, and the **claimed proportions** into `L3` in the same order. Write the order down somewhere. Nothing on the calculator checks that row 3 of `L1` and row 3 of `L3` are the same class.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'MODE']} note={`${auditN} * L₃ STO▸ L₂`}>Quit to the home screen and build the expected counts yourself: the total, times the proportion list, stored into `L2`. `L₃` is `2nd` `3`, `STO▸` is the key above `ON`, and `L₂` is `2nd` `2`. This is the step the test screen will not do for you.</Calculator.Step>
+<Calculator.Read label="L2" value={auditGof.expected.map((e) => fmt(e, 2)).join(', ')}>the expected counts, decimals and all. Leave them exactly as the calculator wrote them.</Calculator.Read>
+<Calculator.Step keys={['2nd', 'STAT', '▸ MATH', '5:sum(']} note="sum(L₂), then 1:min( on the same list">Two arithmetic checks before anything else. `sum(L2)` must come back as the total you typed into `L1`, and `min(L2)` is the number the Large Counts condition is about.</Calculator.Step>
+<Calculator.Read label="sum(L2)" value={fmt(auditTotalExpected, 2)}>equal to $n$ to within rounding. If it is not, `L3` does not sum to 1.</Calculator.Read>
+<Calculator.Read label="min(L2)" value={fmt(auditMinExpected, 2)}>against 5. The condition lives in `L2`.</Calculator.Read>
+<Calculator.Step keys={['STAT', '▸ TESTS', 'D:χ²GOF-Test']} note="Observed: L₁ · Expected: L₂ · df: classes − 1 · Calculate">Item **D**, below `C:χ²-Test` and above `E:2-SampFTest`. With both lists built the screen returns χ², P and df, and writes the per-class contributions into a list called `CNTRB`.</Calculator.Step>
+<Calculator.Read label="χ²" value={fmt(auditGof.statistic, 4)}>the sum of the four terms in the table above.</Calculator.Read>
+<Calculator.Watch>**The screen does not build the expected counts.** `Expected: L2` reads whatever is in `L2` and asks no questions about it. Type the claimed **percentages** there and the audit's {fmt(auditGof.statistic, 2)} comes back as {fmt(auditFromPercent.statistic, 2)}, with a P-value printed underneath to four decimal places. Building `L2` from the claim is the procedure; the calculator's part starts afterwards.</Calculator.Watch>
+<Calculator.Watch>**`L1` and `L2` are paired by row number and by nothing else.** Sort one list, insert a row, or leave `L1` loaded from another problem, and the screen still calculates, pairing each observed count with whatever expected count happens to sit beside it. Read the two columns side by side in `STAT 1:Edit` before you leave the editor.</Calculator.Watch>
+</Calculator>
+
+<GofVisualiser />
+
+<Drill generator="act-8/expected-counts" count={1} />
+<Drill generator="act-8/gof-conditions" count={1} />
+<Drill generator="act-8/gof-statistic" count={1} />
+<Drill generator="act-8/gof-degrees-of-freedom" count={1} />
+<Drill generator="act-8/gof-hypotheses" count={1} />
+<Drill generator="act-8/gof-percentages-trap" count={1} />
+
+<MissionBeat id="act-8-01-expected" kind="numeric" answer={CARGO_EXPECTED[VOLATILES_INDEX]} answerKind="other" digits={2} label="THE COLUMN THAT IS NOT ON THE SCREEN"
+  prompt={`Build the column Ebele has not built. The Lane's declared mix over ${fmtInt(LANE_TRANSIT_TOTAL)} transits puts **volatiles** at ${fmtPct(LANE_CARGO_PROBS[VOLATILES_INDEX], 0)} of traffic, and the Register's loss subtable holds **${fmtInt(LOSS_N)}** hulls.\n\nIf losing a hull has nothing to do with what it declared, how many of the ${fmtInt(LOSS_N)} would carry **volatiles**? Report the expected count to **two decimal places**, unrounded.`}
+  hint="E = n·π for that class: the number of lost hulls times the Lane's share. The observed column plays no part in it.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He fills all four cells and runs the sum along the bottom of the column before he says anything about any of them.">
+  So they add to {fmtInt(LOSS_N)}, which they have to. And the smallest one is metals, at {fmt(cargoMinExpected, 2)}. The condition holds, sir, and I had it facing the wrong way. It was never about how many metals hulls we lost.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She reads the third column off the screen and puts a finger on the volatiles row.">
+  You have rounded it. Put the fraction back. That figure is an average over a great many six-year stretches, and it is entitled to its decimals.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-8-01-statistic" kind="numeric" answer={CARGO_GOF.statistic} answerKind="testStat" digits={2} tolerance={0.1} label="HOW FAR OFF THE MIX"
+  prompt={`Both columns exist now. Observed among the ${fmtInt(LOSS_N)}: ${CARGO_CATEGORIES.map((c, i) => `${c} ${fmtInt(cargoObserved[i])}`).join(', ')}. Expected under the Lane's mix: ${CARGO_CATEGORIES.map((c, i) => `${c} ${fmt(CARGO_EXPECTED[i], 2)}`).join(', ')}.\n\nCompute the **chi-square goodness-of-fit statistic** for this table. Carry the expected counts unrounded and report χ² to **two decimal places**.`}
+  hint="Σ(O − E)²/E, one term per cargo class, four terms. The denominator of each term is that class's own expected count, never the total and never the observed count.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He has the four terms in a row across the screen with the sum underneath them.">
+  {fmt(CARGO_GOF.statistic, 2)}, sir, out of four cells. Three of them are small and one of them is not, and I don't want to say anything about that until I know what {fmt(CARGO_GOF.statistic, 2)} is worth.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She does not take the slate. She puts one finger on the He-3 row and leaves it there.">
+  Check what you divided by. Every term goes over that class's own expected count, and the four denominators are all different. Divide throughout by {fmtInt(LOSS_N)} and you get a tidy number that means nothing.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-8-01-df" kind="choice" label="WHAT THE NUMBER IS READ AGAINST"
+  prompt={`A chi-square statistic has no size of its own. It is read against a curve, and there is a different curve for every number of degrees of freedom.\n\n**How many degrees of freedom does this test carry?**`}
+  options={[
+    `${fmtInt(CARGO_GOF.df)}: one fewer than the number of cargo classes.`,
+    `${fmtInt(LOSS_N - 1)}: one fewer than the number of lost hulls.`,
+    `${fmtInt(CARGO_CATEGORIES.length)}: one per cargo class, since each class contributes a term to the sum.`,
+    `${fmtInt(LOSS_N - CARGO_CATEGORIES.length)}: the hulls less the classes, as in a regression.`,
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    `The sample size sets how precise the test is, and not how many degrees of freedom it has. The same four classes counted over ${fmtInt(LOSS_N * 10)} hulls would still carry ${fmtInt(CARGO_GOF.df)}.`,
+    `Close, and one too many. Fix the total at ${fmtInt(LOSS_N)} and only ${fmtInt(CARGO_GOF.df)} of the four cells are free to move; the fourth is whatever is left over, and that constraint is the −1.`,
+    `That is the shape of a regression's degrees of freedom, where every coefficient estimated from the data costs one. Nothing here is estimated from the data: the four proportions came off the Authority's published mix, and the only constraint is the total.`,
+  ]}
+  hint={`Fix the total at ${fmtInt(LOSS_N)} and fill the cargo classes in one at a time. Count how many you can choose freely before the last one is forced.`}>
+  <Success>
+  <Dialogue speaker="analyst">
+  {fmtInt(CARGO_GOF.df)}, sir. So {fmt(CARGO_GOF.statistic, 2)} on {fmtInt(CARGO_GOF.df)}, and those two travel together or neither of them goes in the brief.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Count the cells, Captain, not the hulls. Four classes and a fixed total. Fill three of them in and tell me what the fourth can be.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-8-01-expected", "act-8-01-statistic", "act-8-01-df"]}>
+
+<Scene stamp="MET 180/23:30" location="CSV Nightjar · intel terminal · Watch, wings folded" condensed={`The table comes out at ${fmt(CARGO_GOF.statistic, 2)} on ${fmtInt(CARGO_GOF.df)} degrees of freedom, every expected count above five, metals the smallest at ${fmt(cargoMinExpected, 2)}. Ferrier stops the finding going into a draft until somebody has read it against the curve it belongs to, and says which word she will strike. Ebele goes looking at what a full tank is worth to a berthing master. Oyelaran is still asking for the blister, and the refit array still reads eleven degrees warm on a star whose temperature is in a catalogue.`}>
+
+{fmt(CARGO_GOF.statistic, 2)} on {fmtInt(CARGO_GOF.df)} degrees of freedom, out of four cells and {fmtInt(LOSS_N)} hulls, with the smallest expected count at {fmt(cargoMinExpected, 2)} and the condition met on every row.
+
+Ebele reaches for the stylus. Ferrier puts a hand flat on the slate.
+
+<Dialogue speaker="xo" aside="She has the four contributions up on the terminal beside the statistic and has not remarked on any of them.">
+Not yet. You have a number and no scale for it. Nothing goes in a draft until somebody has read it against the curve it belongs to, and I will strike the word you are reaching for.
+</Dialogue>
+
+That reading wants the distribution, and the distribution wants a decision about what counts as far. It will take the middle of the night.
+
+Ebele asks whether he can pull the berthing records from Hygiea Hold while he waits. You tell him to pull whatever he likes provided nothing goes out, and he says the Hold's file is four years old and already aboard.
+
+What he wants to know, and says to the terminal rather than to either of you, is what ammonia weighs against what it earns. A tonne of it buys almost nothing at Ceres. A tonne of it fills a tank, and a full tank of something declared is a tank nobody opens.
+
+Through the hatch, the refit array is still telling Oyelaran that a star in a catalogue is eleven degrees warmer than the catalogue says. She has run the calibration twice more and had eleven both times. She has not asked again.
+
+You go up to the bridge to look at the flyby geometry. The frame is warm under your hand the whole way.
+
+</Scene>
+
+<LogEntry
+  title="E = nπ, χ² = Σ(O − E)²/E, df = k − 1"
+  concept="A goodness-of-fit test compares one categorical variable's observed counts against a distribution claimed from outside the data. H₀ names every claimed proportion at once and Hₐ says at least one of them differs. The expected counts are E = nπ, kept unrounded, and the three conditions are Random, 10% and every EXPECTED count at least 5, a condition read off the E column and never off the observed one. The statistic sums one term per class, (O − E)²/E, so a departure in either direction makes it larger, and it carries k − 1 degrees of freedom, which the sample size does not touch. Each term is that class's contribution, and the contributions divide the statistic between the classes."
+  formula="E_i = n\pi_i, \qquad \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i}, \qquad df = k - 1"
+  mistake="Feeding the statistic percentages or proportions instead of counts. Scaling both columns by c scales every term by c, so percentages inflate χ² by 100/n and proportions shrink it by n. The screen returns a P-value either way and flags nothing."
+  tags={['chi-square', 'goodness of fit', 'expected counts', 'conditions', 'degrees of freedom', 'contributions', '8.1', '8.2']}
+/>
+
+</Gated>

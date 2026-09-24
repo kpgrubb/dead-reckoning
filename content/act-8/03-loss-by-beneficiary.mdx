@@ -1,0 +1,366 @@
+---
+id: act-8-03
+act: 8
+title: "Loss by Beneficiary"
+kind: module
+ap_topics: ["8.4", "8.5"]
+objectives:
+  - "Compute expected counts in a two-way table as row total × column total ÷ n, and check them against the margins"
+  - "Decide between a test of homogeneity and a test of independence from how the data were collected, and write the hypotheses the design licenses"
+  - "Give the degrees of freedom of an r × c table as (r − 1)(c − 1), and check the Random, 10% and expected-count conditions before any statistic is computed"
+prereqs: ["act-8-02"]
+est_minutes: 30
+calc_briefing: null
+summary: "Two tables go up on the intel terminal. The arithmetic under them is identical and the designs behind them are not, and nothing can be written until somebody says which is which."
+---
+
+import { fmt, fmtInt, fmtPct, chiSquareHomogeneity } from '@/lib/stats'
+import { BENEFICIARY_ROWS, CAUSE_COLS, CORRIDOR_ROWS, LEDGER_N, LOSS_N, MARS_BELT, OUTCOME_COLS, PERRINE_LOST_EXPECTED, BENEFICIARY_TEST, CORRIDOR_TEST, beneficiaryTable, corridorTable, corridorUnknownShare } from '@/instruments/act-8/data'
+import { TwoWayVisualiser } from '@/instruments/act-8/TwoWayVisualiser'
+import { IdCount } from '@/instruments/act-8/story'
+
+export const patrolWatches = ['forenoon watch', 'first dog watch']
+export const patrolOutcomes = ['no advisory', 'late check-in', 'plot amendment']
+export const patrolTable = [
+  [71, 14, 9],
+  [58, 23, 21],
+]
+export const patrolTest = chiSquareHomogeneity(patrolTable, { random: true })
+export const patrolExpected = patrolTest.expectedTable
+export const patrolRows = patrolTest.rowTotals
+export const patrolCols = patrolTest.colTotals
+export const patrolN = patrolTest.total
+export const benRows = beneficiaryTable.length
+export const benCols = beneficiaryTable[0].length
+export const corRows = corridorTable.length
+export const corCols = corridorTable[0].length
+export const benDf = (benRows - 1) * (benCols - 1)
+export const corDf = (corRows - 1) * (corCols - 1)
+
+<Scene variant="log" stamp="MET 183/04:10" location="CSV Nightjar · commanding officer's log" condensed="Rook's log, forty-six hours after the round: eleven hours of torch away from Kettle, then coasting, and the turn for Ceres to be made today. A forty-millimetre slug from the tug Patience opened the mast blister. The lidar buffer came out of it intact, holding hull identifications of named Perrine freighters the Register carries as lost.">
+
+Forty-six hours since the round. I lit the torch at MET 181/06:24 and ran at a third of a gee for eleven hours straight away from the rock with both wings out, and I have stopped pretending this ship is cold. We have been coasting since, and I intend to make the turn for Ceres today and brake in the rest of the way. *Patience* put a forty-millimetre slug through the mast blister at two thousand one hundred kilometres, ten minutes after the lidar went active on my order, and the blister is open from frame nine aft. The casualty return went to Callisto with the preliminary, and I have not signed a recovery. What came out of the blister with the pressure was the lidar buffer, intact, holding <IdCount words /> hull identifications, every one of them a name the Register carries as unknown and presumed lost. Sandoval has the cellar dumping into the wings and would not give me a rate until the third hour. Ebele is on the Ledger's beneficiary column. I have not written the sentence that says what the buffer means, and I am not going to write it until it has been tested.
+
+*A. Rook, Commander, CSV Nightjar*
+
+</Scene>
+
+<Scene variant="transmission" stamp="MET 183/05:02 · VALHALLA" location="Admiralty Board · acknowledgement of preliminary, assessing officer CSV Nightjar" condensed="The Board's acknowledgement: the incident is noted, the assessing officer's initiative is noted, and the Directorate will consider whether the profile requires amendment.">
+
+*The Board acknowledges the preliminary of MET 181 and notes the incident at the coordinates given. It is noted that active illumination was employed. The initiative of the assessing officer in obtaining identification is noted.*
+
+*The Directorate will consider in due course whether the assigned profile requires amendment. Further instruction will follow.*
+
+</Scene>
+
+<Scene stamp="MET 183/07:30" location="Bridge · coasting, wings out, four hours from the turn for Ceres" condensed="Rook strikes the word incident out of the Board's acknowledgement and sends the correction back. Ferrante says what happened at the mast, once. Ebele puts two tables on the intel terminal: loss against beneficiary over the Ledger's transits, and cause code by corridor with the Board's Mars–Belt comparison beside the Lane's. The arithmetic under them is the same and the designs are not, and he starts the degrees of freedom by counting cells.">
+
+Eleven hours at a third of a gee, then fourteen of nothing. Your knees ache and the compartment slides a few degrees every time you turn your head. The wings are still out. Warm air off the returns, smelling of hot polymer, and the overhead ticking as it takes the expansion.
+
+Oyelaran's board is lit. Nobody is in the chair, and nobody has moved the chair.
+
+You take the acknowledgement off the slate one-handed with your boot hooked under the coaming rail. Then the stylus, through the word *incident*, and *loss* over it in block capitals, and under that the hull, the date, the time to the minute, the range and the calibre. It goes back to Callisto in the same envelope it arrived in, so that the clerk who files the reply has to file the correction beside it.
+
+Ferrante comes up from the sickbay with a dressing on the back of his hand that he does not mention.
+
+<Dialogue speaker="medic" aside="Standing, to the compartment rather than to you, without being asked.">
+The round came in through the starboard quarter of the blister at a shallow angle and went out through the frame. Lieutenant Oyelaran was at the head with her back to it. She was killed instantly. I was at the mast root in eight seconds. It would not have mattered at one.
+</Dialogue>
+
+He clips the casualty form to the chart table, signed, and goes back down the ladder.
+
+Ebele has both tables up on the intel terminal by the time you have pulled yourself across the bridge. He has been at it since the round came aboard and there is a lidded mug clipped to the ledge that has gone cold twice.
+
+<Dialogue speaker="analyst" aside="Fast, with the stylus on the first table.">
+So this one is the Ledger, sir. Every transit down the Lane in six years, {fmtInt(LEDGER_N)} of them, and each transit already carries two things: whether the hull arrived, and who the beneficiary was on the policy. One file. Two columns that were in it before we opened it.
+</Dialogue>
+
+<Dialogue speaker="analyst">
+And this one is the Board's own rebuttal from MET 52. The Lane's {fmtInt(LOSS_N)} losses by cause code, against the Mars–Belt corridor's {fmtInt(MARS_BELT.losses)}. Two files. Different office, different traffic, and nobody assembled them together.
+</Dialogue>
+
+Ferrier has come to the back of the terminal without saying anything. She reads both tables through once.
+
+<Dialogue speaker="xo">
+Assuming those two files are what they claim to be, one of them is one sample and the other is two. Say which, and say what in the collection makes it so, before you write a hypothesis under either.
+</Dialogue>
+
+Ebele nods and goes at the arithmetic instead.
+
+<Dialogue speaker="analyst">
+Degrees of freedom first. Cells minus one, so the two-by-two carries {fmtInt(benRows * benCols - 1)} and the two-by-three carries {fmtInt(corRows * corCols - 1)}, and then the expected counts are—
+</Dialogue>
+
+You stop him on *cells*.
+
+The table is on the terminal with its margins down the side and along the bottom. You put your hand flat across the total column and the total row, covering both, and ask him how many of the numbers left underneath he could still change without making the ones under your palm wrong.
+
+He looks at it. Then he starts again from the top of the page.
+
+</Scene>
+
+<Briefing title="Two-way tables: expected counts, two designs, and the degrees of freedom" topics={["8.4", "8.5"]}>
+<Briefing.Intuition>
+A **two-way table** cross-classifies a set of units by two categorical variables. The counts inside it are the data; the **margins**, the row totals and column totals, are what the null hypothesis is built out of.
+
+**Expected counts.** Under the null hypothesis, the column variable is distributed the same way in every row. So take each column's overall share of the grand total and apply it to each row total:
+
+$$E_{ij} = \frac{(\text{row } i \text{ total}) \times (\text{column } j \text{ total})}{n}$$
+
+Expected counts are averages, not counts of anything, and they are not rounded to whole units. Their only job is to be the denominator and the yardstick in $(O - E)^2/E$.
+
+Two properties follow immediately, and both are worth using as checks. Every row of the expected table totals the same as the observed row, and every column totals the same as the observed column. An expected table whose margins do not reproduce the observed margins has an arithmetic error in it.
+
+**Two tests, one piece of arithmetic.** The statistic, the degrees of freedom and the P-value are computed identically. What separates them is **how the data were collected**, and that decides the hypotheses and the population the conclusion is about.
+
+- **Test of independence.** *One* sample is drawn, and each unit in it carries *two* categorical variables that were recorded on it. Only the grand total was fixed in advance; both margins are results. H₀: the two variables are independent in the population the sample came from. Hₐ: they are associated.
+- **Test of homogeneity.** *Several* samples are drawn separately, one from each population or treatment group, and *one* categorical variable is recorded in each. The row totals were fixed by whoever drew the samples, before any outcome existed. H₀: the distribution of that variable is the same in every population. Hₐ: the distributions are not all the same.
+
+The question that settles it is always the same: *which totals were decided by a person before any outcome was recorded?* A single file sorted afterwards by one of its own columns is one sample, however many rows the finished table has.
+
+**Conditions**, in the order they are checked:
+
+1. **Random.** The data come from a random sample, or from a randomized experiment. Settled by the sentence describing how the units were obtained, and by nothing downstream.
+2. **Independent.** Sampling without replacement needs $10n \leq N$, group by group for homogeneity.
+3. **Large counts.** Every **expected** count is at least 5. Observed counts may be anything, including zero. This is the condition that decides whether the χ² curve is the right reference distribution at all, and it can only be checked after the expected counts are computed.
+
+**Degrees of freedom** count how many cells are free once both margins are fixed:
+
+$$df = (r - 1)(c - 1)$$
+
+Fill an $r \times c$ table in from the top left. Every cell in the first $r-1$ rows and first $c-1$ columns is yours to choose. The last cell of each row is then forced by that row's total, and the whole last row is forced by the column totals. The count does not depend on $n$: a $2 \times 3$ table carries 2 degrees of freedom with forty observations in it or forty thousand.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={`E_{ij} = \\frac{R_i C_j}{n}, \\qquad \\sum_j E_{ij} = R_i, \\qquad \\sum_i E_{ij} = C_j`} terms={{ 'E_{ij}': 'expected count in row i, column j, under H₀', 'R_i': 'row i total', 'C_j': 'column j total', n: 'grand total' }} label="Expected counts, and the margins they must reproduce" />
+
+<Formula tex={`df = (r - 1)(c - 1)`} terms={{ r: 'rows in the table', c: 'columns in the table' }} label="Degrees of freedom of a two-way table" />
+
+<Formula tex={`\\chi^2 = \\sum_{\\text{all cells}} \\frac{(O - E)^2}{E}`} terms={{ O: 'the count recorded in a cell', E: 'the count the margins predict for it' }} label="The statistic both tests compute" />
+</Briefing.Definition>
+<Briefing.Worked>
+The cutter *Asgard*'s patrol log, {fmtInt(patrolN)} boardings. Two watches, and each watch drew its own random list of hulls to board at the start of the patrol, the two list lengths having been fixed before the cutter sailed. Every boarding is recorded in one of {fmtInt(patrolOutcomes.length)} categories.
+
+<table className="dr-table">
+  <caption className="dr-table__caption">Observed boardings, with margins</caption>
+  <thead>
+    <tr><th scope="col"></th>{patrolOutcomes.map((o) => (<th key={o} scope="col">{o}</th>))}<th scope="col">total</th></tr>
+  </thead>
+  <tbody>
+    {patrolWatches.map((w, i) => (
+      <tr key={w}><th scope="row">{w}</th>{patrolTable[i].map((v, j) => (<td key={j}>{fmtInt(v)}</td>))}<td>{fmtInt(patrolRows[i])}</td></tr>
+    ))}
+    <tr><th scope="row">total</th>{patrolCols.map((v, j) => (<td key={j}>{fmtInt(v)}</td>))}<td>{fmtInt(patrolN)}</td></tr>
+  </tbody>
+</table>
+
+*Which test.* The two watch totals, {fmtInt(patrolRows[0])} and {fmtInt(patrolRows[1])}, were set by the cutter's sailing orders. Nothing about the patrol could have changed them. Two separately drawn samples with one categorical variable measured in each: a test of **homogeneity**, with H₀ saying the two watches write advisories in the same proportions and Hₐ saying they do not.
+
+*Expected counts.* Row total times column total over {fmtInt(patrolN)}, cell by cell.
+
+<Formula tex={`E_{11} = \\frac{${fmtInt(patrolRows[0])} \\times ${fmtInt(patrolCols[0])}}{${fmtInt(patrolN)}} = ${fmt(patrolExpected[0][0], 2)}, \\qquad E_{13} = \\frac{${fmtInt(patrolRows[0])} \\times ${fmtInt(patrolCols[2])}}{${fmtInt(patrolN)}} = ${fmt(patrolExpected[0][2], 2)}`} label="Two of the six, to two decimals" />
+
+<table className="dr-table">
+  <caption className="dr-table__caption">Expected counts under H₀, and the margins they reproduce</caption>
+  <thead>
+    <tr><th scope="col"></th>{patrolOutcomes.map((o) => (<th key={o} scope="col">{o}</th>))}<th scope="col">row total</th></tr>
+  </thead>
+  <tbody>
+    {patrolWatches.map((w, i) => (
+      <tr key={w}><th scope="row">{w}</th>{patrolExpected[i].map((v, j) => (<td key={j}>{fmt(v, 2)}</td>))}<td>{fmt(patrolExpected[i].reduce((a, b) => a + b, 0), 2)}</td></tr>
+    ))}
+    <tr><th scope="row">column total</th>{patrolOutcomes.map((o, j) => (<td key={o}>{fmt(patrolExpected.reduce((s, row) => s + row[j], 0), 2)}</td>))}<td>{fmt(patrolN, 2)}</td></tr>
+  </tbody>
+</table>
+
+*The margin check.* The expected row totals come to {fmt(patrolExpected[0].reduce((a, b) => a + b, 0), 2)} and {fmt(patrolExpected[1].reduce((a, b) => a + b, 0), 2)}, against observed row totals of {fmtInt(patrolRows[0])} and {fmtInt(patrolRows[1])}. The expected column totals reproduce {patrolCols.map((v) => fmtInt(v)).join(', ')}. Nothing has been lost.
+
+*Conditions.* Each watch drew its list at random, so Random holds for both groups. Ten times {fmtInt(patrolRows[0])} and ten times {fmtInt(patrolRows[1])} are both far below the transits the corridor carries in a season, so the 10% condition holds group by group. The smallest expected count is {fmt(Math.min(...patrolTest.expected), 2)}, above 5, so the large-counts condition holds and the χ² curve is the right reference distribution.
+
+*Degrees of freedom.* The table is {fmtInt(patrolWatches.length)} × {fmtInt(patrolOutcomes.length)}.
+
+<Formula tex={`df = (${fmtInt(patrolWatches.length)} - 1)(${fmtInt(patrolOutcomes.length)} - 1) = ${fmtInt(patrolTest.df)}`} label="Free cells once both margins are fixed" />
+
+Not {fmtInt(patrolWatches.length * patrolOutcomes.length - 1)}, which is the goodness-of-fit rule for a single row of categories, and not {fmtInt(patrolWatches.length * patrolOutcomes.length)}, which is the number of cells.
+
+Everything above happens before a statistic exists. The setup is where a two-way analysis is won or lost, because the arithmetic afterwards will run happily on a table that was framed wrongly and will print a number that answers nobody's question.
+</Briefing.Worked>
+<Briefing.Caution>
+*The two tests swapped.* A single file sorted into two rows by one of its own columns is **one** sample, and its test is independence. Fixed row totals, set before any outcome was recorded, mean **several** samples and a test of homogeneity. The statistic and the P-value come out identical either way, so nothing in the output will ever catch the error. What goes wrong is the sentence at the top and the sentence at the bottom: hypotheses about the wrong thing, and a conclusion generalised to a population nobody sampled.
+
+*$df = rc - 1$.* That rule belongs to goodness of fit, where the categories sit in a single row and only one margin is estimated. A two-way table pays for both margins, and the free cells are the product $(r-1)(c-1)$. A $3 \times 4$ table has 6 degrees of freedom and not 11. If a calculator prints a df that does not match your table's shape, the matrix was typed in the wrong shape.
+
+*Expected counts that break the margins.* Each expected count is the product of **that cell's own** row total and column total, divided by $n$. Dividing a row total evenly among the columns, or rounding every expected count to the nearest whole unit, gives a table whose margins no longer match the observed ones. Add the expected rows up before going any further.
+
+*Checking the observed counts against five.* The large-counts condition is about the **expected** counts. An observed zero breaks nothing; it is often the most informative cell in the table.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="Typing a two-way table into [A], and reading the expected counts out of [B]">
+<Calculator.Step keys={['2nd', 'x⁻¹', '▸ EDIT', '1:[A]']} note={`Worked case: the ${patrolN} boardings above, not the two tables on the terminal below.`}>`2nd x⁻¹` is `MATRIX`. Arrow across to `EDIT`, choose `1:[A]`, and set the size first: rows, `ENTER`, columns, `ENTER`. This table is {fmtInt(patrolWatches.length)} × {fmtInt(patrolOutcomes.length)}, so the header of the editor should read `MATRIX[A]` followed by {fmtInt(patrolWatches.length)} ×{fmtInt(patrolOutcomes.length)} before you type a single count.</Calculator.Step>
+<Calculator.Step keys={['(type the observed counts)', '2nd', 'MODE']}>Type the **observed** counts across each row, `ENTER` after each. Never the expected ones, and never the margins: the calculator computes both from what you type. `2nd MODE` quits back to the home screen.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', 'C:χ²-Test']}>Item `C`, the two-way test, between `B:2-PropZInt` and `D:χ²GOF-Test`. `D` is one row of categories against a claimed distribution, it wants two lists, and it will not take a matrix.</Calculator.Step>
+<Calculator.Step keys={['Observed:[A]', 'Expected:[B]', 'Calculate']}>Leave `Expected:` pointing at `[B]`. You are not typing anything into `[B]`; you are telling the calculator where to put what it works out.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'x⁻¹', '▸ EDIT', '2:[B]']}>**This is the step that matters in this module.** Go back into the matrix editor and read `[B]`. It now holds the expected counts, to the calculator's full precision. Here, row one reads {patrolExpected[0].map((v) => fmt(v, 2)).join(', ')}.</Calculator.Step>
+<Calculator.Read label="df" value={String(patrolTest.df)}>printed on the results screen, and it is $(r-1)(c-1)$ for whatever shape you typed.</Calculator.Read>
+<Calculator.Watch>**`[B]` is overwritten every time you run the test, and it is where the condition lives.** The results screen shows χ², P and df and says nothing about expected counts. The large-counts condition can only be checked by going back into `2nd x⁻¹ ▸ EDIT 2:[B]` and looking at the smallest number in it. Do it every time, and do it after the test rather than before, because before the test `[B]` holds whatever the last person left there.</Calculator.Watch>
+<Calculator.Watch>**A df that does not match your table.** If you typed a {fmtInt(patrolWatches.length)} × {fmtInt(patrolOutcomes.length)} table and the screen prints anything other than {fmtInt(patrolTest.df)}, the matrix is the wrong shape: a transposed table, or a row of margins typed in as data. Check `df` before you write down anything else on the screen.</Calculator.Watch>
+<Calculator.Watch>**The screen cannot tell you which test you are running.** `C:χ²-Test` produces the same χ², the same df and the same P for a test of homogeneity and a test of independence, because the arithmetic is identical. Which one it is comes from the hypotheses you wrote before you touched the calculator and the conditions you checked by hand, and it is the only part of the analysis the machine has no opinion about.</Calculator.Watch>
+</Calculator>
+
+<TwoWayVisualiser
+  label="INTEL · LOSS BY BENEFICIARY · DS-09 ⋈ DS-10"
+  rowLabels={BENEFICIARY_ROWS}
+  colLabels={OUTCOME_COLS}
+  table={beneficiaryTable}
+  result={BENEFICIARY_TEST}
+  caption={`Every transit down the Lane in six years, by outcome and by who the policy would have paid`}
+  ariaLabel="Outcome of each transit against the beneficiary on the policy, over the Transit Ledger"
+  rowAxisLabel="beneficiary"
+  colAxisLabel="outcome"
+  highlight={[0, 0]}
+  showTest={false}
+/>
+
+<TwoWayVisualiser
+  label="INTEL · CAUSE CODE BY CORRIDOR · DS-15"
+  rowLabels={CORRIDOR_ROWS}
+  colLabels={CAUSE_COLS}
+  table={corridorTable}
+  result={CORRIDOR_TEST}
+  caption={`The Lane's losses by cause code, against the corridor the Board's rebuttal compared them with`}
+  ariaLabel="Cause code written on each loss, in the Hundred-Day Lane and in the Mars to Belt corridor"
+  rowAxisLabel="corridor"
+  colAxisLabel="cause code"
+  defaultLayer="mosaic"
+  showTest={false}
+/>
+
+<Drill generator="act-8/expected-count-cell" count={1} />
+<Drill generator="act-8/homogeneity-or-independence" count={1} />
+<Drill generator="act-8/two-way-df" count={1} />
+<Drill generator="act-8/two-way-conditions" count={1} />
+<Drill generator="act-8/two-way-hypotheses" count={1} />
+<Drill generator="act-8/expected-table-margins" count={1} />
+
+<MissionBeat id="act-8-03-expected" kind="numeric" answer={PERRINE_LOST_EXPECTED} answerKind="other" digits={2} label="THE CELL THE TABLE TURNS ON"
+  prompt={`The **LOSS BY BENEFICIARY** panel above holds every transit in the Ledger, classified by outcome and by who the policy would have paid. Under the null hypothesis, what count is **expected** in the **${BENEFICIARY_ROWS[0]} · ${OUTCOME_COLS[0]}** cell? Give it to **two decimal places**.`}
+  hint={`Row total times column total, divided by the grand total. Both margins are printed on the panel; nothing inside the table enters the calculation.`}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes it on the terminal above the cell and leaves it there.">
+  So that is what the margins alone would have produced, sir. {fmt(PERRINE_LOST_EXPECTED, 2)} losses among the Perrine-beneficiary transits if who collects had nothing to do with whether the hull came home. The count in that cell is {fmtInt(beneficiaryTable[0][0])}. I am not going to say the difference out loud until it has a statistic under it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She puts one finger on the row total and one on the column total and leaves them there.">
+  These two, multiplied, over the grand total. Not the row divided by two, and not anything from inside the table. The expected count is what the margins would have produced on their own.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-8-03-df" kind="choice" label="HOW MANY CELLS ARE FREE"
+  prompt={`Both tables are on the terminal. The beneficiary table is ${fmtInt(benRows)} × ${fmtInt(benCols)}; the corridor table is ${fmtInt(corRows)} × ${fmtInt(corCols)}. How many degrees of freedom does a χ² test on each of them carry?`}
+  options={[
+    `${fmtInt(benDf)} for the beneficiary table and ${fmtInt(corDf)} for the corridor table.`,
+    `${fmtInt(benRows * benCols - 1)} for the beneficiary table and ${fmtInt(corRows * corCols - 1)} for the corridor table.`,
+    `${fmtInt(benRows * benCols)} for the beneficiary table and ${fmtInt(corRows * corCols)} for the corridor table.`,
+    `${fmtInt(benRows + benCols - 2)} for the beneficiary table and ${fmtInt(corRows + corCols - 2)} for the corridor table.`,
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    `That is $rc - 1$, one fewer than the number of cells. It is the goodness-of-fit rule, where the categories sit in a single row and only one margin is estimated. A two-way table pays for both margins.`,
+    `That is the number of cells. Degrees of freedom count how many of those cells are still free to vary once the row totals and the column totals are fixed, and the margins are estimated from the same data.`,
+    `Adding where the rule multiplies. $(r-1)$ free rows and $(c-1)$ free columns, and a free cell needs one of each, so the count of free cells is the product and not the sum.`,
+  ]}
+  hint="Cover the total row and the total column with your hand. Fill the rest of the table in from the top left and stop at the first cell whose value is already forced by a margin.">
+  <Success>
+  <Dialogue speaker="analyst">
+  So the two-by-two has {fmtInt(benDf)}. Fix one cell in it and the margins write the other three, which means the whole table is one number's worth of departure looked at four times. And the two-by-three has {fmtInt(corDf)}. Neither of them depends on how many transits are in the file, sir.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  You are counting cells. Count the ones you could still change. Put both margins down first, because the margins are not free either; they came out of the same data. Then fill in from the corner and tell me where you stop.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-8-03-design" kind="choice" label="TWO SAMPLES OR ONE"
+  prompt={`Ferrier wants the design named for both tables before a hypothesis is written under either. The Ledger table is ${fmtInt(LEDGER_N)} transits, each carrying its outcome and its beneficiary in columns the Ledger already held. The corridor table sets the Lane's ${fmtInt(LOSS_N)} losses beside the Mars–Belt corridor's ${fmtInt(MARS_BELT.losses)}, the two bodies of losses having been assembled separately by different offices out of different traffic.\n\nWhich test does each table call for, and for which reason?`}
+  options={[
+    `Independence for the beneficiary table, because one file of ${fmtInt(LEDGER_N)} transits was classified by two variables it already carried and only the grand total was fixed in advance; homogeneity for the corridor table, because the ${fmtInt(LOSS_N)} and the ${fmtInt(MARS_BELT.losses)} are two separately assembled groups with one variable recorded in each.`,
+    `Homogeneity for the beneficiary table, because it has two rows to be compared with each other; independence for the corridor table, because cause code and corridor are both columns of the finished comparison.`,
+    `Homogeneity for both, because each table has two rows and a two-row table is always a comparison between two groups.`,
+    `Independence for both, because each table ends up with two variables in it and χ² tests the relationship between two variables wherever it finds them.`,
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    `Exactly the wrong way round, and the tables will not tell you: both produce the same statistic, the same degrees of freedom and the same P-value under either name. Ask which totals a person fixed before any outcome was recorded. Nobody decided in advance how many of the ${fmtInt(LEDGER_N)} transits would be Perrine-beneficiary; somebody did decide which corridors to put side by side.`,
+    `Two rows on a screen are two samples only when the two row totals were fixed before the outcomes were recorded. The Ledger's rows are a count, not a quota: how many transits fall on each beneficiary is itself a result of the file.`,
+    `Both tables do have two variables in them by the time they are drawn, and that is a fact about the spreadsheet. Independence needs the two variables recorded on the units of **one** sample. The corridor comparison has no such sample: there is no single population from which a loss was drawn and then found to be on the Lane.`,
+  ]}
+  hint="Not the shape of the table and not the number of rows. One question: which totals were decided by a person before any outcome existed? Fixed row totals mean several samples; a single grand total with everything else falling out of it means one.">
+  <Success>
+  <Dialogue speaker="xo" aside="She writes both hypotheses under the tables herself and initials them.">
+  Then the Ledger's hypothesis is about the Lane, all of it, and the corridor's hypothesis is about two corridors and reaches no further than the two. Different sentences, Captain, off the same arithmetic. Put the design line above each of them in the annex so that nobody downstream has to guess which we ran.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="Flat, and she does not take the tables down.">
+  Two samples or one, Ensign. That is the whole question and the arithmetic will not answer it for you, because it comes out the same either way. Go back to how each file was made. Who fixed which totals, and when.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-8-03-expected", "act-8-03-df", "act-8-03-design"]}>
+
+<Scene stamp="MET 186/02:15" location="Bridge · braking for Ceres at 5 mgee, wings out, twenty-nine days out" condensed="Both tables are framed: independence on the Ledger with one degree of freedom, homogeneity on the corridors with two, every expected count above five, and the hypotheses written out with the design line above each. Ferrier points at the unknown column of the corridor table, where the Lane runs at seventy-one percent against the corridor's twenty-four. Ebele asks about the office column on the thirty-one, and Ferrier tells him to hold it. Nothing has been tested yet.">
+
+Three days on the brake and the ship smells of itself. Five milligee is barely a direction: a stylus let go at the chart table takes a slow count of four to reach the deck, and everything that came adrift in the turn has been collecting against the after bulkhead since. The wings are at temperature and the cellar is down to a number Sandoval will now say out loud. Twenty-nine days to Ceres.
+
+Ebele has the picket tree from MET 180 open in a second window with a line of his own typed under it. He has had it up since yesterday and has not shown it to anybody.
+
+<Dialogue speaker="analyst" aside="He turns the screen a few degrees so you can read it without leaving the rail.">
+The model was right, sir. Three in ten that a picket could respond, and one responded. What the tree has no branch for is the order it fired under, and that order is four pages into the Board's own standing annex. Fire on active illumination. Not on a hull, not on a torch. On the lamp. So forty seconds or twelve, the round comes either way. The dwell length was never the variable.
+</Dialogue>
+
+<Dialogue speaker="xo">
+Put the annex page number in. And the tree, unchanged, with the date you built it on.
+</Dialogue>
+
+The annex has both tables in it with their hypotheses above them and their conditions under them, and for the first time since MET 181 the work in front of you is arithmetic.
+
+The Ledger table: one sample, {fmtInt(LEDGER_N)} transits, two variables that were already in the file. H₀, outcome and beneficiary independent on the Lane. {fmtInt(benDf)} degree of freedom. The smallest expected count is {fmt(Math.min(...BENEFICIARY_TEST.expected), 2)}.
+
+The corridor table: two bodies of losses assembled by two offices. H₀, the cause codes are distributed the same way in both corridors. {fmtInt(corDf)} degrees of freedom. The smallest expected count is {fmt(Math.min(...CORRIDOR_TEST.expected), 2)}.
+
+Ferrier has the mosaic view up on the corridor table with her stylus resting on the third column.
+
+<Dialogue speaker="xo">
+Look where the two bars break. {fmtPct(corridorUnknownShare[0], 0)} of the Lane's losses are written *unknown*. {fmtPct(corridorUnknownShare[1], 0)} of the corridor's are. The Board put these two side by side in its own rebuttal and asked us to find them alike.
+</Dialogue>
+
+Ebele has the third table open behind the other two and has had it open for a day: the {fmtInt(LOSS_N)} losses by classifying office, Uruk against Ceres.
+
+<Dialogue speaker="analyst">
+Sir, this one I can't get a sampling frame out of. Those {fmtInt(LOSS_N)} aren't drawn from anything. They're all the losses there are.
+</Dialogue>
+
+<Dialogue speaker="xo">
+Then park it and label it, and we will come back to what a table like that is for. Two tests first. Both of them framed, neither of them run.
+</Dialogue>
+
+The annex closes with the two hypotheses, the two conditions blocks and no numbers under them yet. Behind it on the terminal, Oyelaran's buffer is still open at the row it stopped on.
+
+</Scene>
+
+<LogEntry
+  title="Expected = row × column ÷ n; the design names the test"
+  concept="In a two-way table the expected count for a cell is its row total times its column total divided by the grand total, and the expected table reproduces the observed margins exactly, which is the check worth doing before anything else. The same arithmetic serves two tests and how the data were collected decides which: one sample classified by two categorical variables is a test of independence, and several separately drawn samples with one categorical variable measured in each is a test of homogeneity. The hypotheses and the population the conclusion reaches differ between them even though the statistic, the degrees of freedom and the P-value do not. Conditions are Random, the 10% condition group by group, and every expected count at least 5; degrees of freedom are (r − 1)(c − 1), the number of cells still free once both margins are fixed."
+  formula="E_{ij} = \frac{R_i C_j}{n}, \qquad \sum_j E_{ij} = R_i, \qquad df = (r-1)(c-1)"
+  mistake="Using df = rc − 1. That is the goodness-of-fit rule for a single row of categories, where only one margin is estimated. A two-way table pays for both margins, so a 3 × 4 table carries 6 degrees of freedom and not 11."
+  tags={['two-way table', 'expected counts', 'independence', 'homogeneity', 'degrees of freedom', 'conditions', '8.4', '8.5']}
+/>
+
+</Gated>

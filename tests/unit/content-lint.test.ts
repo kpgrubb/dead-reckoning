@@ -173,7 +173,7 @@ describe('content MDX lint', () => {
     // Acts revised to the post-Prologue prose standard. Acts III–IX were written before it and carry
     // known catchphrase debt ("say it back to me" is in 16 modules); the voice sweep clears it, and
     // each Act joins this list as it is revised. Guarding the revised Acts stops new instances.
-    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-7/']
+    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-7/', 'act-8/']
     const offences = [...seen.entries()]
       .map(([phrase, inFiles]) => [phrase, [...inFiles].filter((f) => REVISED.some((a) => f.startsWith(a)))] as const)
       .filter(([, inFiles]) => inFiles.length >= 3)
@@ -188,7 +188,7 @@ describe('content MDX lint', () => {
    * that the voice sweep clears, and each Act joins REVISED as it is revised.
    */
   it('does not lean on the corrective reframe', () => {
-    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-7/']
+    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-7/', 'act-8/']
     const patterns = [
       /\b(?:is|was|are|were)\s+not\s+[^.;!?]{2,45}[,;.]\s+(?:it|that|they|those|the)\s+(?:is|are|was|were)\b/i,
       /\b(?:isn't|aren't|wasn't|it's not)\s+[^.;!?]{2,45},\s+(?:it's|it is|they're|they are|that's)\b/i,
@@ -222,7 +222,7 @@ describe('content MDX lint', () => {
    * each joins REVISED as the sweep reaches it. Numeric ranges (2178–84) use an en dash and are fine.
    */
   it('keeps em dashes under budget', () => {
-    const REVISED = ['act-0/', 'act-1/', 'act-3/', 'act-7/']
+    const REVISED = ['act-0/', 'act-1/', 'act-3/', 'act-7/', 'act-8/']
     const BUDGET = 8
     const offences: string[] = []
     for (const file of files.filter((f) => REVISED.some((a) => rel(f).startsWith(a)))) {
@@ -240,7 +240,7 @@ describe('content MDX lint', () => {
    * Scoped to the revised Acts; each joins as the sweep reaches it.
    */
   it('does not gloss a behaviour for the reader', () => {
-    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-7/', 'calc/']
+    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-7/', 'act-8/', 'calc/']
     const patterns = [
       /,\s*which from (?:her|him|them|it)\b/i,
       /,\s*which is (?:how|what|why) (?:he|she|they|you|one)\b/i,

@@ -1,0 +1,526 @@
+---
+id: act-8-04
+act: 8
+title: "Dacre's Stamp"
+kind: module
+ap_topics: ["8.6", "8.7"]
+objectives:
+  - "Carry out a χ² test on a two-way table and write the conclusion in context, naming the cell whose contribution drives the statistic"
+  - "Select the categorical procedure a question calls for, including the case where the expected counts fail and the case where the file is a census"
+  - "Replace an inadmissible χ² test with a simulation of the null distribution, and report a simulated P-value of zero as a bound"
+prereqs: ["act-8-03"]
+est_minutes: 30
+calc_briefing: null
+summary: "The tables were framed three days ago. Running them takes an afternoon, and one of them cannot be run at all."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct, chiSquareHomogeneity, expectedCounts, permutationTestProportions } from '@/lib/stats'
+import { rng } from '@/lib/rng'
+import { significanceTestConclusion } from '@/lib/problems/rubrics'
+import {
+  BENEFICIARY_ROWS,
+  BENEFICIARY_TEST,
+  BENEFICIARY_Z,
+  CAUSE_COLS,
+  CERES_TOTAL,
+  CORRIDOR_ROWS,
+  CORRIDOR_TEST,
+  COVER_HULLS,
+  DACRE_DIVERTED,
+  DACRE_DIVERTED_EXPECTED,
+  DACRE_SIGNED,
+  DIVERTED_COLS,
+  DIVERTED_N,
+  EXAMINER_CHI2_INVALID,
+  EXAMINER_OBSERVED_DIFF,
+  EXAMINER_PERMUTATION,
+  EXAMINER_PERMUTATION_REPS,
+  EXAMINER_ROWS,
+  LEDGER_N,
+  LOSS_N,
+  MANIFEST_N,
+  OFFICE_ROWS,
+  OUTCOME_COLS,
+  PERRINE_LOST_EXPECTED,
+  PIRACY_FROM_URUK,
+  PIRACY_TOTAL,
+  URUK_TOTAL,
+  beneficiaryTable,
+  corridorTable,
+  corridorUnknownShare,
+  coverLosses,
+  examinerGroupA,
+  examinerGroupB,
+  examinerTable,
+  officeTable,
+} from '@/instruments/act-8/data'
+import { TwoWayVisualiser } from '@/instruments/act-8/TwoWayVisualiser'
+import { CategoricalProcedureSelector } from '@/instruments/act-8/CategoricalProcedureSelector'
+import { ChiSquareTail } from '@/instruments/act-8/ChiSquareTail'
+import { IdCount } from '@/instruments/act-8/story'
+
+export const patrolWatches = ['forenoon watch', 'first dog watch']
+export const patrolOutcomes = ['no advisory', 'late check-in', 'plot amendment']
+export const patrolTable = [
+  [71, 14, 9],
+  [58, 23, 21],
+]
+export const patrolTest = chiSquareHomogeneity(patrolTable, { random: true })
+export const patrolTop = patrolTest.largestContributor
+export const patrolTopRow = Math.floor(patrolTop / patrolOutcomes.length)
+export const patrolTopCol = patrolTop % patrolOutcomes.length
+export const dockCrews = ['gantry crew D', 'the other three crews']
+export const dockOutcomes = ['seal broken', 'seal intact']
+export const dockTable = [
+  [3, 6],
+  [8, 243],
+]
+export const dockExpected = expectedCounts(dockTable)
+export const dockN = dockTable.flat().reduce((a, b) => a + b, 0)
+export const dockReps = 4000
+export const dockSim = permutationTestProportions(
+  { x1: dockTable[0][0], n1: dockTable[0][0] + dockTable[0][1], x2: dockTable[1][0], n2: dockTable[1][0] + dockTable[1][1] },
+  { rng: rng('act-8-04/dock-audit'), reps: dockReps, alt: 'greater' },
+)
+export const dockObserved = dockTable[0][0] / (dockTable[0][0] + dockTable[0][1]) - dockTable[1][0] / (dockTable[1][0] + dockTable[1][1])
+export const ALPHA = 0.05
+export const beneficiaryBase = significanceTestConclusion({
+  pValue: BENEFICIARY_TEST.pValue,
+  alpha: ALPHA,
+  direction: 'two-sided',
+  directionWords: ['associated', 'association', 'related', 'not independent', 'depends'],
+  parameterContext: {
+    parameter: 'association',
+    population: 'transits on the Hundred-Day Lane',
+    variable: 'between loss and the policy beneficiary',
+  },
+})
+export const beneficiaryRubric = {
+  ...beneficiaryBase,
+  required: [
+    ...beneficiaryBase.required,
+    {
+      label: 'Names the cell whose contribution drives the statistic',
+      phrasings: ['perrine lost', 'lost perrine', 'perrine'],
+      polarity: 'any',
+      feedback: `Say where the statistic came from: the Perrine-beneficiary transits that were lost, ${fmtInt(beneficiaryTable[0][0])} recorded against ${fmt(PERRINE_LOST_EXPECTED, 2)} expected.`,
+    },
+  ],
+  forbidden: [
+    ...(beneficiaryBase.forbidden ?? []),
+    {
+      phrase: /\b(?:causes?|caused|causing|causal)\b/,
+      label: 'Claims causation',
+      why: 'Nothing in the Ledger was assigned. A χ² test on an observational file establishes that two variables move together, and the reason they do is a separate question this test cannot reach.',
+    },
+  ],
+  exemplar: `Because the p-value (${fmtP(BENEFICIARY_TEST.pValue)}) is less than alpha = ${fmt(ALPHA, 2)}, we reject the null hypothesis. There is convincing evidence of an association between loss and the policy beneficiary among transits on the Hundred-Day Lane: the counts differ from what independence would predict, and the cell driving the statistic is the Perrine-beneficiary transits that were lost, where ${fmtInt(beneficiaryTable[0][0])} were recorded against ${fmt(PERRINE_LOST_EXPECTED, 2)} expected. Nothing in the Ledger was assigned, so this is an association and not evidence of a mechanism.`,
+}
+
+<Scene stamp="MET 187/09:40" location="Bridge · braking for Ceres at 5 mgee, wings out" condensed="Rook has not slept and Ferrante says so with a pulse rate attached. Ebele runs the beneficiary table, then brings up the office column on the thirty-one and works out that it is a census. Then he opens the Bureau file that has been aboard since the outbound run: four hundred and twelve departures, an examiner's signature on each, and R. Dacre's name on eighteen of them. Seventeen of those eighteen are among the nineteen. He computes the expected count for that cell twice and it does not clear five.">
+
+Five milligee is a direction rather than a weight. A stylus let go at chest height takes a slow count of four to reach the deck, and everything that came adrift in the turn four days ago has been drifting aft ever since, so the galley is still finding things.
+
+You eat with one boot hooked under the chart table rail, because five milligee will not hold a man anywhere. Ferrante comes onto the bridge with the morning's forms and does not hand them over.
+
+<Dialogue speaker="medic" aside="Two fingers on your wrist, the forms still under his arm.">
+Ninety-six, and you have not slept since the round came aboard. That is fifty-one hours. I have watched nine commanding officers through a casualty and seven of them stopped sleeping for about a fortnight and then started again, and two did not, and I could not have told you in advance which two. Four hours in the chair aft, Commander. I am not asking you to lie down.
+</Dialogue>
+
+You take the four hours after the brief. He writes that down and goes.
+
+Ebele has the Ledger table on the intel terminal with the hypotheses from MET 186 still above it, and both conditions blocks under it, and his hand on the matrix key.
+
+<Dialogue speaker="analyst">
+Conditions hold on this one, sir. Smallest expected count is {fmt(Math.min(...BENEFICIARY_TEST.expected), 2)}. Random, the Ledger is the whole six years and the 10% line is nowhere near. So I can run it.
+</Dialogue>
+
+You tell him to run it and to write the conclusion in words before he tells you the number, because the number will be easier to argue with once the sentence exists.
+
+He goes quiet for a while, which he does not usually do.
+
+Then he pulls the third table forward, the one Ferrier told him to park: the {fmtInt(LOSS_N)} losses by classifying office.
+
+<Dialogue speaker="analyst" aside="Not fast. He has been at this one for two days and has got somewhere he does not like.">
+Sir, I kept trying to test this and it kept refusing. Uruk wrote {fmtInt(URUK_TOTAL)} of the findings, Ceres wrote {fmtInt(CERES_TOTAL)}, and every single *piracy* on the Lane, all {fmtInt(PIRACY_TOTAL)} of them, came off a Uruk desk. And then I asked what the sampling frame was, and there isn't one. Those {fmtInt(LOSS_N)} aren't a sample of the losses. They're the losses. All of them. There's nothing for a P-value to be the probability of.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="From the chart table, without looking up.">
+Then say that, in the annex, in those words. A number nobody should have computed is worth a paragraph explaining why.
+</Dialogue>
+
+The fourth table is the one that came aboard on the outbound run and nobody has opened since.
+
+The Bureau's manifest file: {fmtInt(MANIFEST_N)} departures out of Uruk High over six years, each one with a fuel certification stapled to it and an examining officer's signature on the certification. Four examiners between them. Ebele cross-tabulates the signature column against the column you have had since the Bureau sent the manifests up, in a different form, the {fmtInt(DIVERTED_N)} departures whose hulls are on Oyelaran's rock.
+
+<Dialogue speaker="analyst">
+R. Dacre signed eighteen of the four hundred and twelve. Seventeen of the nineteen are his.
+</Dialogue>
+
+Nobody says anything. Ferrier puts her stylus down.
+
+<Dialogue speaker="analyst" aside="He runs the expected count, clears it, and runs it again from the margins the other way round.">
+So I set the table up and I ran the expected count for that cell twice, sir, because I thought I'd typed something wrong. Eighteen signatures, nineteen diverted, four hundred and twelve departures. It doesn't clear five. It doesn't clear one. And the test will still give me a P-value if I press the key, and I don't know what that P-value would be worth.
+</Dialogue>
+
+He has his hand over the key and he is waiting for you to tell him not to press it.
+
+</Scene>
+
+<Briefing title="Carrying the test out, and the two tables that must not be tested" topics={["8.6", "8.7"]}>
+<Briefing.Intuition>
+**The statistic.** One term per cell, summed over the whole table:
+
+$$\chi^2 = \sum \frac{(O - E)^2}{E}$$
+
+The numerator is the miss. The denominator is the yardstick, because a miss of four matters far more in a cell expecting six than in one expecting sixty. Each term is called that cell's **contribution**, and the contributions are worth printing: they say *where* the departure is, which is the half of the finding a reader can act on.
+
+**The P-value is always the upper tail.** Every departure from the expected counts, in either direction, makes $(O-E)^2$ bigger and pushes the statistic to the right. A two-sided question about a table is answered by a one-tailed area, and there is nothing to double.
+
+**A χ² statistic has no size of its own.** It answers to its degrees of freedom. The same value is decisive on 1 df and unremarkable on 20, so the df comes before the tail, every time.
+
+**The conclusion, in four parts.**
+
+1. The decision, with $P$ and $\alpha$ written next to each other.
+2. Evidence, not fact: *convincing evidence of an association*, never *the variables are associated* flat, and never *the variables are independent* when the test fails to reject.
+3. In context: both variables named, and the population named.
+4. Where it came from: the largest contribution, and whether that cell came in above or below what the margins predicted. Contributions are squared and all positive, so the direction is read off $O - E$ and nowhere else.
+
+**Two things a small P-value does not say.** It does not say the departure is *large*: on a big table a trivial departure will clear any $\alpha$, and the size of the effect is in the counts and the percentages, not in the statistic. And it does not say one variable *caused* the other. A two-way table from an observational file establishes association; a cause needs assignment, which no file of records has.
+
+**Choosing the procedure.** Categorical questions have seven endings, and the first five are decided by how the data were collected, before a single count is read.
+
+| how the data were collected | what is on each unit | procedure |
+| --- | --- | --- |
+| one random sample | one two-category outcome, against a published proportion | one-proportion z |
+| two independent random samples | one two-category outcome in each | two-proportion z |
+| one random sample | one categorical variable, against a claimed distribution | χ² goodness of fit |
+| two or more separately drawn samples | one categorical variable in each | χ² homogeneity |
+| one random sample | two categorical variables on every unit | χ² independence |
+
+Then the two a calculator will not protect you from.
+
+**The expected counts fail.** Below 5, the χ² distribution is the wrong reference curve for the statistic, and the area under it is not a P-value. The statistic still computes and the screen still prints a number. What replaces it is a **simulation of the null**: shuffle the outcome labels at random among all the units, thousands of times, recompute the quantity of interest each time, and count how often the shuffled data reach what was actually observed. That count over the number of repetitions is the P-value, and it rests on no curve at all.
+
+$$P_{\text{sim}} = \frac{\text{repetitions at least as extreme as the observed}}{\text{number of repetitions}}$$
+
+A simulated P-value of zero is reported as a **bound**, not as a zero. Zero out of ten thousand means *less than one in ten thousand*, because ten thousand repetitions cannot resolve anything finer; run a hundred thousand and the bound moves, not the conclusion.
+
+**The file is a census.** When every unit the question is about is already in the file, there is no sampling variability for a P-value to describe and no wider population to generalise to. The difference between the groups is a fact about that population, reported as counts and row percentages, with the difference named in words and no test attached.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={`\\chi^2 = \\sum_{\\text{cells}} \\frac{(O - E)^2}{E}, \\qquad P = P\\!\\left(\\chi^2_{(r-1)(c-1)} \\geq \\chi^2_{\\text{obs}}\\right)`} terms={{ O: 'the count recorded in a cell', E: 'the count the margins predict', 'P': 'the upper-tail area, always' }} label="The two-way χ² test" />
+
+<Formula tex={`\\text{contribution}_{ij} = \\frac{(O_{ij} - E_{ij})^2}{E_{ij}}, \\qquad \\text{direction} = \\operatorname{sign}(O_{ij} - E_{ij})`} terms={{ 'contribution_{ij}': 'that cell’s share of the statistic', 'sign(O - E)': 'above or below what the margins predicted' }} label="Where the statistic came from, and which way" />
+
+<Formula tex={`P_{\\text{sim}} = \\frac{\\#\\{\\text{repetitions} \\geq \\text{observed}\\}}{N_{\\text{reps}}}`} terms={{ 'N_{reps}': 'how many times the labels were reshuffled', '\\#': 'the count of repetitions at least as extreme as what happened' }} label="A P-value with no reference curve under it" />
+</Briefing.Definition>
+<Briefing.Worked>
+**One that can be run: the cutter *Asgard*'s patrol log.** {fmtInt(patrolTest.total)} boardings, two watches that drew their own lists before the patrol sailed, {fmtInt(patrolOutcomes.length)} outcome categories. The setup: homogeneity, {fmtInt(patrolTest.df)} degrees of freedom, smallest expected count {fmt(Math.min(...patrolTest.expected), 2)}, conditions hold.
+
+<table className="dr-table">
+  <caption className="dr-table__caption">Contributions, (O − E)²/E, with the observed count and the expected count in each cell</caption>
+  <thead>
+    <tr><th scope="col"></th>{patrolOutcomes.map((o) => (<th key={o} scope="col">{o}</th>))}</tr>
+  </thead>
+  <tbody>
+    {patrolWatches.map((w, i) => (
+      <tr key={w}>
+        <th scope="row">{w}</th>
+        {patrolOutcomes.map((o, j) => (
+          <td key={o}>{fmt(patrolTest.contributionTable[i][j], 3)} <span style={{ opacity: 0.7 }}>({fmtInt(patrolTable[i][j])} vs {fmt(patrolTest.expectedTable[i][j], 2)})</span></td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<Formula tex={`\\chi^2 = ${patrolTest.contributionTable.flat().map((v) => fmt(v, 3)).join(' + ')} = ${fmt(patrolTest.statistic, 3)}`} label="The six contributions, summed" />
+
+On {fmtInt(patrolTest.df)} degrees of freedom the upper tail is {fmtP(patrolTest.pValue)}, against a significance level of {fmt(ALPHA, 2)}: {patrolTest.pValue < ALPHA ? 'reject' : 'fail to reject'}.
+
+*The conclusion.* Because the P-value, {fmtP(patrolTest.pValue)}, is {patrolTest.pValue < ALPHA ? 'less' : 'greater'} than α = {fmt(ALPHA, 2)}, {patrolTest.pValue < ALPHA ? 'reject' : 'fail to reject'} H₀. There is {patrolTest.pValue < ALPHA ? '' : 'not '}convincing evidence that the two watches write advisories in different proportions on the corridor *Asgard* patrols. The largest contribution, {fmt(patrolTest.contributions[patrolTop], 3)}, is **{patrolWatches[patrolTopRow]} · {patrolOutcomes[patrolTopCol]}**: {fmtInt(patrolTable[patrolTopRow][patrolTopCol])} recorded against {fmt(patrolTest.expectedTable[patrolTopRow][patrolTopCol], 2)} expected, {patrolTable[patrolTopRow][patrolTopCol] > patrolTest.expectedTable[patrolTopRow][patrolTopCol] ? 'above' : 'below'} what the margins predict. Nothing about the two watches was assigned to the hulls they boarded, so this is an association.
+
+**One that cannot: a Ceres dock audit.** {fmtInt(dockN)} outbound manifests pulled at random, each recorded with its loading crew and whether the seal was broken on arrival. {fmtInt(dockTable[0][0] + dockTable[0][1])} of the {fmtInt(dockN)} were loaded by gantry crew D, and {fmtInt(dockTable.reduce((s, r) => s + r[0], 0))} of the {fmtInt(dockN)} came in broken.
+
+<table className="dr-table">
+  <caption className="dr-table__caption">The dock audit, with expected counts under H₀</caption>
+  <thead>
+    <tr><th scope="col"></th>{dockOutcomes.map((o) => (<th key={o} scope="col">{o}</th>))}<th scope="col">total</th></tr>
+  </thead>
+  <tbody>
+    {dockCrews.map((c, i) => (
+      <tr key={c}>
+        <th scope="row">{c}</th>
+        {dockOutcomes.map((o, j) => (<td key={o}>{fmtInt(dockTable[i][j])} <span style={{ opacity: 0.7 }}>(exp {fmt(dockExpected[i][j], 2)})</span></td>))}
+        <td>{fmtInt(dockTable[i].reduce((a, b) => a + b, 0))}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+The design is right: one sample of {fmtInt(dockN)} manifests, two categorical variables recorded on each, so the question is one of independence. The arithmetic refuses it. The smallest expected count is {fmt(Math.min(...dockExpected.flat()), 2)}, and the χ² curve on 1 degree of freedom is the wrong reference distribution for a table like that.
+
+*Simulate instead.* Hold the margins where they are and reassign the {fmtInt(dockTable.reduce((s, r) => s + r[0], 0))} broken seals at random among the {fmtInt(dockN)} manifests, {fmtInt(dockReps)} times. Each time, record the gap between crew D's broken-seal rate and everyone else's. The observed gap is {fmt(dockTable[0][0] / (dockTable[0][0] + dockTable[0][1]), 3)} − {fmt(dockTable[1][0] / (dockTable[1][0] + dockTable[1][1]), 3)} = {fmt(dockObserved, 3)}.
+
+Of the {fmtInt(dockSim.reps)} reshuffles, the number reaching {fmt(dockObserved, 3)} or more puts the simulated P-value at {fmtP(dockSim.pValue)}.
+
+No curve was used and no condition about expected counts was needed, because nothing was approximated: the null distribution was built out of the data by doing to them exactly what the null hypothesis claims happened.
+</Briefing.Worked>
+<Briefing.Caution>
+*Running χ² on a table whose expected counts fail.* The statistic computes, the calculator prints a P-value, and the number means nothing, because the curve it was read off is not the null distribution of that statistic. On the exam the correct response is to **say so**: name the smallest expected count, state that the condition is not met, and describe the simulation or the collapse of categories that would answer the question instead.
+
+*Reading significance as size.* A P-value answers one question: could ordinary variation have produced a departure this large. On a table of ten thousand rows a departure of no practical interest will return a P-value in the fourth decimal. The size of the effect lives in the counts, the row percentages and the ratio of observed to expected. Report both.
+
+*Association read as cause.* A significant χ² on records says the two columns move together in that population. The three explanations it cannot separate are that one drives the other, that something else drives both, and that the file was assembled in a way that put them together. Say *association*, and put the limit in the same paragraph as the finding.
+
+*Concluding independence from a large P-value.* Failing to reject leaves the data consistent with independence. It is not evidence for it, and on a small table it may say nothing except that the file is small.
+
+*A simulated P-value of zero written as zero.* Zero of ten thousand is a statement about the resolution of the simulation. Write it as *less than one in ten thousand*, and say how many repetitions produced the bound.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="Running C:χ²-Test, and knowing when not to">
+<Calculator.Step keys={['2nd', 'x⁻¹', '▸ EDIT', '1:[A]']} note={`Worked case: the ${patrolTest.total} boardings above, not the tables on the panels below.`}>Size, then the **observed** counts, row by row. This is the same matrix entry as the last briefing; what follows is the part that produces a finding.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', 'C:χ²-Test', 'Calculate']}>`Observed:[A]`, `Expected:[B]`, `Calculate`. Item `C`, not `D:χ²GOF-Test`, which takes two lists rather than a matrix and answers a different question.</Calculator.Step>
+<Calculator.Read label="χ²" value={fmt(patrolTest.statistic, 4)}>the sum of the contributions. Carry the digits on the screen into the tail; do not retype a rounded statistic.</Calculator.Read>
+<Calculator.Read label="p" value={fmtP(patrolTest.pValue)}>the upper-tail area. There is no tail setting on this screen, because there is only ever one tail.</Calculator.Read>
+<Calculator.Read label="df" value={String(patrolTest.df)}>$(r-1)(c-1)$ for the shape you typed. Check it against your own table before anything else on the screen is written down.</Calculator.Read>
+<Calculator.Step keys={['2nd', 'x⁻¹', '▸ EDIT', '2:[B]']}>Back into the matrix editor for the expected counts the test just wrote into `[B]`. The smallest number in there is the condition, and it is also where the contributions come from when you work out which cell drove the result.</Calculator.Step>
+<Calculator.Watch>**`C:χ²-Test` will run on a table with an expected count of 0.8 and print a P-value with no complaint.** It checks nothing. It has no way of knowing that the reference curve it used does not fit the statistic it computed, and the P-value it returns will look exactly like a real one. The condition is yours, it is checked in `[B]`, and it is checked every single time.</Calculator.Watch>
+<Calculator.Watch>**There is no permutation test on the TI-84.** Nothing in `STAT ▸ TESTS` will reshuffle labels and build a null distribution out of your data. The simulation in this module runs in the instrument below. On the exam, a failed expected-count condition is answered in words: name the smallest expected count, say that the χ² procedure is not appropriate, and describe the simulation you would run and what you would count. Running the test anyway and reporting its P-value earns nothing, whatever the number turns out to be.</Calculator.Watch>
+<Calculator.Watch>**The screen is silent about which test you ran.** Homogeneity and independence produce the same χ², df and P here. If the hypotheses above your work and the conclusion under it do not agree about which one it was, the arithmetic will not catch you.</Calculator.Watch>
+</Calculator>
+
+<TwoWayVisualiser
+  label="INTEL · LOSS BY BENEFICIARY · DS-09 ⋈ DS-10"
+  rowLabels={BENEFICIARY_ROWS}
+  colLabels={OUTCOME_COLS}
+  table={beneficiaryTable}
+  result={BENEFICIARY_TEST}
+  caption={`Every transit down the Lane in six years, by outcome and by who the policy would have paid`}
+  ariaLabel="Outcome of each transit against the beneficiary on the policy, over the Transit Ledger"
+  rowAxisLabel="beneficiary"
+  colAxisLabel="outcome"
+  highlight={[0, 0]}
+/>
+
+<ChiSquareTail statistic={BENEFICIARY_TEST.statistic} df={BENEFICIARY_TEST.df} caseName="the beneficiary table" alpha={ALPHA} />
+
+<TwoWayVisualiser
+  label="INTEL · CAUSE CODE BY CORRIDOR · DS-15"
+  rowLabels={CORRIDOR_ROWS}
+  colLabels={CAUSE_COLS}
+  table={corridorTable}
+  result={CORRIDOR_TEST}
+  caption={`The Lane against the corridor the Board's rebuttal compared it with`}
+  ariaLabel="Cause code written on each loss, in the Hundred-Day Lane and in the Mars to Belt corridor"
+  rowAxisLabel="corridor"
+  colAxisLabel="cause code"
+  defaultLayer="contribution"
+/>
+
+<TwoWayVisualiser
+  label="BUREAU FILE · EXAMINER AGAINST DIVERTED · DS-02"
+  rowLabels={EXAMINER_ROWS}
+  colLabels={DIVERTED_COLS}
+  table={examinerTable}
+  result={EXAMINER_CHI2_INVALID}
+  caption={`Every departure the Bureau certified out of Uruk High in six years, by signing examiner`}
+  ariaLabel="Examining officer against whether the departure is one of the nineteen, over the Bureau manifest file"
+  rowAxisLabel="examiner"
+  colAxisLabel="departure"
+  highlight={[0, 0]}
+  showTest={false}
+/>
+
+<MonteCarlo
+  task="permutation-diff"
+  params={{ a: examinerGroupA, b: examinerGroupB }}
+  n={EXAMINER_PERMUTATION_REPS}
+  label="SIMULATION · THE NULL, BUILT BY RELABELLING"
+  statLabel="p̂(Dacre) − p̂(the other three)"
+  description="Each repetition reassigns the diverted labels at random among all the Bureau's departures and records the gap between Dacre's diverted rate and everyone else's. The pile of results is the null distribution of that gap, built out of the data rather than read off a curve."
+/>
+
+The observed gap on the Bureau file is {fmt(EXAMINER_OBSERVED_DIFF, 3)}. Run the simulation, then count how many of the {fmtInt(EXAMINER_PERMUTATION_REPS)} reshuffles reach it.
+
+<CategoricalProcedureSelector />
+
+<Drill generator="act-8/two-way-statistic" count={1} />
+<Drill generator="act-8/two-way-pvalue" count={1} />
+<Drill generator="act-8/driving-cell" count={1} />
+<Drill generator="act-8/chi-square-conclusion" count={1} />
+<Drill generator="act-8/select-categorical-procedure" count={1} />
+<Drill generator="act-8/procedure-justification" count={1} />
+
+<MissionBeat id="act-8-04-chisq" kind="numeric" answer={BENEFICIARY_TEST.statistic} answerKind="testStat" label="THE LEDGER, RUN"
+  prompt={`Run the test of independence on the **LOSS BY BENEFICIARY** table: every transit in the Ledger, classified by outcome and by who the policy would have paid. What is the **χ² statistic**? Give it to **two decimal places**.`}
+  hint={`One term per cell, (O − E)²/E, summed over all four. The expected counts are on the panel's EXPECTED view; carry full precision through the four terms and round once at the end.`}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He has the accusation annex from MET 141 open beside it and is looking from one to the other.">
+  Sir. That's the square of the z we sent the Board in the accusation. {fmt(BENEFICIARY_Z, 4)} squared is {fmt(BENEFICIARY_Z ** 2, 4)}. It's the same two proportions and the same data and it comes out the same test wearing a different coat, except the z had a direction in it and this one doesn't. So we haven't found anything new here. We've found that the thing we sent them was right.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Four cells, four terms, and the denominators are all different. You are dividing by the expected count in each one, not by the observed count and not by the grand total. Do the four separately, write them down separately, and add them last.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-8-04-conclude" kind="interpretation" label="WHAT GOES IN THE ANNEX"
+  prompt={`The test returns χ² = ${fmt(BENEFICIARY_TEST.statistic, 2)} on ${fmtInt(BENEFICIARY_TEST.df)} degree of freedom, P = ${fmtP(BENEFICIARY_TEST.pValue)}, at α = ${fmt(ALPHA, 2)}. Write the conclusion that goes under the table in the annex. Name the cell whose contribution drives the statistic, say which way it went, and state the limit on what the finding establishes.`}
+  hint="Four parts. Decision with P beside α. Convincing evidence of what, in the words of the Ledger rather than in symbols. Which cell carried the statistic, and whether it came in above or below the count the margins predicted. And what a table of records cannot establish, however small the P-value."
+  {...beneficiaryRubric}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it once and initials the margin.">
+  Association, and the sentence says so. Good. The Board will read the last line first and find nothing in it to quote against us, and then it will have to read the rest.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has his own draft up and is striking through it while he talks.">
+  I wrote *the losses were caused by who stood to collect*, sir, and that's a sentence about a mechanism and I've got a table of records. Association. Then the cell: {fmtInt(beneficiaryTable[0][0])} against {fmt(PERRINE_LOST_EXPECTED, 2)}, and which way round. I keep leaving the which-way-round out because the contribution is squared and I forget it can't tell me.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-8-04-examiner" kind="choice" label="EBELE'S HAND IS OVER THE KEY"
+  prompt={`The Bureau file: ${fmtInt(MANIFEST_N)} certified departures out of Uruk High, one examiner's signature on each. R. Dacre signed ${fmtInt(DACRE_SIGNED)} of them and ${fmtInt(DACRE_DIVERTED)} of those ${fmtInt(DACRE_SIGNED)} are among the ${fmtInt(DIVERTED_N)} whose hulls are on Oyelaran's rock. The panel above has the table and its expected counts.\n\nWhat do you order?`}
+  options={[
+    `Simulate the null: reassign the ${fmtInt(DIVERTED_N)} diverted labels at random among all ${fmtInt(MANIFEST_N)} departures, many thousands of times, and count how often ${fmtInt(DACRE_DIVERTED)} or more of them land on Dacre's ${fmtInt(DACRE_SIGNED)}.`,
+    `Run C:χ²-Test on the table and report the P-value it prints, noting the small expected count in a footnote.`,
+    `Describe it as a census and attach no inference, because the Bureau file holds every departure out of Uruk High in the period.`,
+    `Collapse the table by dropping Dacre's row and testing the other three examiners against each other, so that every expected count clears five.`,
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    `The statistic computes and the screen prints a number, and the number is not a P-value: the smallest expected count here is ${fmt(DACRE_DIVERTED_EXPECTED, 2)}, and the χ² curve on one degree of freedom is not the null distribution of a statistic built from a table like that. A footnote does not repair it. An inadmissible procedure reported with a caveat is still an inadmissible procedure, and the caveat is the first thing a hostile reader will quote.`,
+    `The ${fmtInt(MANIFEST_N)} departures are the whole Bureau file, and the question reaches past them. Could a run of signatures like Dacre's have arisen by chance, under a process that handed out diversions without reference to who signed? That is a question about a chance process, and a chance process can be run ten thousand times and watched.`,
+    `Dropping the row drops the finding. Dacre's ${fmtInt(DACRE_SIGNED)} signatures are the entire subject of the question, and a table that clears its conditions by deleting the cell everybody is looking at answers a question nobody asked. Collapsing categories is a legitimate move when the categories belong together on grounds other than their counts; deleting the one you are investigating is not.`,
+  ]}
+  hint="The design is right and one number in the expected table is not. Ask what the χ² curve is doing in the procedure at all, and whether there is another way to find out how often chance produces what you are looking at.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He takes his hand off the key and puts both hands on the edge of the console.">
+  So the test is out. Not the table, the test. The table's fine and the design's fine and the curve is the wrong curve, and if I press that key I get a number that looks like every other P-value I've ever written down. What I can do instead is deal the nineteen labels out across all four hundred and twelve at random, over and over, and count the times Dacre collects seventeen or more. That's not an approximation of anything. That's just doing what the null hypothesis says happened.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Say what the condition is for, Captain. Not what it says. What it is for. It is the only thing standing between that statistic and a curve that was never meant to carry it, and when it fails you do not get to proceed carefully. You get to proceed differently.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-8-04-simulated" kind="numeric" answer={EXAMINER_PERMUTATION.pValue} answerKind="pValue" allowInequality={true} label="ZERO IS A BOUND"
+  prompt={`Run the **SIMULATION** panel above: ${fmtInt(EXAMINER_PERMUTATION_REPS)} reassignments of the ${fmtInt(DIVERTED_N)} diverted labels across all ${fmtInt(MANIFEST_N)} departures. What is the simulated **P-value**?\n\nReport it as the simulation gives it. A simulated P-value of zero in ${fmtInt(EXAMINER_PERMUTATION_REPS)} repetitions is written as **less than one in ${fmtInt(EXAMINER_PERMUTATION_REPS)}**, not as a flat zero: the simulation cannot resolve anything finer than its own number of repetitions.`}
+  hint={`Count the reshuffles whose gap reaches the observed ${fmt(EXAMINER_OBSERVED_DIFF, 3)} or exceeds it, and divide by ${fmtInt(EXAMINER_PERMUTATION_REPS)}. The histogram's right-hand edge tells you the answer before you count.`}>
+  <Success>
+  <Dialogue speaker="analyst">
+  Zero of ten thousand, sir, and I write it as less than one in ten thousand because ten thousand is all the resolution I bought. The largest gap in the whole pile is {fmt(Math.max(...EXAMINER_PERMUTATION.stats), 3)} and the observed one is {fmt(EXAMINER_OBSERVED_DIFF, 3)}. Chance doesn't get near it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Count the ones at or beyond what actually happened and divide by the number you ran. And when the count comes out at nothing, do not write nothing. Write the bound and write how many repetitions bought it, because a reader who sees a bare zero assumes an error and stops.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-8-04-send" kind="decision" label="THE IDENTIFICATIONS"
+  prompt={`Ferrier has the signal drafted. The hull identifications out of Oyelaran's buffer, the beneficiary finding, the corridor finding, and Dacre's name with the simulated bound under it. The cutter Halden Reach is nine days from Kettle and can be ordered to intercept on your word. The fuel certifications you would need to prove the diversions were planned before the hulls sailed are six days of work away, and the Board will not act twice on the same file. Your call, Captain.`}
+  options={["Send the identifications now.", "Hold them for the fuel regression."]}>
+  <Outcome option={0}>
+  <Dialogue speaker="xo" aside="She signs it as drafted and hands it back.">
+  Then Halden Reach moves today and Uruk High knows we have the names by the time she does. Whoever is holding those hulls gets nine days' warning and a rock they cannot move. I would rather they spent the nine days panicking than spent them tidying.
+  </Dialogue>
+  <Dialogue speaker="comms" aside="He reads the header back before he keys it.">
+  Traffic to Callisto, Commander. Twenty-two minutes one way at the present range. Outbound timestamp MET 190/11:02, first possible acknowledgement MET 190/11:46. I will log Valhalla's silence in whole hours if it runs past three.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="xo" aside="She does not argue. She puts the draft in the pending file and dates the folder.">
+  Six days, then, and one signal instead of two. It is the stronger file and it is six days of somebody else holding those hulls. I will note in the log that the delay was a decision and not a delay, so that whoever reads this in two years knows we chose it.
+  </Dialogue>
+  <Dialogue speaker="analyst" aside="Already pulling the certification columns across.">
+  Six days is the fuel, sir. Loaded delta-v against the Kettle requirement, departure by departure. If it was aboard when they sailed, somebody at Uruk High knew where they were going before they left the berth.
+  </Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<Gated by={["act-8-04-chisq", "act-8-04-conclude", "act-8-04-examiner", "act-8-04-simulated", "act-8-04-send"]}>
+
+<Scene stamp="MET 194/22:50" location="Wardroom · braking at 5 mgee, three weeks from the Ceres approach" condensed="The office table is a census and Uruk wrote every piracy finding on the Lane. Ebele pulls the four hulls behind those findings: Thessaly Ember, Kestrel Bough, Hygiea Promise, Long Fathom, all four in the spring of 2182, all four in the short pile of the time-to-silence dotplot, twenty-three people between them. None of them is on Oyelaran's rock. Ferrante reads over Rook's shoulder and says they were not diverted. At MET 196 Solberg brings up a message from Uruk High that came through no channel Nightjar has used: Senior Examiner Odile Brandt, Bureau of Hulls, sending six years of fuel certifications on her own authority.">
+
+The wardroom at the back of the middle watch is you, Ebele, and a lidded flask of something the galley is calling coffee that has been going round the table for an hour.
+
+The census paragraph is written and it took him four goes. {fmtInt(URUK_TOTAL)} findings from Uruk, {fmtInt(CERES_TOTAL)} from Ceres, no test, and a sentence saying why not. Under it, the line that took the four goes: every *piracy* finding on the Hundred-Day Lane in six years, all {fmtInt(PIRACY_FROM_URUK)} of them, was written at a Uruk desk.
+
+He pulls the {fmtInt(PIRACY_TOTAL)} rows up so you can see them together for the first time.
+
+{coverLosses.map((l) => `${l.hull}, ${l.date}`).join(' · ')}
+
+Four hulls. Not one of them Perrine. Not one of them on Oyelaran's rock. Twenty-three people between the four of them, and the time-to-silence column reads {coverLosses.map((l) => fmt(l.time_to_silence, 1)).join(', ')} hours, which puts every one of them in the short pile of the first dotplot you ever put on the main display, the one that started all of this at MET 12.
+
+All four inside four months, in the spring of 2182. The spring a Ceres analyst started writing to the Bureau about Perrine hulls.
+
+Ferrante has come in for the coffee and is reading over your shoulder with the pot in his hand.
+
+<Dialogue speaker="medic">
+Those weren't diverted.
+</Dialogue>
+
+No. Those were the story. Somebody needed the Lane's losses to have wreckage and bodies and a cause code that an underwriter would sign, and four hulls that had nothing to do with any of it were sold a route and then killed on it, so that twenty-seven others could disappear behind the word *piracy*.
+
+Ebele does not write that down. He writes the {fmtInt(PIRACY_FROM_URUK)} hull names, the dates, the office, and the classification, and leaves the sentence to you.
+
+</Scene>
+
+<Scene variant="transmission" stamp="MET 196/03:11 · UNSCHEDULED" location="Uruk High · Bureau of Hulls · Senior Examiner O. Brandt, personal authority · 22 min one way" condensed="Brandt's message, through no channel Nightjar has used: she has read the assessing officer's brief, she has suspected her colleague for two years, and she is sending nine hundred fuel certifications covering every Perrine departure in six years, nineteen of them flagged, on her own authority.">
+
+*Commander. Odile Brandt, Senior Examiner, Bureau of Hulls, Uruk High. Your brief reached the Bureau's director from the Admiralty and the director sent it down to me, which I doubt was anybody's intention.*
+
+*You named our process. Nobody names our process. Everybody who writes to us about the Perrine hulls writes about the hulls.*
+
+*I am sending you the fuel certifications for every Perrine departure out of this station in the last six years. Nine hundred records, complete, with the loading officer's own figures against the certified figures, and nineteen of them flagged by me at the time and closed over my objection. I have suspected the examiner whose name you will find on them for two years and I have had nobody to tell who was not senior to him.*
+
+*I am sending them on my own authority and I have noted that on the transmission. The Bureau's stamp is the only thing on the Lane that isn't for sale, Commander. Somebody has been selling it and I would like it back.*
+
+</Scene>
+
+<Scene stamp="MET 196/03:20" location="Bridge · braking at 5 mgee · Ceres in nineteen days" condensed="Solberg reads Brandt's message verbatim with its lag. Her nine hundred records confirm what the four hundred and twelve already showed, and they carry the one column the Bureau file did not: the delta-v actually loaded on each departure against what the filed profile required. Ferrier names what that column would settle, and what it would not.">
+
+Solberg reads it out once, verbatim, at the pace he reads everything, and gives his opinion in one sentence when Ferrier asks for it.
+
+<Dialogue speaker="comms">
+She sent it unencrypted on a commercial relay, Commander. She is not hiding that she sent it.
+</Dialogue>
+
+Nine hundred records against the {fmtInt(MANIFEST_N)} you already had. They will say the same thing with more zeros after it, and the same name on the same {fmtInt(DACRE_DIVERTED)} of the same {fmtInt(DIVERTED_N)}. Confirmation is worth having and it is not what the file is for.
+
+Ferrier has it open at the columns the Bureau's manifest never carried: the loading officer's measured figure for the propellant actually aboard at release, departure by departure, against what the filed profile to Ceres required.
+
+<Dialogue speaker="xo">
+We can prove the hulls are at Kettle. We can prove the Ledger was written to hide them. We can prove a Bureau examiner signed nineteen departures out of a berth he should have stopped. Ostrow will stand up in front of the Board and say the crews went rogue at Mark 9, and on what we have, nobody can tell him he is wrong.
+</Dialogue>
+
+She turns the slate round so the fuel column is facing you.
+
+<Dialogue speaker="xo">
+Unless it was in the tanks at Uruk High. A hull loaded for Ceres does not carry the burn for Kettle by accident, and if the extra goes up with the distance to that rock, departure after departure, then somebody worked out each one before she sailed. Nineteen departures, Captain. Nineteen points and a line through them, and we have never drawn one of those.
+</Dialogue>
+
+Nineteen days to Ceres, and <IdCount words /> hull identifications sitting in a dead officer's buffer with a Bureau examiner's signature under each one.
+
+</Scene>
+
+<LogEntry
+  title="When the expected counts fail, do not run χ²"
+  concept="A two-way χ² test sums (O − E)²/E over every cell and reads the upper tail on (r − 1)(c − 1) degrees of freedom; the conclusion states the decision with P beside α, frames the finding as evidence of an association in a named population, and names the cell whose contribution drove the statistic together with the direction read off O − E. Two tables must not be tested at all. When any expected count falls below 5 the χ² curve is not the null distribution of the statistic, so the null is simulated instead by reassigning the labels at random thousands of times and counting how often the shuffled data reach what was observed; a simulated P-value of zero is reported as a bound set by the number of repetitions. When the file holds every unit the question is about, there is no sampling variability and no wider population, so the difference is described in counts and percentages and no inference is attached."
+  formula="\chi^2 = \sum \frac{(O-E)^2}{E}, \quad P = P(\chi^2_{(r-1)(c-1)} \geq \chi^2_{obs}) \qquad P_{sim} = \frac{\#\{\text{reps} \geq \text{observed}\}}{N_{reps}}"
+  mistake="Reading significance as size. A small P-value says a departure this large is hard to get from ordinary variation; it says nothing about how large the departure is. On a big table a departure of no practical interest clears any α, so report the counts, the row percentages and the observed-to-expected ratio beside the P-value."
+  tags={['chi-square test', 'conclusion in context', 'contributions', 'expected counts', 'simulation', 'census', 'procedure selection', '8.6', '8.7']}
+/>
+
+</Gated>

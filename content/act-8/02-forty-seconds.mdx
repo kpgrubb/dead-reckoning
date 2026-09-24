@@ -1,0 +1,407 @@
+---
+id: act-8-02
+act: 8
+title: "Forty Seconds"
+kind: module
+ap_topics: ["8.3"]
+objectives:
+  - "Read a P-value off a chi-square statistic and its degrees of freedom as an upper-tail area, and say why there is no second tail"
+  - "Write a goodness-of-fit conclusion in context that decides, cites p against α, and stops short of claiming every class differs"
+  - "Identify the class carrying the statistic from the contributions, and state what that follow-up does not establish"
+prereqs: ["act-8-01"]
+est_minutes: 25
+calc_briefing: null
+summary: "A statistic with no scale, a tree with two branches, and an order that has to be given before 06:00."
+---
+
+import { chi2, chiSquareGOF, fmt, fmtInt, fmtP, fmtPct } from '@/lib/stats'
+import { significanceTestConclusion } from '@/lib/problems/rubrics'
+import {
+  CARGO_CATEGORIES,
+  CARGO_EXPECTED,
+  CARGO_GOF,
+  CLOSEST_APPROACH_KM,
+  COLD_DISPLACEMENT_M,
+  DWELL_SHORT_S,
+  LIDAR_RANGE_KM,
+  LIDAR_WINDOW_MIN,
+  LOSS_N,
+  PATIENCE_RANGE_KM,
+  P_ON_PICKET_GIVEN_PRESENT,
+  P_PICKET_CAN_RESPOND,
+  P_WRECKER_PRESENT,
+  SHAPES_DOCKED,
+  SHAPES_STANDING_OFF,
+  SHIP_MASS_T,
+  SINK_PCT_AT_APPROACH,
+  SLUG_FLIGHT_MIN,
+  TORCH_FROM_WATCH_MIN,
+  cargoObserved,
+  dwellReturns,
+  lidarBuffer,
+} from '@/instruments/act-8/data'
+import { KeyTable } from '@/instruments/act-8/_ui'
+import { DECISION_IDS, Decided, DwellLength, IdCount, LidarBufferTable } from '@/instruments/act-8/story'
+import { ChiSquareTail } from '@/instruments/act-8/ChiSquareTail'
+import { GofVisualiser } from '@/instruments/act-8/GofVisualiser'
+import { PicketTree } from '@/instruments/act-8/PicketTree'
+
+export const asgardRegistries = ['Perrine', 'Mercantile', 'independent', 'other']
+export const asgardProbs = [0.28, 0.38, 0.25, 0.09]
+export const asgardObserved = [36, 41, 12, 7]
+export const asgardN = asgardObserved.reduce((a, b) => a + b, 0)
+export const asgardGof = chiSquareGOF({ observed: asgardObserved, probs: asgardProbs, categories: asgardRegistries, random: true, populationSize: 2400 })
+export const asgardDriver = asgardGof.largestContributor
+export const asgardTallest = asgardObserved.indexOf(Math.max(...asgardObserved))
+export const asgardConclusion = significanceTestConclusion({
+  pValue: asgardGof.pValue,
+  alpha: 0.05,
+  direction: 'two-sided',
+  parameterContext: { parameter: 'distribution', population: 'hulls boarded on the corridor', variable: 'registry', nullValue: "the schedule's published mix" },
+})
+
+export const cargoBase = significanceTestConclusion({
+  pValue: CARGO_GOF.pValue,
+  alpha: 0.05,
+  direction: 'two-sided',
+  parameterContext: { parameter: 'distribution', population: 'hulls lost on the Hundred-Day Lane', variable: 'declared cargo class', nullValue: "the Lane's declared mix" },
+  directionWords: ['not follow', 'not match', 'not fit', 'depart'],
+})
+export const cargoDriver = CARGO_GOF.largestContributor
+export const cargoDriverShare = CARGO_GOF.contributions[cargoDriver] / CARGO_GOF.statistic
+export const cargoConclusion = {
+  ...cargoBase,
+  required: [
+    ...cargoBase.required,
+    {
+      label: `Names the class carrying the statistic (${CARGO_CATEGORIES[cargoDriver]})`,
+      phrasings: [CARGO_CATEGORIES[cargoDriver], 'largest contribut', 'biggest contribut'],
+      polarity: 'any',
+      feedback: `One class contributes ${fmt(CARGO_GOF.contributions[cargoDriver], 2)} of the ${fmt(CARGO_GOF.statistic, 2)}. Read down the contribution column and name it.`,
+    },
+  ],
+  exemplar: `${cargoBase.exemplar} The departure is carried by ${CARGO_CATEGORIES[cargoDriver]}, which contributes ${fmt(CARGO_GOF.contributions[cargoDriver], 2)} of the ${fmt(CARGO_GOF.statistic, 2)} total, with ${fmtInt(cargoObserved[cargoDriver])} observed against ${fmt(CARGO_EXPECTED[cargoDriver], 2)} expected.`,
+  minWords: 20,
+}
+
+export const longNames = lidarBuffer.slice(0, 5).map((r) => r.hull_id)
+export const shortNames = dwellReturns(DWELL_SHORT_S).slice(0, 4).map((r) => r.hull_id)
+
+<Scene stamp="MET 181/05:40" location={`CSV Nightjar · bridge · Watch, cellar ${fmt(SINK_PCT_AT_APPROACH, 0)}%, twenty minutes from closest approach`} condensed={`The cargo table has been up on the plot since midnight: ${fmt(CARGO_GOF.statistic, 2)} on ${fmtInt(CARGO_GOF.df)} degrees of freedom, and no scale for it yet. Ebele drafts a sentence saying every cargo class differs from the Lane's share and you strike it. Oyelaran will not take the refit array's word for anything at ${fmtInt(CLOSEST_APPROACH_KM)} kilometres and asks for the blister and the manual lidar head; you approve it. Kettle is ${fmtInt(SHAPES_DOCKED)} warm shapes alongside and ${fmtInt(SHAPES_STANDING_OFF)} standing off, still without names.`}>
+
+Everybody has been up all night and the bridge smells of it.
+
+The cellar reads {fmt(SINK_PCT_AT_APPROACH, 0)} percent. Nothing has burned since the turnover; the ship is falling past a rock at thirty kilometres a second on a line laid in two weeks ago, and there is nothing to fly. You have the left-hand seat and a cup of something that went cold an hour ago wedged in the arm rest.
+
+Kettle is on the main plot: a grey lump six kilometres across with {fmtInt(SHAPES_DOCKED)} warm blocks along one face and {fmtInt(SHAPES_STANDING_OFF)} more standing off it, all of them shapes and none of them names.
+
+The cargo table has been up on the intel repeater since midnight. {fmt(CARGO_GOF.statistic, 2)} on {fmtInt(CARGO_GOF.df)} degrees of freedom, out of {fmtInt(LOSS_N)} hulls and four cells, with every expected count clear of five.
+
+Ebele has been awake longer than anyone and has a sentence drafted.
+
+<Dialogue speaker="analyst" aside="He reads it off the slate rather than out of his head.">
+So the draft says: the cargo mix of the {fmtInt(LOSS_N)} differs from the Lane's mix in every one of the four classes. Four cells, four gaps, four for four, sir.
+</Dialogue>
+
+You strike it and tell him to read the four terms back to you one at a time.
+
+He does. Three of them are smaller than one and a half. He gets to the end of the list and does not finish the sentence he started with.
+
+Ferrier, from the plot, without turning round: "Say what the test is entitled to say, Ensign. Then say the other thing separately, and label it."
+
+The draft goes back to being one line with a statistic on it and no adjective. What nobody on this bridge can do yet is say how strange {fmt(CARGO_GOF.statistic, 2)} is, because a chi-square has no size of its own and the curve it belongs to has not been drawn.
+
+Oyelaran is at the sensor console with the refit array's calibration log open. She has been on that log since the middle of the watch.
+
+<Dialogue speaker="sensors" aside="Very quiet now. She has the catalogue temperature for the reference star on the second screen and the array's figure beside it.">
+Eleven degrees warm, five calibrations. It is not drifting, sir. It is just wrong, and I cannot tell you by how much on anything else.
+</Dialogue>
+
+The Eyes are folded and stay folded. That leaves the array she does not trust, or the manual head in the blister, which is one person in a suit at the top of the mast cranking a lidar round by hand and reading the returns into a buffer at her elbow.
+
+<Dialogue speaker="sensors">
+Fourteen minutes of window. I want the blister and the manual head. I can be up and strapped in by fifty-five.
+</Dialogue>
+
+You give it to her.
+
+She is off the bridge inside a minute and you hear her going aft through the sensor bay at a pace that is not quite running. Ferrante looks up from the medical repeater, says nothing, and marks the time.
+
+</Scene>
+
+<Scene stamp="MET 181/05:52" location="CSV Nightjar · bridge · Watch, eight minutes from closest approach" condensed={`Oyelaran is in the blister. Ferrier puts up the picket model she and Ebele have built: PROVIDENT has one tug and one depot, and the tug's four kills were all Lane-side, so ${fmt(P_WRECKER_PRESENT, 2)} that a wrecker is at Kettle at all; one tug covers one quarter of a six-kilometre rock's sky, so ${fmt(P_ON_PICKET_GIVEN_PRESENT, 2)} that it is cold on picket in the approach quarter given that it is there. There is no detection leaf. The lidar window is fourteen minutes wide and the dwell length is yours: forty seconds or twelve.`}>
+
+Oyelaran calls the blister at fifty-one. Suit checks at fifty-two. Her voice on the sensor loop has the flatness suits put into people.
+
+You put the sensor loop on the bridge speaker rather than in your ear, so that the whole compartment can hear her, and get the cold cup out of the arm rest and set it on the deck by your boot where it cannot go anywhere at three tenths of nothing.
+
+Ferrier has the tree up on the plot, drawn in the same four lines Ebele has been drawing since Callisto.
+
+<Dialogue speaker="xo" aside="She has PROVIDENT's asset list open beside it and reads the two figures off the list rather than off the plot.">
+Two branches and three ends. PROVIDENT holds one tug and one depot on this side of the Belt, and the tug's four recorded kills were all Lane-side. The data says {fmt(P_WRECKER_PRESENT, 2)} that anything of theirs is at Kettle tonight. Given that it is, one tug covers one quarter of a six-kilometre rock's sky, so {fmt(P_ON_PICKET_GIVEN_PRESENT, 2)} that it is sitting cold in the quarter we are coming through.
+</Dialogue>
+
+Ebele: "So there's no third branch, sir. I haven't put a leaf on for whether it sees us, because I've got no number for that and I'm not inventing one."
+
+The window is {fmtInt(Math.round(LIDAR_WINDOW_MIN))} minutes wide: inside {fmtInt(LIDAR_RANGE_KM)} kilometres, either side of a closest approach of {fmtInt(CLOSEST_APPROACH_KM)}. Inside it, the lidar can put a name on a hull. Outside it, nothing can.
+
+The dwell is the thing you have to say out loud. Forty seconds of illumination writes the whole face of the rock into the buffer. Twelve seconds writes the strongest returns and leaves the rest as shapes.
+
+<Dialogue speaker="engineer" aside="On the engineering channel, to you, with the reactor page up.">
+Skipper. We're on Watch. From here the torch is {fmtInt(TORCH_FROM_WATCH_MIN)} minutes, plus or minus two, and cold gas moves this hull about a boat-length in ten. I'm not offering you a third option. I'm telling you what the second one isn't.
+</Dialogue>
+
+Ferrier turns the plot round so the tree faces the left-hand seat.
+
+<Dialogue speaker="xo">
+Multiply it out and sign it, Captain. Then give the order, and I will log the number next to the order.
+</Dialogue>
+
+</Scene>
+
+<Briefing title="Reading a chi-square, and what a rejection is entitled to say" topics={["8.3"]}>
+<Briefing.Intuition>
+**The P-value is an upper-tail area, and there is only one tail.**
+
+$$P = P\left(\chi^2_{k-1} \ge \chi^2_{\text{observed}}\right)$$
+
+Every term of the statistic is a squared gap over an expectation, so a class that came in low and a class that came in high push it the same way. A perfect fit gives 0; any departure at all, in any class, in either direction, moves the statistic up. "A worse fit than this one" therefore means "a larger $\chi^2$", with no exceptions, and both directions of departure already sit in the same tail. Doubling that area is wrong, and the goodness-of-fit screen offers no tail selector because there is no choice to make.
+
+**The statistic has no absolute size.** Under $H_0$ the mean of a $\chi^2$ is its degrees of freedom, because each of the $k$ terms contributes about 1 on average when the claim is true. So a table of twelve classes is *expected* to produce a statistic near 11 with nothing whatever wrong with it, while the same 11 on a four-class table is well outside what chance supplies. A statistic reported without its df is unreadable rather than incomplete.
+
+**The conclusion.** The same five parts as every significance test, and the exam marks all five.
+
+> Because $p$ = [value] [is / is not] less than $\alpha$ = [level], we [reject / fail to reject] $H_0$. There [is / is not] convincing evidence that the distribution of [variable] among [population] differs from [the claimed distribution].
+
+*Reject* and *fail to reject*, never *accept*. The alternative in a goodness-of-fit test is always "differs from the claim", so the direction clause names the claim rather than a direction of travel.
+
+**What a rejection does not say.** $H_a$ is *at least one* proportion differs. A small P-value therefore condemns the claimed distribution as a whole and says nothing about any individual class. A conclusion asserting that every class is off its share claims far more than the test established, and it is usually false: most tables reject on the strength of one or two classes while the rest sit close to what the claim expected.
+
+**Finding where the departure is.** The statistic is a sum of $k$ non-negative terms, so it divides between the classes by construction, and the largest **contribution** locates the departure:
+
+$$\text{contribution}_i = \frac{(O_i - E_i)^2}{E_i}, \qquad \sum_i \text{contribution}_i = \chi^2$$
+
+Three things to keep straight about that reading:
+
+- It is a **follow-up**, reported after the test and labelled as such. It has no P-value of its own. The $\alpha$ was spent on the whole table at $k-1$ degrees of freedom, and picking the largest of $k$ terms after seeing them and testing it again is a different procedure with a different error rate.
+- The largest contribution is **rarely the tallest bar**. Contribution measures distance from an expectation, scaled by that expectation, and the biggest class is usually the one the claim expected to be biggest.
+- Say the **direction**: whether that class came in above or below what the claim expected. The squaring destroyed the sign, so it has to be read back off the $O - E$ column.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={`P = P\\left(\\chi^2_{df} \\ge \\chi^2_{\\text{obs}}\\right), \\qquad df = k-1, \\qquad \\text{reject } H_0 \\text{ when } P < \\alpha`} terms={{ '\\chi^2_{\\text{obs}}': 'the statistic computed from the table', df: 'degrees of freedom, k − 1 for goodness of fit', '\\alpha': 'the significance level, fixed before the data are seen' }} label="P-value for a chi-square test: the upper tail, and only the upper tail" />
+
+<Formula tex={`\\text{contribution}_i = \\frac{(O_i-E_i)^2}{E_i}, \\qquad \\sum_{i=1}^{k}\\text{contribution}_i = \\chi^2`} terms={{ 'O_i - E_i': 'the gap, whose sign the squaring destroys and the O − E column preserves' }} label="Where the statistic came from" />
+</Briefing.Definition>
+<Briefing.Worked>
+The *Asgard* boarding report of 2176. The cutter boarded **{fmtInt(asgardN)}** hulls at random over one season and recorded each one's registry. The Lane schedule's published registry mix for the corridor is {asgardRegistries.map((r, i) => `${r} ${fmtPct(asgardProbs[i], 0)}`).join(', ')}. Conditions were met: random sampling, {fmtInt(10 * asgardN)} well below the corridor's traffic, and a smallest expected count of {fmt(Math.min(...asgardGof.expected), 2)}.
+
+<KeyTable
+  ariaLabel="Asgard boarding report: observed boardings by registry, expected under the schedule's published mix, the gap, and each registry's contribution"
+  caption={`${fmtInt(asgardN)} boardings against the schedule's published registry mix`}
+  columns={['registry', 'claimed', 'O', 'E = nπ', 'O − E', '(O − E)² / E']}
+  rows={asgardRegistries.map((r, i) => [r, fmtPct(asgardProbs[i], 0), fmtInt(asgardObserved[i]), fmt(asgardGof.expected[i], 2), fmt(asgardObserved[i] - asgardGof.expected[i], 2), fmt(asgardGof.contributions[i], 3)])}
+  emphasisRow={asgardDriver}
+/>
+
+*The statistic and its df.*
+
+<Formula tex={`\\chi^2 = ${asgardGof.contributions.map((c) => fmt(c, 3)).join(' + ')} = ${fmt(asgardGof.statistic, 3)}, \\qquad df = ${fmtInt(asgardRegistries.length)} - 1 = ${fmtInt(asgardGof.df)}`} label="Asgard, 2176" />
+
+*The P-value.* The area above {fmt(asgardGof.statistic, 3)} under the chi-square curve on {fmtInt(asgardGof.df)} degrees of freedom is **{fmtP(asgardGof.pValue)}**. On a TI-84 that is `χ²cdf(` with lower {fmt(asgardGof.statistic, 3)}, upper `1E99` and df {fmtInt(asgardGof.df)}. The 5% critical value on {fmtInt(asgardGof.df)} df is {fmt(chi2.isf(0.05, asgardGof.df), 3)}, and the statistic is above it, which agrees.
+
+*The conclusion.* {asgardConclusion.exemplar}
+
+*The level matters and was chosen first.* At $\alpha$ = 0.01 the same table gives {fmtP(asgardGof.pValue)} against 0.01, and the report fails to reject. The level belongs at the top of the page, fixed before any of this arithmetic was run.
+
+*Where the departure is.* {asgardRegistries[asgardDriver]} contributes {fmt(asgardGof.contributions[asgardDriver], 3)} of the {fmt(asgardGof.statistic, 3)}, or {fmtPct(asgardGof.contributions[asgardDriver] / asgardGof.statistic, 0)} of the statistic, with {fmtInt(asgardObserved[asgardDriver])} boarded against {fmt(asgardGof.expected[asgardDriver], 2)} expected: **below** what the schedule predicts. The tallest bar in the file belongs to {asgardRegistries[asgardTallest]} at {fmtInt(asgardObserved[asgardTallest])} boardings, and it contributes {fmt(asgardGof.contributions[asgardTallest], 3)}, because the schedule expected {fmt(asgardGof.expected[asgardTallest], 2)} of them and very nearly got it.
+
+*What that follow-up is worth.* It locates the departure and it is not a test. The report that says "{asgardRegistries[asgardDriver]} registries were significantly under-represented, p = {fmtP(asgardGof.pValue)}" has attached the whole table's P-value to one cell, which is the commonest way a correct analysis becomes a false claim.
+</Briefing.Worked>
+<Briefing.Caution>
+**Doubling the tail for a two-sided alternative.** A $z$ or $t$ statistic keeps the direction of the departure in its sign, so a two-sided alternative needs both ends of the curve. Squaring the gaps throws that sign away before the sum, which is exactly what puts every kind of departure into the upper tail. Chi-square is one-tailed whatever the alternative is called.
+
+**Reading the lower tail as a P-value.** The area *below* the statistic grows as the fit gets worse, so using it would make the worst tables look the most convincing. It has a legitimate use of its own: a $\chi^2$ far below its df says the counts are suspiciously close to the claim, which is how audit offices find files that were written rather than collected.
+
+**"We reject, so every class differs."** $H_a$ says at least one. In the *Asgard* table, {asgardRegistries.map((r, i) => (i === asgardDriver ? null : `${r} contributes ${fmt(asgardGof.contributions[i], 2)}`)).filter(Boolean).join(', ')}, and the test establishes nothing whatever against any of them individually.
+
+**A large statistic without its df.** $\chi^2$ = 20 has a P-value of {fmtP(chi2.sf(20, 1))} on 1 degree of freedom and {fmtP(chi2.sf(20, 20))} on 20. Neither the size of the number nor the word *large* carries any information on its own.
+
+**Giving the biggest contributor a P-value.** The level was spent on the whole table. Naming the class that carries the statistic is a description of where the statistic came from, reported as such, and a formal test of that one class needs its own data.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="χ²GOF-Test, part two: reading χ², P, df and CNTRB">
+<Calculator.Step keys={['STAT', '▸ TESTS', 'D:χ²GOF-Test']} note={`Worked case: the ${asgardN} Asgard boardings above. Observed: L₁ · Expected: L₂ · df: ${asgardGof.df} · Calculate`}>With `L1` holding the observed counts and `L2` the expected counts you built from the claim, item **D** runs the test. There is no tail field on this screen.</Calculator.Step>
+<Calculator.Read label="χ²" value={fmt(asgardGof.statistic, 4)}>the sum of the per-class terms.</Calculator.Read>
+<Calculator.Read label="p" value={fmt(asgardGof.pValue, 6)}>the upper-tail area above χ² on the df you typed. Report it to four decimal places, or as `p < 0.0001` when the screen returns something in scientific notation.</Calculator.Read>
+<Calculator.Read label="df" value={String(asgardGof.df)}>echoed back from the field you filled in, not computed from the lists. Check it against the number of classes every time.</Calculator.Read>
+<Calculator.Read label="CNTRB" value={asgardGof.contributions.map((c) => fmt(c, 3)).join(', ')}>the per-class contributions, in `L1` order, written into a list called `CNTRB`. This is how the largest contributor is found without hand arithmetic.</Calculator.Read>
+<Calculator.Step keys={['2nd', 'STAT', '▸ NAMES']} note="CNTRB STO▸ L₄">`CNTRB` belongs to the last χ² test you ran and is overwritten by the next one without a message. Copy it into `L4` before you do anything else, then read `max(L4)` off `2nd` `STAT` `▸ MATH` `2:max(` and find its row in the editor.</Calculator.Step>
+<Calculator.Read label="max(L4)" value={fmt(Math.max(...asgardGof.contributions), 3)}>row {fmtInt(asgardDriver + 1)}: {asgardRegistries[asgardDriver]}.</Calculator.Read>
+<Calculator.Watch>**The `df:` field is yours to fill in and the screen will accept anything.** Goodness of fit carries **classes − 1**. The $(r-1)(c-1)$ that belongs to a two-way table is a different procedure on a different screen, and typing it here changes the P-value without changing anything else on the display. On the *Asgard* table, df {fmtInt(asgardGof.df)} gives {fmtP(asgardGof.pValue)} and df 1 gives {fmtP(chi2.sf(asgardGof.statistic, 1))}.</Calculator.Watch>
+<Calculator.Watch>**The P-value on this screen is the upper tail and nothing else.** There is no `μ:≠ <  >` row to choose from, because the squaring inside the statistic has already folded both directions of departure into the right-hand tail. Doubling what the screen prints is not a cautious choice. It reports {fmtP(Math.min(1, 2 * asgardGof.pValue))} where the answer is {fmtP(asgardGof.pValue)}.</Calculator.Watch>
+<Calculator.Watch>**`χ²GOF-Test` is item D; `C:χ²-Test` is the two-way test.** `C` wants a matrix in `[A]` and computes its own expected counts into `[B]`. Running the two-way test on a one-row matrix will produce a statistic, a df of 0 and an error, and running goodness of fit on a table that needs `C` quietly gives the wrong degrees of freedom.</Calculator.Watch>
+</Calculator>
+
+<ChiSquareTail statistic={CARGO_GOF.statistic} df={CARGO_GOF.df} caseName="the cargo table" alpha={0.05} />
+
+<GofVisualiser initialView="contribution" />
+
+<PicketTree />
+
+<Drill generator="act-8/gof-p-value" count={1} />
+<Drill generator="act-8/gof-conclusion" count={1} />
+<Drill generator="act-8/largest-contributor" count={1} />
+<Drill generator="act-8/chi-square-df-trap" count={1} />
+<Drill generator="act-8/chi-square-one-tail" count={1} />
+
+<MissionBeat id="act-8-02-p" kind="numeric" answer={CARGO_GOF.pValue} answerKind="pValue" allowInequality={true} label="WHAT THE NUMBER IS WORTH"
+  prompt={`The cargo table stands at **χ² = ${fmt(CARGO_GOF.statistic, 2)}** on **${fmtInt(CARGO_GOF.df)}** degrees of freedom, conditions met.\n\nWhat is the **P-value**? Give it to four decimal places, or as an inequality if the tail runs under 0.0001.`}
+  hint="Decide which end of the chi-square curve counts as evidence against the claim before you compute any area. Then take that area on the degrees of freedom the table carries, and take it once.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He puts the curve on the repeater with the statistic marked and the shaded area behind it, which at this scale is a line.">
+  So on {fmtInt(CARGO_GOF.df)} degrees of freedom the whole curve is basically finished by fifteen, sir, and we're at {fmt(CARGO_GOF.statistic, 2)}.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She has the curve on the plot and puts a finger on the right-hand end of it.">
+  You have doubled it. There is one tail. Every term in that sum is a square, so a class that came in short and a class that came in heavy both drive the number the same way, and they both come out of the same end of the curve.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-8-02-conclusion" kind="interpretation" label="WHAT THE TEST IS ENTITLED TO SAY"
+  prompt={`Write the line that goes in the brief under the statistic, at **α = ${fmt(0.05, 2)}**. Conclusion in context for the ${fmtInt(LOSS_N)} lost hulls against the Lane's declared mix. Then a second sentence, labelled as a follow-up, saying which cargo class carries the statistic and which way it went.\n\nEbele's struck draft is the thing to avoid.`}
+  hint="Five parts in the first sentence: the decision, the p-value, α, evidence language, and the population and variable named. Then read down the contribution column for the second sentence, and check that nothing in the first one claims more than one class."
+  {...cargoConclusion}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it once and puts it into the brief herself rather than handing it back.">
+  That is the sentence. It says the mix is wrong. It names no hull, no office, no year, and it will still be true in a year when somebody at Valhalla is looking for a reason it is not.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the four terms up again and reads his own draft back off the screen before he says anything about it.">
+  I wrote four when the test gives me one, sir. It says the distribution is wrong. It doesn't hand me the classes one at a time. — And the second sentence has to be labelled, because the contributions aren't a test and if I put a p next to one of them somebody will quote it.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-8-02-picket" kind="numeric" answer={P_PICKET_CAN_RESPOND} answerKind="proportion" digits={2} label="THE NUMBER YOU SIGN"
+  prompt={`Ferrier's tree, from the panel above. P(a wrecker of theirs is at Kettle at all) = **${fmt(P_WRECKER_PRESENT, 2)}**. P(it is cold on picket inside slug range of the approach quarter, given that it is there) = **${fmt(P_ON_PICKET_GIVEN_PRESENT, 2)}**. There is no leaf for detection.\n\nWhat is **P(a picket is in a position to respond)** before you order the dwell? Give a probability to two decimal places.`}
+  hint="One path through the tree ends in a picket that can answer. A path's probability is the product along it, and the second figure is already conditional on the first.">
+  <Success>
+  <Dialogue speaker="xo" aside="She writes it on the plot under the tree and puts the time beside it.">
+  Signed at fifty-six. The number and the order go in the same entry, Captain, in that sequence, so that whoever reads it can see which one came first.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst">
+  That's the two of them added, sir. They're not alternatives. It has to be there *and* be in our quarter, so it's the one along the path, multiplied.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id={DECISION_IDS.dwell} kind="decision" label="THE DWELL"
+  prompt={`Closest approach at 06:00. ${fmtInt(Math.round(LIDAR_WINDOW_MIN))} minutes of window, Oyelaran in the blister with the manual head, the number signed and on the plot.\n\nA forty-second dwell writes every hull at Kettle into the buffer. Twelve seconds writes the strongest returns and leaves the rest as warm shapes. Both are active illumination.\n\n**Give the order.**`}
+  options={['A forty-second dwell. Every hull at Kettle, named, in one pass, and forty seconds of the mast lit.', `A ${fmtInt(DWELL_SHORT_S)}-second dwell. The strongest returns only, and less than a third of the illumination.`]}>
+  <Outcome option={0}>
+  Forty seconds. Solberg reads it back with the time on it and Oyelaran acknowledges from the blister in three words. Ferrier logs the dwell length, the signed number and the order in one entry, and does not put an opinion under it.
+  </Outcome>
+  <Outcome option={1}>
+  Twelve seconds. Ebele says nothing at the time and writes *partial* next to the buffer line in the intel log, because what comes back on a short dwell is a list with holes in it and he would rather the holes were labelled tonight than argued about later.
+  </Outcome>
+</MissionBeat>
+
+<Gated by={["act-8-02-p", "act-8-02-conclusion", "act-8-02-picket", DECISION_IDS.dwell]}>
+
+<Scene stamp="MET 181/06:00" location={`CSV Nightjar · bridge, then the mast root · Watch, cellar ${fmt(SINK_PCT_AT_APPROACH, 0)}%, ${fmtInt(CLOSEST_APPROACH_KM)} km from Kettle`} condensed={`The dwell goes at closest approach and the buffer fills with hull identifications, names off the Register's loss subtable. At 06:02 Solberg has an RF transient off the quarter at ${fmtInt(PATIENCE_RANGE_KM)} kilometres, cold source. The slug is ${fmtInt(SLUG_FLIGHT_MIN)} minutes out, the torch is ${fmtInt(TORCH_FROM_WATCH_MIN)} from Watch, and cold gas moves the hull ${fmt(COLD_DISPLACEMENT_M, 0)} metres. At 06:12 the frame rings once and the mast head is gone. Ferrante goes down to the root hatch and comes back with eight seconds and an intact buffer. The torch lights at 06:24 and Nightjar runs for eleven hours at 0.3 g with the wings out, a lamp to everything in the Belt, and Patience does not follow.`}>
+
+The dwell goes at 06:00:00 and runs for <DwellLength /> seconds.
+
+Nothing happens on the bridge. The head is thirty metres aft of where you are sitting and eleven above it, and from here it is a green figure on a status line.
+
+By 06:01 the buffer has <IdCount words /> hull identifications in it, and they have names.
+
+<Decided id={DECISION_IDS.dwell} is="long">
+
+Oyelaran reads the first five off the head before the buffer has finished writing. *{longNames[0]}*. *{longNames[1]}*. *{longNames[2]}*. *{longNames[3]}*. *{longNames[4]}*. Then she stops reading and lets the list write itself, and the rest of them come up on the repeater a line at a time.
+
+</Decided>
+
+<Decided id={DECISION_IDS.dwell} is="short">
+
+Oyelaran reads the first four off the head as they land. *{shortNames[0]}*. *{shortNames[1]}*. *{shortNames[2]}*. *{shortNames[3]}*. The rest of the face of the rock stays as it was on the survey camera: warm shapes, no names.
+
+</Decided>
+
+<LidarBufferTable />
+
+Every name in that list that the Register carries at all, the Register carries as *unknown, presumed lost*, at a Uruk desk.
+
+Nobody says anything for eleven seconds. Ferrier is the one who breaks it, and what she says is "Log it. All of it. Now, not at the end of the watch."
+
+Solberg, at 06:02.
+
+<Dialogue speaker="comms" aside="He reads the bearing and the range before he reads the classification, and he does not raise his voice to do it.">
+Bridge, comms. RF transient at 06:01:44 ship time, bearing two-two-zero, range {fmtInt(PATIENCE_RANGE_KM)} kilometres. Single burst, four hundred milliseconds. There is no lag on that one, sir. It is inside the ship's own light-second.
+</Dialogue>
+
+Ebele has the cone up before Solberg has finished. A cold source at {fmtInt(PATIENCE_RANGE_KM)} kilometres off the quarter you are coming through, which is the quarter in the tree.
+
+Sandoval, on the engineering channel, flat.
+
+<Dialogue speaker="engineer">
+{fmtInt(TORCH_FROM_WATCH_MIN)} minutes to light, Skipper. We are on Watch. That figure does not have a shorter version.
+</Dialogue>
+
+Ferrier, at the plot, doing the arithmetic out loud because it is quicker than writing it.
+
+<Dialogue speaker="xo">
+Forty millimetre at three and a half a second. Slug's inside ten.
+</Dialogue>
+
+{fmtInt(SLUG_FLIGHT_MIN)} minutes, and {fmtInt(TORCH_FROM_WATCH_MIN)} to the torch. Cold gas would move {fmtInt(SHIP_MASS_T)} tonnes about {fmt(COLD_DISPLACEMENT_M, 0)} metres in that time, a sixth of the hull's length, against a round that does not care where the hull is going. Nobody suggests it.
+
+You get out of the seat and go aft through the sensor bay to the mast root. Ferrante is already at the root hatch with the medical bag between his boots.
+
+The frame rings once at 06:12.
+
+A single note through the length of the hull. Then the mast-head indicator on the panel beside the hatch goes from green to grey and stays grey.
+
+Ferrante is through the hatch and down the trunk before the note has stopped. You stand at the coaming with your hand on the ladder rail and you can feel the cold coming up out of the trunk.
+
+He is four minutes. When he comes back up he stops on the second rung from the top so that his face is level with yours.
+
+<Dialogue speaker="medic" aside="He has not taken his gloves off. There is frost on the cuffs of them.">
+The blister is gone, with the mount and eleven metres of mast above the collar.
+</Dialogue>
+
+<Dialogue speaker="medic">
+Eight seconds, about. She was conscious for them. You were going to ask.
+</Dialogue>
+
+He waits, and then says the other thing before you have got to it.
+
+<Dialogue speaker="medic">
+The buffer wrote out at 06:01. It is on the bridge and it is whole. I would rather you had both of those from the same person.
+</Dialogue>
+
+You go forward to the bridge. The order you give when you get there is to light the torch, and Sandoval has the reactor coming up before Solberg has logged it.
+
+The torch lights at 06:24. *Nightjar* runs at three tenths of a gravity with the wings out and every joule of the cellar going over the side, the brightest thing inside half an astronomical unit, for eleven hours, in full view of everything in the Belt with a lens.
+
+*Patience* does not follow. A tug cannot.
+
+Ferrier logs the dwell, the signed number, the order and the time of each. She writes Oyelaran's name into the casualty line in the same hand as the rest of it, and then she comes and stands at your shoulder for a while without saying anything, and then she goes and finds Ebele, who has not moved from the intel repeater and has not opened the buffer.
+
+</Scene>
+
+<LogEntry
+  title="One tail, and what a rejection is entitled to say"
+  concept="A chi-square P-value is the area above the statistic on k − 1 degrees of freedom, and there is no second tail: every term is a squared gap, so departures in either direction land in the same end of the curve and doubling the area is wrong. The statistic has no absolute size, since under H₀ its mean equals its degrees of freedom, so it can only be read alongside them. A rejection says the claimed distribution does not fit; the alternative is that at least one proportion differs, which is a statement about the distribution and not about every class in it. Which class carries the statistic is read off the contributions (O − E)²/E as a labelled follow-up, with its direction taken from the O − E column, and it has no P-value of its own."
+  formula="P = P(\chi^2_{k-1} \ge \chi^2_{\text{obs}}), \qquad \text{contribution}_i = \frac{(O_i-E_i)^2}{E_i}, \qquad \sum_i \text{contribution}_i = \chi^2"
+  mistake="Reading a large statistic without its degrees of freedom. χ² = 20 is overwhelming on 1 df and unremarkable on 20, because the mean of a chi-square under H₀ is its df. Quote the statistic, the df and the P-value together or quote none of them."
+  tags={['chi-square', 'p-value', 'one-tailed', 'conclusion in context', 'contributions', 'degrees of freedom', '8.3']}
+/>
+
+</Gated>

@@ -1,0 +1,86 @@
+---
+id: act-8-checkpoint
+act: 8
+title: "Checkpoint: Kettle"
+kind: checkpoint
+ap_topics: ["8.1", "8.2", "8.3", "8.4", "8.5", "8.6", "8.7"]
+objectives:
+  - "Set up and carry out a chi-square goodness-of-fit test, and read the conditions off the expected counts"
+  - "Tell a test of homogeneity from a test of independence by how the data were collected, and state the degrees of freedom from the shape of the table"
+  - "Write a chi-square conclusion in context that names the cells driving it and claims nothing the procedure did not pay for"
+  - "Select the categorical procedure a question calls for, including the two answers that are not a test: simulate the null, or describe a census"
+prereqs: ["act-8-04"]
+est_minutes: 20
+calc_briefing: null
+summary: "Ebele lays out the log of what the identifications prove, finding by finding, with the conditions under each one. Ferrier signs as witness."
+---
+
+import { fmt, fmtInt } from '@/lib/stats'
+import { BENEFICIARY_TEST, CARGO_GOF, CORRIDOR_TEST, DACRE_DIVERTED_EXPECTED, EXAMINER_PERMUTATION_REPS, LEDGER_N, LOSS_N, MANIFEST_N } from '@/instruments/act-8/data'
+import { DECISION_IDS, Decided, IdCount, PassGate } from '@/instruments/act-8/story'
+
+<Scene stamp="MET 194/09:40" location="Wardroom · five milligee for Ceres · wings out" condensed="MET 194, eleven days after Kettle. Ebele sets out the log of what the identifications prove, finding by finding, with the procedure and the conditions under each one. You correct him; Ferrier signs as witness. Everything in the file was taken by an instrument that is no longer aboard, and the file has to survive a reader who wants it thrown out.">
+
+At five milligee a stylus dropped off the wardroom table takes five seconds to reach the deck. Ebele's gets away from him twice while he is squaring the pages, and the second time he leaves it where it lands.
+
+You came down from the bridge without changing out of the jacket. The wardroom has run four degrees under the rest of the ship since Kettle; Sandoval took six loops down for the approach and has turned five of them back up.
+
+He has the file in the order Ferrier taught him at Ceres. The question, then the procedure, then the conditions with their arithmetic under them, then the conclusion, then one line saying what the finding does not establish. On page one there are <IdCount words /> hull identifications with their ranges and their bearings, and the buffer's serial in the caption. Under the caption, in the field the form keeps for it, he has put the name of the officer who took the returns, and the rank in full.
+
+Ferrier reads page one standing at the end of the table.
+
+<Dialogue speaker="xo" aside="She has had the file since the middle watch and has come with nothing to write with.">
+Read it to me as if the reader wants it thrown out. Every finding, the procedure under it, and what it does not establish.
+</Dialogue>
+
+<Dialogue speaker="analyst" aside="He puts two pages back in order before he starts.">
+So the first one is the cargo mix, sir, and it's the one I want argued with hardest. It's the only finding in the file that doesn't need a hull. Everything after it does.
+</Dialogue>
+
+Five tables and five procedures, and one of them is not a test at all. Ostrow will read this once, looking for the page where the procedure does not match the design, and if he finds it he will not need to argue with anything else in it.
+
+</Scene>
+
+<Checkpoint act="act-8" />
+
+<PassGate>
+
+<Scene stamp="MET 194/14:05" location="Intel terminal · five milligee for Ceres" condensed="The log is signed and the findings hold: the lost hulls' cargo mix is not the Lane's, loss depends on beneficiary, the Lane's classifications are not the comparison corridor's, Uruk wrote every piracy finding, and one examiner's signature sits on seventeen of nineteen. What none of it reaches is the question of when the diversion was decided, and that is a question about fuel.">
+
+Ferrier signs the last page as witness and dates it, and writes the time beside the date because the ship is not keeping a normal watch bill.
+
+What the file says, in the order it says it. The {fmtInt(LOSS_N)} lost hulls' declared cargo does not follow the Lane's mix, on a statistic of {fmt(CARGO_GOF.statistic, 1)} with {fmtInt(CARGO_GOF.df ?? 3)} degrees of freedom, and the category carrying it is volatiles. Over the {fmtInt(LEDGER_N)} transits, loss is not independent of who collects on it, and the cell that drives the table is Perrine and lost. The Lane's classifications are not the comparison corridor's, on {fmtInt(CORRIDOR_TEST.df ?? 2)} degrees of freedom, and the column that separates them is *unknown*. Every *piracy* finding on the Lane was written at Uruk, and that line carries no p-value because those {fmtInt(LOSS_N)} losses are all the losses there are.
+
+And the examiner's column of the Bureau's {fmtInt(MANIFEST_N)}, where the chi-square was thrown out at an expected count of {fmt(DACRE_DIVERTED_EXPECTED, 2)} and the null was simulated instead: nothing in {fmtInt(EXAMINER_PERMUTATION_REPS)} relabellings came near what Dacre's stamp actually did.
+
+<Decided id={DECISION_IDS.send} is="now">
+The identifications went out at MET 188 and Lane Operations had *Halden Reach* under way inside the hour, ordered to rendezvous and escort. Lindqvist-Oduya acknowledged the order on an open channel and logged the acknowledgement.
+</Decided>
+
+<Decided id={DECISION_IDS.send} is="hold">
+You held the identifications for the fuel work. The same order to *Halden Reach* will come six days later, out of the same office, in the same words.
+</Decided>
+
+<Dialogue speaker="analyst" aside="He has Brandt's file open behind the log and has not opened the fuel column yet.">
+So every one of these says the same thing about the same nineteen hulls, sir, and not one of them says *when*. Ostrow's answer is that the masters went rogue at Mark nine and the Service found out afterwards, and nothing in this file touches it.
+</Dialogue>
+
+<Dialogue speaker="xo">
+Then find the thing that was loaded before they sailed.
+</Dialogue>
+
+The fuel to reach Kettle and stop there had to be in the tanks at Uruk High on the day each hull departed, certified against a profile that did not go to Kettle. If that fuel tracks the distance to a rock nobody was supposed to be flying to, it was loaded on purpose, on nineteen separate dates, by people who knew the destination.
+
+That is a line through nineteen points, and a slope with a standard error on it.
+
+</Scene>
+
+<LogEntry
+  title="Act VIII — counts, categories, and the two answers that are not a test"
+  concept="Chi-square procedures compare counts in categories against the counts a model expects. Goodness of fit tests one categorical variable against a claimed distribution with expected counts n·pᵢ and df = k − 1; a two-way table tests two variables with expected counts (row total × column total)/n and df = (r − 1)(c − 1), and whether it is called independence or homogeneity is settled by the sampling design and not by the arithmetic, which is identical. Every chi-square P-value is the upper tail alone, because any departure in any direction makes the statistic larger, and rejecting says the distribution differs somewhere, never that every cell does — the cell contributions are what name where. Two questions have no test as their answer: when an expected count falls below five the approximation is not trustworthy and the null is simulated instead, and when the data are the whole population there is nothing to infer to and the table is described."
+  formula="\chi^2 = \sum \frac{(O - E)^2}{E} \qquad E_i = n p_i,\ \ df = k - 1 \qquad E_{ij} = \frac{R_i C_j}{n},\ \ df = (r-1)(c-1)"
+  mistake="Reading a chi-square as a measure of size. A significant test says the counts are further from the model than chance explains at this sample size; it says nothing about how far. A huge table makes a small departure significant and a small table hides a large one, which is why the conclusion names the cells that drove it and quotes their contributions."
+  tags={['unit-8', 'checkpoint', 'chi-square', 'goodness of fit', 'expected counts', 'homogeneity', 'independence', 'degrees of freedom', 'cell contributions', 'conditions', 'simulation', 'census', 'procedure selection', '8.1', '8.7']}
+/>
+
+</PassGate>
