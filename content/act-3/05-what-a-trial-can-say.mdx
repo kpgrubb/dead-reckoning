@@ -15,7 +15,7 @@ summary: "You hold the warrant. One week of Asgard's escort assignments, drawn b
 ---
 
 import { binomial, choose, fmt, fmtInt, fmtPct } from '@/lib/stats'
-import { ASGARD_2176, BOARD_TRIAL, LOTTERY_DIGITS, LOTTERY_ESCORTED, LOTTERY_ESCORTED_LABELS, LOTTERY_EXACT, LOTTERY_OPTIONS, LOTTERY_TRANSITS, LOTTERY_UNESCORTED, OWNERS, PILOT_ESCORTED, PILOT_EXACT, PILOT_TRANSITS, PILOT_UNESCORTED, exactRandomization } from '@/instruments/act-3/data'
+import { ASGARD_2176, BOARD_TRIAL, LOTTERY_DIGITS, LOTTERY_ESCORTED, LOTTERY_ESCORTED_LABELS, LOTTERY_EXACT, LOTTERY_OPTIONS, LOTTERY_TRANSITS, LOTTERY_UNESCORTED, OWNERS, PILOT_ESCORTED, PILOT_EXACT, PILOT_TRANSITS, PILOT_UNESCORTED, REGISTER_LOSSES, exactRandomization } from '@/instruments/act-3/data'
 import { RandomizationMachine } from '@/instruments/act-3/RandomizationMachine'
 import { DECISION_IDS, Decided, LotteryBeat, LotteryScopeBeat } from '@/instruments/act-3/story'
 
@@ -30,7 +30,7 @@ export const tindrUnescorted = [2, 3, 3, 4]
 export const tindrExact = exactRandomization(tindrEscorted, tindrUnescorted)
 export const tindrExtreme = Math.round(tindrExact.pLess * tindrExact.count)
 export const tindrWays = choose(tindrEscorted.length + tindrUnescorted.length, tindrEscorted.length)
-/** The Lane's working loss rate per transit — a planning figure, not a measurement. */
+/** The Lane's working loss rate per transit: a planning figure, not a measurement. */
 export const lossRate = 0.01
 /** A mid-sized trial, for the comparison in the worked example. */
 export const bigTrial = 100
@@ -49,25 +49,25 @@ The Authority's forward schedule comes down at 0600 and Solberg has it on the pl
 *Asgard* is on that stretch and has beam capacity for about half of them.
 
 <Dialogue speaker="comms" aside="He has two clocks on the board now and he keeps them a hand's width apart so that nobody confuses them." lag="lag 19 min 52 s · Callisto">
-Sir. Valhalla is nineteen minutes fifty-two seconds each way this morning and rising. A question and an answer is the better part of forty minutes on the beam alone, and Valhalla does not answer inside forty minutes. — *Asgard* is four minutes and change. I can put you on her master and have a return inside ten.
+Sir. Valhalla is nineteen minutes fifty-two seconds each way this morning and rising. A question and an answer is the better part of forty minutes on the beam alone, and Valhalla has never answered inside forty minutes in my service. *Asgard* is four minutes and change. I can put you on her master and have a return inside ten.
 </Dialogue>
 
 Ebele has the warrant up, because he has read it three times since MET 72 and wants somebody to check that he has read it right.
 
-"So paragraph eleven, sir. *The assessing officer may direct the disposition of Service cutters attached to the Lane for the purposes of the assessment.* That's escort assignment. That's *Asgard*'s week." He scrolls. "It isn't the Authority, it isn't the schedule, and it isn't *Tindr*. But for six escorts out of twelve transits, next week, on this corridor — the decision is on this bridge."
+"So paragraph eleven, sir. *The assessing officer may direct the disposition of Service cutters attached to the Lane for the purposes of the assessment.* That's escort assignment. That's *Asgard*'s week." He scrolls. "It isn't the Authority's to give and it isn't the schedule's. For six escorts out of twelve transits, next week, on this corridor, the decision is on this bridge."
 
-"Assuming paragraph eleven says what it appears to say," Ferrier says, "and it does. Say what you would do with it."
+"Taking the warrant as issued and unamended," Ferrier says. "I checked that at 0600. Say what you would do with it."
 
-"So the design," Ebele says, and gets faster. "Twelve transits, six escorted, six not, drawn by lot. Completely randomized — twelve isn't enough to block on owner, four and five and three is too thin to split. Unannounced: the masters find out *Asgard* is with them when *Asgard* is with them, and the Authority is told after the week, not before. Same corridor, same week, same weather. The only thing that differs between the two groups is which of them drew the cutter, and it differs because a machine said so and not because anybody asked."
+"So the design," Ebele says, and gets faster. "Twelve transits, six escorted, six not, drawn by lot. Completely randomized. Twelve isn't enough to block on owner and the classes are too thin to split anyway. Unannounced: the masters find out *Asgard* is with them when *Asgard* is with them, and the Authority is told after the week. Same corridor, same week, same weather. The only thing that differs between the two groups is which of them drew the cutter, and it differs because a machine said so."
 
 "Response."
 
 "Off-nominal advisories per transit, sir. It's the only column the Register fills in for every hull, every week, whether anything happens or not."
 
-Ferrier turns from the plot to you and gives you the limits flat, without a recommendation in them anywhere, because she has decided not to have an opinion out loud and you can see the effort that is costing her.
+You put the cup down on the console shelf where it will not travel. Ferrier turns from the plot to you and gives you the limits, with no recommendation anywhere in them.
 
-<Dialogue speaker="xo" aside="She stands with her hands behind her back and reads it off the warrant rather than out of her head, which is deliberate.">
-What it covers: which transits *Asgard* escorts, for the duration of the assessment. What it does not: holding a single hull on the ground, instructing the Lane Authority, or standing *Tindr* down. What it costs if it goes wrong: Captain Ostrow at the Uruk office will read a Compact officer dealing escorts by machine as this ship deciding who on his corridor is worth protecting, and he will say so in writing. — The data says we cannot answer the Board's question. It does not say we cannot answer a smaller one. That is as far as I will go.
+<Dialogue speaker="xo" aside="She stands with her hands behind her back and reads it off the warrant rather than out of her head.">
+What it covers: which transits *Asgard* escorts, for the duration of the assessment. What it does not: holding a single hull on the ground, instructing the Lane Authority, or standing *Tindr* down. The cost, if this goes wrong, is Captain Ostrow at the Uruk office. He will read a Compact officer dealing escorts by machine as this ship deciding who on his corridor is worth protecting, and he will say so in writing. The data says we cannot answer the Board's question. It does not say we cannot answer a smaller one. Past that, Captain, I have nothing for you.
 </Dialogue>
 
 </Scene>
@@ -77,15 +77,15 @@ What it covers: which transits *Asgard* escorts, for the duration of the assessm
   options={[LOTTERY_OPTIONS.order, LOTTERY_OPTIONS.decline]}>
   <Outcome option={0}>
   <Dialogue speaker="comms" aside="He is already pulling the digit table and the log sheet, and he times the entry as he makes it.">
-  Understood, sir. I will draw the digits myself, two at a time, and log every pair including the ones I discard. Labels 01 through 12, skip a repeat, skip anything over twelve, stop at six. *Asgard* gets the list and nothing else — no reason, no ranking, and no order of merit for anybody who asks later.
+  Understood, sir. I will draw the digits myself, two at a time, and log every pair including the ones I discard. Labels 01 through 12, skip a repeat, skip anything over twelve, stop at six. *Asgard* gets the list and nothing else. No reasons appended, no ranking. If somebody comes asking later there is nothing on the sheet to give them.
   </Dialogue>
   <Dialogue speaker="xo" aside="She enters it in the ship's log herself, in her own hand, with the paragraph number against it.">
-  Logged: escort assignment for *Asgard*, week of MET 74, directed by the assessing officer under paragraph eleven, allocated by random draw. The authority is on the page with the decision, Captain. When somebody argues about this — and somebody will — the argument will be about whether the warrant should say that, not about whether you had it.
+  Logged: escort assignment for *Asgard*, week of MET 74, directed by the assessing officer under paragraph eleven, allocated by random draw. The authority is on the page with the decision, Captain. Somebody will argue about this in due course. The argument will be about whether the warrant should say that, not about whether you had it.
   </Dialogue>
   </Outcome>
   <Outcome option={1}>
   <Dialogue speaker="xo" aside="She logs this one too, at the same length, with no change in her voice at all.">
-  Logged, and noted that the authority existed and was not used. Then we take what *Asgard* already has. Her master ran six transits on her own account in the last fortnight and tossed for the escorts because she could not be in two places — it is a smaller trial, it is not our design, and we did not choose the units. What it is, is assigned by chance, and that is the part that matters.
+  Logged, and noted that the authority existed and was not used. Then we take what *Asgard* already has. Her master ran six transits on her own account in the last fortnight and tossed for the escorts because she could not be in two places. Smaller than the week we did not order, and none of it our design. The toss did the assigning. That is the part that carries.
   </Dialogue>
   <Dialogue speaker="analyst" aside="He is disappointed and doing a creditable job of not showing it, which mostly means he talks about arithmetic.">
   Six transits, sir. Three and three. Every conclusion we can draw gets narrower by a factor I can compute, and I would rather compute it than pretend it isn't there. I will write the sample size into the first line of the finding and not the last.
@@ -95,15 +95,15 @@ What it covers: which transits *Asgard* escorts, for the duration of the assessm
 
 <Decided id={DECISION_IDS.lottery} is="order">
 
-<Scene stamp="MET 75/05:20 — 79/18:40" location="Bridge · comms station · braking at 4 mgee · 0.86 AU from Callisto" condensed="Solberg draws the digits in pairs and logs every one, including the discards. Six labels come out; the list goes to Asgard with no reasons attached. Five days later the Register's advisory counts come back and the escorted transits are lower. Ebele calls it a third and you send him to the machine.">
+<Scene stamp="MET 75/05:20 → 79/18:40" location="Bridge · comms station · braking at 4 mgee · 0.86 AU from Callisto" condensed="Solberg draws the digits in pairs and logs every one, including the discards. Six labels come out; the list goes to Asgard with no reasons attached. Five days later the Register's advisory counts come back and the escorted transits are lower. Ebele calls it a third and you send him to the machine.">
 
-Solberg draws it at the change of the morning watch with Ebele standing where he can see the sheet and not the hand, which is Solberg's idea.
+Solberg draws it at the change of the morning watch. Ebele stands where he can see the sheet and not the hand, which is Solberg's arrangement and not his.
 
-<Dialogue speaker="comms" aside="He reads the whole string out, discards included, because a draw with the discards left off the log is not a draw anybody can check." lag="lag 4 min 11 s · Asgard">
-Digits, in the order drawn, in pairs: {digitPairs}. Pairs out of range or already taken were discarded and are on the sheet. The six labels selected, in draw order: {escortedLabelList}. — That is the escort list for *Asgard*, week of MET 74. Transmitting now, with no reasons appended, as directed.
+<Dialogue speaker="comms" aside="He reads the whole string out, discards included, so that somebody at Valhalla can run the draw again off the log alone." lag="lag 4 min 11 s · Asgard">
+Digits, in the order drawn, in pairs: {digitPairs}. Pairs out of range or already taken were discarded and are on the sheet. The six labels selected, in draw order: {escortedLabelList}. That is the escort list for *Asgard*, week of MET 74. Transmitting now, with no reasons appended, as directed.
 </Dialogue>
 
-The hulls behind those labels are {LOTTERY_TRANSITS.filter((t) => t.escorted).map((t) => t.hull).join(', ')}, and if you had drawn the list yourself out of your own head you would not have picked that set, which is the entire point of not drawing it yourself.
+The hulls behind those labels are {LOTTERY_TRANSITS.filter((t) => t.escorted).map((t) => t.hull).join(', ')}. It is not the set you would have picked.
 
 Five days, twelve transits, one cutter working half of them and logging the other half past her without comment. Nobody is lost. Nothing is even close. On MET 79 the Authority's Register posts the week's minor records and Ebele pulls the advisory counts against the labels, and the two columns are not the same.
 
@@ -111,11 +111,11 @@ Escorted: {LOTTERY_ESCORTED.join(', ')}. Mean {fmt(LOTTERY_EXACT.meanA, 2)}.
 
 Unescorted: {LOTTERY_UNESCORTED.join(', ')}. Mean {fmt(LOTTERY_EXACT.meanB, 2)}.
 
-<Dialogue speaker="analyst" aside="He has both means on the plot in the size he uses for findings, and he has got ahead of himself, and he knows it about two seconds after he stops talking.">
-So that's a third fewer, sir. {fmt(LOTTERY_EXACT.meanA, 2)} against {fmt(LOTTERY_EXACT.meanB, 2)} — that is {fmtPct(lotteryDrop, 0)} down, and it was assigned by lot, so the word is *because*. Escorts reduce advisories by a third. I can have that in the preliminary in ten minutes.
+<Dialogue speaker="analyst" aside="He has both means on the plot in the size he uses for findings, and he is talking faster than he is checking.">
+So that's a third fewer, sir. {fmt(LOTTERY_EXACT.meanA, 2)} against {fmt(LOTTERY_EXACT.meanB, 2)}. That is {fmtPct(lotteryDrop, 0)} down, and it was assigned by lot, so the word is *because*. Escorts reduce advisories by a third. I can have that in the preliminary in ten—
 </Dialogue>
 
-You do not tell him he is wrong, because he is not yet wrong about anything except the last two sentences, and those are the ones that would end his career if the Board printed them.
+He is not wrong about anything yet except the last two sentences. Those are the two the Board would print.
 
 You tell him to put the labels back in the bag.
 
@@ -127,14 +127,14 @@ All of them. Every way the six could have fallen. Then find the one that actuall
 
 <Decided id={DECISION_IDS.lottery} is="decline">
 
-<Scene stamp="MET 75/05:20 — 79/18:40" location="Bridge · comms station · braking at 4 mgee · 0.86 AU from Callisto" condensed="Asgard sends her own six-transit pilot: three escorted, three not, split by her master's coin because she could not cover all six. It is smaller than the week you declined to order and it is not your design, but the assignment was made by chance. The escorted transits log fewer advisories, and Ebele calls it a third.">
+<Scene stamp="MET 75/05:20 → 79/18:40" location="Bridge · comms station · braking at 4 mgee · 0.86 AU from Callisto" condensed="Asgard sends her own six-transit pilot: three escorted, three not, split by her master's coin because she could not cover all six. It is smaller than the week you declined to order and it is not your design, but the assignment was made by chance. The escorted transits log fewer advisories, and Ebele calls it a third.">
 
 *Asgard*'s master sends the file up herself, four minutes each way, with a covering line that reads like somebody apologising for handwriting.
 
-Six transits in the last fortnight, Mark 6 to Mark 7. She could cover three. She tossed for them, wrote down the toss, and escorted the three that came up, which is more method than the Directorate managed with {fmtInt(BOARD_TRIAL.length)} transits and a season to plan it in.
+Six transits in the last fortnight, Mark 6 to Mark 7. She could cover three. She tossed for them, wrote the toss down, and escorted the three that came up. Attachment D had {fmtInt(BOARD_TRIAL.length)} transits and a season of planning behind it and no toss anywhere in it.
 
 <Dialogue speaker="xo" aside="She reads the covering line twice and then reads it out, which she does not often do." lag="lag 4 min 11 s · Asgard">
-*Assignment by coin, results appended, offered for what it is worth.* — It is worth this, Ensign: the three that got the cutter were not the three she would have chosen, and she can prove it. That is the whole of the difference between her six transits and Attachment D, and it is the only difference that matters.
+*Assignment by coin, results appended, offered for what it is worth.* It is worth this, Ensign: the three that got the cutter were not the three she would have chosen, and she can prove it. Her six transits differ from Attachment D on that one point, and it is the only point that pays.
 </Dialogue>
 
 Nobody was lost. Nothing was close. The Register's minor records for the six are in the appendix, and the two columns are not the same.
@@ -143,11 +143,11 @@ Escorted: {PILOT_ESCORTED.join(', ')}. Mean {fmt(PILOT_EXACT.meanA, 2)}.
 
 Unescorted: {PILOT_UNESCORTED.join(', ')}. Mean {fmt(PILOT_EXACT.meanB, 2)}.
 
-<Dialogue speaker="analyst" aside="He has both means on the plot in the size he uses for findings, and he has got ahead of himself, and he knows it about two seconds after he stops talking.">
-So that's a third fewer, sir. More than a third. {fmt(PILOT_EXACT.meanA, 2)} against {fmt(PILOT_EXACT.meanB, 2)} — that is {fmtPct(pilotDrop, 0)} down, and the coin did the assigning, so the word is *because*. Escorts reduce advisories. I can have that in the preliminary in ten minutes.
+<Dialogue speaker="analyst" aside="He has both means on the plot in the size he uses for findings, and he is talking faster than he is checking.">
+So that's a third fewer, sir. More than a third. {fmt(PILOT_EXACT.meanA, 2)} against {fmt(PILOT_EXACT.meanB, 2)}. That is {fmtPct(pilotDrop, 0)} down, and the coin did the assigning, so the word is *because*. Escorts reduce advisories. I can have that in the preliminary in ten—
 </Dialogue>
 
-You do not tell him he is wrong, because he is not yet wrong about anything except the last two sentences, and those are the ones that would end his career if the Board printed them.
+He is not wrong about anything yet except the last two sentences. Those are the two the Board would print.
 
 You tell him to put the labels back in the bag.
 
@@ -171,16 +171,16 @@ Four cells, and each one licenses a different sentence:
 | **random sample** | cause, and it generalizes to the population | association in the population; no cause |
 | **units as found** | cause, for these units only | association in these units only |
 
-Now the second idea, and it is the whole of a randomization test. Suppose the escort does nothing at all — not "nothing on average", but nothing to any transit: each hull would have logged the advisories it logged whichever label it drew. Then the labels are **arbitrary**, and the difference you observed is one draw from the set of differences every *other* deal of the labels would have produced. That set is finite. With $n$ units and $k$ of them escorted there are exactly $\binom{n}{k}$ deals, all equally likely by construction — because you made them equally likely with a machine.
+Now the second idea, and it is the whole of a randomization test. Suppose the escort does nothing at all: nothing on average, and nothing to any single transit, so that each hull would have logged the advisories it logged whichever label it drew. Then the labels are **arbitrary**, and the difference you observed is one draw from the set of differences every *other* deal of the labels would have produced. That set is finite. With $n$ units and $k$ of them escorted there are exactly $\binom{n}{k}$ deals, all equally likely by construction, because you made them equally likely with a machine.
 
 Deal them all, record the difference in means each time, and you have the **randomization distribution**: what chance alone produces, given these values and this design. Then ask where the observed difference stands in it. If it stands out at the edge, chance alone is a poor explanation. If it stands in the crowd, chance alone is a perfectly good one, and you have not found anything.
 
 The fraction of deals at least as extreme as the observed difference is the **p-value**, and it is not a single number until you have said **which side**:
 
-- A **directional** claim — *escorts reduce advisories* — is tested one-sided: count only the deals at least as negative as the observed difference.
+- A **directional** claim, *escorts reduce advisories*, is tested one-sided: count only the deals at least as negative as the observed difference.
 - A claim that escorts *change* advisories, either way, is two-sided: count deals at least as far from zero in either direction. On a symmetric randomization distribution that is about twice the one-sided figure.
 
-Report the side. A p-value quoted without its side is not a result; it is a number with a factor of two loose in it.
+Report the side. A p-value quoted without its side has a factor of two loose in it.
 
 Three more things the p-value is not.
 
@@ -188,7 +188,7 @@ Three more things the p-value is not.
 
 **Not significant is not "no effect".** Failing to find evidence is not finding evidence of none. A trial that could never have detected an effect this small has not tested for it; it has been silent about it.
 
-And a trial cannot see what it cannot generate. If the event you care about happens on a fraction $\pi$ of transits, a trial of $m$ transits produces at least one of them with probability $1 - (1-\pi)^m$ — and if that probability is small, the trial's silence on the matter was decided before it sailed.
+And a trial cannot see what it cannot generate. If the event you care about happens on a fraction $\pi$ of transits, a trial of $m$ transits produces at least one of them with probability $1 - (1-\pi)^m$. If that probability is small, the trial's silence on the matter was decided before it sailed.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula tex="d_{\text{obs}} = \bar{x}_{\text{treated}} - \bar{x}_{\text{control}}" terms={{ 'd_{\\text{obs}}': 'the observed difference in group means', '\\bar{x}_{\\text{treated}}': 'mean response of the treated group' }} label="The statistic being tested" />
@@ -200,13 +200,13 @@ And a trial cannot see what it cannot generate. If the event you care about happ
 <Briefing.Worked>
 *Tindr*'s beacon trial, 2181, run on the Themis Reach by an officer who is now retired and who did it properly.
 
-{fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits; {fmtInt(tindrEscorted.length)} of them given the new approach beacon by coin, {fmtInt(tindrUnescorted.length)} not. Response: off-nominal advisories per transit. Beaconed: {tindrEscorted.join(', ')} — mean {fmt(tindrExact.meanA, 2)}. Not beaconed: {tindrUnescorted.join(', ')} — mean {fmt(tindrExact.meanB, 2)}. Observed difference **{fmt(tindrExact.observed, 2)}**.
+{fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits; {fmtInt(tindrEscorted.length)} of them given the new approach beacon by coin, {fmtInt(tindrUnescorted.length)} not. Response: off-nominal advisories per transit. Beaconed: {tindrEscorted.join(', ')}, mean {fmt(tindrExact.meanA, 2)}. Not beaconed: {tindrUnescorted.join(', ')}, mean {fmt(tindrExact.meanB, 2)}. Observed difference **{fmt(tindrExact.observed, 2)}**.
 
-There are {fmtInt(tindrWays)} ways for those {fmtInt(tindrEscorted.length)} escort labels to fall among the {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits — $\binom{n}{k}$ with the numbers put in. Deal every one, take the difference in means each time, and count: **{fmtInt(tindrExtreme)}** of the {fmtInt(tindrWays)} give a difference of {fmt(tindrExact.observed, 2)} or lower. One-sided p = {fmtInt(tindrExtreme)} ÷ {fmtInt(tindrWays)} = **{fmt(tindrExact.pLess, 4)}**. Two-sided, counting the deals as far from zero the other way as well: {fmt(tindrExact.pTwoSided, 4)}.
+There are {fmtInt(tindrWays)} ways for those {fmtInt(tindrEscorted.length)} escort labels to fall among the {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits: $\binom{n}{k}$ with the numbers put in. Deal every one, take the difference in means each time, and count: **{fmtInt(tindrExtreme)}** of the {fmtInt(tindrWays)} give a difference of {fmt(tindrExact.observed, 2)} or lower. One-sided p = {fmtInt(tindrExtreme)} ÷ {fmtInt(tindrWays)} = **{fmt(tindrExact.pLess, 4)}**. Two-sided, counting the deals as far from zero the other way as well: {fmt(tindrExact.pTwoSided, 4)}.
 
-So on {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits, chance produces a gap that lopsided about {fmtPct(tindrExact.pLess, 0)} of the time. That is a result. The coin licenses the word *because* for those {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits — and for nothing else, because the Reach did not hand the officer a random sample of anything.
+So on {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits, chance produces a gap that lopsided about {fmtPct(tindrExact.pLess, 0)} of the time. That is a result. The coin licenses the word *because* for those {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits, and for nothing else, because the Reach did not hand the officer a random sample of anything.
 
-Now the other arithmetic, which is the one nobody runs before commissioning a trial. Your own {ASGARD_2176.years} return from *Asgard*: {fmtInt(ASGARD_2176.losses)} losses in {fmtInt(ASGARD_2176.transits)} transits, a rate of {fmt(asgardRate, 4)} — about {fmt(1 / asgardRate, 0)} transits to the loss. Take a rounder working figure of {fmtPct(lossRate, 0)} a transit. A trial of {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits then contains at least one loss with probability {fmtPct(seeOneIn(tindrEscorted.length + tindrUnescorted.length), 1)}; a trial of {fmtInt(bigTrial)} transits, {fmtPct(seeOneIn(bigTrial), 0)}. To be {fmtPct(detectTarget, 0)} sure of seeing even one you need {fmtInt(transitsFor90)} transits at {fmtPct(lossRate, 0)}, and {fmtInt(asgardTransitsFor90)} at *Asgard*'s measured rate. **A trial with losses as its response and a dozen hulls on its roster is not a weak trial. It is not a trial.**
+Now the other arithmetic, which is the one nobody runs before commissioning a trial. Your own {ASGARD_2176.years} return from *Asgard*: {fmtInt(ASGARD_2176.losses)} losses in {fmtInt(ASGARD_2176.transits)} transits, a rate of {fmt(asgardRate, 4)}, about {fmt(1 / asgardRate, 0)} transits to the loss. Take a rounder working figure of {fmtPct(lossRate, 0)} a transit. A trial of {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits then contains at least one loss with probability {fmtPct(seeOneIn(tindrEscorted.length + tindrUnescorted.length), 1)}; a trial of {fmtInt(bigTrial)} transits, {fmtPct(seeOneIn(bigTrial), 0)}. To be {fmtPct(detectTarget, 0)} sure of seeing even one you need {fmtInt(transitsFor90)} transits at {fmtPct(lossRate, 0)}, and {fmtInt(asgardTransitsFor90)} at *Asgard*'s measured rate. **A trial with losses as its response needs hundreds of transits before its silence carries any information at all.**
 </Briefing.Worked>
 <Briefing.Caution>
 *"Significant" read as "important".* They are different questions and the answer to one does not constrain the other. A p-value near zero on ten thousand transits can attach to a difference of two hundredths of an advisory, which no captain would spend a cutter on; and a difference worth the whole escort budget can sit in the middle of a randomization distribution built from twelve hulls. Report the **size** of the effect next to the p-value, always, and let the reader do the second job.
@@ -218,6 +218,21 @@ Now the other arithmetic, which is the one nobody runs before commissioning a tr
 *A cause from an observational study.* No amount of care with the analysis converts groups-as-found into an experiment. If the units were not assigned by a chance device, the strongest honest word is *associated*, and the sentence needs the lurking variables named beside it.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="One re-deal of the treatment labels">
+<Calculator.Step keys={['STAT', '1:Edit']} note={`L1: ${tindrEscorted.join(', ')}, ${tindrUnescorted.join(', ')}`}>The {fmtInt(tindrEscorted.length + tindrUnescorted.length)} advisory counts from the *Tindr* trial go into `L1`, the {fmtInt(tindrEscorted.length)} beaconed transits first. From here on a transit is its row number in that list.</Calculator.Step>
+<Calculator.Step keys={['0', 'STO▸', 'MATH', '▸ PRB', '1:rand']} note="0→rand">Seed the generator. Two calculators given the same seed produce the same shuffle, so the deal you are about to make is one a reviewer can reproduce.</Calculator.Step>
+<Calculator.Step keys={['MATH', '▸ PRB', '8:randIntNoRep(']} note={`randIntNoRep(1,${fmtInt(tindrEscorted.length + tindrUnescorted.length)},${fmtInt(tindrEscorted.length + tindrUnescorted.length)})→L2`}>A random permutation of the row numbers. This is the re-deal: it decides which {fmtInt(tindrEscorted.length)} transits carry the beacon label this time round, and the response values in `L1` never move.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'STAT', '▸ OPS', '5:seq(']} note={`seq(L1(L2(X)),X,1,${fmtInt(tindrEscorted.length)})→L3`}>`2nd` `STAT` is LIST. `L2(X)` is the row this deal put in position X, and `L1(L2(X))` is that row's advisory count, so `L3` is the treated group under this deal.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'ENTER']} note={`seq(L1(L2(X)),X,${fmtInt(tindrEscorted.length + 1)},${fmtInt(tindrEscorted.length + tindrUnescorted.length)})→L4`}>`2nd` `ENTER` recalls the command so you edit the two indices and the list name. The remaining rows are the control group.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'STAT', '▸ MATH', '3:mean(']} note="mean(L3)-mean(L4)">One value from the randomization distribution.</Calculator.Step>
+<Calculator.Read label="mean(L3)-mean(L4)">what chance alone produced on this deal. Press `ENTER` again for another, and again, and the values scatter around zero because the labels are doing nothing.</Calculator.Read>
+<Calculator.Read label="d(observed)" value={fmt(tindrExact.observed, 2)}>the difference the real labels produced. Run the two `seq(` commands again with `L1(X)` in place of `L1(L2(X))` and the screen gives it. It is the one value in the run that did not come out of the generator.</Calculator.Read>
+<Calculator.Read label={`${fmtInt(tindrEscorted.length + tindrUnescorted.length)} nCr ${fmtInt(tindrEscorted.length)}`} value={fmtInt(tindrWays)}>deals exist in total. `MATH` `▸ PRB` `3:nCr` counts them before you start dealing.</Calculator.Read>
+<Calculator.Watch>**`randInt` repeats.** Ask `MATH` `▸ PRB` `5:randInt(` for {fmtInt(tindrEscorted.length + tindrUnescorted.length)} row numbers and it will hand you the same row twice, so one transit's advisories get used in both groups and another is dropped from the trial. A re-deal is a permutation of the rows you have. That is `8:randIntNoRep(`, every time.</Calculator.Watch>
+<Calculator.Watch>**There is no `RandTest` on this calculator.** The TI will deal, and it will deal again on `ENTER`, and a few hundred deals tallied by hand give you an *approximate* p-value with its own simulation error. The p-value this module reports is **exact**: every one of the {fmtInt(tindrWays)} deals of the worked case, and every one of the {fmtInt(LOTTERY_EXACT.count)} deals of the lottery, enumerated in the instrument below. Say which kind you are quoting, because an approximate p moves when you run it again and an exact one does not.</Calculator.Watch>
+<Calculator.Watch>**The side is a decision you make before you count.** For a directional claim, "at least as extreme" means at least as *negative* as {fmt(tindrExact.observed, 2)}. Counting deals at least that far from zero in either direction is the two-sided test, and it is a different number off the same screen values: {fmt(tindrExact.pLess, 4)} against {fmt(tindrExact.pTwoSided, 4)} here.</Calculator.Watch>
+</Calculator>
 
 <Decided id={DECISION_IDS.lottery} is="order">
 <RandomizationMachine />
@@ -237,25 +252,25 @@ Now the other arithmetic, which is the one nobody runs before commissioning a tr
 <LotteryBeat id="act-3-05-p">
   <Success>
   <Dialogue speaker="analyst" aside="He has the observed difference marked on the distribution and he is looking at where it sits, which is not where he expected it to sit.">
-  So it's in the crowd, sir. Not at the edge — in the crowd. The lottery makes a gap that size on its own, without any escort doing anything, that often. — I had the sentence written. I had it written and the number was going to be the reason nobody argued with it.
+  So it's sitting in the crowd, sir. Middle of the pile. The lottery makes a gap that size on its own, without any escort doing a thing, that often. I had the sentence written. I had it written and the number was going to be the reason nobody argued with it.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She puts one finger on the observed difference on the plot and leaves it there.">
-  One-sided, because the Ensign's claim was one-sided. Count only the deals that came out at least as far *down* as this one, and divide by every deal there is. Not half of them. Not the ones on both sides. The ones that agree with the claim you are testing.
+  One-sided, because the Ensign's claim was one-sided. Count only the deals that came out at least as far *down* as this one, and divide by every deal there is. Not half of them. The ones that agree with the claim you are testing.
   </Dialogue>
   </Failure>
 </LotteryBeat>
 
 <LotteryScopeBeat id="act-3-05-scope">
   <Success>
-  <Dialogue speaker="xo" aside="She reads it, marks nothing, and puts it at the front of the section rather than the end.">
+  <Dialogue speaker="xo" aside="She goes through it once, marks nothing, and puts it at the front of the section rather than the end.">
   That paragraph costs us the headline and keeps us the file. Four claims, four limits, and not one sentence a hostile reader can turn round. File it.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="analyst" aside="He has crossed out his own first draft and is working from the four things in order, counting them off.">
-  Yes, sir. That's — yes. I wrote the decision and stopped, and the decision is one quarter of it. The p-value and which side it is. What the lot buys us and what it would have bought us if the gap had been out at the edge. How far it reaches — that week, that stretch, those hulls, because nobody sampled the Lane. And the last one, which I keep not writing: what we measured. Advisories. Not losses. The trial has nothing to say about losses at all.
+  <Dialogue speaker="analyst" aside="His own first draft is crossed through on the terminal beside him and he is counting off the four against it, one finger at a time.">
+  I wrote the decision and stopped, sir. The decision is a quarter of it. The p-value, and which side it is. What the lot buys us, and what it would have bought if the gap had come out at the edge. How far it reaches: that week, that stretch, those hulls, because nobody sampled the Lane. And the one I keep leaving off—what we measured. Advisories. The trial has nothing to say about losses at all.
   </Dialogue>
   </Failure>
 </LotteryScopeBeat>
@@ -278,43 +293,39 @@ The finding takes four lines and the limits take eleven, and Ferrier puts the el
 
 </Decided>
 
-Then the sentence that actually matters, which is not about escorts at all.
-
-This trial could not have seen a loss if there had been one. At {fmtPct(lossRate, 0)} a transit — and *Asgard*'s own long return puts it lower, at {fmt(asgardRate, 4)} — a week of <Decided id={DECISION_IDS.lottery} is="order">{fmtInt(LOTTERY_TRANSITS.length)}</Decided><Decided id={DECISION_IDS.lottery} is="decline">{fmtInt(PILOT_TRANSITS.length)}</Decided> transits contains at least one loss <Decided id={DECISION_IDS.lottery} is="order">{fmtPct(seeOneIn(LOTTERY_TRANSITS.length), 0)}</Decided><Decided id={DECISION_IDS.lottery} is="decline">{fmtPct(seeOneIn(PILOT_TRANSITS.length), 0)}</Decided> of the time. To be {fmtPct(0.9, 0)} sure of observing a single one you need {fmtInt(transitsFor90)} transits, and at *Asgard*'s measured rate {fmtInt(asgardTransitsFor90)}. Hundreds. The Service does not have hundreds, and it is not going to get them, and no report this ship files will change that.
-
-Ferrier does not treat this as a complaint. She treats it as the finding.
+A week of transits at the Lane's rate was never going to produce a loss to count. The report says so, and prints the number of transits that would have. Hundreds. The file goes on the beam to Valhalla inside three days, and *Asgard* has her own schedule back in the morning.
 
 <Dialogue speaker="xo" aside="She writes it as the closing line of the section, and she writes it in the register the Board reads, which is the flattest one she has.">
-The Board is advised that no escort trial of a size the Service can mount is capable of detecting a change in a loss rate of this order, and that any future finding on escort effectiveness against loss — favourable or unfavourable — should be read in that light. This is not a criticism of the trial. It is a property of the question.
+The Board is advised that no escort trial of a size the Service can mount is capable of detecting a change in a loss rate of this order, and that any future finding on escort effectiveness against loss, favourable or unfavourable, should be read in that light. That is a property of the question rather than a fault in the trial.
 </Dialogue>
 
 <Decided id={DECISION_IDS.lottery} is="order">
 
-Solberg logs one more thing before he goes off watch, because he logs everything. A traffic query from the Uruk office, timestamped forty minutes after *Asgard*'s escort list went out, asking on what authority Service cutters on the Lane are being allocated by a Compact hull. He reads it verbatim, notes the time, and files it without comment.
+Solberg logs one more thing before he goes off watch, because he logs everything. A traffic query from the Uruk office, timestamped forty minutes after *Asgard*'s escort list went out, asking on what authority Service cutters on the Lane are being allocated by a Compact hull. He reads it verbatim and files it with the time on it.
 
 Ferrier reads it, and then reads the paragraph number back into the log a second time, with the date.
 
-"Captain Ostrow will make something of that in due course," she says. "Let him. The authority is real, it is written down, and the draw is on a sheet with every discarded pair on it. There is nothing here for him to find, which will not stop him looking, and the looking will be in the file too."
+"Captain Ostrow will make something of that in due course," she says. "Let him. The authority is written down and the draw is on a sheet with every discarded pair on it. There is nothing here for him to find, which will not stop him looking, and the looking will be in the file too."
 
 </Decided>
 
 <Decided id={DECISION_IDS.lottery} is="decline">
 
-Nobody at Uruk asks a question, because nothing was ordered and *Asgard*'s master tossed her own coin on her own account. Ferrier notes that too, in the same flat hand: *authority available under paragraph eleven, not exercised; analysis conducted on the cutter's own assignment.* It is a cleaner file and a smaller one, and she does not say which she would have preferred.
+Nobody at Uruk asks a question, because nothing was ordered and *Asgard*'s master tossed her own coin on her own account. Ferrier notes that too, in the same flat hand: *authority available under paragraph eleven, not exercised; analysis conducted on the cutter's own assignment.* It is a cleaner file and a smaller one.
 
 </Decided>
 
-So: you cannot say escorts work. You cannot say they do not. What you can say, and what nobody on the Lane has said in writing before, is exactly how much a trial of this size is able to see — which is the first honest sentence anybody has written about escort policy in two years, and it closes the subject rather than opening it.
+You cannot say escorts work. You cannot say they do not. What you can say, and what nobody on the Lane has put in writing before, is exactly how much a trial of this size is able to see.
 
-Which leaves the thing the testimony kept pointing at and never reached. Independent masters saw Perrine hulls turn late on the approach. The Register is honest about *when* and *where* and will not say *why*. Escorts are not the explanation for anything and were never going to be, because nobody has yet asked the only question that has an answer in it: not who was attacked, and not who was protected, but **where the hulls actually go**.
+Which leaves the thing the testimony kept pointing at and never reached. Independent masters saw Perrine hulls turn late on the approach. The Register gives *when* and *where* and stops. The question with an answer in it is **where the hulls actually go**, and nobody has asked it yet.
 
-The mark axis has been sitting on the plot since Act I with thirty-one marks on it, and it has stopped looking like a list.
+The mark axis has been on the plot since the first week on the Lane, {fmtInt(REGISTER_LOSSES)} marks up the side of it, and it has stopped looking like a list.
 
 </Scene>
 
 <LogEntry
   title="Assignment licenses “because”; sampling licenses “in general”"
-  concept="Random assignment of units to treatments makes the groups alike before the treatment, so a difference too large to be explained by the deal itself may be attributed to the treatment — for those units. Random sampling from a population makes the units representative, so a finding may be extended to that population; a study has either device, both or neither, and its scope of inference is whatever the devices it used will carry. Significance is judged by re-dealing the treatment labels every way they could have fallen and locating the observed difference in the resulting randomization distribution: the p-value is the share of deals at least as extreme in the direction claimed, and it is meaningless until the side is stated."
+  concept="Random assignment of units to treatments makes the groups alike before the treatment, so a difference too large to be explained by the deal itself may be attributed to the treatment, for those units. Random sampling from a population makes the units representative, so a finding may be extended to that population; a study has either device, both or neither, and its scope of inference is whatever the devices it used will carry. Significance is judged by re-dealing the treatment labels every way they could have fallen and locating the observed difference in the resulting randomization distribution: the p-value is the share of deals at least as extreme in the direction claimed, and it is meaningless until the side is stated."
   formula="p_{\text{one-sided}} = \frac{\#\{ d_i \le d_{\text{obs}} \}}{\binom{n}{k}}, \qquad P(\text{at least one event}) = 1 - (1-\pi)^m"
   mistake="Reading “no evidence” as “no effect”. A difference that sits in the middle of the randomization distribution is consistent with chance; it is not a finding that the treatment does nothing, and it is certainly not a finding about a response the trial never measured. The near relatives are reading a small p-value as proof of importance, and attaching the word “because” to groups that were never assigned."
   tags={['random assignment', 'random sampling', 'randomization distribution', 'p-value', 'one-sided', 'statistical significance', 'scope of inference', 'detectability', '3.7']}

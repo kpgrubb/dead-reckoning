@@ -94,9 +94,10 @@ export const ONE_SAMPLE_CONTEXTS: readonly OneSampleContext[] = [
   {
     office: 'the Thebe Yard radiator shop',
     unit: 'panels',
-    measure: 'rejected heat at the rated coolant flow',
+    // "reject" is a forbidden token in a fail-to-reject conclusion, so this measure says "shed".
+    measure: 'heat shed at the rated coolant flow',
     units: 'kW',
-    parameter: 'mean rejected heat per panel at rated flow',
+    parameter: 'mean heat shed per panel at rated flow',
     population: 'radiator panels rebuilt at Thebe',
     standardLabel: "the shop's rebuild standard",
     centre: 74,
