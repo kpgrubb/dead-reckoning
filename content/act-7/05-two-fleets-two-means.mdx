@@ -74,10 +74,10 @@ Nine hundred hulls in that paragraph. How many of them do we hold anything on.
 Nineteen.
 
 <Dialogue speaker="xo">
-Then it names eight hundred and eighty-one crews we have nothing against, and Captain Ostrow will read it in four days and he will be right about it. The data says nineteen. Write nineteen.
+Then it names {fmtInt(SURVIVING_PERRINE_N)} crews we have nothing against, and Captain Ostrow will read it in four days and he will be right about it. The data says nineteen. Write nineteen.
 </Dialogue>
 
-Ebele has come up from the intel bay with his slate held against his chest, which means he has a question he has already tried to answer himself.
+Ebele has come up from the intel bay with his slate held against his chest and does not hand it over.
 
 <Dialogue speaker="analyst" aside="He does not sit down at the terminal. He asks it standing.">
 So before I build anything, sir. The sampling frame. Perrine hulls that arrived, against every other owner's hull: those are two groups of different ships, no pairing, no matching, nothing to subtract row by row. That one's clean. But the other split I'd want, lost Perrine against surviving Perrine, the nineteen aren't a sample of Perrine transits. They're the ones that stopped.
@@ -162,7 +162,7 @@ The conservative rule would use $\min$({fmtInt(escorted.length - 1)}, {fmtInt(un
 
 **The order of subtraction.** Group 1 minus group 2 reflects through zero if you swap them, and the two intervals mean the same thing. A reader who is not told which way round it goes will take the sign at face value, so the sentence has to name the order.
 
-**Two columns are not automatically two samples.** If the two values in a row came off the same unit, this is the wrong procedure entirely and the paired one from the previous module is the right one. Independence is a fact about the design, checked before the arithmetic starts.
+**Two columns are not automatically two samples.** If the two values in a row came off the same unit, this is the wrong procedure entirely and the paired procedure is the right one. Independence is a fact about the design, checked before the arithmetic starts.
 </Briefing.Caution>
 </Briefing>
 
@@ -224,7 +224,7 @@ The conservative rule would use $\min$({fmtInt(escorted.length - 1)}, {fmtInt(un
   ]}
   correct={1}
   feedback={[
-    'You just accused the eight hundred and eighty-one. Zero is inside that interval; the data do not place these hulls on either side of it, and the brief would be making a claim its own arithmetic refuses.',
+    `You just accused the ${fmtInt(SURVIVING_PERRINE_N)} that came home. Zero is inside that interval; the data do not place these hulls on either side of it, and the brief would be making a claim its own arithmetic refuses.`,
     null,
     `Equality is a claim no interval can make. This one also contains ${fmt(honestCi[0], 2)} and ${fmt(honestCi[1], 2)} days and rules neither of them out. "Consistent with zero" describes what has not been pinned down.`,
     'An interval that contains zero is a finding and it goes in. It is what clears the crews this brief would otherwise have named, and it is the sentence that makes the next one worth reading.',
@@ -232,19 +232,19 @@ The conservative rule would use $\min$({fmtInt(escorted.length - 1)}, {fmtInt(un
   hint="Put zero on the same axis as the two endpoints. Then ask what the interval fails to rule out, and notice that the answer is a range and not a point.">
   <Success>
   <Dialogue speaker="xo" aside="She strikes the boxed paragraph out with one line and writes the replacement herself, in the margin, initialled.">
-  Then it goes in as a finding and it goes in first. We have looked at the eight hundred and eighty-one and we found nothing, and the brief says that before it says anything else. He can read the rest afterwards.
+  Then it goes in as a finding and it goes in first. We have looked at the {fmtInt(SURVIVING_PERRINE_N)} that came home and we found nothing, and the brief says that before it says anything else. He can read the rest afterwards.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  You just accused the eight hundred and eighty-one. Look where zero is. There are masters in that number who have never filed a late plot in their lives, and the arithmetic in front of you declines to say a word against any of them.
+  You just accused {fmtInt(SURVIVING_PERRINE_N)} crews. Look where zero is. There are masters in that number who have never filed a late plot in their lives, and the arithmetic in front of you declines to say a word against any of them.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <MissionBeat id="act-7-05-lost" kind="numeric" answer={LOST_VS_SURVIVING_INTERVAL.ci[0]} answerKind="mean" digits={2} units="d" label="THE NINETEEN AGAINST THE REST OF THE FLEET"
   prompt={`Now the second comparison: the ${fmtInt(NINETEEN_N)} Perrine hulls the Register carries as lost, against the ${fmtInt(SURVIVING_PERRINE_N)} Perrine hulls that arrived. Different hulls, no pairing. Welch degrees of freedom, ${fmtPct(0.95, 0)} level, lost minus surviving.\n\nReport the **lower endpoint**, in days, to **two decimal places**.`}
-  hint="The nineteen bring a large s on a small n and the eight hundred and eighty-one bring a small contribution on a large one. Add the two s²/n terms, take the root, and let the df come from Welch.">
+  hint={`The nineteen bring a large s on a small n and the ${fmtInt(SURVIVING_PERRINE_N)} that came home bring a small contribution on a large one. Add the two s²/n terms, take the root, and let the df come from Welch.`}>
   <Success>
   <Dialogue speaker="analyst" aside="He has both intervals on one difference axis now, the second one nowhere near the first.">
   So the lower end is {fmt(lostCi[0], 2)} days and the upper is {fmt(lostCi[1], 2)}, on {fmt(LOST_VS_SURVIVING_WELCH_DF, 2)} degrees of freedom. The conservative rule gives {fmtInt(lostConservative.df)} and moves the ends to {fmt(lostConservative.ci[0], 2)} and {fmt(lostConservative.ci[1], 2)}. Sir, it barely matters which. Neither of them comes near zero.
@@ -252,7 +252,7 @@ The conservative rule would use $\min$({fmtInt(escorted.length - 1)}, {fmtInt(un
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  Nineteen and eight hundred and eighty-one. The small group carries most of the standard error and all of the degrees of freedom, so check that your $n_1$ is nineteen and not the other way about. Lower endpoint. Lost minus surviving.
+  Nineteen against {fmtInt(SURVIVING_PERRINE_N)}. The small group carries most of the standard error and all of the degrees of freedom, so check that your $n_1$ is nineteen and not the other way about. Lower endpoint. Lost minus surviving.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -263,7 +263,7 @@ The conservative rule would use $\min$({fmtInt(escorted.length - 1)}, {fmtInt(un
   {...lostRubric}>
   <Success>
   <Dialogue speaker="analyst" aside="He is already on the next page and does not look up while he says it.">
-  Two sentences and they point opposite ways, sir, and both of them are ours. Nothing on the eight hundred and eighty-one. A day and a half to nearly four on the nineteen. Whether that second one clears an alpha is a different procedure and I have not run it.
+  Two sentences and they point opposite ways, sir, and both of them are ours. Nothing on the {fmtInt(SURVIVING_PERRINE_N)} that came home. A day and a half to nearly four on the nineteen. Whether that second one clears an alpha is a different procedure and I have not run it.
   </Dialogue>
   </Success>
   <Failure>
@@ -275,7 +275,7 @@ The conservative rule would use $\min$({fmtInt(escorted.length - 1)}, {fmtInt(un
 
 <Gated by={["act-7-05-honest", "act-7-05-licence", "act-7-05-lost", "act-7-05-interpret"]}>
 
-<Scene stamp="MET 163/16:20" location="CSV Nightjar · bridge · light-lag to Valhalla 24 minutes each way" condensed="The Perrine paragraph comes out and two sentences go in: nothing against the eight hundred and eighty-one, and a mean delay for the nineteen that is between a day and a half and nearly four days longer than the rest of their own owner's fleet. The concession to Ostrow is written in first, over Rook's name. Whether the second interval clears a significance level is a separate procedure, and Ebele leaves the space for it.">
+<Scene stamp="MET 163/16:20" location="CSV Nightjar · bridge · light-lag to Valhalla 24 minutes each way" condensed="The Perrine paragraph comes out and two sentences go in: nothing against the surviving Perrine hulls, and a mean delay for the nineteen that is between a day and a half and nearly four days longer than the rest of their own owner's fleet. The concession to Ostrow is written in first, over Rook's name. Whether the second interval clears a significance level is a separate procedure, and Ebele leaves the space for it.">
 
 The paragraph is out by the end of the afternoon watch and two sentences are in its place, and the first of the two is a concession.
 
@@ -286,7 +286,7 @@ Then the second sentence. The {fmtInt(NINETEEN_N)} hulls the Register carries as
 Same owner. Same lane. Same six years. One group of them stopped.
 
 <Dialogue speaker="xo" aside="She reads both sentences off the plot and then reads the first one again.">
-The anomaly is not the owner. Nine hundred hulls fly for Perrine and eight hundred and eighty-one of them file the way everybody else files. Whatever this is, it was done to nineteen of them, one at a time, by somebody choosing which.
+The anomaly is not the owner. Nine hundred hulls fly for Perrine and {fmtInt(SURVIVING_PERRINE_N)} of them file the way everybody else files. Whatever this is, it was done to nineteen of them, one at a time, by somebody choosing which.
 </Dialogue>
 
 Ebele leaves a blank line under the second sentence and a note in the margin about it, because an interval says how much and says nothing about how surprising, and the Board's counsel will ask for the second thing by name.

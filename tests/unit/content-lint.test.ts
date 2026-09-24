@@ -240,7 +240,7 @@ describe('content MDX lint', () => {
    * Scoped to the revised Acts; each joins as the sweep reaches it.
    */
   it('does not gloss a behaviour for the reader', () => {
-    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'calc/']
+    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-7/', 'calc/']
     const patterns = [
       /,\s*which from (?:her|him|them|it)\b/i,
       /,\s*which is (?:how|what|why) (?:he|she|they|you|one)\b/i,

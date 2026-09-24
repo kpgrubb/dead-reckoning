@@ -27,6 +27,7 @@ import {
   OSTROW_TEST,
   OTHER_N,
   PERRINE_N,
+  SURVIVING_PERRINE_N,
   divertedCountForPower,
   lostPerrineDelays,
   powerTwoMean,
@@ -86,7 +87,7 @@ It is every transit on the corridor, Lieutenant Commander. I am not aware of a l
 </Dialogue>
 
 <Dialogue speaker="xo" aside="She does not raise her voice. She gets more precise.">
-Nineteen hulls. If nineteen of those nine hundred were running heavy and the other eight hundred and eighty-one were flying exactly the profiles they filed, what would this column read?
+Nineteen hulls. If nineteen of those nine hundred were running heavy and the other {fmtInt(SURVIVING_PERRINE_N)} were flying exactly the profiles they filed, what would this column read?
 </Dialogue>
 
 Ostrow considers it with every appearance of good faith.
@@ -220,16 +221,16 @@ Read that as it deserves to be read. With {fmtInt(demoLate)} genuinely late tran
 <Drill generator="act-7/power-of-a-comparison" count={1} />
 
 <MissionBeat id="act-7-03-nineteen" kind="numeric" answer={NINETEEN_TEST.statistic} answerKind="testStat" digits={2} label="THE NINETEEN, ON THEIR OWN"
-  prompt={`Before anything is said about Ostrow's comparison, run the procedure this module teaches on the hulls the report is actually about. The **t P-VALUE** panel above holds the ${fmtInt(NINETEEN_N)} lost Perrine hulls' Mark-9 delays in days, against the profile each of them filed, which puts $\\mu_0$ at zero.\n\nReport the **t statistic**, to **two decimal places**. Act V ran this comparison with the Lane's σ of ${fmt(LANE_DELAY_SD, 2)} days and read it off a normal table; this one uses the nineteen's own s and reads it off t.`}
+  prompt={`Before anything is said about Ostrow's comparison, run the one-sample procedure on the hulls the report is actually about. The **t P-VALUE** panel above holds the ${fmtInt(NINETEEN_N)} lost Perrine hulls' Mark-9 delays in days, against the profile each of them filed, which puts $\\mu_0$ at zero.\n\nReport the **t statistic**, to **two decimal places**. The Ceres work took this comparison to the Lane's σ of ${fmt(LANE_DELAY_SD, 2)} days and read it off a normal table; this one uses the nineteen's own s and reads it off t.`}
   hint={`t = (x̄ − 0) ÷ (s/√n) on ${fmtInt(NINETEEN_N - 1)} degrees of freedom. The panel prints the estimate and the standard error; the statistic is the first divided by the second.`}>
   <Success>
-  <Dialogue speaker="analyst" aside="He puts the t and the df beside Act V's z on the same line, which nobody asked for.">
+  <Dialogue speaker="analyst" aside="He writes the t and the df on the line under the z he computed off Ceres.">
   Same nineteen hulls, sir, same delays. Different denominator and one degree of freedom spent, and it comes out in the same place. The Lane sigma was never mine to use on nineteen hulls anyway.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  Their own spread, Captain, over the root of nineteen. Then the mean over that. If you have reached for the Lane's sigma again you have run Act Five, and Act Five is what the Board has already read.
+  Their own spread, Captain, over the root of nineteen. Then the mean over that. If you have reached for the Lane's sigma again you have run the Ceres comparison a second time, and the Board has already read that one.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -345,7 +346,7 @@ Ebele writes it up as one page with four numbers on it and no adjectives.
 
 The gap between the two fleet means, {fmt(OSTROW_TEST.estimate, 2)} days, which is Ostrow's figure and is not disputed. The standard error of that comparison, {fmt(OSTROW_SE, 3)} days. The nineteen's excess after nine hundred transits have been averaged over it, {fmt(NINETEEN_EXCESS_DILUTED, 3)} days. And the power of the one against the other at five percent, {fmt(OSTROW_POWER.power, 3)}.
 
-Then the line Ferrier asked for, which is the one that will be read.
+Then the line Ferrier asked for.
 
 <Dialogue speaker="analyst" aside="Reading his own last paragraph off the screen, flat, the way Solberg reads a signal.">
 For the comparison as constructed to have had a fair chance of detecting the excess, {fmtInt(divertedCountForPower(0.8))} of the {fmtInt(PERRINE_N)} Perrine transits would have had to be carrying it. The Register identifies {fmtInt(NINETEEN_N)}.

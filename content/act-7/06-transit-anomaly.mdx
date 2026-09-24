@@ -172,7 +172,7 @@ A study can have either, both or neither, and a comparison that has neither stil
 The interval and the test are the same procedure asked two ways. A two-sided test at $\alpha$ rejects exactly when the $100(1 - \alpha)\%$ interval excludes the null value; a one-sided test at $\alpha$ lines up with the $100(1 - 2\alpha)\%$ interval instead. Where a report quotes both, it quotes the level of each.
 </Briefing.Definition>
 <Briefing.Worked>
-The 2176 escort trial on the Mars–Belt corridor, the same file the previous module put an interval around. Delay against the filed plot, in days, for hulls that took an escort and for hulls that routed independently over the same eleven weeks. Different hulls in the two lists, assigned by the Authority's duty roster.
+The 2176 escort trial on the Mars–Belt corridor, the file behind the difference-of-means interval above. Delay against the filed plot, in days, for hulls that took an escort and for hulls that routed independently over the same eleven weeks. Different hulls in the two lists, assigned by the Authority's duty roster.
 
 Escorted, {fmtInt(escorted.length)} hulls: {escorted.map((v) => fmt(v, 1)).join(', ')}.
 
@@ -244,7 +244,7 @@ The conservative rule reads the same statistic at $\min$({fmtInt(escorted.length
 <Drill generator="act-7/scope-of-inference" count={1} />
 
 <MissionBeat id="act-7-06-statistic" kind="numeric" answer={LOST_VS_SURVIVING_TEST.statistic} answerKind="testStat" digits={2} label="THE SAME TWO GROUPS, AS A STATISTIC"
-  prompt={`Set the transit-anomaly panel to the **test** reading, one-sided, Welch degrees of freedom. The two groups are the ones the previous module put an interval around: the **${fmtInt(NINETEEN_N)}** Perrine hulls the Register carries as lost, against the **${fmtInt(SURVIVING_PERRINE_N)}** Perrine hulls that arrived. Lost minus surviving.\n\n$$H_0: \\mu_1 - \\mu_2 = 0 \\qquad H_a: \\mu_1 - \\mu_2 > 0$$\n\nReport **t**, to **two decimal places**.`}
+  prompt={`Set the transit-anomaly panel to the **test** reading, one-sided, Welch degrees of freedom. The two groups are the ones the interval was built on: the **${fmtInt(NINETEEN_N)}** Perrine hulls the Register carries as lost, against the **${fmtInt(SURVIVING_PERRINE_N)}** Perrine hulls that arrived. Lost minus surviving.\n\n$$H_0: \\mu_1 - \\mu_2 = 0 \\qquad H_a: \\mu_1 - \\mu_2 > 0$$\n\nReport **t**, to **two decimal places**.`}
   hint="Nothing new is computed. The estimate and the standard error are the ones behind last watch's interval; the statistic is the first divided by the second.">
   <Success>
   <Dialogue speaker="analyst" aside="He has the panel switched between the two readings and is watching the estimate stay where it is.">
@@ -315,7 +315,7 @@ The Lane Liaison Office on *Halden Reach* is a converted stores flat with a desk
 
 He reads it twice. The second time he goes back up to the top and reads the whole of it again, which no officer on this tender has done with anything you have handed them.
 
-<Dialogue speaker="ostrow" name="Captain Lucan Ostrow · Lane Liaison Officer" aside="He puts the page down on the desk and squares it to the edge before he speaks, the way he squares everything.">
+<Dialogue speaker="ostrow" name="Captain Lucan Ostrow · Lane Liaison Officer" aside="He puts the page down on the desk and squares it to the edge before he speaks.">
 Your arithmetic is sound and I will say so in the covering note. Captain, you have shown that lost ships were unusual.
 
 Lost ships are unusual, Commander. That is why they were lost.
@@ -343,7 +343,7 @@ I will carry it verbatim. I will also record that the assessing officer was in t
 
 He offers his hand, which he has not done before, and his grip is dry and brief and entirely correct.
 
-Walking back through the lock you do the arithmetic that matters, which is not in the brief. Two files. The Register's loss counts, nineteen of nine hundred against twelve of seventeen hundred and twelve, from Act VI: a question about categories. The Ledger's transit times, the same nineteen hulls against the eight hundred and eighty-one that came home: a question about means. The two files share the nineteen and nothing else, not a column, not a clerk, not an office. Both point at the same nineteen hulls.
+Walking back through the lock you do the arithmetic that matters, which is not in the brief. Two files. The Register's loss counts, nineteen of nine hundred against twelve of seventeen hundred and twelve, from the claims work at Ceres: a question about categories. The Ledger's transit times, the same nineteen hulls against the {fmtInt(SURVIVING_PERRINE_N)} that came home: a question about means. The two files share the nineteen and nothing else, not a column, not a clerk, not an office. Both point at the same nineteen hulls.
 
 What neither of them says is where the hulls went, whether any of them still exists, or whose signature is at the bottom of the docket that sent them.
 

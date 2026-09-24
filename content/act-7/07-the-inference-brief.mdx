@@ -109,7 +109,7 @@ Your thumb has been on the roller spring for twenty minutes and the whole hand h
 
 Page one is the index. Five findings down the left, and a column headed PROCEDURE that has one entry in it.
 
-<Dialogue speaker="analyst" aside="He squares each sheet on the housing before he feeds it, which is why this takes twenty minutes.">
+<Dialogue speaker="analyst" aside="He squares each sheet on the housing before he feeds it. Twenty minutes for eleven pages.">
 So I did the last one first, sir, because it's the one he'll open at. Lost hulls against the ones that came home. Two-proportion z, one-sided, and I've got it written up.
 </Dialogue>
 
@@ -299,7 +299,7 @@ Widths {fmt(bayT.ci[1] - bayT.ci[0], 3)} and {fmt(bayBoot.ci[1] - bayBoot.ci[0],
   {...writeupRubric}>
   <Success>
   <Dialogue speaker="xo" aside="She reads it against the first page of the brief, line for line, and then puts the two side by side on the console.">
-  That is the template. Every page in the folder gets that shape, including the ones that found nothing, and especially the one about the eight hundred and eighty-one.
+  That is the template. Every page in the folder gets that shape, including the ones that found nothing, and especially the one about the ${fmtInt(SURVIVING_PERRINE_N)} that came home.
   </Dialogue>
   </Success>
   <Failure>
@@ -316,7 +316,7 @@ Widths {fmt(bayT.ci[1] - bayT.ci[0], 3)} and {fmt(bayBoot.ci[1] - bayBoot.ci[0],
     'Refuse the acceptance on the record, and route the annex to Lane Operations under your own signature as a capacity discrepancy.',
   ]}>
   <Outcome option={0}>
-  You sign it at 05:02 and the form goes back across the lock inside ten minutes. The yard's line and Sandoval's line sit two pages apart in the same folder, in each other's plain sight, which is the whole of the argument and none of the noise.
+  You sign it at 05:02 and the form goes back across the lock inside ten minutes. The yard's line and Sandoval's line sit two pages apart in the same folder.
   </Outcome>
   <Outcome option={1}>
   Sandoval reads the refusal before it goes and changes one word in it, from *shortfall* to *discrepancy*, because the first one is an accusation and the second one is a number. *Halden Reach*'s engineering department will hear about it before the forenoon watch.
@@ -357,7 +357,7 @@ Widths {fmt(bayT.ci[1] - bayT.ci[0], 3)} and {fmt(bayBoot.ci[1] - bayBoot.ci[0],
 
 The brief is signed at eighteen forty. Eleven pages, five findings, and the shape of every page is the same shape.
 
-Mean certified thrust of the {fmtInt(REFIT_N)} uprated hulls: {fmt(OUTPUT_INTERVAL.ci[0], 1)} to {fmt(OUTPUT_INTERVAL.ci[1], 1)} kilonewtons against a specification of {fmtInt(MK3_SPEC_KN)}, one-sample $t$, conditions at Annex B. The same twelve hulls before and after, paired: {fmt(REFIT_PAIRED.estimate, 2)} days later after the refit, $t$ = {fmt(REFIT_PAIRED.statistic, 2)} on {fmtInt(REFIT_PAIRED.df)} degrees of freedom, $P$ = {fmtP(REFIT_PAIRED.pValue)}, with Annex C on why the two-sample reading of the same twenty-four numbers finds nothing. The loss rates from Act VI's file. The two difference-of-means findings from the Ledger. Under each one, a line that begins *This finding does not establish*.
+Mean certified thrust of the {fmtInt(REFIT_N)} uprated hulls: {fmt(OUTPUT_INTERVAL.ci[0], 1)} to {fmt(OUTPUT_INTERVAL.ci[1], 1)} kilonewtons against a specification of {fmtInt(MK3_SPEC_KN)}, one-sample $t$, conditions at Annex B. The same twelve hulls before and after, paired: {fmt(REFIT_PAIRED.estimate, 2)} days later after the refit, $t$ = {fmt(REFIT_PAIRED.statistic, 2)} on {fmtInt(REFIT_PAIRED.df)} degrees of freedom, $P$ = {fmtP(REFIT_PAIRED.pValue)}, with Annex C on why the two-sample reading of the same twenty-four numbers finds nothing. The loss rates from the claims work at Ceres. The two difference-of-means findings from the Ledger. Under each one, a line that begins *This finding does not establish*.
 
 The Normal line on the nineteen has an annex of its own now, because Sandoval asked for a give-or-take on the shape and there was one to be had. The one-sample $t$-interval for their mean delay runs {fmt(NINETEEN_INTERVAL.ci[0], 2)} to {fmt(NINETEEN_INTERVAL.ci[1], 2)} days on {fmtInt(NINETEEN_TEST.df)} degrees of freedom. A percentile bootstrap on {fmtInt(briefBoot.reps)} resamples of the same {fmtInt(NINETEEN_N)} values, which assumes nothing at all about the shape, runs {fmt(briefBoot.ci[0], 2)} to {fmt(briefBoot.ci[1], 2)}. Two methods, two sets of assumptions, one answer.
 
