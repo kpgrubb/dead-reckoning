@@ -1,0 +1,314 @@
+---
+id: act-6-07
+act: 6
+title: "Perrine and Everyone Else"
+kind: module
+ap_topics: ["6.8", "6.9"]
+objectives:
+  - "Check the conditions for a two-sample z-interval for p₁ − p₂ and construct it with the unpooled standard error"
+  - "Interpret a difference interval in context with the order of subtraction stated, and say what an interval containing 0 does and does not license"
+  - "Use a difference interval to justify a claim about the size of a difference, in the units the claim will be read in"
+prereqs: ["act-6-05"]
+est_minutes: 25
+calc_briefing: null
+summary: "The test said the gap is real. It never said how big. Ebele builds the interval for the difference and writes the subtraction down backwards, and Marsh wants to know what a percentage point is a percentage point of."
+---
+
+import { fmt, fmtInt, fmtPct, twoPropInterval, zStar } from '@/lib/stats'
+import {
+  BOARD_TABLE,
+  DIFFERENCE_INTERVAL,
+  OTHER_LOSSES,
+  OTHER_RATE,
+  OTHER_TRANSITS,
+  PERRINE_HOLDINGS,
+  PERRINE_LOSSES,
+  PERRINE_RATE,
+  PERRINE_TRANSITS,
+  ROOK_2176,
+  differenceInterval,
+} from '@/instruments/act-6/data'
+import { DifferencePanel } from '@/instruments/act-6/DifferencePanel'
+import { KeyTable } from '@/instruments/act-6/_ui'
+import { differenceIntervalRubric } from '@/lib/problems/generators/act-6/difference'
+
+export const LEVEL = 0.95
+/** A proportion rendered as a bare count of percentage points: 0.0243 → "2.4". */
+export const pts = (p, d = 1) => fmt(100 * p, d)
+export const laneLower = DIFFERENCE_INTERVAL.ci[0]
+export const laneUpper = DIFFERENCE_INTERVAL.ci[1]
+export const laneWide = differenceInterval(0.99)
+export const laneNarrow = differenceInterval(0.9)
+export const timesAsOften = PERRINE_RATE / OTHER_RATE
+export const gapInHulls = (PERRINE_RATE - OTHER_RATE) * PERRINE_TRANSITS
+export const lowHulls = laneLower * PERRINE_TRANSITS
+export const highHulls = laneUpper * PERRINE_TRANSITS
+/** The Briefing's worked case: the Board's own two corridors, side by side on one axis. */
+export const corridor = twoPropInterval({
+  x1: BOARD_TABLE.lane.losses,
+  n1: BOARD_TABLE.lane.transits,
+  x2: BOARD_TABLE.marsBelt.losses,
+  n2: BOARD_TABLE.marsBelt.transits,
+  confidence: LEVEL,
+  random: true,
+})
+export const corridorRate1 = BOARD_TABLE.lane.losses / BOARD_TABLE.lane.transits
+export const corridorRate2 = BOARD_TABLE.marsBelt.losses / BOARD_TABLE.marsBelt.transits
+export const corridorSeTex = `\\mathrm{SE} = \\sqrt{\\frac{\\hat p_1(1-\\hat p_1)}{n_1} + \\frac{\\hat p_2(1-\\hat p_2)}{n_2}} = \\sqrt{\\frac{${fmt(corridorRate1, 5)}\\times${fmt(1 - corridorRate1, 5)}}{${BOARD_TABLE.lane.transits}} + \\frac{${fmt(corridorRate2, 5)}\\times${fmt(1 - corridorRate2, 5)}}{${BOARD_TABLE.marsBelt.transits}}} = ${fmt(corridor.se, 6)}`
+export const corridorCiTex = `(\\hat p_1 - \\hat p_2) \\pm z^\\star\\,\\mathrm{SE} = ${fmt(corridor.estimate, 5)} \\pm ${fmt(zStar(LEVEL), 3)}\\times${fmt(corridor.se, 6)} = \\big(${fmt(corridor.ci[0], 5)},\\ ${fmt(corridor.ci[1], 5)}\\big)`
+export const corridorCounts = [
+  [BOARD_TABLE.lane.name, fmtInt(BOARD_TABLE.lane.losses), fmtInt(BOARD_TABLE.lane.transits - BOARD_TABLE.lane.losses)],
+  [BOARD_TABLE.marsBelt.name, fmtInt(BOARD_TABLE.marsBelt.losses), fmtInt(BOARD_TABLE.marsBelt.transits - BOARD_TABLE.marsBelt.losses)],
+]
+/** The Calculator's case: a different pair, so the keystrokes are practised and not copied. */
+export const archive = twoPropInterval({
+  x1: ROOK_2176.losses,
+  n1: ROOK_2176.transits,
+  x2: BOARD_TABLE.lane.losses,
+  n2: BOARD_TABLE.lane.transits,
+  confidence: LEVEL,
+  random: true,
+})
+export const laneDifferenceRubric = differenceIntervalRubric({
+  level: LEVEL,
+  lower: laneLower,
+  upper: laneUpper,
+  group1: PERRINE_HOLDINGS,
+  group2: 'all other beneficiaries',
+  key1: 'perrine',
+  key2: 'other',
+  variable: 'loss rate per transit',
+  population: 'transits on the Hundred-Day Lane',
+  digits: 4,
+})
+
+<Scene stamp="MET 139/11:05" location="Bridge · CSV Nightjar · Compact consular berth four, Ceres" condensed="Two days after the conclusion went into the file, Ebele brings the interval Ferrier asked him for. The arithmetic is right and the subtraction is written down backwards, so the sentence under it says the opposite of what the ship found. Rook makes him name the order before anything else. Marsh, passing the wardroom hatch with a mug in each hand, asks what a percentage point is a percentage point of, and Ebele tells her: ships.">
+
+The yard crane takes something off a lighter two berths down and *Nightjar* rings for four seconds, keel to dorsal, through the gantry shackles nobody asked permission to weld on. It has done that eleven times since the forenoon. You have stopped looking up.
+
+Shore air, too. The consulate's ventilation is wet and smells of other people's cooking, and after fifty-seven days of the ship's own scrubbers it is the single worst thing about being alongside.
+
+Ebele comes up the ladder with his slate held out in front of him before his head is through the hatch.
+
+"So it is built, sir. {pts(LEVEL, 0)} per cent, and it does not go anywhere near zero." He gets his boots under him and turns the slate round. "Minus {pts(laneUpper)} points to minus {pts(laneLower)} points."
+
+You read it. Then you put a thumb over the minus signs and hand it back.
+
+"Which minus which, Ensign."
+
+He looks at it. Then he looks past you at the console, where the two columns are still on the screen in the order he typed them.
+
+"Other beneficiaries minus Perrine," he says. "Which is the opposite of the sentence I wrote underneath. The sentence says Perrine hulls are lost more and the interval says the other lot are, because I typed the columns into the console in the order they come off the register."
+
+"Then the interval is correct and the report is a lie. Fix the one that is wrong."
+
+He fixes it on the console, standing, with the slate on his knee. Eleven seconds. Then he reads out a different finding.
+
+<Dialogue speaker="analyst" aside="He puts both groups' names into the sentence before either number, and he does it without being told to.">
+Perrine-beneficiary hulls minus all other hulls. {pts(laneLower)} points to {pts(laneUpper)} points a transit, at {pts(LEVEL, 0)} per cent. Both ends above zero.
+</Dialogue>
+
+Ferrier has the paper copy of the brief open on the chart table and has not looked up from it.
+
+<Dialogue speaker="xo" aside="She writes two words at the top of the page in capitals and turns the page round so he can read them upside down.">
+The order goes in the sentence. Not in the working, not in a footnote. In the sentence, both names, before the numbers. A reader who gets the sign backwards gets the accusation backwards, and that reader will not be in the room with you.
+</Dialogue>
+
+The wardroom hatch is open because the shore supply runs through it. Marsh is in the frame of it with a mug in each hand and no intention of handing either of them over.
+
+<Dialogue speaker="marsh" name="Master Yevgenia Marsh · Thessaly Dawn" aside="She says it to Ebele. She has been listening since the crane stopped.">
+Percentage points of what.
+</Dialogue>
+
+Ebele starts to say *of the loss rate* and stops himself.
+
+<Dialogue speaker="analyst" aside="He puts the slate down on the console before he answers her, face up.">
+Of ships, Master. {pts(PERRINE_RATE - OTHER_RATE)} points across {fmtInt(PERRINE_TRANSITS)} transits is {fmtInt(Math.round(gapInHulls))} hulls that would have arrived.
+</Dialogue>
+
+She does not say anything for a while either. She puts one of the mugs down on the chart table, next to Ferrier's elbow, and goes back down the ladder with the other one.
+
+</Scene>
+
+<Briefing title="How big is the gap, and which way does it point" topics={["6.8", "6.9"]}>
+<Briefing.Intuition>
+A significance test answers one question: are these two rates far enough apart that chance alone is a poor account of it? It never answers the other one. **How far apart?** For that you need an interval on the difference itself.
+
+The estimate is the difference of the two sample proportions, $\hat p_1 - \hat p_2$. Its sampling distribution is centred at the true difference $p_1 - p_2$, and its spread comes from the fact that **variances add for independent quantities even when the quantities are subtracted**. Each sample contributes its own uncertainty and neither cancels the other, so the standard error is the square root of a sum.
+
+Each sample keeps its own $\hat p$ in that sum. This is the **unpooled** standard error, and it is unpooled for a reason an exam will ask about: an interval is not assuming the two rates are equal. It is estimating how different they are. There is nothing here to pool *under*.
+
+**The order of subtraction is a decision, and it is yours.** Group 1 minus group 2 and group 2 minus group 1 are the same arithmetic reflected through zero, and they carry opposite meanings. The interval does not record which you chose. The sentence has to.
+
+Then the reading, which is where the marks are.
+
+- **The whole interval above 0.** Every value the data finds plausible for $p_1 - p_2$ is positive, so the first rate is higher, and the interval says by how much: from its lower endpoint to its upper one.
+- **The whole interval below 0.** The same statement with the groups the other way round.
+- **The interval contains 0.** The data cannot rule out a difference of zero. It also cannot rule out any other value inside the interval, and some of those may be large enough to matter a great deal. "Consistent with no difference" is what you have. "The rates are equal" is a different claim, stronger than the evidence, and the interval is in fact the proof that it cannot be made: it lists dozens of other values that are equally consistent with the data.
+
+Width is driven by the same three things as any interval. A higher confidence level widens it. Larger samples narrow it, both of them, and the smaller sample does most of the damage. A rate near zero or one contributes less variance than a rate near a half, which is why very rare events can be estimated surprisingly tightly in absolute terms and still hopelessly loosely in relative ones.
+
+Last, the unit. A difference of proportions is in **percentage points**, not per cent. A rate that moves from one in two hundred to one in a hundred has risen by half a percentage point, and it has also doubled. Both are true, they sound nothing alike, and a report that reaches for whichever is more dramatic has made an argument rather than a measurement. Give the points, give the base, and let the reader do the division.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula
+  tex="(\hat p_1 - \hat p_2) \pm z^\star \sqrt{\frac{\hat p_1(1 - \hat p_1)}{n_1} + \frac{\hat p_2(1 - \hat p_2)}{n_2}}"
+  terms={{ '\\hat p_1 - \\hat p_2': 'the point estimate, in the order you chose and must state', 'z^\\star': 'the critical value for the confidence level', '\\sqrt{\\;\\cdot\\;}': 'the UNPOOLED standard error: each sample keeps its own rate, and the two variances add' }}
+  label="Two-sample z-interval for p₁ − p₂"
+/>
+
+<Formula
+  tex="\sigma_{\hat p_1 - \hat p_2} = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}"
+  terms={{ '+': 'a sum, not a difference: independent variances add under subtraction as well as addition' }}
+  label="Why the standard error is a square root of a sum"
+/>
+
+**Conditions**, all three stated with their numbers:
+
+1. **Random.** Two independent random samples, or two groups formed by a randomized experiment. Two groups split out of one sample is a different design and a different procedure.
+2. **10%.** Each sample is no more than a tenth of its own population, checked separately: $n_1 \le 0.1 N_1$ and $n_2 \le 0.1 N_2$.
+3. **Large Counts.** All four **observed** counts at least 10: $x_1$, $n_1 - x_1$, $x_2$, $n_2 - x_2$. The interval checks the counts the samples actually produced. A test checks four different products, computed under its own null hypothesis.
+</Briefing.Definition>
+<Briefing.Worked>
+The Board's own rebuttal table, which compares two corridors and concludes that the Lane is ordinary.
+
+Over the window the Authority Transit Ledger covers, the Hundred-Day Lane recorded {fmtInt(BOARD_TABLE.lane.losses)} losses in {fmtInt(BOARD_TABLE.lane.transits)} transits. The Board's comparison corridor, Mars to the Belt, recorded {fmtInt(BOARD_TABLE.marsBelt.losses)} in {fmtInt(BOARD_TABLE.marsBelt.transits)}. Rates of {fmtPct(corridorRate1, 2)} and {fmtPct(corridorRate2, 2)}. Take the Lane first in the subtraction.
+
+**Conditions.** Both files are censuses of a process that will produce far more transits than these, so the 10% condition is satisfied by the design rather than by a draw. The four observed counts:
+
+<KeyTable
+  columns={['corridor', 'losses', 'arrivals']}
+  rows={corridorCounts}
+  caption="All four observed counts are at least 10, so the sampling distribution of the difference is near enough normal to use z*."
+  ariaLabel="Observed losses and arrivals in each of the two corridors"
+/>
+
+**The standard error**, each corridor keeping its own rate:
+
+<Formula tex={corridorSeTex} label="Unpooled standard error for the difference of the two corridor rates" />
+
+**The interval**, at {fmtPct(LEVEL, 0)}:
+
+<Formula tex={corridorCiTex} label="Lane minus Mars–Belt corridor" />
+
+In the units anybody will read it in: the Lane's loss rate is somewhere between {pts(-corridor.ci[0], 2)} points *below* the comparison corridor's and {pts(corridor.ci[1], 2)} points above it.
+
+**The reading.** The interval contains 0, so the two corridors are statistically indistinguishable on this evidence, and the Board's sentence about the Lane being ordinary survives. Note what has *not* been established: that the corridors are identical. A gap of {pts(corridor.ci[1], 2)} points is inside this interval too, and on {fmtInt(BOARD_TABLE.lane.transits)} transits that is {fmtInt(Math.round(corridor.ci[1] * BOARD_TABLE.lane.transits))} hulls. The file is consistent with *no difference at all* and with *a difference that would be a scandal*, which is a statement about how little two corridors of this size can settle.
+
+That is the honest version of the Board's claim, and it is also the reason this ship stopped comparing corridors. The comparison that carries information is inside the Lane.
+</Briefing.Worked>
+<Briefing.Caution>
+*The sign.* The commonest lost mark on this topic, and it costs the whole interpretation rather than a point. Write the order into the sentence with both group names in it, before either number appears. If the interval comes out with the sign you did not expect, check the order before you check anything else.
+
+*"The interval contains 0, so the proportions are equal."* An interval is the set of values the data cannot rule out, and it rules none of them in. Zero is one candidate among all the others it holds, including some at the far end that would matter enormously. Say the data are consistent with no difference, and then say what else they are consistent with.
+
+*Per cent and percentage points.* A gap of {pts(PERRINE_RATE - OTHER_RATE)} points against a base of {fmtPct(OTHER_RATE, 2)} is also a rate {fmt(timesAsOften, 1)} times as high. The two numbers describe one fact and persuade very differently. Report the points, the two rates they came from, and the count of units the points translate into.
+
+*Interpreting the interval as a statement about the samples.* The sentence is about the true difference between two populations. {fmtPct(PERRINE_RATE, 2)} and {fmtPct(OTHER_RATE, 2)} are already known exactly; nobody needs an interval for those. Keep the word **true** in the sentence and the parameter stays in view.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="Two-proportion z-interval (B:2-PropZInt)">
+<Calculator.Step keys={['STAT', '▸ TESTS', 'B:2-PropZInt']} note={`x1: ${ROOK_2176.losses} · n1: ${ROOK_2176.transits} · x2: ${BOARD_TABLE.lane.losses} · n2: ${BOARD_TABLE.lane.transits} · C-Level: .95 · Calculate`}>Item `B` is in the alphabetic tail of the TESTS menu, below `A:1-PropZInt`. Scroll rather than hunting for a digit. The worked case here is a different pair from the briefing's: the Lane as the 2176 patrol report recorded it, against the Lane the Ledger records now. All four entries are **counts**, and `x1` goes with `n1`.</Calculator.Step>
+<Calculator.Read label="(low, high)" value={`(${fmt(archive.ci[0], 6)}, ${fmt(archive.ci[1], 6)})`}>the interval for p1 − p2, in the order you typed the samples in. Both endpoints are negative here, which says the first sample's rate is the lower one.</Calculator.Read>
+<Calculator.Read label="p̂1" value={fmt(ROOK_2176.losses / ROOK_2176.transits, 6)}>the first sample's own proportion, {fmtInt(ROOK_2176.losses)} ÷ {fmtInt(ROOK_2176.transits)}. Check it against the file before you read the interval above it.</Calculator.Read>
+<Calculator.Read label="p̂2" value={fmt(BOARD_TABLE.lane.losses / BOARD_TABLE.lane.transits, 6)}>the second sample's own proportion. The screen shows no pooled value, because this procedure does not compute one.</Calculator.Read>
+<Calculator.Watch>**The order of subtraction is whichever one you typed.** The device has no opinion about which group should come first and will not warn you. Decide the order out loud, enter the group you want first as `x1`/`n1`, and write both group names into your sentence. Swapping the two columns returns ({fmt(-archive.ci[1], 6)}, {fmt(-archive.ci[0], 6)}): the same arithmetic, the opposite claim.</Calculator.Watch>
+<Calculator.Watch>**`B:2-PropZInt` does not pool and `6:2-PropZTest` does.** They sit in the same menu and they report different standard errors from the same four numbers, so an answer carrying a pooled SE inside a confidence interval is marked wrong even when every keystroke after it was right. Interval: no pooling. Test: pooling.</Calculator.Watch>
+<Calculator.Watch>**The margin of error is not on the screen.** Subtract to get it: (high − low) ÷ 2, which for this case is {fmt((archive.ci[1] - archive.ci[0]) / 2, 6)}. And the device checks no conditions at all. It will build an interval from 2 successes in 9 trials and print six decimals while doing it, so the four observed counts are yours to check before you press `Calculate`.</Calculator.Watch>
+</Calculator>
+
+<DifferencePanel />
+
+<Drill generator="act-6/difference-conditions" count={1} />
+<Drill generator="act-6/two-prop-interval" count={1} />
+<Drill generator="act-6/order-of-subtraction" count={1} />
+<Drill generator="act-6/difference-interpretation" count={1} />
+<Drill generator="act-6/interval-contains-zero" count={1} />
+<Drill generator="act-6/difference-margin" count={1} />
+
+<MissionBeat id="act-6-07-lower" kind="numeric" label="THE LOWER ENDPOINT"
+  prompt={`The register and the Ledger, joined: of ${fmtInt(PERRINE_TRANSITS)} Lane transits flown by hulls whose policies name ${PERRINE_HOLDINGS}, ${fmtInt(PERRINE_LOSSES)} were lost. Of the other ${fmtInt(OTHER_TRANSITS)} transits, ${fmtInt(OTHER_LOSSES)} were lost.\n\nBuild the ${fmtPct(LEVEL, 0)} confidence interval for the difference in true loss rates per transit, **${PERRINE_HOLDINGS} minus all other beneficiaries**. Give the LOWER endpoint as a proportion, to four decimal places.`}
+  hint="The interval is for a difference, so the standard error is a square root of a sum, and each sample keeps its own p̂ in it. Nothing here is pooled. Then the point estimate minus z* times that standard error."
+  answer={laneLower} answerKind="proportion" digits={4} tolerance={0.0003}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He reads the endpoint off and then says the order of subtraction after it, unprompted.">
+  So, {fmt(laneLower, 4)} at the bottom. Perrine minus everyone else. The standard error is {fmt(DIFFERENCE_INTERVAL.se, 5)} and most of it comes off the {fmtInt(PERRINE_TRANSITS)}, because the other column has nearly twice the transits in it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She does not take the slate. She puts a fingernail under the standard error and leaves it there.">
+  Two things to check, in this order. Which group did you subtract from which. And whether the rate in your standard error is one rate or two, because the interval is not entitled to assume there is only one.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-07-upper" kind="numeric" label="THE UPPER ENDPOINT"
+  prompt={`Same two samples, same ${fmtPct(LEVEL, 0)} level, same order of subtraction. Give the UPPER endpoint as a proportion, to four decimal places.`}
+  hint="Same point estimate, same standard error, same z*. The margin of error added rather than subtracted."
+  answer={laneUpper} answerKind="proportion" digits={4} tolerance={0.0003}>
+  <Success>
+  <Dialogue speaker="analyst" aside="He puts both endpoints on the board as one line with the subtraction written above it.">
+  {fmt(laneLower, 4)} to {fmt(laneUpper, 4)}. In points, {pts(laneLower)} to {pts(laneUpper)} a transit, and the whole of it is above zero.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the console open at his own working and is reading it back at himself.">
+  Sir. If I have the point estimate and the margin, the two endpoints are one subtraction and one addition from the same pair of numbers, and I have just given you two numbers that are not that.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-07-sentence" kind="interpretation" label="WHICH MINUS WHICH"
+  prompt={`This interval goes into the brief as one sentence, between the test's conclusion and the scope paragraph.\n\nWrite it. Say what the level is, give both endpoints, name what the interval is an interval FOR, and say which group was subtracted from which. The reader is the officer at Valhalla whose job is to quote one clause of it without the rest.`}
+  hint="Five things: the confidence level, the words TRUE DIFFERENCE, both endpoints, the order of subtraction with both group names in it, and the population and variable the rates belong to. A sentence missing the order can be read either way round, and will be."
+  {...laneDifferenceRubric}>
+  <Success>
+  <Dialogue speaker="xo" aside="She copies it into the brief in her own hand rather than cutting it in off the console.">
+  That one holds. The level is on it, both ends are on it, and nobody reading it at speed can get the direction wrong. It goes under the conclusion.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo" aside="She writes three words in the margin: WHICH MINUS WHICH.">
+  Which minus which, Captain. A difference has a direction and the numbers do not carry it. Both names in the sentence, in order, before either endpoint, and the word *true* in front of *difference* so that nobody takes it for a statement about the thirty-one hulls we already know about.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-6-07-lower", "act-6-07-upper", "act-6-07-sentence"]}>
+
+<Scene stamp="MET 139/19:40" location="Wardroom · Compact consular berth four, Ceres" condensed="The interval goes into the brief under the conclusion. The gap is a few tenths of a point at one end and a couple of points at the other, Perrine minus everyone else, and in hulls that is a number Marsh can hold. Ferrier retires the corridor comparison: the Board can have its two corridors, because the comparison that carries anything is inside the Lane. Still absent from every sentence: who, why, and where the hulls are.">
+
+The brief has a second number in it now, and the second number is the one people will repeat.
+
+Between {pts(laneLower)} and {pts(laneUpper)} percentage points a transit, Perrine-beneficiary hulls minus everyone else, at {pts(LEVEL, 0)} per cent confidence. Tighten the level to {pts(0.9, 0)} per cent and the interval runs {pts(laneNarrow.ci[0])} to {pts(laneNarrow.ci[1])} points; widen it to {pts(0.99, 0)} per cent and it runs {pts(laneWide.ci[0])} to {pts(laneWide.ci[1])} points. All three stay clear of zero. Ebele writes the three of them in a column at the foot of the working and labels the column so that nobody has to ask what he tried.
+
+In hulls, over the {fmtInt(PERRINE_TRANSITS)} Perrine transits the Ledger holds, that is between {fmtInt(lowHulls)} and {fmtInt(highHulls)} ships.
+
+<Dialogue speaker="xo" aside="She has the Board's rebuttal table out and turns it face down on the wardroom table before she speaks.">
+We are finished comparing corridors. They can have the Mars–Belt run and the word *ordinary*; the honest interval on that comparison is wide enough to hold almost anything. The comparison that carries information is inside this Lane, between hulls running the same rock in the same traffic, separated by a line on an insurance policy.
+</Dialogue>
+
+Ebele has the two displays up side by side: the test on the left with its tail shaded, the interval on the right as a bar that does not reach zero. Same four numbers in both. One of them says the gap is hard to explain by chance. The other says how big it is.
+
+<Dialogue speaker="analyst" aside="He is looking at the interval rather than the test.">
+{pts(laneLower)} points at the low end, sir. If the truth is down there, this is a bad run of luck in an insurance book. At the top end it is {pts(laneUpper)} points, and {pts(laneUpper)} points on this Lane is a programme.
+
+The file does not tell me which, and I keep wanting it to.
+</Dialogue>
+
+What is still missing from every sentence in the brief: who, why, and where any of the nineteen hulls are now. The interval adds a size to an accusation that already had a p-value, and a size is the thing an adjuster, an Authority office and a Board can all act on without agreeing about anything else.
+
+Marsh's mug is still on the chart table at the end of the watch. Nobody has moved it.
+
+</Scene>
+
+<LogEntry
+  title="An interval on the difference, and the direction it points"
+  concept="A test says whether two rates differ by more than chance easily explains; an interval on p₁ − p₂ says by how much. The point estimate is the difference of the two sample proportions and the standard error is the square root of a sum, because the variances of independent estimates add even when the estimates are subtracted, and each sample keeps its own p̂ because an interval assumes nothing about the rates being equal. Conditions are random sampling or random assignment, the 10% condition checked in each sample separately, and all four OBSERVED counts at least 10. The order of subtraction is a choice the arithmetic does not record, so the sentence must carry both group names in order; an interval wholly above zero says the first rate is higher and gives the size of the gap, and an interval containing zero says only that no difference cannot be ruled out, alongside every other value it holds."
+  formula="(\hat p_1 - \hat p_2) \pm z^\star\sqrt{\frac{\hat p_1(1-\hat p_1)}{n_1} + \frac{\hat p_2(1-\hat p_2)}{n_2}}"
+  mistake="Reading the sign without having stated the order of subtraction, which turns the whole interpretation around while every digit stays correct. Its quieter companion is reporting an interval that contains 0 as proof that the two proportions are equal, when the interval also contains every other value in its range and establishes none of them."
+  tags={['two-proportion z-interval', 'difference of proportions', 'unpooled standard error', 'order of subtraction', 'contains zero', 'percentage points', 'conditions', 'large counts', '6.8', '6.9']}
+/>
+
+</Gated>
