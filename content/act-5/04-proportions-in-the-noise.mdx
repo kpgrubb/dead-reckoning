@@ -42,9 +42,9 @@ export const PERRINE_SHARE = PERRINE_N / LEDGER_N
 
 <Scene stamp="MET 116/09:20" location="Bridge · coasting cold · two days to the torch" condensed="Two days out from the torch. Ebele arrives on the bridge with the Ledger sorted by owner class and the observed loss counts for each, the comparison the whole file has been pointing at since the mass residuals. Ferrier stops him before the first number leaves his mouth and makes him put the sheet face down. The ship is going to build the picture of two fleets losing hulls at exactly the same rate first, and look at what it actually saw afterwards, in that order, on the record.">
 
-The middle watch handed over at 08:00 and the ship has the particular quiet of a hull two days from doing something. The cellar is at forty-one per cent and falling on the Chief's schedule. Two hundred and sixty-three kilometres a second in the tanks. Callisto twenty-one and a half minutes away, which is far enough that nobody up there can help you with the next two days and close enough that they will have opinions afterwards.
+The middle watch handed over at 08:00. The cellar is at forty-one per cent and falling on the Chief's schedule. Two hundred and sixty-three kilometres a second in the tanks. Callisto is twenty-one and a half minutes away, and nobody up there can help you with the next two days.
 
-Ebele comes onto the bridge at a speed that is not quite running with a slate held against his chest, face in.
+Ebele comes onto the bridge at a speed that is not quite running, with a slate held against his chest, face in.
 
 <Dialogue speaker="analyst" aside="He has been up since the forenoon watch and has not said so.">
 So I have it sorted, sir. The Ledger by owner class, all {fmtInt(LEDGER_N)} transits, six years, and the loss counts against each class. It took the night because the flag field is free text before 2180 and there are eleven ways to spell Perrine. Sir, the numbers are
@@ -56,10 +56,10 @@ Ferrier puts two fingers on the top edge of the slate and turns it over onto the
 No. Not yet. Ensign, what would you expect to see if there were nothing there at all?
 </Dialogue>
 
-He starts to answer and stops, because the honest answer is that he has not worked it out, and because he can see where it goes.
+He starts to answer and stops. He has not worked it out, and he can see where this goes.
 
 <Dialogue speaker="xo" aside="Both hands on the console now. The slate stays face down between them for the rest of the watch.">
-Two fleets fly the same corridor. Same rate, same risk, nobody stealing anything, nothing wrong anywhere. One flies nine hundred transits and one flies seventeen hundred. Tell me what the gap between their loss rates looks like. Not whether ours is bigger. What *honest* looks like: where it sits, how wide it is, and how far apart two clean fleets are allowed to land before a reasonable officer raises an eyebrow. Write that down and sign it. Then we turn the slate over.
+Two fleets fly the same corridor. Same rate, same risk, nobody stealing anything, nothing wrong anywhere. One flies nine hundred transits and one flies seventeen hundred. Tell me what the gap between their loss rates looks like. Not whether ours is bigger. What *honest* looks like: where it sits, how wide it is, and how far apart two clean fleets are allowed to land before it means anything. Write that down and sign it. Then we turn the slate over.
 </Dialogue>
 
 Ebele, at nine in the morning after a night with a free-text flag field, says *yes, sir*, opens a clean page, and does not ask to see the sheet.
@@ -146,7 +146,7 @@ Press RUN a few times and read `√(p(1 − p)/n) · the theory` against `SD of 
 
 <ProportionSampler mode="one" n={MERCANTILE_N} />
 
-<Dialogue speaker="analyst" aside="He has the n slider at the bottom of its travel and the curve gone from the plot, and he is looking at the bare histogram with something like relief.">
+<Dialogue speaker="analyst" aside="He has the n slider at the bottom of its travel and the curve gone from the plot, and he is looking at the bare histogram.">
 So it is lumpy, sir. At two hundred transits the whole distribution is six or seven possible loss counts and it is right-skewed, because you cannot lose fewer than none. That is why it wants ten expected losses and not thirty transits. Thirty transits at this rate expects a third of a loss. I had the condition memorised in the wrong units for about four years.
 </Dialogue>
 
@@ -158,13 +158,13 @@ So it is lumpy, sir. At two hundred transits the whole distribution is six or se
   prompt={`Ferrier's first figure, and the sheet is still face down.\n\nA fleet flies **${fmtInt(PERRINE_N)} transits** of the Hundred-Day Lane. Assume it flies them at the Authority's published Lane rate, $p = ${fmt(POOLED_RATE, 5)}$, the model in which nothing is wrong anywhere.\n\nWhat is the **standard deviation of that fleet's observed loss rate** $\\hat p$? Give it to four decimal places, as a proportion.`}
   hint="The rate is given, so the given rate is what goes under the root, both times. Root of p(1 − p) over n, with n the transits flown, not the losses.">
   <Success>
-  <Dialogue speaker="analyst" aside="He writes it as a percentage underneath, and a sentence underneath that, in the form Ferrier made him adopt at Ceres.">
+  <Dialogue speaker="analyst" aside="He writes it as a percentage underneath, and a sentence underneath that.">
   So a clean fleet of {fmtInt(PERRINE_N)} lands within about {fmt(100 * SD_PHAT_PERRINE, 2)} of a percentage point of the true rate, give or take, sir. Which means two honest fleets this size can differ by a third of a percentage point without anything at all having happened to either of them.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She does not look at his slate. She says it to the forward screen.">
-  Two ways to get that wrong and you have found one of them. Either you put a rate you measured under the root instead of the rate you were given, in which case you have built the model of ordinary out of the thing you were going to compare to it, or you divided by the number of losses rather than the number of transits. The n is the fleet. The p is the Authority's.
+  Two ways to get that wrong and you have found one of them. You put a rate you measured under the root instead of the rate you were given, which builds the model of ordinary out of the thing it is meant to judge. Or you divided by the number of losses rather than the number of transits. The n is the fleet. The p is the Authority's.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -186,7 +186,7 @@ So it is lumpy, sir. At two hundred transits the whole distribution is six or se
   ]}>
   <Success>
   <Dialogue speaker="xo" aside="She reads the line twice and changes one word in it, from 'passes' to the number itself.">
-  {fmt(LARGE_COUNTS_PERRINE, 2)}. Not "the condition is satisfied". {fmt(LARGE_COUNTS_PERRINE, 2)}. It clears the bar by two thirds of a loss, and a reviewer who has to work that out for himself will assume we hoped he would not. Print it, and print the other one beside it, and put the independence sentence under both in plain words.
+  {fmt(LARGE_COUNTS_PERRINE, 2)}. Not "the condition is satisfied". {fmt(LARGE_COUNTS_PERRINE, 2)}. It clears the bar by two thirds of a loss, and a reviewer who has to work that out for himself will assume we hoped he would not. Print it. Print the other one beside it. Put the independence sentence under both, in plain words.
   </Dialogue>
   </Success>
   <Failure>
@@ -198,13 +198,13 @@ So it is lumpy, sir. At two hundred transits the whole distribution is six or se
 
 <Scene stamp="MET 116/11:05" location="Bridge · the slate still face down on the console" condensed="With the one-fleet model built and its conditions written out, Ferrier moves to the comparison itself: two fleets, nine hundred transits against seventeen hundred, flying at one common rate. Ebele reaches for the difference of the two standard deviations and Ferrier lets him get it wrong out loud before Sandoval, passing through with a gauge, settles it in the four words she used on the heat ledger.">
 
-Two hours in and the slate has not been turned over. The first page is finished: one fleet, the width of its rate, both counts, the independence sentence in words a lawyer could not bend. Ferrier initials the bottom of it and moves her hand to the second page, which is blank.
+Two hours in and the slate has not been turned over. The first page is finished: one fleet, the width of its rate, both counts, the independence sentence in words a lawyer could not bend. Ferrier initials the bottom of it and moves her hand to the second page. The second page is blank.
 
 <Dialogue speaker="xo">
 Now two fleets. Nine hundred transits and seventeen hundred, same corridor, same rate, nothing wrong with either of them. Their observed rates will not match; you have just told me why. What I want is the distribution of the *gap*. Where it sits, and how wide.
 </Dialogue>
 
-Ebele has the centre in a second. Then he writes the spread as the bigger standard deviation minus the smaller one, looks at it, and does not cross it out, which is the thing he has learned to do and the reason he is useful.
+Ebele has the centre in a second. Then he writes the spread as the bigger standard deviation minus the smaller one. He looks at it and does not cross it out.
 
 <Dialogue speaker="analyst" aside="The wrong number is on the slate and he has left it there with a box round it.">
 So that gives me something smaller than either fleet on its own, sir, and I do not believe it. Comparing two uncertain numbers cannot be more precise than measuring one of them. I have written it down so I can see what I did.
@@ -212,7 +212,7 @@ So that gives me something smaller than either fleet on its own, sir, and I do n
 
 Sandoval comes through the bridge on her way aft with a gauge in one hand. She reads the boxed line without breaking step.
 
-<Dialogue speaker="engineer" aside="She does not stop walking. It is the same sentence she used on the sink budget three weeks ago and she says it the same way.">
+<Dialogue speaker="engineer" aside="She does not stop walking. It is the same sentence she used on the sink budget three weeks ago.">
 Variances add, Ensign. Squares go in, the root comes out at the end, and what comes out is bigger than either thing you started with. It is bigger for a difference too. Subtracting a noisy number does not cancel its noise. It contributes it.
 </Dialogue>
 
@@ -226,13 +226,13 @@ Variances add, Ensign. Squares go in, the root comes out at the end, and what co
   prompt={`Two owner classes on the same corridor, flying at one **common** rate $p = ${fmt(POOLED_RATE, 5)}$: one flies **${fmtInt(PERRINE_N)} transits**, the other flies **${fmtInt(OTHER_N)}**. Nothing is wrong with either of them.\n\nWhat is the **standard deviation of the difference in their observed loss rates**, $\\hat p_1 - \\hat p_2$? Four decimal places, as a proportion.`}
   hint="Centre first: under a common rate the difference estimates nothing, so it is centred at zero. Then the spread: each fleet contributes p(1 − p) over its own n, the two contributions add under the root, and the answer must come out larger than either fleet's SD alone.">
   <Success>
-  <Dialogue speaker="analyst" aside="He puts the three standard deviations in a row on the page, the two fleets and the gap, in that order, so the arithmetic is visible without a formula.">
-  {fmt(SD_PHAT_PERRINE, 5)} and {fmt(SD_PHAT_OTHER, 5)} make {fmt(SD_DIFF_PROPORTIONS, 5)}, sir, and it is bigger than either one, which is how I know I have not subtracted. Two clean fleets this size land about four and a half tenths of a percentage point apart as a matter of routine.
+  <Dialogue speaker="analyst" aside="He puts the three standard deviations in a row on the page, the two fleets and then the gap.">
+  {fmt(SD_PHAT_PERRINE, 5)} and {fmt(SD_PHAT_OTHER, 5)} make {fmt(SD_DIFF_PROPORTIONS, 5)}, sir, and it is bigger than either one, so I have not subtracted. Two clean fleets this size land about four and a half tenths of a percentage point apart as a matter of routine.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="engineer" aside="She has come back through with the gauge and stopped this time, which she does not do.">
-  You subtracted standard deviations. That answer is smaller than either fleet on its own, which says a comparison of two uncertain things is steadier than one measurement of one of them, and if a ship's system told you that you would pull the card. Square them. Add them. Root the total. That order.
+  <Dialogue speaker="engineer" aside="She has come back through with the gauge and stopped this time.">
+  You subtracted standard deviations. That answer is smaller than either fleet on its own. It says a comparison of two uncertain things is steadier than one measurement of one of them. If a ship's system told you that, you would pull the card. Square them. Add them. Root the total. That order.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -242,12 +242,12 @@ Variances add, Ensign. Squares go in, the root comes out at the end, and what co
   hint="The same distribution, read backwards: you have the area and you want the cutoff. Centre zero, spread as you just computed it, then the z* with one one-hundredth of the area above it, and multiply. Take care to use the one-tailed critical value, not the two-tailed one.">
   <Success>
   <Dialogue speaker="xo" aside="She writes it at the top of the second page, above every other number, and draws a line under it.">
-  {fmt(GAP_1_IN_100, 4)}. About {fmt(100 * GAP_1_IN_100, 2)} of a percentage point, or nine or ten extra hulls in nine hundred. That is the bar, and it is set. Sign the page and note the time on it. Whatever is on that slate, it was measured against a line we drew before we looked, and the man who reads this at Valhalla can check the line without taking our word for one thing on it.
+  {fmt(GAP_1_IN_100, 4)}. About {fmt(100 * GAP_1_IN_100, 2)} of a percentage point, or nine or ten extra hulls in nine hundred. That is the bar, and it is set. Sign the page and note the time on it. Whatever is on that slate, it was measured against a line we drew before we looked. The man who reads this at Valhalla can check the line without taking our word for anything.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="analyst" aside="He has the two-tailed value on his slate and finds it himself, two lines down, before anybody says anything.">
-  Yes. I have put the whole one per cent in both tails, sir, which answers *how big a gap in either direction*, and the question was how big a gap with one class above the other. One tail. The critical value comes down and so does the bar. Same spread, same centre, different question, and I should have read the word "above".
+  Yes. I have put the whole one per cent in both tails, sir. That answers *how big a gap in either direction*, and the question was how big a gap with one class above the other. One tail. The critical value comes down and so does the bar. Same spread, same centre, different question, and I should have read the word "above".
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -258,27 +258,27 @@ Variances add, Ensign. Squares go in, the root comes out at the end, and what co
 
 He runs it in **TWO FLEETS** mode with the line drawn on, and this is the picture the second page is about: five hundred pairs of identical fleets, nine hundred against seventeen hundred, flying a corridor where nothing is wrong. The differences pile up around zero, symmetric, dull. And out on the right, where the pile has thinned to almost nothing, the bar stands at {fmt(GAP_1_IN_100, 4)}.
 
-One pair in a hundred reaches it by luck. Not none. One in a hundred, and that is the part that will matter when somebody argues the other way, because a bar nothing ever crosses is a claim that chance does not exist.
+One pair in a hundred reaches it by luck. Not none. A bar nothing ever crosses is a claim that chance does not exist.
 
 <ProportionSampler mode="two" />
 
-<Dialogue speaker="analyst" aside="He has run it eleven times and the eleventh stack has two dots past the line, which he points at rather than explaining away.">
-So there are two out there, sir, in five hundred pairs. That is the model working. If I run it until the torch lights I will get about five in every five hundred, because that is what one in a hundred means, and any pair that lands out there is two honest fleets and a coincidence. Which is exactly why the bar is worth having. It does not say *impossible*. It says *how often*, and it said it before we looked.
+<Dialogue speaker="analyst" aside="He has run it eleven times. The eleventh stack has two dots past the line, and he points at them.">
+So there are two out there, sir, in five hundred pairs. That is the model working. If I run it until the torch lights I will get about five in every five hundred, because that is what one in a hundred means, and any pair that lands out there is two honest fleets and a coincidence. That is why the bar is worth having. It does not say *impossible*. It says *how often*, and it said it before we looked.
 </Dialogue>
 
-Ferrier writes the finding into the Board's register in the form that has no observation in it anywhere, which is a strange thing to file and the reason it is worth filing.
+Ferrier writes the finding into the Board's register with no observation in it anywhere. It is a strange thing to file.
 
-<Dialogue speaker="xo" aside="She dates it, times it, and signs under the time, which she has not done for a finding that contains no data.">
+<Dialogue speaker="xo" aside="She dates it, times it, and signs under the time.">
 Under a common Lane loss rate of {fmt(POOLED_RATE, 5)}, the difference in observed loss proportions between an owner class flying {fmtInt(PERRINE_N)} transits and one flying {fmtInt(OTHER_N)} is centred on zero with a standard deviation of {fmt(SD_DIFF_PROPORTIONS, 5)}; expected losses are {fmt(LARGE_COUNTS_PERRINE, 2)} and {fmt(LARGE_COUNTS_OTHER, 2)} respectively, so a normal model is licensed. A one-sided gap of {fmt(GAP_1_IN_100, 4)} or more arises under that model once in a hundred comparisons. This vessel has not yet examined the observed rates and has run no test.
 </Dialogue>
 
-Then she does the other half. She always does the other half.
+Then she does the other half.
 
 <Dialogue speaker="xo" aside="Two items this time. The slate is still face down under her left hand while she writes with her right.">
-One. We have a bar and no measurement. Whatever is on this slate, it has not been compared to anything yet, and it will not be until a null model exists with a signature and a time on it, which it now does. Two. A gap between owner classes, if there is one, is a number about hulls. It is not a number about *people*. The Ledger knows who flew. It does not know who collects when one of these stops. That register is in an office on Ceres, and the difference between a pattern and an accusation is the distance between those two documents.
+One. We have a bar and no measurement. Whatever is on this slate, it has not been compared to anything yet, and it will not be until a null model exists with a signature and a time on it. It now does. Two. A gap between owner classes, if there is one, is a number about hulls. It is not a number about *people*. The Ledger knows who flew. It does not know who collects when one of these stops. That register is in an office on Ceres, and the difference between a pattern and an accusation is the distance between those two documents.
 </Dialogue>
 
-She takes her hand off the slate and does not turn it over, because turning it over is not this watch's work and the arithmetic on the other side of it belongs to a compartment at Ceres with a different set of documents in it. Ebele takes it away face down. Two days to the torch.
+She takes her hand off the slate and does not turn it over. Ebele takes it away face down. Two days to the torch.
 
 </Scene>
 

@@ -44,13 +44,13 @@ export const WORKED_GAP_1_IN_1000 = Z_1_IN_1000 * SD_DIFF_PATROLS
 export const BOARD_RATE = rateOf(BOARD_TABLE.marsBelt)
 export const ROOK_RATE = rateOf(ROOK_2176)
 
-<Scene stamp="MET 117/14:10" location="Engineering deck · aft of the sink gallery · one day to the torch" condensed="One day to the torch. Ebele brings the second null model down to engineering because the intel terminal is busy with the outbound traffic and because Sandoval has the only working table on the ship. She has never been shown a sampling distribution; she watches this one build with a gauge still in her hand and asks the question the module is about before Ebele has finished laying out the problem: why the comparison with nineteen hulls in it is so much worse than the one with nine hundred.">
+<Scene stamp="MET 117/14:10" location="Engineering deck · aft of the sink gallery · one day to the torch" condensed="One day to the torch. Ebele brings the second null model down to engineering because the intel terminal is busy with the outbound traffic and because Sandoval has the only working table on the ship. She has never been shown a sampling distribution; she watches this one build with a gauge still in her hand and asks the question before Ebele has finished laying out the problem: why the comparison with nineteen hulls in it is so much worse than the one with nine hundred.">
 
-The engineering deck runs warm even cold. The pumps make their own heat, and the gallery aft of the sink has a smell of hot metal and lithium that follows you up the ladder afterwards. Sandoval has the endurance card taped to the bulkhead by the table, updated in her own hand every watch since MET 83, and the cellar reads forty-one per cent on the gauge she is carrying when Ebele comes down with the slate.
+The engineering deck runs warm even cold. The pumps make their own heat, and the gallery aft of the sink smells of hot metal and lithium. The smell follows you up the ladder afterwards. Sandoval has the endurance card taped to the bulkhead by the table, updated in her own hand every watch since MET 83. The gauge in her other hand reads the cellar at forty-one per cent when Ebele comes down with the slate.
 
 He comes down because the intel terminal has the Ceres approach package on it and because this table does not float things away.
 
-The second null model is the delay comparison, and it has two forms. The first is the whole fleet against the rest of the corridor: {fmtInt(PERRINE_N)} Perrine transits against {fmtInt(OTHER_N)} everyone else's, mean Mark-9 delay on each side, and the question of how far apart two honest groups that size are allowed to land. The second is the one the file actually turns on, and it is lopsided in a way Ebele does not like the look of: {fmtInt(NINETEEN_N)} hulls against {fmtInt(SURVIVING_PERRINE_N)}.
+The second null model is the delay comparison, and it has two forms. The first is the whole fleet against the rest of the corridor: {fmtInt(PERRINE_N)} Perrine transits against {fmtInt(OTHER_N)} everyone else's, mean Mark-9 delay on each side, and the question of how far apart two honest groups that size are allowed to land. The second is the one the file actually turns on, and it is lopsided: {fmtInt(NINETEEN_N)} hulls against {fmtInt(SURVIVING_PERRINE_N)}. Ebele does not like the look of it.
 
 Sandoval watches him set it up with the gauge still in her hand.
 
@@ -58,7 +58,7 @@ Sandoval watches him set it up with the gauge still in her hand.
 Nineteen against eight hundred and eighty-one. Ensign, that comparison is going to be terrible and you have not started it yet.
 </Dialogue>
 
-Ebele asks her why, because he is learning to ask rather than to explain, and she answers before he has finished the question.
+Ebele asks her why. She answers before he has finished the question.
 
 <Dialogue speaker="engineer" aside="She puts the gauge down on the table and taps it twice, once for each group.">
 Because you cannot average nineteen of anything and know where it sits. Eight hundred and eighty-one you can. That number is *pinned*; it will not move on you. So the whole wobble in the difference is coming from the small end. It is the same as measuring a pressure drop across a good gauge and a bad one. You do not get the good gauge's precision. You get the bad one's, and a bit worse, because now there are two of them.
@@ -66,7 +66,7 @@ Because you cannot average nineteen of anything and know where it sits. Eight hu
 
 She is describing the formula. She has not written it and does not intend to. Ebele writes it.
 
-Which leaves the thing neither of them has said yet: the two nulls are not equally sharp instruments, and which of them the argument has to run on decides how big a difference this ship is capable of seeing at all.
+Neither of them has said the rest of it yet. The two nulls are not equally sharp instruments. Which one the argument runs on decides how big a difference this ship can see at all.
 
 </Scene>
 
@@ -164,7 +164,7 @@ There. One bar at nearly the whole width. That is what I was telling you, Ensign
   prompt={`The first form of the comparison. **${fmtInt(PERRINE_N)}** transits of one owner class against **${fmtInt(OTHER_N)}** of everyone else's, both flying honest Lane traffic with $\\sigma = ${fmt(LANE_DELAY_SD, 4)}$ d, both centred on the same mean delay.\n\nWhat is the **standard deviation of the difference in their mean Mark-9 delays**? Three decimal places, in days.`}
   hint="Each group contributes its own variance divided by its own count. Add the two contributions, then take the root, and check the answer against the larger of the two standard errors, because it must be bigger than both.">
   <Success>
-  <Dialogue speaker="analyst" aside="He writes it in days and then again in hours underneath, because hours are what the Register logs and he has started translating for his readers.">
+  <Dialogue speaker="analyst" aside="He writes it in days and then again in hours underneath, because hours are what the Register logs.">
   So about a tenth of a day, sir. {fmt(SD_DIFF_MEANS_FLEETS * 24, 1)} hours. Two honest owner classes that size, flying the same corridor, land that far apart in their average lateness as a matter of course. Anything much beyond it starts to be interesting, and I now have a number for "much".
   </Dialogue>
   </Success>
@@ -180,11 +180,11 @@ There. One bar at nearly the whole width. That is what I was telling you, Ensign
   hint="Nothing changes but the two counts. The small group's term is the one that will dominate — work it out on its own first and see how little the second term adds to it.">
   <Success>
   <Dialogue speaker="engineer" aside="She reads the two figures off his slate, the fleets one and this one, and puts a finger on the second.">
-  {fmt(WIDTH_RATIO, 1)} times worse than the other one, and neither of us is surprised. Nineteen hulls and no way to get a twentieth. That is the instrument you have, Skipper. It sees a gap of {fmt(SD_DIFF_MEANS_SMALL, 2)} days where the fleet comparison sees {fmt(SD_DIFF_MEANS_FLEETS, 2)}, and pretending otherwise on paper is the sort of thing that gets a report thrown out by somebody who spends an afternoon on it.
+  {fmt(WIDTH_RATIO, 1)} times worse than the other one, and neither of us is surprised. Nineteen hulls and no way to get a twentieth. That is the instrument you have, Skipper. It sees a gap of {fmt(SD_DIFF_MEANS_SMALL, 2)} days where the fleet comparison sees {fmt(SD_DIFF_MEANS_FLEETS, 2)}. Pretend otherwise on paper and the report comes back thrown out.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="analyst" aside="He has the fleets figure on the line above and the same order of magnitude on the line below, which is the tell.">
+  <Dialogue speaker="analyst" aside="He has the fleets figure on the line above and the same order of magnitude on the line below.">
   Sir. If my answer for nineteen hulls is anywhere near my answer for nine hundred, I have used the wrong count somewhere. The whole point the Chief made is that it should be several times worse. Nineteen in a denominator is a large term. Eight hundred and eighty-one in a denominator is almost nothing.
   </Dialogue>
   </Failure>
@@ -200,36 +200,36 @@ There. One bar at nearly the whole width. That is what I was telling you, Ensign
   </Success>
   <Failure>
   <Dialogue speaker="analyst" aside="He runs the inverse the other way first and catches it himself.">
-  So I have taken the wrong tail, or I have taken both of them. One in a thousand *in one direction* puts the whole thousandth above the cutoff, and the critical value for that is smaller than the two-sided one, which lowers the bar rather than raising it. Same spread. Different question. I have done this once already this week.
+  So I have taken the wrong tail, or I have taken both of them. One in a thousand *in one direction* puts the whole thousandth above the cutoff, and the critical value for that is smaller than the two-sided one. The bar comes down. Same spread. Different question. I have done this once already this week.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <Scene stamp="MET 117/16:20" location="Engineering deck · the endurance card, the slate and a printout from 2176" condensed="With both nulls built, Ferrier raises the one thing that still moves: the baseline. Ebele has never seen the 2176 Asgard report, and it was yours; it put the Lane at half a per cent, against the Board's Mars–Belt 1.1%. He starts to redo the arithmetic and you stop him, because the ship's log already carries it. Which baseline the report adopts is a choice about how the argument will be attacked, and it has to be made before the torch.">
 
-Ferrier comes down the ladder with a printout, which on this ship means something old enough not to exist in the file system Ebele searches.
+Ferrier comes down the ladder with a printout. Paper, on this ship, means something old enough not to be in the file system Ebele searches.
 
 It is a patrol report. *Asgard*, 2176, {fmtInt(ROOK_2176.losses)} losses in {fmtInt(ROOK_2176.transits)} Lane transits, {fmtPct(ROOK_RATE, 2)}, signed by a lieutenant-commander with your name on it, eight years before you had this command or this ship existed.
 
 Ebele reads the signature block twice.
 
-<Dialogue speaker="analyst" aside="He is holding a piece of paper, which he has done perhaps four times in his career, and he handles it like a specimen.">
+<Dialogue speaker="analyst" aside="He is holding a piece of paper. He handles it like a specimen.">
 So the Lane was half a per cent when you flew it, sir. And the Board's rebuttal puts the comparison corridor at {fmtPct(BOARD_RATE, 2)}, and the Lane's own six years in the Ledger at {fmtPct(rateOf(BOARD_TABLE.lane), 2)}. I can work out what {fmtInt(BOARD_TABLE.lane.losses)} in {fmtInt(BOARD_TABLE.lane.transits)} looks like under each of those two rates, it will take me twenty minutes
 </Dialogue>
 
-You stop him, because it is already done and it is already in the ship's log: *Thirty-One in Twenty-Six Hundred*, filed at MET 101, with both baselines in it and the arithmetic attached. Under the Board's {fmtPct(BOARD_RATE, 2)} the Lane's losses are unremarkable. Under the {fmtPct(ROOK_RATE, 2)} from that printout they are five standard deviations out and a tail around one in fifty thousand. Same n, same count, same formulas, two verdicts.
+You stop him. It is already done and already in the ship's log: *Thirty-One in Twenty-Six Hundred*, filed at MET 101, both baselines in it and the arithmetic attached. Under the Board's {fmtPct(BOARD_RATE, 2)} the Lane's losses are unremarkable. Under the {fmtPct(ROOK_RATE, 2)} from that printout they are five standard deviations out and a tail around one in fifty thousand. Same n, same count, same formulas, two verdicts.
 
-An analyst who redoes work the ship has already signed is an analyst who will eventually produce two slightly different versions of the same number in the same report, and a reviewer who finds them will stop reading. Cite the entry. Attach it. Move on.
+Redo work the ship has already signed and you will print two slightly different versions of the same number in one report. A reviewer who finds them stops reading. Cite the entry. Attach it. Move on.
 
-<Dialogue speaker="xo" aside="She has the printout back in her hand and she is not looking at it. She is looking at the endurance card on the bulkhead, which is the only thing on this deck nobody argues with.">
+<Dialogue speaker="xo" aside="She has the printout back in her hand and is not looking at it. She is looking at the endurance card on the bulkhead.">
 Which is the whole trouble with the rate argument and why I have been quiet about it since MET 110. The answer moves when the baseline moves, and the baseline is theirs to choose. They will choose the Mars–Belt corridor, because it is in the rebuttal already, and then we are arguing about which corridor is comparable. A question nobody can settle and everybody can delay.
 </Dialogue>
 
 <Dialogue speaker="xo">
-So the report has to decide what it does with your 2176 figure, and it has to decide today, because at Ceres it will be too late to look disinterested about it.
+So the report has to decide what it does with your 2176 figure, and it has to decide today. At Ceres it will be too late to look disinterested about it.
 </Dialogue>
 
-There are two honest ways to write it and they fail differently. Adopt the Board's own baseline and the rate argument becomes weak but unanswerable, *even on your numbers*, with everything afterwards resting on the composition argument instead. Cite your own 2176 report and the rate argument becomes strong and personal, and the first thing Captain Ostrow will say is that the officer making the accusation is also the source of the baseline that makes it stick.
+There are two honest ways to write it and they fail differently. Adopt the Board's own baseline and the rate argument becomes weak but unanswerable, *even on your numbers*. Everything after it then rests on the composition argument. Cite your own 2176 report and the rate argument becomes strong and personal. The first thing Captain Ostrow will say is that the officer making the accusation is also the source of the baseline that makes it stick.
 
 </Scene>
 
@@ -258,19 +258,19 @@ Two pages, both signed, both timed, and not one observation in either of them. T
 
 What the ship now owns is a description of ordinary. A gap of {fmt(GAP_1_IN_1000, 2)} days between {fmtInt(NINETEEN_N)} hulls and {fmtInt(SURVIVING_PERRINE_N)} is a one-in-a-thousand event when nothing is wrong. Two owner classes of {fmtInt(PERRINE_N)} and {fmtInt(OTHER_N)} land a tenth of a day apart in mean lateness as a matter of routine, and the comparison with nineteen in it is {fmt(WIDTH_RATIO, 1)} times blunter than the comparison with nine hundred. None of it is a test. All of it is the yardstick a test would be read against.
 
-Then you write the sentence, because it is yours to write and because Ebele has been circling it for two days without landing on it.
+Then you write the sentence. It is yours to write, and Ebele has been circling it for two days without landing on it.
 
 *A comparison against a baseline is only as good as the baseline, and the baseline is the Board's to choose. A comparison of one owner's hulls against everyone else's, same corridor, same file, same six years on both sides of the comparison, is not.*
 
 That is why the composition argument is the one going to Ceres. It does not need anybody's permission to pick a corridor, because the corridor is identical on both sides and cancels out of the question entirely. Whatever the Lane's true rate is, whatever the Mars–Belt corridor's is, whoever chooses: the nineteen were flying the same Lane as the eight hundred and eighty-one, in the same years, filed with the same Bureau.
 
 <Dialogue speaker="engineer" aside="She takes the gauge back off the table. The cellar is due a purge in four hours and the torch lights nineteen hours after that.">
-Then I will give you fifteen milligee at 05:43 tomorrow and you can go and argue with people. Skipper. That thing you wrote about the baseline. That is the same as a calibration standard: it does not matter how good your instrument is if the other fellow gets to choose the reference. We fight about references on this deck constantly and nobody has ever written it down that well.
+Then I will give you fifteen milligee at 05:43 tomorrow and you can go and argue with people. Skipper. That thing you wrote about the baseline. That is the same as a calibration standard: it does not matter how good your instrument is if the other fellow gets to choose the reference. We fight about references on this deck constantly.
 </Dialogue>
 
-Ebele goes up the ladder with two signed pages and a 2176 patrol report he is not going to put down. On the deck below, the pumps make their own heat, as they always have, and the endurance card gets another line in the Chief's hand.
+Ebele goes up the ladder with two signed pages and a 2176 patrol report he is not going to put down. On the deck below the pumps make their own heat, and the endurance card gets another line in the Chief's hand.
 
-Nineteen hours to the torch. The ship has a description of noise, signed and timed, and no verdict at all, which is the correct order and has cost two days to do in that order.
+Nineteen hours to the torch. The ship has a description of noise, signed and timed, and no verdict at all. That order cost two days.
 
 </Scene>
 
