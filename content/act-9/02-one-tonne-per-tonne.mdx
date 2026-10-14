@@ -182,7 +182,7 @@ Notice what the interval did and did not do. It settled a claim about a number n
 <Briefing.Caution>
 *$df = n - 2$.* A slope procedure spends two degrees of freedom, one on the intercept and one on the slope. Using $n - 1$ gives a $t^\star$ that is slightly too small and an interval that is slightly too narrow, which is the direction that costs you: the interval will exclude values it should have kept.
 
-*The interval is about the parameter, not about the data.* "The slopes in the data run from {fmt(nineteenLo, 2)} to {fmt(nineteenHi, 2)}" is not what the interval says, and it is not even a sentence about a real quantity, because the data have exactly one fitted slope. The interval is a set of plausible values for the one true slope of the process.
+*The interval is about the parameter, not about the data.* Of the relay net above, "the station slopes in the data run from {fmt(relayInterval.ci[0], 3)} to {fmt(relayInterval.ci[1], 3)}" is not what the interval says, and it is not even a sentence about a real quantity, because those twelve stations have exactly one fitted slope. The interval is a set of plausible values for the one true slope of the process.
 
 *Confidence is a property of the method.* Ninety-five percent of intervals built this way, from samples of this kind, capture the true slope. This particular interval either contains $\beta$ or it does not, and nothing in the arithmetic says which.
 

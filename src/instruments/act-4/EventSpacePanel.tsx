@@ -13,6 +13,9 @@
  * The second mode is the complement tool: over k sweeps at a per-sweep detection probability p, the
  * chance of at least one detection is 1 − (1 − p)^k, computed as `binomial.atLeast(1, k, p)`, against
  * the wrong answer k·p, which leaves the sample space entirely past k = 1/p.
+ *
+ * `eventA`/`eventB` and `perSweepP` are props so a module can open the panel somewhere other than on
+ * a figure one of its own beats asks for; act-4-02 opens both panels off its own answers.
  */
 import { useMemo, useState } from 'react'
 import { line as d3Line, scaleLinear } from 'd3'
@@ -306,7 +309,7 @@ export function EventSpacePanel({
               </Note>
             )}
             <Note>
-              Four outcomes, one sweep, exactly one of them every time. The relative frequencies sum to {fmt(SWEEP_OUTCOMES.reduce((s, o) => s + sweepOutcomeProbs[o], 0), 3)} because they have to. P(a sweep detects anything) = {fmt(P_SWEEP_DETECTS, 4)}, which is the complement of the nothing bar and nothing more.
+              Four outcomes, one sweep, exactly one of them every time. The relative frequencies sum to {fmt(SWEEP_OUTCOMES.reduce((s, o) => s + sweepOutcomeProbs[o], 0), 3)} because they have to. P(a sweep detects anything) is the complement of the nothing bar and nothing more: take that bar off one, or build the event out of the other three and read P(A).
             </Note>
           </>
         ) : (
@@ -315,7 +318,7 @@ export function EventSpacePanel({
               <Slider label="window length" value={k} min={1} max={MAX_SWEEPS} step={1} units="sweeps" onChange={setK} />
               <Slider label="per-sweep detection probability p" value={p} min={0.01} max={0.5} step={0.005} onChange={setP} format={(v) => fmt(v, 3)} />
               <button type="button" className="dr-btn dr-btn--sm" onClick={() => setP(P_SWEEP_DETECTS)}>
-                LOG RATE {fmt(P_SWEEP_DETECTS, 3)}
+                LOG RATE
               </button>
             </div>
 
