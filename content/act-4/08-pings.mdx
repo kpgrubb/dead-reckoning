@@ -94,7 +94,7 @@ export const dayAtLeastTwo = 1 - binomial.cdf(1, dayHours, P_PERRINE_PER_HOUR)
 
 Sixty-two hours on Watch and the cellar reads {fmt(heat.sinkPct, 0)} percent. Sandoval called it within a point and a half. The bay smells of hot plastic. Nobody has said anything unnecessary since the second watch.
 
-Ebele has the window's close-pass list up. It is the same list he had at {metStamp(WINDOW_1.from)}, before the window opened. The Lane plot is public. Every hull that filed a track carrying it inside {fmt(CLOSE_PASS_KM / 1e6, 1)} million kilometres of the holding point over the last {fmt(windowHours, 0)} hours is on it with an owner and an hour against it.
+Ebele has the window's close-pass list up. It is the same list he had at {metStamp(WINDOW_1.from)}, before the window opened. The Lane plot is public. Every hull that filed a track inside {fmt(CLOSE_PASS_KM / 1e6, 1)} million kilometres of the holding point is on it, with an owner and an hour against each one.
 
 <KeyTable
   columns={['hull', 'closest approach', 'owner class', 'range']}
@@ -132,10 +132,10 @@ Four conditions, Ensign. On the sheet, above the number. Fixed count of passes. 
 There is a second count on the same plot, and it is the one you came here for. Perrine hulls arrive at Mark 9 at {fmt(ARRIVALS_PER_DAY.Perrine, 2)} a day, six years of the Ledger behind the figure. Nobody schedules them. They come or they do not, and the window was bought to catch one.
 
 <Dialogue speaker="analyst" aside="Fast again, with the Ledger rate already up.">
-So — {fmt(ARRIVALS_PER_DAY.Perrine, 2)} a day across {fmt(windowHours, 0)} hours is {fmt(perrineExpected.mean, 2)} hulls, sir. Call it one. We got {fmtInt(perrineObserved)}, {fmtInt(perrineOnPassList)} of them close enough for the list. Running ahead of the rate.
+So. {fmt(ARRIVALS_PER_DAY.Perrine, 2)} a day across {fmt(windowHours, 0)} hours is {fmt(perrineExpected.mean, 2)} hulls, sir. Call it one. We got {fmtInt(perrineObserved)}, {fmtInt(perrineOnPassList)} of them close enough for the list. Running ahead of the rate.
 </Dialogue>
 
-Oyelaran does not write it down. The second window's plan is costed against the odds of a Perrine passage, and she will have that number from you, with the average beside it, before the wings go out.
+Oyelaran does not write it down. The second window's plan is costed against the odds of a Perrine passage. She will have that number from you before the wings go out, with the average beside it.
 
 </Scene>
 
@@ -286,7 +286,7 @@ Zero is the same command with a zero: <code>{cmdNearPdfZero}</code>.
 
 <Scene stamp={metStamp(WINDOW_1.to)} location={`Sensor bay · purging, wings out, ${fmt(PURGE_HOURS, 1)} h`} condensed="The window closes with both numbers in the annex: the probability nobody saw her, and the probability there was anything to see. Two Perrine hulls passed on profile and neither turned. The wings go out at 02:00 and Solberg logs that Halden Reach is inside half an AU while the ship is a lamp. Nobody aboard can price that yet.">
 
-The wings go out at {metStamp(WINDOW_1.to).slice(4)} and the cellar starts to empty, and for {fmt(PURGE_HOURS, 1)} hours this ship is the brightest thing inside a quarter of an astronomical unit that is not a star.
+The wings go out at {metStamp(WINDOW_1.to).slice(4)} and the cellar starts to empty. For {fmt(PURGE_HOURS, 1)} hours this ship is the brightest thing inside a quarter of an astronomical unit that is not a star.
 
 Both numbers go in the annex above the pass list, with the four conditions written out beside them. Oyelaran will not sign a probability that arrives without them.
 
@@ -300,7 +300,7 @@ Two Perrine hulls came up the Lane in sixty-two hours and both flew the filed ap
 />
 
 <Dialogue speaker="analyst" aside="He reads the two numbers off the annex before he says anything.">
-So — nothing happened, sir, and we can say how surprised to be. Two hulls, both clean. Expect about one; odds of at least one, about two in three. Two is nothing. I would have called two-out-of-two a pattern three weeks ago.
+So. Nothing happened, sir, and we can say how surprised to be. Two hulls, both clean. Expect about one; odds of at least one, about two in three. Two is nothing. I would have called two-out-of-two a pattern three weeks ago.
 </Dialogue>
 
 <Dialogue speaker="comms" aside="He logs the purge start and the traffic state inside the same minute." lag="lag 21 min 14 s · Valhalla">
