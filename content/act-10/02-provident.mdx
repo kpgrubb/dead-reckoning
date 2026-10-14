@@ -1,0 +1,113 @@
+---
+id: act-10-02
+act: 10
+title: "Provident"
+kind: interlude
+ap_topics: ["4.5"]
+objectives:
+  - "Recognise that P(hypothesis | evidence) and P(evidence | hypothesis) are different quantities, and that only the second is supplied by an intercept"
+  - "See what a base rate does to a posterior, and name it as the quantity a message about the evidence cannot contain"
+prereqs: ["act-10-01"]
+est_minutes: 20
+calc_briefing: null
+summary: "Two sheets on Achterberg's desk: the 2177 intercept PROVIDENT was built on, and a drive signature from the Phobos yards. She asks what the second one means, and then asks the question in the other order."
+---
+
+import { fmt, fmtPct } from '@/lib/stats'
+import {
+  BASE_RATE_ASSUMED,
+  BASE_RATE_MEASURED,
+  FREQUENCY_BASE,
+  INTERCEPT_2177,
+  INTERCEPT_YEAR,
+  PHOBOS_SIGNATURE_YEAR,
+  POSTERIOR_ASSUMED,
+  POSTERIOR_MEASURED,
+  P_SIGNATURE_GIVEN_BENIGN,
+  P_SIGNATURE_GIVEN_HOSTILE,
+  frequencyBox,
+} from '@/instruments/act-10/data'
+import { PosteriorExplorer } from '@/instruments/act-10/PosteriorExplorer'
+
+export const posteriorGap = POSTERIOR_ASSUMED.posterior - POSTERIOR_MEASURED.posterior
+export const box = frequencyBox(BASE_RATE_MEASURED)
+
+<Scene stamp="MET 335/08:20" location="Service Inspectorate, the Inspector-General's office · Valhalla, Callisto" condensed={`Eight days after the promotion. Achterberg's office is one room with a desk, two chairs and a wall of files, and she has put two sheets on the desk facing Rook. The first is the ${INTERCEPT_YEAR} Directorate staff assessment, seven years old, the whole of the case for PROVIDENT. The second arrived that week from the Phobos yards: a drive signature that could be a heavy hull working up. She asks what it means, takes the answer, and then asks two more questions in an order nobody has put to him in thirty-four years.`}>
+
+Eight days with four rings on the cuff and you still put the jacket on the wrong way round in the dark, because the fourth ring catches on the hook.
+
+Achterberg's office is one room. A desk, two chairs, a wall of drawers with paper in them, and a window, which after thirteen days in room four is the thing you notice. It looks east over the basin at the Adlinda lights and, in the middle distance, a crane rig with a hull under it that has your ship's frame spacing.
+
+She does not offer coffee and there is nowhere to put a cup.
+
+<Dialogue speaker="achterberg" aside="She takes two sheets out of the top drawer and puts them on the desk facing you, side by side, and squares the edges.">
+Captain. Neither of these is a document of the Inspectorate and you are not being asked about either on any record. Read the left one first.
+</Dialogue>
+
+The left sheet is old flimsy, gone yellow at the fold, with a classification stamp discontinued in 2179. It is nine lines long and you have seen it quoted three times in the last fortnight, always in someone else's brief.
+
+*{INTERCEPT_2177}*
+
+That is the whole of it. A Directorate staff officer's assessment, {PHOBOS_SIGNATURE_YEAR - INTERCEPT_YEAR} years ago, of what the Compact could and could not defend. Nineteen hulls taken off the Lane, twenty-three people dead in four more, eighty-seven in a depot for six years, nineteen families who buried nobody: all of it downstream of nine lines of another service's staff work, read once by a man who taught you gunnery.
+
+The right sheet is four days old. A Compact commercial attaché on Mars, reporting a drive signature logged at the Phobos yards: a pulse structure and a plume power that the attaché's analyst says is consistent with a heavy hull working up its drive.
+
+<Dialogue speaker="achterberg">
+What does the right one mean.
+</Dialogue>
+
+You give her what the report gives. The signature is a good one. If a heavy hull were working up at Phobos it would produce this trace about nine times in ten, and there are perhaps half a dozen other things in a yard that can produce it, at something like one in twenty.
+
+She writes {fmt(P_SIGNATURE_GIVEN_HOSTILE, 2)} on the corner of the right sheet and {fmt(P_SIGNATURE_GIVEN_BENIGN, 2)} under it.
+
+<Dialogue speaker="achterberg" aside="She turns the pen round and holds it out, handle first, and does not put it down until you take it.">
+That is P of the signature given a hostile working up. I asked what the signature means. Write me P of a hostile working up given the signature.
+</Dialogue>
+
+You have the pen and there is nowhere on the sheet to start, because the two numbers she has written are not enough and you know within about two seconds which one is missing.
+
+<Dialogue speaker="achterberg">
+How often has a heavy hull worked up at Phobos in the last ten years. Per yard-month. That number is not in either sheet, it is not in the attaché's report, and it is not in anything the Directorate has ever sent us. It is in the Ceres Mercantile's berth returns, which are public, and it took my clerk a morning.
+</Dialogue>
+
+Thirty-four years. Four postings, two commands, a staff course, thirteen days on a hard chair under a cold air return. Nobody has ever put those two questions to you in that order.
+
+<Dialogue speaker="achterberg" aside="She takes the left sheet back and holds it up, and the light from the window comes through the flimsy.">
+Neither had he.
+</Dialogue>
+
+</Scene>
+
+<PosteriorExplorer />
+
+<Scene stamp="MET 335/09:05" location="Service Inspectorate, the Inspector-General's office · Valhalla, Callisto" condensed={`The clerk's number is ${fmt(BASE_RATE_MEASURED, 3)} per yard-month. The same signature reads ${fmtPct(POSTERIOR_MEASURED.posterior, 0)} against that base rate and ${fmtPct(POSTERIOR_ASSUMED.posterior, 0)} against the ${fmt(BASE_RATE_ASSUMED, 2)} PROVIDENT never wrote down. Achterberg puts the Phobos sheet in a drawer, says the Assembly will want an answer inside the year, and asks Rook to come back on Thursday with what a ship would have to do to find the number rather than assume it.`}>
+
+The clerk's number is {fmt(BASE_RATE_MEASURED, 3)}. Two yard-months in a hundred, over ten years of Phobos berth returns, with the working shown on a second sheet in a hand that slopes backwards.
+
+Run it through and the signature that reads nine in ten from one end reads {fmtPct(POSTERIOR_MEASURED.posterior, 0)} from the other. Out of {fmt(FREQUENCY_BASE, 0)} yard-months, {fmt(box.hostileWithSignature, 0)} are a heavy hull working up and showing this trace, and {fmt(box.benignWithSignature, 0)} are something else in a yard that happens to look like it. The numerator is the smaller pile.
+
+Put {fmt(BASE_RATE_ASSUMED, 2)} in instead, which is roughly what a man has to believe about Mars before the rest of PROVIDENT follows, and the same trace reads {fmtPct(POSTERIOR_ASSUMED.posterior, 0)}. Same signature, same nine in ten, and a gap of {fmtPct(posteriorGap, 0)} between the two readings that comes entirely from a quantity the message does not contain.
+
+<Dialogue speaker="achterberg" aside="She puts the Phobos sheet in the second drawer and the intercept back in the top one, in different drawers.">
+The Naval Committee will want an answer on Phobos inside the year, and the answer they are going to get from Lane Operations is nine in ten. I am not going to be able to stop that with a berth return.
+</Dialogue>
+
+She sits down, which she has not done, and turns a page of the desk diary.
+
+<Dialogue speaker="achterberg">
+Thursday. Bring me what a ship would have to do to measure that base rate instead of assuming it. Not a paper. A ship, a track and a number of months.
+</Dialogue>
+
+Outside the window the crane rig has the second hull of your class in it, frames open, no plating aft of forty. Her sink vault is in and the plate on it is the one Sandoval wanted in writing.
+
+You have a pen in your hand and you have not given it back.
+
+</Scene>
+
+<LogEntry
+  title="P(H | E) is not P(E | H), and the base rate is the difference"
+  concept="A piece of evidence tells you how likely the evidence is under each hypothesis, and that is a different quantity from how likely each hypothesis is now that you have the evidence. Turning the conditional round needs a third number that the evidence itself never contains: the base rate at which the hypothesis was true before you saw anything. The posterior is one joint over the total of the joints, so the same evidence read against a small base rate and a large one gives two answers that are not near each other, and which of them you get is decided by the number nobody in the room has written down."
+  formula="P(H \mid E) = \frac{P(H)\,P(E \mid H)}{P(H)\,P(E \mid H) + P(\text{not }H)\,P(E \mid \text{not }H)}"
+  mistake="Base-rate neglect: reading a high P(evidence | hypothesis) as a high P(hypothesis | evidence). A test or an intercept that fires nine times in ten under a rare hypothesis will still fire mostly on the common one, because there is so much more of it."
+  tags={['conditional probability', 'reversing a conditional', 'base rate', 'posterior', 'prior', 'tree diagram', '4.5']}
+/>
