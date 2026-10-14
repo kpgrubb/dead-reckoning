@@ -46,7 +46,7 @@ export const asgardNrBias = asgardSilentShare * (asgardDefectResponder - asgardD
 
 <Scene stamp="MET 59/03:18" location="Comms station · braking at 4 mgee · 2.05 AU from Callisto" condensed="Two days into the contact schedule, the Authority's traffic feed reports MV Harpagia Sulcus, the hot contact the Eyes flagged on the outbound sweep, transponder-degraded at Mark 9.3. Uruk classifies her unknown, presumed lost four hours later. Ebele notices, without being asked, which office wrote the classification.">
 
-The feed comes in at three in the morning because the Lane does not keep watches, and Solberg wakes you for it because you told him to wake you for that hull. You take it in the passage outside your cabin with one boot on. Four milligee is enough weight to stand in and not enough to make anything fall properly, so the other boot goes end over end down the passage while Solberg reads.
+The feed comes in at three in the morning. The Lane does not keep watches. Solberg wakes you for it, and you take it in the passage outside your cabin with one boot on. Four milligee is not enough weight to make anything fall properly, and the other boot goes end over end down the deck while he reads.
 
 <Dialogue speaker="comms" aside="He reads the Authority's traffic bulletin without editing it." lag="lag 15 min 52 s · Authority relay">
 Lane Authority traffic feed, timestamped MET 59 slash 02 colon 51, received 15 minutes 52 seconds later. Reads, verbatim: MV {HARPAGIA}, Perrine registry, transponder output degraded below carrier threshold at Mark 9.3. Last clean check-in Mark 9.1. Traffic in the vicinity advised. End of bulletin. Sir, that is the hull the Lieutenant flagged on the outbound sweep.
@@ -56,7 +56,7 @@ Lane Authority traffic feed, timestamped MET 59 slash 02 colon 51, received 15 m
 
 At MET 59/06:51 Uruk High classifies her. Four hours, to the minute, from the first degraded frame, and the entry is two words long: *unknown, presumed lost*.
 
-Ebele is at the terminal in a jacket over nothing, reading the classification. He does not say the thing everybody is thinking.
+Ebele is at the terminal in a jacket over nothing, reading the classification.
 
 "So it's Uruk again, sir. Not Ceres. I'm not saying that means anything yet. I'm saying I've started counting which office writes which word, and I'd rather have started counting before I had a reason to."
 
@@ -68,11 +68,11 @@ Ferrier, who has been up since the bulletin and has not sat down: "Then count. D
 
 Nine days. One master at a time. Solberg raises a hull, waits, reads the return questions in order, waits, writes down the answer in the master's own words, and logs the window closed. Twenty-five seconds out, twenty-five seconds back, all day. By the second day you have stopped hearing the gap as delay.
 
-You sit most of it out in the spare seat at the comms station. It has no arms and it is bolted a hand's width too far from the console, so you read Solberg's screen leaning forward on your elbows, and by the fourth day your back has an opinion about it.
+You sit most of it out in the spare seat at the comms station. It has no arms and it is bolted a hand's width too far from the console, so you read Solberg's screen leaning forward on your elbows. By the fourth day your lower back aches from first watch to last.
 
-They talk. That is the first surprise, if you have spent your service reading the Authority's opinion returns. Working masters on a corridor where hulls have been disappearing will give a Compact officer nine minutes and their own coffee if the officer asks a question worth answering. Under our own design we raised <SurveyFigure of="n" words /> masters, and <SurveyFigure of="responders" words /> of them gave a usable return.
+They talk. That is the first surprise, if you have spent your service reading the Authority's opinion returns. Hulls have been disappearing off this corridor. Ask a working master a question worth answering and he gives you nine minutes and his own coffee. Under our own design we raised <SurveyFigure of="n" words /> masters, and <SurveyFigure of="responders" words /> of them gave a usable return.
 
-And <SurveyFigure of="turningLate" words /> of them raise the same thing unprompted, in the space after the last item, when Solberg says *anything else, Master* because Ferrier wrote that line into the script.
+And <SurveyFigure of="turningLate" words /> of them raise the same thing unprompted, in the space after the last item. Solberg says *anything else, Master*, because Ferrier wrote that line into the script.
 
 Sulcus hulls, on the Ceres approach, turning late.
 
@@ -89,7 +89,7 @@ You tell her you are collecting it properly this time, with the method written d
 The Sulcus masters are the other thing in the file. Solberg raised <SurveyFigure of="sulcusContacted" words /> of them. <SurveyFigure of="sulcusAnswered" words /> came back, confirmed the hull and declined the return: *no comment, Lieutenant, with respect*. The rest never came up on the beam at all, through a full window, with the acquisition good.
 
 <Dialogue speaker="analyst" aside="He has the return file open with the Perrine rows greyed out, and his hand is on the key that would drop them.">
-So they're not data, sir. That's my argument and I'll make it once. A row with nothing in it isn't a measurement. If I drop the Perrine masters out of the file and say in the method that the survey covers Mercantile and independent masters, every number in the report is clean and every denominator is a count of actual answers.
+So they're not data, sir. That's my argument and I'll make it once. A row with nothing in it isn't a measurement. Drop the Perrine masters out of the file, say in the method that the survey covers Mercantile and independent masters, and every number in the report is clean. Every denominator is a count of actual answers.
 </Dialogue>
 
 You do not let him drop them. The silence gets a row of its own in the results, with a count and a rate against it, and it does not go in a footnote.
@@ -98,7 +98,7 @@ You do not let him drop them. The silence gets a row of its own in the results, 
 A master who will not talk to a Compact warship is a fact about the Lane, Ensign, and we obtained it by a method. Then say which masters your number is about, and put the ones who did not answer on the same page. Not in an appendix. The same page as the estimate.
 </Dialogue>
 
-Which leaves the thing you have been circling since MET 54. There is a number in this survey that no method available to this ship can reach, and Ferrier has known it all week and has been waiting for somebody else to say it out loud.
+Which leaves the thing nobody has said out loud since MET 54. There is a number in this survey that no method available to this ship can reach.
 
 </Scene>
 
@@ -124,7 +124,7 @@ Random selection is a cure for exactly one disease. It makes the selection unbia
 
 Take a frame of $N$ units. Some of them would answer the survey if the design reached them and some would not, and that split is fixed before anybody draws anything. So the frame carries two proportions, not one. Write $p$ for the proportion of all $N$ units with the characteristic, and $p_R$ for the proportion among the $N_R$ units that would answer. A probability design selects at random from the frame, but only the responders come back, so what returns is a random sample **of the responders**. It estimates $p_R$ without bias, at a precision you can compute and report. It estimates $p$ with a bias you can neither compute nor report.
 
-Two things set the size of that bias, and $n$ is not one of them: how large the silent part of the frame is, and how far it differs. If the units that do not answer hold the same view as the ones that do, the two parameters coincide and the distinction costs nothing. If the reason for the silence is related to the answer, the gap is real, it is the same size at every sample size, and the returned data cannot reveal it, because the quantity it depends on is the one nobody collected. A high response rate caps the damage. A low one leaves the estimate free to sit almost anywhere.
+Two things set the size of that bias, and $n$ is not one of them: how large the silent part of the frame is, and how far it differs. If the units that do not answer hold the same view as the ones that do, the two parameters coincide and the distinction costs nothing. If the reason for the silence is related to the answer, the gap is real and it is the same size at every sample size. The returned data cannot reveal it, because the quantity it depends on is the one nobody collected. A high response rate caps the damage. A low one leaves the estimate free to sit almost anywhere.
 
 A survey in that position is still worth running. It reports both halves: the estimate, named as an estimate of $p_R$ with the responding units identified, and the nonresponse rate printed beside it. Both numbers are findings. The claim about $p$ is what the report declines to make.
 </Briefing.Intuition>
@@ -200,7 +200,7 @@ That number is the whole lesson, so read it twice. The estimate {fmt(asgardDefec
 <SurveyBeat kind="belief" id="act-3-03-belief">
   <Success>
   <Dialogue speaker="analyst" aside="He puts it on the plot under the Authority's figure, with both methods printed underneath both numbers.">
-  So that is what a properly drawn sample says about independent masters, sir. Nothing like the Authority's number. Same corridor, same season, same masters available to both of us. Everything between the two numbers is in how each of us asked.
+  So that is what a properly drawn sample says about independent masters, sir. Nothing like the Authority's number. Same corridor, same season, and both of us could have reached the same masters. Everything between the two numbers is in how each of us asked.
   </Dialogue>
   </Success>
   <Failure>
@@ -235,7 +235,7 @@ And the sentence, the one Ebele argued against for a day and then wrote better t
 
 *No survey conducted from this vessel estimates the belief of all {fmtInt(FRAME_N)} masters on the schedule. {fmtInt(willNotAnswer)} of them will not answer a Compact warship, and their silence is not random with respect to what they know. What the design estimates without bias is belief among the {fmtInt(responders.length)} masters who will answer, reported here beside the rate at which the remainder did not.*
 
-Afterwards he stays at the plot with the owner classes laid out in a column and works the frame's own arithmetic through for himself. If every master on the schedule answered honestly, belief in piracy across the frame would stand at {fmtPct(FRAME_BELIEF, 1)}: {fmtPct(BELIEF_BY_OWNER.Perrine, 0)} of the {fmtInt(FRAME_MIX.Perrine)} Perrine masters, {fmtPct(BELIEF_BY_OWNER.Mercantile, 0)} of the Mercantile, {fmtPct(BELIEF_BY_OWNER.independent, 0)} of the independents. Among the masters who *will* answer it is {fmtPct(responderTruth, 1)}. He puts the difference in a box of its own on the plot, {fmt(frameGap, 3)}, and then writes the box into the report's figure list, where it will have to be captioned and signed for.
+Afterwards he stays at the plot with the owner classes laid out in a column and works the frame's own arithmetic through for himself. If every master on the schedule answered honestly, belief in piracy across the frame would stand at {fmtPct(FRAME_BELIEF, 1)}: {fmtPct(BELIEF_BY_OWNER.Perrine, 0)} of the {fmtInt(FRAME_MIX.Perrine)} Perrine masters, {fmtPct(BELIEF_BY_OWNER.Mercantile, 0)} of the Mercantile, {fmtPct(BELIEF_BY_OWNER.independent, 0)} of the independents. Among the masters who *will* answer it is {fmtPct(responderTruth, 1)}. He puts the difference in a box of its own on the plot, {fmt(frameGap, 3)}. Then he writes the box into the report's figure list, where it will have to be captioned and signed for.
 
 <Dialogue speaker="analyst" aside="The box is on the plot behind him and he has taken his hands off the console.">
 That one does not move, sir. Not for more link time. Not for a better ship than this one.
@@ -249,7 +249,7 @@ Then we do not claim it. We have two things nobody had on Tuesday. A corridor fi
 Independent masters in a probability sample report observing Perrine-registry hulls diverging late from profile on the Ceres approach. Perrine masters declined the return at the rate recorded above. The two observations are consistent with several explanations and this vessel is not in a position to choose between them.
 </Dialogue>
 
-What the hulls are doing when they turn, and where they are when they stop, will not be produced by asking anybody on the Lane. The next attachment in the file is the Board's escort trial. Ferrier has it open on her slate and has not turned the page off the roster.
+Nobody on the Lane can tell you what the hulls do when they turn, or where they are when they stop. The next attachment in the file is the Board's escort trial. Ferrier has it open on her slate and has not turned the page off the roster.
 
 </Scene>
 

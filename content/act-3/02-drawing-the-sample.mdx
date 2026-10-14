@@ -11,7 +11,7 @@ objectives:
 prereqs: ["act-3-01"]
 est_minutes: 30
 calc_briefing: null
-summary: "Two hundred and sixty masters, one comms officer and twenty-nine days. Every design on the table is honest; they are not the same price and they do not buy the same thing."
+summary: "Two hundred and sixty masters, one comms officer, twenty-six days. Every design on the table is honest. They are not the same price and they do not buy the same thing."
 ---
 
 import { fmt, fmtInt, fmtPct } from '@/lib/stats'
@@ -46,7 +46,7 @@ The schedule comes down the relay at 0530 and Ebele has it on the plot before yo
 
 "So this is the frame, sir," he says. "Everyone on it can be raised. Nobody who isn't on it can."
 
-Solberg has the lag on the board, fifteen minutes twenty seconds to Callisto each way, and the tight-beam windows shaded in under the schedule, one narrow band per hull.
+Solberg has the lag on the board: fifteen minutes twenty seconds to Callisto each way. The tight-beam windows are shaded in under the schedule, one narrow band per hull.
 
 You clear the second panel and set the three contact schedules on it side by side, hours in the last column.
 
@@ -62,16 +62,16 @@ Ferrier has the convoy manifest and has not looked at the panel once. "Price the
 
 "Not in hours."
 
-"It's—" He stops. Starts again somewhere else. "They sail together. Same weeks, same marks, past the same things. So {fmtInt(clusterN)} masters out of {fmtInt(CLUSTER_K)} convoys is not the same as—" He looks at the plot instead of at her. "I would want to run it before I put a figure on it, sir."
+"It's—" He stops. Starts again somewhere else. "They sail together. Same weeks, same marks. So {fmtInt(clusterN)} masters out of {fmtInt(CLUSTER_K)} convoys is not the same as—" He looks at the plot instead of at her. "I would want to run it before I put a figure on it, sir."
 
-"Then run it," Ferrier says. "Have the figure before the Captain buys the schedule, not after."
+"Then run it," Ferrier says. "Have the figure before the Captain buys the schedule."
 
-He has run all three a thousand times each against a fleet whose answer he already knows, and the three stacks of estimates are sitting on the terminal. Ferrier goes back to the manifest. Solberg waits with his hand on the schedule for a name to write at the top of it.
+He has run all three a thousand times each against a fleet whose answer he already knows. The three stacks of estimates are on the terminal. Ferrier goes back to the manifest. Solberg waits with his hand on the schedule for a name to write at the top of it.
 
 </Scene>
 
 <Dialogue speaker="comms" aside="He has the schedule open hull by hull, window by window, with the ones that close first shaded darker.">
-Sir, for the record: I do not care which design. I care how many acquisitions. A contact is {fmtInt(COST.contactMin)} minutes plus or minus {fmtInt(COST.contactSd)}, and that is one master, once. A convoy is {fmtInt(COST.contactMin)} minutes for the first hull and about {fmtInt(COST.followupMin)} for each hull after it, because the beam is already pointed and the master is already listening. I will build whichever schedule you name by the end of this watch. I cannot build one that raises a master who has already gone past.
+Sir, for the record: I do not care which design. I care how many acquisitions. A contact is {fmtInt(COST.contactMin)} minutes plus or minus {fmtInt(COST.contactSd)}, and that is one master, once. A convoy is {fmtInt(COST.contactMin)} minutes for the first hull and about {fmtInt(COST.followupMin)} for each hull after it, because the beam is already pointed. I will build whichever schedule you name by the end of this watch. I cannot build one that raises a master who has already gone past.
 </Dialogue>
 
 <Briefing title="Four ways to draw a list, and what each one buys" topics={["3.3"]}>
@@ -82,7 +82,7 @@ Every design here is a **probability sample**: each unit's chance of selection i
 
 **Stratified.** Split the frame into **strata**, groups you expect to be *internally alike and different from each other*, then draw an independent random sample inside every stratum. You are guaranteed every stratum's share. Because the between-stratum differences are removed from the sampling error, the estimate is **tighter** than an SRS of the same size, and the more the strata differ, the more you gain.
 
-**Cluster.** Split the frame into **clusters**, groups each of which should be a *small copy of the whole*, internally varied, then draw whole clusters at random and take every unit in them. It is cheap when units cluster physically. It is **wider** than an SRS of the same size whenever members of a cluster resemble each other, because then each cluster is closer to one observation than to seven.
+**Cluster.** Split the frame into **clusters**. Each cluster should be a *small copy of the whole*, internally varied. Then draw whole clusters at random and take every unit in them. It is cheap when units cluster physically. It is **wider** than an SRS of the same size whenever members of a cluster resemble each other, because then each cluster is closer to one observation than to seven.
 
 The two look identical on a diagram and are opposites in intent:
 
@@ -156,7 +156,7 @@ Draw an **SRS of {fmtInt(yard.sample)}**. Every fitting has the same chance, {fm
   </Outcome>
   <Outcome option={1}>
   <Dialogue speaker="analyst" aside="He splits the schedule into three lists before he draws anything, and draws three times.">
-  Three strata, {fmtInt(STRATUM_N)} from each, drawn independently. {fmtInt(stratifiedN)} masters. It costs us five more contacts than the simple random sample and it buys a thing the simple random sample cannot promise: {fmtInt(STRATUM_N)} Perrine masters on the list before we start, whatever the digits do. And when I report the Lane figure I have to weight the three classes back to {fmtInt(FRAME_MIX.Perrine)}, {fmtInt(FRAME_MIX.Mercantile)}, {fmtInt(FRAME_MIX.independent)}, or it isn't a Lane figure.
+  Three strata, {fmtInt(STRATUM_N)} from each, drawn independently. {fmtInt(stratifiedN)} masters. It costs {fmtInt(stratifiedN - SRS_N)} more contacts than the simple random sample. It buys a thing the simple random sample cannot promise: {fmtInt(STRATUM_N)} Perrine masters on the list before we start, whatever the digits do. And when I report the Lane figure I have to weight the three classes back to {fmtInt(FRAME_MIX.Perrine)}, {fmtInt(FRAME_MIX.Mercantile)}, {fmtInt(FRAME_MIX.independent)}, or it isn't a Lane figure.
   </Dialogue>
   <Dialogue speaker="comms">
   {fmtInt(stratifiedN)} acquisitions. {fmt(stratHours, 1)} hours. That is the most expensive schedule on the board, sir, and it is the one I can build tightest, because I know the class of every master before I plan the window.
@@ -164,7 +164,7 @@ Draw an **SRS of {fmtInt(yard.sample)}**. Every fitting has the same chance, {fm
   </Outcome>
   <Outcome option={2}>
   <Dialogue speaker="analyst" aside="He draws six convoy numbers, reads them back, and starts counting hulls.">
-  {fmtInt(CLUSTER_K)} convoys out of {fmtInt(CONVOYS.length)}, every master in them. About {fmtInt(clusterN)} masters for {fmt(clusterHours, 1)} hours. Most masters, least time. I'll say the rest of it now so that I have said it: the masters inside a convoy have seen the same Lane, so this sample will be wider than its size suggests, and when we put an interval on anything I will have to explain why it is not the interval a sample of {fmtInt(clusterN)} would give.
+  {fmtInt(CLUSTER_K)} convoys out of {fmtInt(CONVOYS.length)}, every master in them. About {fmtInt(clusterN)} masters for {fmt(clusterHours, 1)} hours. Most masters, least time. I'll say the rest of it now so that I have said it. The masters inside a convoy have seen the same Lane. So this sample will be wider than its size suggests, and every interval I put on it will need a line explaining why it is not the interval a sample of {fmtInt(clusterN)} would give.
   </Dialogue>
   <Dialogue speaker="comms">
   {fmtInt(CLUSTER_K)} acquisitions and the rest are follow-ons on a beam already pointed. {fmt(clusterHours, 1)} hours, sir. Less than half of any other schedule on this board. I will note that the whole survey then rests on {fmtInt(CLUSTER_K)} pointings, and if two of them fail we have lost a third of it.
@@ -178,7 +178,7 @@ Draw an **SRS of {fmtInt(yard.sample)}**. Every fitting has the same chance, {fm
   {...designJustificationRubric()}>
   <Success>
   <Dialogue speaker="xo" aside="She reads it, marks nothing, and puts it at the front of the method section.">
-  Good. That paragraph is worth more than the estimate, because in six weeks the estimate will be argued about and this will be the only part of the file nobody can move.
+  Good. That paragraph is worth more than the estimate. In six weeks the estimate will be argued about and this paragraph will not.
   </Dialogue>
   </Success>
   <Failure>
@@ -193,7 +193,7 @@ Draw an **SRS of {fmtInt(yard.sample)}**. Every fitting has the same chance, {fm
   options={[SULCUS_OPTIONS.include, SULCUS_OPTIONS.exclude]}>
   <Outcome option={0}>
   <Dialogue speaker="xo" aside="She has argued the other side already this morning, out loud, and lost to herself.">
-  Then the silence goes in the file as a number, with the count contacted beside it. A master who does not answer still writes a row, Ensign. It says *did not answer*, it carries a timestamp, and it is evidence about the design and possibly about the master.
+  Then the silence goes in the file as a number, with the count contacted beside it. A master who does not answer still writes a row, Ensign. It says *did not answer*. It carries a timestamp. It is evidence about the design, and possibly about the master.
   </Dialogue>
   <Dialogue speaker="comms">
   Understood, sir. Every Perrine master in the draw gets a raise, a repeat and a logged non-answer with the timestamp. It will cost the same {fmtInt(COST.contactMin)} minutes as a master who talks for an hour.
@@ -227,7 +227,7 @@ Ebele's digits are logged, the seed is in the file, and the draw is a column of 
 
 <Decided id={DECISION_IDS.design} is="stratified">
 
-Ebele's three draws are logged separately, three seeds, three lists, and he has written the reweighting into the method section before a single master has been raised, because he will not remember why the three lists were not one list in five weeks' time.
+Ebele's three draws are logged separately. Three seeds, three lists. He has written the reweighting into the method section before a single master has been raised, because in five weeks he will not remember why the three lists were not one list.
 
 </Decided>
 
