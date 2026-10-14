@@ -48,11 +48,9 @@ export const nineteenHulls = nineteen.map((c) => c.hull)
 
 <Scene stamp="MET 204/07:20" location="Intel terminal · five milligee for Ceres, both wings out" condensed="Six days of open radiators and the ship is warm for the first time since Callisto. Ebele has been at the terminal since the middle watch with Brandt's nine hundred fuel certifications and has fitted a line through the nineteen diverted departures. Solberg has costed the relay net's whole accelerate-phase archive at two days of link time, and the request is on Rook's slate unsigned. Rook will not read Ebele's number until somebody can tell him how far that number would have moved on a different nineteen.">
 
-Six days with the wings out and the ship smells of itself again. Hot polymer off the returns. Coffee somebody left on a plate in the passage. The dry burnt smell the intel terminal's fan puts out when it has been running a week without a filter change.
+Six days with the wings out and the ship smells of itself again. Hot polymer off the returns. Coffee somebody left on a plate in the passage.
 
-At five milligee a dropped stylus takes a slow count of four to reach the deck. Yours gets away from you twice while you are working your way into the second seat, and the second time you leave it.
-
-Ferrante catches you on the ladder coming down and stands a rung below so that he is speaking up at you.
+Ferrante catches you on the ladder down to intel and stands a rung below, speaking up at you.
 
 <Dialogue speaker="medic" aside="He has the slate against his chest and does not open it.">
 Twenty-six hours for the Ensign. He goes to his rack and lies in it with the work. Resting pulse up eleven on his own baseline, and he has stopped eating in the mess because it costs him the walk. I have logged it. Yours is up nine and I have logged that too, and one of you is my patient.
@@ -60,9 +58,11 @@ Twenty-six hours for the Ensign. He goes to his rack and lies in it with the wor
 
 He goes aft. You go down.
 
-Brandt's file has been open on the terminal since MET 196. {fmtInt(PERRINE_DEPARTURES_N)} Bureau fuel certifications, every Perrine departure out of Uruk High in six years, the loading officer's measured tonnage against the certified requirement, departure by departure. The examiner column says what the Bureau's own sample of departures already said: Dacre signed {fmtInt(DACRE_SIGNED_900)} of the {fmtInt(PERRINE_DEPARTURES_N)}, and {fmtInt(DACRE_DIVERTED_900)} of those {fmtInt(DACRE_SIGNED_900)} are among the nineteen.
+At five milligee a dropped stylus takes a slow count of four to reach the deck. Yours gets away from you twice while you work your way into the second seat. The second time you leave it. The terminal's fan has run a week without a filter change and the air behind it is dry and burnt.
 
-Ebele has the nineteen on one axis against the other and a line through them, and a figure written on the ledge beside the screen in his own hand.
+Brandt's file has been open since MET 196. {fmtInt(PERRINE_DEPARTURES_N)} Bureau fuel certifications: every Perrine departure out of Uruk High in six years, the loading officer's measured tonnage against the certified requirement. The examiner column says what the Bureau's own sample already said. Dacre signed {fmtInt(DACRE_SIGNED_900)} of the {fmtInt(PERRINE_DEPARTURES_N)}. {fmtInt(DACRE_DIVERTED_900)} of those {fmtInt(DACRE_SIGNED_900)} are among the nineteen.
+
+Ebele has the nineteen plotted with a line through them. There is a figure written on the ledge beside the screen in his own hand.
 
 <Dialogue speaker="analyst" aside="Fast, and he has been holding it since about 04:00.">
 It's above one, sir. Well above one. Every tonne the profile required, they loaded more than a tonne, and it holds across all nineteen. I can put the fit on your slate in—
@@ -72,7 +72,7 @@ You put your hand flat over the figure on the ledge.
 
 He stops.
 
-Solberg's request is on your slate underneath the acceptance form for the mast patch. The relay net keeps every state vector the Lane ever logged, six weeks of them per transit, and pulling the accelerate phase for nineteen hulls costs two days of link time out of thirty remaining before Ceres closes the geometry. You have not signed it. You are not going to sign it for a number you cannot put a standard under.
+Solberg's request is on your slate underneath the acceptance form for the mast patch. The relay net keeps every state vector the Lane ever logged, six weeks of them per transit. Pulling the accelerate phase for nineteen hulls costs two days of link time, and there are thirty days left before Ceres closes the geometry. You have not signed it. You are not going to sign it for a number you cannot put a standard under.
 
 Ferrier is at the back of the terminal with her cap still on. You did not hear her come down the ladder.
 
@@ -90,7 +90,7 @@ Off one by how many of what.
 
 The fan cycles up and stays up. Ebele turns the screen a few degrees towards you and then turns it back.
 
-Nineteen points and a line through them. The number at the end of that line has no spread attached to it, and nobody aboard has ever drawn one and then asked how far it would have moved on nineteen other hulls.
+Nineteen points and a line through them. The number at the end of that line has no spread attached to it. Nobody aboard has ever drawn a line and then asked how far it would have moved on nineteen other hulls.
 
 </Scene>
 
@@ -219,7 +219,7 @@ The Chief's shakedown record for the skin loop. {fmtInt(loopN)} runs at differen
   hint="Not the mean of the stack, which is the true slope recovered. The spread of the stack. The simulator prints both.">
   <Success>
   <Dialogue speaker="analyst" aside="He writes it on the ledge above his own figure and draws a box round it.">
-  So the honest ones come out at {fmt(HONEST_SLOPE_MEAN, 3)} on average, sir, which is one, and they wander off it by about that much. Nineteen honest hulls can hand you a slope that misses by two or three of those and nobody has done anything wrong. That's just nineteen.
+  So the honest ones average {fmt(HONEST_SLOPE_MEAN, 3)}, sir. That's one. And they wander off it by about that much. Nineteen honest hulls can hand you a slope that misses by two or three of those with nobody doing anything wrong. That's just nineteen.
   </Dialogue>
   </Success>
   <Failure>
@@ -234,10 +234,10 @@ The Chief's shakedown record for the skin loop. {fmtInt(loopN)} runs at differen
   hint="Two rows: the constant and the explanatory variable. A slope procedure is about the second one. SE Coef is the third column.">
   <Success>
   <Dialogue speaker="analyst">
-  That's {fmt(SE_RATIO, 1)} times the honest spread, sir. Same number of hulls, same two columns, same arithmetic, and their fit is that much looser about its own line.
+  That's {fmt(SE_RATIO, 1)} times the honest spread, sir. Same number of hulls, same two columns, and their fit is that much looser about its own line.
   </Dialogue>
   <Dialogue speaker="engineer" aside="She has come up for the acceptance form and reads the screen over the back of the chair without being invited to.">
-  Because the hulls aren't the same weight as each other and whatever they're carrying isn't either. Spread in the cargo, spread in the residual. That's not a fault in your line, Ensign. That's the cargo talking through it.
+  Because the hulls aren't the same weight as each other and whatever they're carrying isn't either. Spread in the cargo, spread in the residual. That's the cargo talking through your line, Ensign.
   </Dialogue>
   </Success>
   <Failure>
@@ -265,7 +265,7 @@ The Chief's shakedown record for the skin loop. {fmtInt(loopN)} runs at differen
   hint="Take them one at a time and name the graph that settles each. Two of these options are checked on the wrong graph entirely.">
   <Success>
   <Dialogue speaker="xo" aside="She writes the fourth condition out on the margin of the printout and underlines the word spread.">
-  Then it goes in the brief with that sentence attached and not without it. The Board's counsel reads the conditions before he reads the finding, and a condition we named ourselves is worth more than one he found.
+  Then it goes in the brief with that sentence attached. The Board's counsel reads the conditions before he reads the finding, and a condition we named ourselves is worth more than one he found.
   </Dialogue>
   </Success>
   <Failure>
@@ -277,18 +277,18 @@ The Chief's shakedown record for the skin loop. {fmtInt(loopN)} runs at differen
 
 <Gated by={["act-9-01-spread", "act-9-01-se", "act-9-01-conditions"]}>
 
-<Scene stamp="MET 204/16:40" location="Comms locker · five milligee for Ceres" condensed="Rook signs Solberg's two days of link time. The Mark 2 fix that gave Act II its masses is good to two percent and the hidden cargo is buried inside that; six weeks of accelerate-phase state vectors per hull gets the error down to half a percent, which is the difference between a residual full of cargo and a residual full of instrument. Solberg schedules it against the Ceres geometry and reads the window back.">
+<Scene stamp="MET 204/16:40" location="Comms locker · five milligee for Ceres" condensed="Rook signs Solberg's two days of link time. The single Mark 2 fix the hull masses have rested on since MET 36 is good to two percent, and the hidden cargo is buried inside that. Six weeks of accelerate-phase state vectors per hull gets the error down to half a percent, which is the difference between a residual full of cargo and a residual full of instrument. Solberg schedules it against the Ceres geometry and reads the window back.">
 
-The comms locker is two metres deep and warm enough now to be unpleasant. Solberg has the schedule up with the Ceres window drawn on it in a colour he chose himself, and he stands because there is one seat and you took it.
+The comms locker is two metres deep and warm enough now to be unpleasant. Solberg has the schedule up with the Ceres window drawn on it. He stands, because there is one seat and you took it.
 
 Two days of link. What it buys is a mass.
 
-Act II weighed these hulls off a single Mark 2 fix: one acceleration, one plume reading, one division. Good to about {fmtPct(MARK2_FIX_SD, 0)} of the ship, which was enough to put the nineteen above every honest hull in the file and is nowhere near enough for what Ebele wants to do next. An error of {fmtPct(MARK2_FIX_SD, 0)} on the denominator and an excess of a few percent on top of it are the same size, and the analysis cannot tell you which of them it is looking at.
+You weighed these hulls at MET 36 off a single Mark 2 fix: one acceleration, one plume reading, one division. Good to about {fmtPct(MARK2_FIX_SD, 0)} of the ship. That was enough to put the nineteen above every honest hull in the file. It is nowhere near enough for what Ebele wants next. An error of {fmtPct(MARK2_FIX_SD, 0)} on the denominator and an excess of a few percent on top of it are the same size, and nothing in the analysis can tell the two apart.
 
 The relay net logged every one of those hulls continuously through six weeks of accelerating. Thousands of state vectors instead of one. Fit the whole phase and the mass comes out to about {fmtPct(WHOLE_PHASE_SD, 1)}.
 
 <Dialogue speaker="comms">
-Nineteen hulls, the full accelerate phase, from the Authority's archive at Mark 4. I make it forty-nine hours of link if nothing else wants the antenna, Commander, and the Ceres relay comes over the horizon for us at MET 207 and stays. It will be aboard on the ninth.
+Nineteen hulls, the full accelerate phase, from the Authority's archive at Mark 4. Forty-nine hours of link if nothing else wants the antenna, Commander. The Ceres relay comes over our horizon at MET 207 and stays. Aboard on the ninth.
 </Dialogue>
 
 You sign it.
@@ -297,9 +297,9 @@ You sign it.
 Two hundred and four, sixteen forty-seven. Noted as the Commander's, not the Ensign's.
 </Dialogue>
 
-Ebele has the honest {fmtInt(HONEST_N)} still stacked on the terminal when you come back through, the {fmtInt(SLOPE_SIM_REPS)} slopes piled up against one, and he has put the nineteen's standard error on the same axis in a second colour so that the two spreads can be looked at together.
+Ebele still has the honest {fmtInt(HONEST_N)} stacked on the terminal when you come back through, the {fmtInt(SLOPE_SIM_REPS)} slopes piled against one. He has put the nineteen's standard error on the same axis in a second colour. Both spreads, one axis.
 
-Nothing has been proved. A tool has been calibrated, which is a different thing and has to come first.
+Nothing has been proved. A tool has been calibrated. That comes first.
 
 </Scene>
 
