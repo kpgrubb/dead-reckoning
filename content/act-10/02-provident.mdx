@@ -36,7 +36,7 @@ export const box = frequencyBox(BASE_RATE_MEASURED)
 
 Eight days with four rings on the cuff and you still put the jacket on the wrong way round in the dark, because the fourth ring catches on the hook.
 
-Achterberg's office is one room. A desk, two chairs, a wall of drawers with paper in them, and a window, which after thirteen days in room four is the thing you notice. It looks east over the basin at the Adlinda lights and, in the middle distance, a crane rig with a hull under it that has your ship's frame spacing.
+Achterberg's office is one room. A desk, two chairs, a wall of drawers with paper in them, and a window. It looks east over the basin at the Adlinda lights and, in the middle distance, a crane rig with a hull under it that has your ship's frame spacing.
 
 She does not offer coffee and there is nowhere to put a cup.
 
@@ -64,10 +64,10 @@ She writes {fmt(P_SIGNATURE_GIVEN_HOSTILE, 2)} on the corner of the right sheet 
 That is P of the signature given a hostile working up. I asked what the signature means. Write me P of a hostile working up given the signature.
 </Dialogue>
 
-You have the pen and there is nowhere on the sheet to start, because the two numbers she has written are not enough and you know within about two seconds which one is missing.
+You have the pen and there is nowhere on the sheet to start. The two numbers she has written are not enough.
 
 <Dialogue speaker="achterberg">
-How often has a heavy hull worked up at Phobos in the last ten years. Per yard-month. That number is not in either sheet, it is not in the attaché's report, and it is not in anything the Directorate has ever sent us. It is in the Ceres Mercantile's berth returns, which are public, and it took my clerk a morning.
+How often has a heavy hull worked up at Phobos in the last ten years. Per yard-month. That number is not in either sheet, and it is not in anything the Directorate has ever sent us. It is in the Ceres Mercantile's berth returns, which are public. It took my clerk a morning.
 </Dialogue>
 
 Thirty-four years. Four postings, two commands, a staff course, thirteen days on a hard chair under a cold air return. Nobody has ever put those two questions to you in that order.
@@ -86,13 +86,13 @@ The clerk's number is {fmt(BASE_RATE_MEASURED, 3)}. Two yard-months in a hundred
 
 Run it through and the signature that reads nine in ten from one end reads {fmtPct(POSTERIOR_MEASURED.posterior, 0)} from the other. Out of {fmt(FREQUENCY_BASE, 0)} yard-months, {fmt(box.hostileWithSignature, 0)} are a heavy hull working up and showing this trace, and {fmt(box.benignWithSignature, 0)} are something else in a yard that happens to look like it. The numerator is the smaller pile.
 
-Put {fmt(BASE_RATE_ASSUMED, 2)} in instead, which is roughly what a man has to believe about Mars before the rest of PROVIDENT follows, and the same trace reads {fmtPct(POSTERIOR_ASSUMED.posterior, 0)}. Same signature, same nine in ten, and a gap of {fmtPct(posteriorGap, 0)} between the two readings that comes entirely from a quantity the message does not contain.
+Put {fmt(BASE_RATE_ASSUMED, 2)} in instead and the same trace reads {fmtPct(POSTERIOR_ASSUMED.posterior, 0)}. That is roughly what a man has to believe about Mars before the rest of PROVIDENT follows. Same signature, same nine in ten, and a gap of {fmtPct(posteriorGap, 0)} between the two readings that comes entirely from a quantity the message does not contain.
 
 <Dialogue speaker="achterberg" aside="She puts the Phobos sheet in the second drawer and the intercept back in the top one, in different drawers.">
 The Naval Committee will want an answer on Phobos inside the year, and the answer they are going to get from Lane Operations is nine in ten. I am not going to be able to stop that with a berth return.
 </Dialogue>
 
-She sits down, which she has not done, and turns a page of the desk diary.
+She sits down for the first time and turns a page of the desk diary.
 
 <Dialogue speaker="achterberg">
 Thursday. Bring me what a ship would have to do to measure that base rate instead of assuming it. Not a paper. A ship, a track and a number of months.
