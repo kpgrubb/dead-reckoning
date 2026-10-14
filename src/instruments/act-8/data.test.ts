@@ -5,7 +5,7 @@
  * quietly making the fiction a lie.
  */
 import { describe, expect, it } from 'vitest'
-import { chi2, fmt } from '@/lib/stats'
+import { chi2, fmt, fmtInt } from '@/lib/stats'
 import {
   BENEFICIARY_TEST,
   BENEFICIARY_Z,
@@ -29,6 +29,7 @@ import {
   HE3_INDEX,
   LANE_CARGO_PROBS,
   LANE_UNKNOWN_EXPECTED,
+  LAST_PURGE_KM,
   LEDGER_N,
   LIDAR_WINDOW_MIN,
   LOSS_N,
@@ -38,19 +39,29 @@ import {
   PERRINE_LOST_EXPECTED,
   PIRACY_FROM_URUK,
   PIRACY_TOTAL,
+  PURGE_CIVILIAN_LIMIT_KM,
+  PURGE_FLOOR_PCT,
+  PURGE_TO_APPROACH_HOURS,
   P_PICKET_CAN_RESPOND,
+  QUIET_HOURS,
   RETURNS_LONG,
   RETURNS_SHORT,
   SHAPES_DOCKED,
   SHAPES_STANDING_OFF,
   SINK_PCT_AT_APPROACH,
   SINK_PCT_AT_BRIEF,
+  SINK_PCT_PER_HOUR,
   SLUG_CLOSING_KMS,
   SLUG_FLIGHT_MIN,
   SLUG_SPEED_KMS,
   TORCH_FROM_WATCH_MIN,
   URUK_TOTAL,
   VOLATILES_INDEX,
+  WATCH_HOURS_AT_APPROACH,
+  WATCH_HOURS_AT_BRIEF,
+  WATCH_HOURS_LEFT_AT_APPROACH,
+  WATCH_HOURS_LEFT_AT_BRIEF,
+  WATCH_ONLY_SATURATION_KM,
   beneficiaryTable,
   bufferInRegister,
   bufferRegisterRows,
@@ -221,9 +232,39 @@ describe('DS-17 · the picket tree and the approach physics', () => {
     expect(LIDAR_WINDOW_MIN).toBeLessThan(14.5)
   })
 
-  it('has the sink at 63% eight hours out and 76% at closest approach', () => {
-    expect(Math.round(SINK_PCT_AT_BRIEF)).toBe(63)
-    expect(Math.round(SINK_PCT_AT_APPROACH)).toBe(76)
+  it('runs Quiet from the purge and comes up to Watch with the survey camera', () => {
+    // 9 million km at 30 km/s. The approach is ballistic, so the clock is a distance.
+    expect(PURGE_TO_APPROACH_HOURS).toBeCloseTo(83.33, 2)
+    expect(fmt(QUIET_HOURS, 0)).toBe('74')
+    expect(WATCH_HOURS_AT_APPROACH).toBe(9.5)
+    expect(WATCH_HOURS_AT_BRIEF).toBe(1.5)
+    expect(fmtInt(WATCH_HOURS_AT_BRIEF * 60)).toBe('90')
+    // Ferrier's "eight hours": MET 180/22:00 to closest approach at 181/06:00.
+    expect(WATCH_HOURS_AT_APPROACH - WATCH_HOURS_AT_BRIEF).toBe(8)
+  })
+
+  /**
+   * The reason the profile is Quiet rather than Watch, and the reason no purge range rescues it.
+   * Watch from the purge saturates the sink 6.06 million km out, inside the 8.2 million km a
+   * civilian sensor needs to see the purge, so the two constraints cannot both be met on Watch.
+   */
+  it('has no purge range that would let her run Watch the whole way in', () => {
+    expect(PURGE_FLOOR_PCT + SINK_PCT_PER_HOUR * PURGE_TO_APPROACH_HOURS).toBeGreaterThan(100)
+    expect(WATCH_ONLY_SATURATION_KM).toBeLessThan(PURGE_CIVILIAN_LIMIT_KM)
+    expect(WATCH_ONLY_SATURATION_KM / 1e6).toBeCloseTo(6.06, 2)
+    expect(LAST_PURGE_KM).toBeGreaterThan(PURGE_CIVILIAN_LIMIT_KM)
+  })
+
+  it('has the sink at 82% eight hours out and 95% at closest approach', () => {
+    expect(Math.round(SINK_PCT_AT_BRIEF)).toBe(82)
+    expect(Math.round(SINK_PCT_AT_APPROACH)).toBe(95)
+    expect(SINK_PCT_AT_APPROACH).toBeLessThan(100)
+  })
+
+  // Sandoval gives headroom in hours of Watch, not in percent, in act-8/01 and act-8/02.
+  it('leaves the Chief ten point seven hours at the brief and two point seven at the rock', () => {
+    expect(fmt(WATCH_HOURS_LEFT_AT_BRIEF, 1)).toBe('10.7')
+    expect(fmt(WATCH_HOURS_LEFT_AT_APPROACH, 1)).toBe('2.7')
   })
 })
 

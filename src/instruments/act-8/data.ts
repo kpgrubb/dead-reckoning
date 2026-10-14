@@ -291,16 +291,44 @@ export const SHIP_MASS_T = 3_200
 /** ½at² over the slug's flight, in metres. An unguided round at a ballistic target is not dodgeable. */
 export const COLD_DISPLACEMENT_M = 0.5 * (COLD_THRUST_N / (SHIP_MASS_T * 1000)) * (SLUG_FLIGHT_MIN * 60) ** 2
 
-/** Post-refit sink: 68 GJ, Watch 320 kW, and the purge floor the last purge left her at. */
+/** Post-refit sink: 68 GJ, Watch 320 kW, Quiet 190 kW, and the floor the last purge left her at. */
 export const SINK_CAPACITY_GJ = 68
 export const WATCH_LOAD_KW = 320
+export const QUIET_LOAD_KW = 190
 export const PURGE_FLOOR_PCT = 5
 export const SINK_PCT_PER_HOUR = ((WATCH_LOAD_KW * 3600) / 1e6 / SINK_CAPACITY_GJ) * 100
-/** Hours on Watch since the last purge ended at MET 179/12. */
-export const WATCH_HOURS_AT_BRIEF = 34
-export const WATCH_HOURS_AT_APPROACH = 42
-export const SINK_PCT_AT_BRIEF = PURGE_FLOOR_PCT + SINK_PCT_PER_HOUR * WATCH_HOURS_AT_BRIEF
-export const SINK_PCT_AT_APPROACH = PURGE_FLOOR_PCT + SINK_PCT_PER_HOUR * WATCH_HOURS_AT_APPROACH
+export const QUIET_PCT_PER_HOUR = ((QUIET_LOAD_KW * 3600) / 1e6 / SINK_CAPACITY_GJ) * 100
+
+/**
+ * The coast is ballistic, so the time since the last purge is a distance: 9 million km at 30 km/s
+ * is 83.3 hours, twice what the uncorrected 4.5 million km bought.
+ */
+export const PURGE_TO_APPROACH_HOURS = LAST_PURGE_KM / FLYBY_SPEED_KMS / 3600
+
+/**
+ * Why the profile is Quiet and not Watch. Run Watch from the purge and the sink fills at
+ * `SINK_PCT_PER_HOUR`, so the floor reaches 100% after 56.1 hours, which at 30 km/s is this far
+ * from closest approach. It is well inside `PURGE_CIVILIAN_LIMIT_KM`, so no purge range satisfies
+ * both constraints at once: push the purge out far enough for Kettle to miss it and a Watch coast
+ * saturates on the way in. The sink is the binding constraint, and Quiet is what fits under it.
+ */
+export const WATCH_ONLY_SATURATION_KM = ((100 - PURGE_FLOOR_PCT) / SINK_PCT_PER_HOUR) * 3600 * FLYBY_SPEED_KMS
+
+/**
+ * The profile that fits. Quiet from the purge until the survey camera has the rock at
+ * `SURVEY_CAMERA_KM` (MET 180/20:30, 9.5 h out), then Watch for the run in. The brief is at
+ * MET 180/22:00, ninety minutes after the suite comes up.
+ */
+export const WATCH_HOURS_AT_APPROACH = 9.5
+export const WATCH_HOURS_AT_BRIEF = 1.5
+export const QUIET_HOURS = PURGE_TO_APPROACH_HOURS - WATCH_HOURS_AT_APPROACH
+export const QUIET_PCT_GAINED = QUIET_PCT_PER_HOUR * QUIET_HOURS
+export const SINK_PCT_AT_BRIEF = PURGE_FLOOR_PCT + QUIET_PCT_GAINED + SINK_PCT_PER_HOUR * WATCH_HOURS_AT_BRIEF
+export const SINK_PCT_AT_APPROACH = PURGE_FLOOR_PCT + QUIET_PCT_GAINED + SINK_PCT_PER_HOUR * WATCH_HOURS_AT_APPROACH
+
+/** What the Chief reports: headroom as hours of Watch, not as a percentage. */
+export const WATCH_HOURS_LEFT_AT_BRIEF = (100 - SINK_PCT_AT_BRIEF) / SINK_PCT_PER_HOUR
+export const WATCH_HOURS_LEFT_AT_APPROACH = (100 - SINK_PCT_AT_APPROACH) / SINK_PCT_PER_HOUR
 /** Post-refit Watch endurance: design mean and the Chief's working figure (DS-05, DS-12). */
 export const WATCH_DESIGN_HOURS = 59
 export const WATCH_WORKING_HOURS = 55
