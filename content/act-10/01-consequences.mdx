@@ -1,0 +1,227 @@
+---
+id: act-10-01
+act: 10
+title: "Consequences"
+kind: module
+ap_topics: ["6.7"]
+objectives:
+  - "State the Type I and the Type II error for a test you signed, in context, with what each one would have cost"
+  - "Say which of the two errors a chosen significance level accepted more risk of, and why a level only means anything if it was set before the data"
+  - "Name the population a finding is about and one limitation it carries, and concede both before a hostile reviewer extracts them"
+  - "Judge a decision taken under uncertainty by the odds it was computed on rather than by how it came out"
+prereqs: ["act-9-checkpoint"]
+est_minutes: 20
+calc_briefing: null
+summary: "Thirteen days into the Inspectorate hearing, Achterberg asks which of your findings would survive a review that wants them not to, and which of your decisions you would make again."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct, normal } from '@/lib/stats'
+import {
+  ALTERNATIVE_COMPARABLE,
+  ALTERNATIVE_DOUBLING,
+  EXAMINER,
+  OTHER_LOSSES,
+  OTHER_TRANSITS,
+  PERRINE_LOSSES,
+  PERRINE_TRANSITS,
+  PICKET,
+  REFIT_N,
+  SMALLEST_EXPECTED_COUNT,
+  findingById,
+  findings,
+  powerAgainst,
+} from '@/instruments/act-10/data'
+import { AlphaLine, CaseReviewConsole, HearingBeat } from '@/instruments/act-10/story'
+import { PowerExplorer } from '@/instruments/act-6/PowerExplorer'
+
+export const rate = findingById('rate')
+export const examiner = findingById('examiner')
+export const powerStrict = powerAgainst(ALTERNATIVE_DOUBLING, 0.01)
+export const powerConventional = powerAgainst(ALTERNATIVE_DOUBLING, 0.05)
+export const powerComparable = powerAgainst(ALTERNATIVE_COMPARABLE, 0.01)
+export const repeats = 20
+export const expectedResponses = PICKET.canRespond * repeats
+export const zStar01 = normal.standardQuantile(0.99)
+export const zStar05 = normal.standardQuantile(0.95)
+export const alphaCommitmentTex = `P(\\text{reject } H_0 \\mid H_0 \\text{ true}) = \\alpha \\quad \\text{only if } \\alpha \\text{ was fixed before } P \\text{ was seen}`
+export const powerCostTex = `\\text{power}(0.05) - \\text{power}(0.01) = ${fmt(powerConventional.power, 3)} - ${fmt(powerStrict.power, 3)} = ${fmt(powerConventional.power - powerStrict.power, 3)}`
+export const picketTex = `P(\\text{a picket can respond}) = ${fmt(PICKET.present, 2)} \\times ${fmt(PICKET.onPicketGivenPresent, 2)} = ${fmt(PICKET.canRespond, 2)}`
+
+<Scene stamp="MET 319/10:05" location="Service Inspectorate, hearing room four · Valhalla, Callisto · the thirteenth day" condensed="Thirteen days of testimony in a room with no window. The exhibits are in numbered sleeves on a side table and one of them is the lidar buffer, in foam, with the mount's fracture face still on it. Achterberg asks two questions with the recorder running: which of the findings would survive a review conducted by somebody who wants them not to, and which of the decisions Rook would make again. Ferrante is on the bench by the door, finished as a witness two days ago and still coming in.">
+
+The hearing room is on the fourth floor of the Inspectorate block and has no window, which is a thing you had not thought about before you had sat in it for thirteen days. The air return is in the ceiling directly over the witness chair. It has been running cold since the eighth day and nobody has come.
+
+The chair's left arm has a screw that has worked itself proud of the veneer. You find it with your forearm about twice an hour. You have stopped moving your arm off it.
+
+There is a water jug on the recorder's table and none on yours. You asked on the second day and a rating brought one and it has not been there since.
+
+The exhibits are in numbered sleeves on a side table against the wall, in a run, so that from the chair you read them end on. Fourteen is two sheets of the Transit Ledger. Sixteen is the cargo table. Twenty-one is the Adlinda uprate logs, which came to you through a fitter who is not named in the transcript and will not be. Twenty-four is the Bureau file with Dacre's signature column.
+
+Forty-one is not in a sleeve. It is in a grey foam tray with a lid, because it does not go flat: the lidar buffer, and eleven centimetres of the mount it came off, with the fracture face still on it where the frame let go. On the fourth day an Inspectorate lieutenant carried it round to the chair and asked you to identify it for the record, and you did, and she carried it back and set it down on the felt without a sound.
+
+Achterberg sits at the end of the table nearest the door. In thirteen days she has asked you perhaps forty questions and not one of them twice. The Board's counsel sits opposite with three juniors and a case of files, and has objected eleven times.
+
+Ferrante is on the bench by the door with his cap on his knee. He finished as a witness on the eleventh day and has come in every morning since and sat at the back.
+
+<Dialogue speaker="achterberg" aside="She turns the exhibit list round and pushes it across so the numbers are the right way up for you.">
+Commander. Two questions, and the recorder is running for both of them. First. Which of your findings would survive a review conducted by somebody who wants them not to.
+</Dialogue>
+
+The counsel does not object. He writes something and turns the page of a file he has already read.
+
+<Dialogue speaker="achterberg">
+Second. Which of your decisions would you make again.
+</Dialogue>
+
+<AlphaLine />
+
+The recorder's cursor sits and blinks. You read the list down from fourteen to twenty-four, and then across at forty-one, and then you start with the two ways the test could have been wrong, because that is what she has asked you for.
+
+</Scene>
+
+<Briefing title="What a finding survives, and what a level commits you to" topics={["6.7"]}>
+<Briefing.Intuition>
+A significance test has exactly two ways to be wrong, and both of them are outcomes of running the procedure correctly.
+
+A **Type I error** rejects a true $H_0$: a false alarm, at a rate $\alpha$ that the analyst sets. A **Type II error** fails to reject a false one: a miss, at a rate $\beta$ that nobody sets. **Power** is $1 - \beta$, always measured against a specific alternative.
+
+That much is a definition. What a review adds is that the two error rates are now claims about work already done, and three things follow.
+
+**A level is a commitment, and the commitment is about timing.** The sentence "this test has a false-alarm rate of $\alpha$" is true of a rule that says *reject when $P < \alpha$* with $\alpha$ fixed in advance. Choose $\alpha$ after seeing $P$ and the rule stops being that rule. In the limiting case, an analyst who picks whatever level is just above the observed $P$ has built a procedure that rejects every time, whose false-alarm rate is 1 and whose reported $\alpha$ is decoration. This is why a reviewer's first question about a level is not what it was but when it was written down, and why the date beside it is worth more than the number.
+
+**A level is bought.** Lowering $\alpha$ slides the rejection cutoff away from the null. Fewer false alarms, more misses, in that proportion, every time. The price is quotable in advance, against an alternative named in advance, and quoting it is the difference between a level chosen and a level defaulted to.
+
+**A finding is about a population, and only that one.** A test licenses an inference about the population the data came from. Nothing in the arithmetic stops the sentence being written about a wider one, and nothing in the arithmetic supports it either. The scope is supplied by the design, not by the P-value, and a finding with no population named in the same sentence as the number is a finding that whoever reads it next can enlarge.
+
+Two consequences a reviewer will press on, and both are about what the test does **not** say.
+
+*A test that comes back short is not a finding of no difference.* It is a finding that this test, at this level, on this much data, did not have the reach. Power says how often it would have had the reach against a difference of a stated size. Where the power is low, "no evidence of an effect" and "evidence of no effect" are indistinguishable on the page, and only the first is available.
+
+*A test never proves anything.* It reports evidence, at a stated error rate, about a parameter, for a population. The word "proved" moves a claim from something the file supports to something it does not, and it is the cheapest thing in a report to attack.
+
+**Decisions are the other half.** Some choices are made under a probability rather than a P-value: an exposure computed from stated inputs, weighed against what the action buys, and then taken. Such a decision has to be judged by the ledger that existed when it was made. A probability describes the process that produces an outcome, so one outcome, good or bad, is nearly no evidence about whether the reasoning was right. Grading a decision by its result is called *resulting*, and it has a symmetric failure: the reckless call that comes off is never reviewed at all.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex="\alpha = P(\text{reject } H_0 \mid H_0 \text{ true}) \qquad \beta = P(\text{fail to reject } H_0 \mid H_0 \text{ false}) \qquad \text{power} = 1 - \beta" terms={{ '\\alpha': 'the significance level: the Type I error rate, chosen in advance', '\\beta': 'the Type II error rate: not chosen, but consequent on α, n and the true difference', '\\text{power}': 'the chance the test reports a difference that is genuinely there, against a stated alternative' }} label="The two errors, and the one that is a decision" />
+
+<Formula tex={alphaCommitmentTex} terms={{ 'P': 'the P-value the data produced', '\\alpha': 'the level — a property of the rule, not of this result' }} label="Why the date beside a level matters as much as the level" />
+
+<Formula tex="P(\text{bad outcome}) = P(A) \times P(B \mid A)" terms={{ 'P(A)': 'the first stated input of the exposure', 'P(B \\mid A)': 'the second, conditional on the first' }} label="A decision's ledger: written before, audited after" />
+
+The scope has no formula, because it is not produced by the arithmetic. The inference is about the population the sample was drawn from and no wider, and which population that is was decided by the design before any statistic existed.
+</Briefing.Definition>
+<Briefing.Worked>
+The file in front of the Inspectorate, read the way a reviewer reads it.
+
+**The accusation.** {fmtInt(PERRINE_LOSSES)} losses in {fmtInt(PERRINE_TRANSITS)} transits against {fmtInt(OTHER_LOSSES)} in {fmtInt(OTHER_TRANSITS)}, one-sided, gives $z$ = **{fmt(rate.statistic, 2)}** and $P$ = **{fmtP(rate.pValue)}**. The level was written the night before the register was opened, which is the fact a reviewer checks first.
+
+**What that level bought and what it cost.** Against the difference named in advance, {fmt(ALTERNATIVE_DOUBLING.p1, 3)} against {fmt(ALTERNATIVE_DOUBLING.p2, 3)}, the test has power {fmt(powerStrict.power, 3)} at $\alpha$ = 0.01 and {fmt(powerConventional.power, 3)} at 0.05.
+
+<Formula tex={powerCostTex} terms={{ '\\text{power}(0.05)': 'detection rate at the conventional level', '\\text{power}(0.01)': 'detection rate at the strict one' }} label="The price of the stricter level, against the alternative specified before the test" />
+
+{fmtPct(powerConventional.power - powerStrict.power, 0)} of the chance of catching a real difference, bought in exchange for a false-alarm rate that survives being read aloud in a panelled room. Against the difference the Board's counsel prefers, {fmt(ALTERNATIVE_COMPARABLE.p1, 3)} against {fmt(ALTERNATIVE_COMPARABLE.p2, 3)}, the same test has power {fmt(powerComparable.power, 2)}, and no level repairs that.
+
+**The narrow condition.** The large-counts check for the accusation rests on {fmt(SMALLEST_EXPECTED_COUNT, 1)} expected losses in the smaller group. Ten is the bar. It passes by less than one transit, and a reviewer who has read the file will raise that before anything else.
+
+**The finding that fails whatever level is chosen.** Exhibit {fmtInt(examiner.exhibit)} cross-classifies the Bureau's certified departures by examining officer and by whether the hull was diverted. Its smallest expected count is {fmt(EXAMINER.smallestExpected, 2)}, so the chi-square distribution is not the sampling distribution of that statistic and no significance level makes it one. What stands in its place is {fmtInt(EXAMINER.reps)} relabellings, none of which reached the observed gap.
+
+**The decision at {fmtInt(PICKET.rangeKm)} kilometres.** The exposure was signed on the plot before the order went out, from two stated inputs.
+
+<Formula tex={picketTex} terms={{ '0.75': 'a wrecker at Kettle at all, from what PROVIDENT had to work with', '0.40': 'cold on picket in the approach quarter, given that it is there' }} label="What the ping risked, computed before it was ordered" />
+
+Out of {fmtInt(repeats)} approaches made on those odds, about {fmt(expectedResponses, 0)} end with a picket in position to answer. The outcome was one of them. That fact is not evidence that the inputs were wrong, and it is not a defence of them either. What can be audited is whether {fmt(PICKET.present, 2)} and {fmt(PICKET.onPicketGivenPresent, 2)} were defensible when they were written, whether multiplying them was the right combination, and whether {fmtInt(PICKET.torchFromWatchMin)} minutes to a torch against a {fmtInt(PICKET.slugFlightMin)}-minute flight time was weighed against what the illumination bought.
+</Briefing.Worked>
+<Briefing.Caution>
+*"The case was proven."* A test supplies evidence about a parameter at a stated error rate. Proof is a word from a courtroom, and saying it in a report hands a reviewer the first paragraph of their reply. Say what the evidence is about, how strong it is, and for whom.
+
+*"We failed to reject, so there is nothing there."* Failing to reject leaves $H_0$ standing as an unrefuted possibility and never establishes it. A real difference seen through an underpowered test produces the identical page. When a null result is being used as an argument, the question that settles it is what the power was against a difference worth finding.
+
+*Scope, forgotten at the moment it matters.* The population is easy to write down while the analysis is being planned and easy to drop from the sentence that reports it. Findings are lost far more often to an inference stretched past its frame than to arithmetic.
+
+*Resulting.* A decision made on a computed exposure is not refuted by the exposure landing. The audit is of the inputs, the combination and the weighing, all of which existed before the outcome did. Its mirror image is the unexamined decision that happened to come off.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="The two numbers a power calculation needs (TI-84 Plus CE)">
+<Calculator.Step keys={['2nd', 'DISTR', '3:invNorm(']} note="area: 1 − α · μ: 0 · σ: 1 · Tail: LEFT">The cutoff first, and the cutoff lives under $H_0$. For a one-sided test at α = 0.01, `invNorm(0.99,0,1)` returns the critical value {fmt(zStar01, 4)}. At α = 0.05 the same screen with `0.95` returns {fmt(zStar05, 4)}. Multiply it by the **pooled** standard error to get the difference the test must see before it rejects.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'DISTR', '2:normalcdf(']} note="lower: the cutoff · upper: 1E99 · μ: the alternative's difference · σ: the UNPOOLED SE">The area beyond the cutoff, measured on the alternative's own distribution. That area is the power. Enter `1E99` for the upper bound with `2nd` `,` for the `E`, not the letter E.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '6:2-PropZTest']} note="x1, n1, x2, n2 · p1: >p2 · Calculate">The test itself, for the file's own counts: {fmtInt(PERRINE_LOSSES)} of {fmtInt(PERRINE_TRANSITS)} against {fmtInt(OTHER_LOSSES)} of {fmtInt(OTHER_TRANSITS)}, one-sided. It returns $z$ = {fmt(rate.statistic, 4)} and $p$ = {fmtP(rate.pValue)}.</Calculator.Step>
+<Calculator.Watch>**Two different standard errors, one per step.** The cutoff uses the pooled SE, because the cutoff is a property of a test defined under the null. The area uses the unpooled SE, because it is measured on the alternative's distribution. Using one of them twice is the commonest arithmetic error in a power calculation, and it produces a plausible number.</Calculator.Watch>
+<Calculator.Watch>**There is no calculator screen for a Type I or Type II error in context, for a scope, or for a limitation.** Those are sentences, and they are what a review is about. The calculator produces the two numbers the sentences hang on.</Calculator.Watch>
+</Calculator>
+
+<CaseReviewConsole />
+
+<PowerExplorer label="TACTICAL · WHAT THE LEVEL BOUGHT" alpha={0.01} />
+
+<Drill generator="act-10/survives-review" count={1} />
+<Drill generator="act-10/decision-not-outcome" count={1} />
+<Drill generator="act-6/type-i-ii" count={1} />
+<Drill generator="act-6/what-the-level-is-not" count={1} />
+<Drill generator="act-3/scope-of-inference" count={1} />
+<Drill generator="act-8/chi-square-conclusion" count={1} />
+
+<HearingBeat>
+<Success>
+<Dialogue speaker="achterberg" aside="She lets the recorder run on for a moment after you finish, and then closes the exhibit list.">
+You have named a finding you would not defend before counsel had to find it for you. Counsel, that concession is on the record and you may have it.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="From the back of the room. She was called on the ninth day and has been in the room every day since, sitting behind Ferrante.">
+Sir. Say the last part again with the population in it, for the transcript. Not the Lane. The transits on the Lane in the file.
+</Dialogue>
+</Success>
+<Failure>
+<Dialogue speaker="achterberg" aside="She has not written anything down. The recorder is still running.">
+Both errors, and what each one would have cost this Service. Then the level, and which of the two it bought down. Then what the number is a number about, and one thing in that file you would rather say yourself.
+</Dialogue>
+</Failure>
+</HearingBeat>
+
+<Gated by="act-10-01-hearing">
+
+<Scene stamp="MET 319/16:40" location="Inspectorate block, ground floor · Valhalla, Callisto" condensed="After the day's sitting Ferrante waits at the bottom of the stairs with his cap still in his hand. Oyelaran's mother came to Valhalla in the second week and asked him whether it was quick. He told her the truth and she thanked him. He is going back to Adlinda in the morning; the sensor billet on Nightjar has not been filled, Halvorsen is running the board, and she has not sat in the chair since Kettle.">
+
+The sitting ends at four and the lifts take eleven minutes to clear, so you take the stairs, and Ferrante is at the bottom of them with his cap still in his hand.
+
+The ground floor of the Inspectorate block is a hall with a floor of Callisto basalt polished by a hundred and forty years of boots, and it is four degrees colder than the hearing room. Outside the doors the basin is in its long night and the yard lights are on out at Adlinda, eleven kilometres east, in a line.
+
+<Dialogue speaker="medic" aside="He has been standing long enough to have shifted his weight to the other foot.">
+Her mother works the array out on the rim. Twenty minutes from this door. She sat in the family room on the second floor for two days because the Inspectorate would not let her into the hearing, and on the Thursday she asked me one question.
+</Dialogue>
+
+You ask him which one.
+
+<Dialogue speaker="medic" aside="Flat, in the voice he reads a chart in. He does not slow down for any of it.">
+Whether it was quick. I told her the round came through the starboard quarter at a shallow angle, that the Lieutenant was at the head with her back to it, and that she was dead before the pressure had finished leaving the blister. I told her I was at the mast root in eight seconds and that one would not have changed it. She thanked me.
+</Dialogue>
+
+He puts the cap on.
+
+<Dialogue speaker="medic">
+Eleven times in twenty-two years I have told a family. Four of them asked me that. She is the only one who has thanked me for the answer, and I do not know where to put it, so I am putting it with you.
+</Dialogue>
+
+The doors are on a slow closer and somebody two floors up is running a floor polisher.
+
+<Dialogue speaker="medic" aside="Already moving toward the doors; he has a boat to Adlinda at eighteen.">
+Halvorsen has the board. The billet has not been filled and I do not think Valhalla is in a hurry. She stands the whole watch, Skipper. Four hours. She will not use the chair and she has never said anything about it, and I am not going to be the one who asks her.
+</Dialogue>
+
+He goes out through the doors into the cold and the yard lights, and you stand in the hall for a while with the polisher going upstairs.
+
+Thirteen days of it. {fmtInt(findings.length)} findings on the side table: one that will not survive its own conditions, one that is another of them written down twice, and {fmtInt(REFIT_N)} hulls of paired differences that somebody is entitled to ask what population they came from.
+
+Tomorrow the counsel gets the cargo table, and you are going to concede the word *declared* in the first sentence rather than the fourth.
+
+</Scene>
+
+<LogEntry
+  title="Two ways to be wrong, and the ledger that is written first"
+  concept="Every decision under uncertainty has two ways to be wrong, and both have to be named before one of them is chosen: a Type I error rejects a true null at a rate α that you set, and a Type II error misses a real difference at a rate β that falls out of α, the sample size and the size of the difference. A level is only a false-alarm rate if it was fixed before the P-value was seen, which is why the date beside it carries as much weight as the number, and it is bought with power against an alternative you have to name. At review time the arithmetic is rarely what is attacked: what is attacked is the word used for the strength of the claim, the population it is attached to, and whatever the report declined to mention. A decision taken on a computed exposure is audited the same way, against the ledger that existed when it was taken, because a probability describes a process and one outcome is almost no evidence about the reasoning."
+  formula="\alpha = P(\text{reject } H_0 \mid H_0 \text{ true}), \qquad \text{power} = 1 - \beta, \qquad P(\text{reject} \mid H_0) = \alpha \text{ only if } \alpha \text{ preceded } P"
+  mistake="Saying a case was proven. A test reports evidence about a parameter for a population at a stated error rate, and the word moves the claim to ground the file cannot hold. Its near relatives are quoting a level chosen after the P-value, reading a short result as evidence of no difference, and grading a decision by how it came out."
+  tags={['Type I error', 'Type II error', 'power', 'significance level', 'pre-specification', 'scope of inference', 'limitations', 'decision under uncertainty', '6.7']}
+/>
+
+</Gated>
