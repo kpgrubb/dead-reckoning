@@ -32,15 +32,15 @@ export const marsMinOfTwo = Array.from({ length: 60 }, (_, i) => binomial.atLeas
 export const marsMinBias = marsMinOfTwo - marsRate
 export const marsReps = 100
 
-<Scene stamp="MET 110/09:40" location="Intel terminal · coasting cold in the Mark 9 region · 0.4 AU from Ceres" condensed="Valhalla answers the Act IV report with a table: the Lane at 31 losses in 2,612 transits, the Mars–Belt corridor at 46 in 4,180, and two Lane cutters whose observed rates are three to one apart. The Board's summary statistic is the lower of the two cutters' rates. Ebele builds a sampling machine on the Transit Ledger to find out whether two honest patrols can disagree that much.">
+<Scene stamp="MET 110/09:40" location="Intel terminal · coasting cold in the Mark 9 region · 0.4 AU from Ceres" condensed="Valhalla answers the CX-1 preliminary with a table: the Lane at 31 losses in 2,612 transits, the Mars–Belt corridor at 46 in 4,180, and two Lane cutters whose observed rates are three to one apart. The Board's summary statistic is the lower of the two cutters' rates. Ebele builds a sampling machine on the Transit Ledger to find out whether two honest patrols can disagree that much.">
 
-The ship has been quiet for twenty-seven days and the quiet has stopped being a discipline and started being the weather. Post-purge, coasting, wings out, the reactor at station load. Two hundred and sixty-three kilometres a second of delta-v in the tanks and ninety days of consumables, and the torch does not light again until MET 118. Sandoval logs the cellar every four hours whether anybody asks or not.
+Twenty-seven days of quiet. Post-purge, coasting, wings out, the reactor at station load. Two hundred and sixty-three kilometres a second of delta-v in the tanks, ninety days of consumables, and the torch does not light again until MET 118. Sandoval logs the cellar every four hours whether anybody asks or not.
 
 "Cellar is behaving, Skipper," she says on her way past the terminal, to nobody, with a slate under her arm. "Rejection is inside the figure I gave you at the purge, plus or minus a tenth of a point. If that changes you will hear it from me before you see it on a gauge."
 
-Solberg brings the signal at 09:40 because it arrived at 09:40. Callisto is twenty-one minutes and thirty-six seconds away at the speed of light, which means the Board wrote this a third of an hour ago and will not hear your reply for another third.
+Solberg brings the signal at 09:40 because it arrived at 09:40. Callisto is twenty-one minutes and thirty-six seconds away at the speed of light. The Board wrote this a third of an hour ago. They will not hear your reply for another third.
 
-<Dialogue speaker="comms" aside="He reads the whole of it, including the heading, because that is how he reads everything." lag="lag 21 min 36 s · Valhalla, Callisto relay">
+<Dialogue speaker="comms" aside="He reads the whole of it, including the heading." lag="lag 21 min 36 s · Valhalla, Callisto relay">
 Signal from Valhalla, timestamped MET 110 slash 09 colon 18, received 21 minutes 36 seconds later. Reads, verbatim. *Reference: CX-1 preliminary, MET 104. It is noted that the vessel has advanced a hypothesis regarding departure mass on the Hundred-Day Lane. The Board directs attention to the comparative record, appended. Patrol data show no consistent anomaly. The vessel's diligence is noted and the Board will expect the same standard of evidence in any subsequent submission.* End of signal, sir. Table appended.
 </Dialogue>
 
@@ -53,11 +53,11 @@ The appendix is four lines and it is the whole argument.
 
 *Summary statistic adopted: the lower of the two cutters' observed rates.*
 
-Ebele reads the last line twice and then goes to find the Ledger, which takes him the rest of the morning because the Authority files it by season.
+Ebele reads the last line twice and goes to find the Ledger. It takes him the rest of the morning. The Authority files it by season.
 
-Three losses in four hundred and ten. One in three hundred and eighty. The two cutters were on the same corridor in the same years with the same orders, and one of them came home with a rate nearly three times the other's. Solberg, who has no opinion unless asked and is asked, offers one sentence: "Two officers wrote those, sir, and they both had to sign them."
+Three losses in four hundred and ten. One in three hundred and eighty. The two cutters were on the same corridor in the same years with the same orders, and one came home with a rate nearly three times the other's. You ask Solberg what he makes of it. "Two officers wrote those, sir, and they both had to sign them."
 
-By fourteen hundred Ebele has built a machine. It draws four hundred transits out of the Ledger at random, counts how many of them were lost, writes the rate down as a dot, and does it again. Four hundred times. Six hundred. As many as you like. The dots pile up into a shape, and the Lane's own rate, the one the Board printed, taken over every row of the file, sits in the middle of the shape with a line through it.
+By fourteen hundred Ebele has built a machine. It draws four hundred transits out of the Ledger at random, counts how many of them were lost, writes the rate down as a dot, and does it again. Four hundred times. Six hundred. As many as you like. The dots pile up into a shape. The Lane's own rate, the one the Board printed, sits in the middle of it with a line drawn through.
 
 He turns the display round so you can see it.
 
@@ -69,8 +69,8 @@ So that is the sampling distribution, sir. It is the distribution of the sample.
 
 You do not correct the arithmetic, because the arithmetic is right. You ask him what one dot is.
 
-<Dialogue speaker="analyst" aside="He puts his hand flat on the display over a single dot before he answers, so that he is talking about that one.">
-One dot is one patrol. Four hundred transits, counted, and the rate they produced. So one dot has already eaten four hundred hulls. Yes, sir. That's — yes. The distribution of the *sample* would be four hundred ones and zeroes and no shape worth drawing. This is a distribution of four hundred *statistics*, one per patrol. I built the right thing and I called it the wrong name, and the name is the part Valhalla would have read.
+<Dialogue speaker="analyst" aside="He puts his hand flat on the display, over one dot, before he answers.">
+One dot is one patrol. Four hundred transits, counted, and the rate they produced. So one dot has already eaten four hundred hulls. Yes, sir. That's — yes. The distribution of the *sample* would be four hundred ones and zeroes and no shape worth drawing. This is a distribution of four hundred *statistics*, one per patrol. I built the right thing and I called it the wrong name.
 </Dialogue>
 
 <Dialogue speaker="xo" aside="She has been standing behind both of you for four minutes and has not sat down.">
@@ -166,12 +166,12 @@ Work it in three passes, in this order, and write down what moves each time.
   {...cuttersDisagreeRubric()}>
   <Success>
   <Dialogue speaker="xo" aside="She reads it once and hands it back without a mark on it.">
-  That paragraph costs Valhalla its first line. Not the estimate. The paragraph. File it ahead of anything we compute, so that nobody reads a cutter's number without it.
+  That paragraph costs Valhalla its first line. Not the estimate. The paragraph. File it ahead of anything we compute. Nobody reads a cutter's number without it.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="xo" aside="She does not raise her voice. She points at the four hundred transits of one draw, and then at the pile.">
-  That's the sample. Where's the distribution? You have told me what each cutter counted. Tell me what kind of number it is, tell me what the Lane's own rate is called, and then give me the distance two honest patrols of four hundred routinely land apart. The last one is a number, Commander, and it is on the display in front of you.
+  <Dialogue speaker="xo" aside="She points at the four hundred transits of one draw, and then at the pile.">
+  That's the sample. Where's the distribution? You have told me what each cutter counted. Tell me what kind of number it is. Tell me what the Lane's own rate is called. Then give me the distance two honest patrols of four hundred routinely land apart. That last one is a number, Commander, and it is on the display in front of you.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -198,16 +198,16 @@ Work it in three passes, in this order, and write down what moves each time.
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  Stack it and look at the centre, not the width. The rule reports whichever of two honest patrols came back quieter. Ask yourself which way that can possibly err, and then ask whether a bigger patrol changes the answer to that question.
+  Stack it and look at the centre, not the width. The rule reports whichever of two honest patrols came back quieter. Ask which way that can err. Then ask whether a bigger patrol changes the answer.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <Gated by={["act-5-01-disagree", "act-5-01-board-statistic"]}>
 
-<Scene stamp="MET 110/18:20" location="Wardroom · coasting cold · 0.4 AU from Ceres" condensed="The reply goes out with two findings and no accusation: the cutters' reports are consistent with a single Lane rate, and the Board's adopted summary statistic is biased low by construction. What the Lane's rate actually is remains unmeasured. Rook remembers, and does not mention, a patrol report he wrote himself from a cutter twenty years ago.">
+<Scene stamp="MET 110/18:20" location="Wardroom · coasting cold · 0.4 AU from Ceres" condensed="The reply goes out with two findings and no accusation: the cutters' reports are consistent with a single Lane rate, and the Board's adopted summary statistic is biased low by construction. What the Lane's rate actually is remains unmeasured. In his cabin that night Rook finds the patrol report he signed himself from a cutter twenty years ago, leaves it in the drawer, and tells nobody it exists.">
 
-Ferrier drafts it in four lines and makes Ebele read it aloud before she signs, because a sentence that cannot be read aloud on a bridge is a sentence with a hole in it.
+Ferrier drafts it in four lines and makes Ebele read it aloud before she signs.
 
 *Reference: Board appendix, MET 110. The two patrol records cited are consistent with a single Lane loss rate: {fmtInt(CUTTERS.asgard.losses)} in {fmtInt(CUTTERS.asgard.transits)} and {fmtInt(CUTTERS.tindr.losses)} in {fmtInt(CUTTERS.tindr.transits)} differ by less than the {fmt(PATROL_SD, 4)} that one honest patrol of {fmtInt(PATROL_N)} transits varies on its own. No inference adverse to either cutter is drawn or intended.*
 
@@ -217,11 +217,11 @@ Ferrier drafts it in four lines and makes Ebele read it aloud before she signs, 
 
 "That last sentence is the one that survives," Ferrier says. "We have not accused anybody of anything. We have said that their instrument reads low and that we do not know the true value. There is no reply to it that is not an improvement."
 
-Solberg times the send and logs it: twenty-one minutes thirty-six seconds out, twenty-one and a half back if somebody at Valhalla answers the instant they finish reading, which nobody at Valhalla has ever done. Forty-three minutes, minimum, and then whatever the Flag Secretary's afternoon looks like.
+Solberg times the send and logs it. Twenty-one minutes thirty-six seconds out, and as long again coming back. Nobody at Valhalla has ever answered the instant they finished reading. Forty-three minutes, minimum, then whatever the Flag Secretary's afternoon looks like.
 
-What you have is smaller than it feels and you make yourself say so. You have not shown that the Lane is dangerous. You have shown that two honest officers can hand you numbers three to one apart, and that the number the Board built out of them reads low whatever the Lane is doing. The corridor's own rate is still a thing nobody in this ship has measured, and the nineteen Perrine hulls are still nineteen separate files with nothing in them but lateness.
+You say the size of it out loud before anybody can overstate it for you. You have not shown that the Lane is dangerous. You have shown that two honest officers can hand you numbers three to one apart, and that the number the Board built out of them reads low whatever the Lane is doing. Nobody aboard this ship has measured the corridor's own rate. The nineteen Perrine hulls are still nineteen separate files with nothing in them but lateness.
 
-You go back to your cabin at nineteen hundred and do not open the drawer, and the thing you do not open is a patrol report with your own name on the last page. *Asgard*, thirteen losses in two thousand five hundred and eighty transits, 2168 to 2176, half of one percent, and a young lieutenant's signature under a sentence about the Lane being ordinary. Ebele has never seen it. He has no reason to look for it, and you have not given him one.
+At nineteen hundred you go back to your cabin and open the drawer under the bunk. The patrol report is where it has been since Callisto, your own name on the last page. *Asgard*, thirteen losses in two thousand five hundred and eighty transits, 2168 to 2176, half of one percent, and a young lieutenant's signature under a sentence about the Lane being ordinary. You put it back and shut the drawer. Ebele has never seen it and has no reason to look.
 
 </Scene>
 

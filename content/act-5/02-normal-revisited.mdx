@@ -32,13 +32,13 @@ export const oneInHowMany = Math.round(1 / P_HONEST_AS_LATE)
 
 <Scene stamp="MET 112/07:05" location="Bridge · coasting cold in the Mark 9 region · 0.4 AU from Ceres" condensed={`Two days after the Board's appendix, Ebele brings the Ledger's delay column to the bridge. Mark-9 delay, actual minus scheduled against the nominal 3.00-mgee plot, is spread over days rather than hours, and honestly so: hulls file their own acceleration inside the Lane's 2.7 to 3.3 mgee band, and a slow filing saves propellant. The nineteen average ${fmt(NINETEEN_MEAN_DELAY, 2)} days late. The question is where the line goes that only one honest transit in a hundred crosses, and how many of the nineteen are past it.`}>
 
-Ebele has the delay column up on the plot at seven in the morning, which means he did not sleep, which Ferrier notices and files and does not mention yet.
+Ebele has the delay column up on the plot at seven in the morning. He did not sleep. Ferrier looks at him once on her way past the plot and says nothing about it yet.
 
 The column holds one number per transit: actual minus scheduled time to Mark 9, measured against the Authority's three-point-zero-zero-milligee reference. Same clock for a Tessera hauling volatiles and a Mk 3 hauling nothing. Across the Ledger's honest transits, {fmtInt(honestDelays.length)} of them, the column has a mean of {fmt(LANE_DELAY_MEAN, 3)} days and a standard deviation of **{fmt(LANE_DELAY_SD, 2)} days**.
 
 "So that is the thing that stopped me sleeping, sir," Ebele says. "Days. Not hours. I expected hours."
 
-You ask him why it is days, and he has the answer, because he went and found it before he came to the bridge.
+You ask him why it is days. He went and found out before he came up, so he has it ready.
 
 "The Lane lets a hull file anywhere between 2.7 and 3.3 milligee and draws the plot at 3.00. A hull that files 2.9 is flying what it declared, and against the reference it comes in about a day and a quarter behind. Every run. For the life of the hull. And owners file slow on purpose, because a tenth of a milligee is propellant that stays in the tank." He taps the display. "Nobody is doing anything wrong and the column is two and three quarter days wide."
 
@@ -46,12 +46,12 @@ You ask him why it is days, and he has the answer, because he went and found it 
 Then give me the line. The delay above which only one honest transit in a hundred falls. Not a hundred hulls. A hundred transits. And then tell me how many of the nineteen are standing on the far side of it.
 </Dialogue>
 
-<Dialogue speaker="analyst" aside="He has the nineteen's own delays on the second pane and says the number without being asked, because it is an input and not a conclusion.">
+<Dialogue speaker="analyst" aside="He has the nineteen's own delays on the second pane and says the number before anybody asks for it.">
 So the nineteen average {fmt(NINETEEN_MEAN_DELAY, 2)} days late, sir, against a Lane that averages {fmt(LANE_DELAY_MEAN, 2)}. That is the whole of the thing I have. And I want the other number too, before anybody else asks for it: what share of honest transits are *at least* as late as their average. If a hostile reviewer can answer that and I cannot, we lose the room.
 </Dialogue>
 
 <Dialogue speaker="comms" aside="He has the Lane Register's Mark 9 check-in file open on the comms board, and he has read all nineteen of them." lag="Register extract · Ceres office · received MET 111/22:14, lag 3 min 20 s">
-Sir. I have their check-ins. Every one of the nineteen reported at Mark 9, to the second, and the Register carries a late-check-in advisory against each of them. I would not put weight on that. It is the same advisory the Register files against any hull that runs slow, and it files a great many of them.
+Sir. I have their check-ins. Every one of the nineteen reported at Mark 9, to the second, and the Register carries a late-check-in advisory against each of them. I would not put weight on that. It is the same advisory it files against any hull that runs slow, and it files a great many of them.
 </Dialogue>
 
 </Scene>
@@ -143,7 +143,7 @@ The side panel is the check the Briefing insists on. It plots the honest delays 
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She writes the two areas on the slate, one above the other, and waits.">
-  You have used the area you were given instead of the area you need. One percent above the line is ninety-nine percent below it, and the inverse normal always takes the area *below*. Then the sign of the z follows, and the line lands above the mean, where a late cutoff belongs. Two decimals.
+  You have used the area you were given instead of the area you need. One percent above the line is ninety-nine percent below it, and the inverse normal always takes the area *below*. Then the sign of the z follows and the line lands above the mean. Two decimals.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -152,7 +152,7 @@ The side panel is the check the Briefing insists on. It plots the honest delays 
   prompt={`Now the direction the reviewer will ask for. The nineteen diverted transits average **${fmt(NINETEEN_MEAN_DELAY, 2)} d** behind the nominal plot — that figure is given to you; it is the input, not the answer. Under the same normal model of honest Lane transits, what **proportion of honest Lane transits arrive at Mark 9 at least as late as the nineteen's average**? Give a proportion to three decimal places.`}
   hint="Value in, area out. Standardise the nineteen's average against the honest model's μ and σ, then take the area in the upper tail — 'at least as late' is above the cutoff, not below it. On the panel: MODE to CUTOFF → AREA, tail above, cutoff on the dashed line.">
   <Success>
-  <Dialogue speaker="analyst" aside="He reads the second readout off the panel and repeats it as a rate, because that is the form a reviewer will use against him.">
+  <Dialogue speaker="analyst" aside="He reads the second readout off the panel and says it again as a rate.">
   Roughly one honest transit in {fmtInt(oneInHowMany)} is that late or later, sir. One in {fmtInt(oneInHowMany)}. There is nothing remarkable about a single hull sitting where the nineteen sit on average. That is the finding, and I would rather we published it than had it read to us.
   </Dialogue>
   </Success>
@@ -179,12 +179,12 @@ The side panel is the check the Briefing insists on. It plots the honest delays 
     `Count again on the display. At least one of them is above the line, which is exactly what a 1 percent cutoff does to a group of nineteen, where the expected number above is ${fmt(EXPECTED_ABOVE_CUTOFF, 2)}. "None above the line" would be slightly quieter than honesty, not louder.`,
   ]}>
   <Success>
-  <Dialogue speaker="analyst" aside="He writes it into the draft in the negative, in the form Ferrier made him adopt at Ceres.">
+  <Dialogue speaker="analyst" aside="He writes it into the draft in the negative, which is the form Ferrier has had him use since the shakedown.">
   So the finding is a negative one, sir, and I will file it as a negative. No individual hull among the nineteen is extraordinary. Anybody who wants to argue that from one late arrival is arguing against arithmetic.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="xo" aside="She does not raise her voice.">
+  <Dialogue speaker="xo" aside="She puts the slate down on the console between them, face up.">
   You have just proved a ship was late. We knew it was late; the Register has the check-in. What a 1 percent line buys you is the number of honest transits that cross it anyway, and in nineteen draws that number is not zero. Count what the line lets you say, and then say only that.
   </Dialogue>
   </Failure>
@@ -192,27 +192,27 @@ The side panel is the check the Briefing insists on. It plots the honest delays 
 
 <Gated by={["act-5-02-cutoff", "act-5-02-as-late", "act-5-02-how-many"]}>
 
-<Scene stamp="MET 112/16:30" location="Bridge · coasting cold · 0.4 AU from Ceres" condensed={`The line goes at ${fmt(DELAY_CUTOFF_1PCT, 2)} days and about one honest transit in ${fmtInt(oneInHowMany)} is as late as the nineteen's average, so no single hull among them is evidence of anything. Ferrier makes the ship say that first, in writing, before anybody says it for them. The nineteen are individually unremarkable, which leaves their mean, and the mean is the next module's problem.`}>
+<Scene stamp="MET 112/16:30" location="Bridge · coasting cold · 0.4 AU from Ceres" condensed={`The line goes at ${fmt(DELAY_CUTOFF_1PCT, 2)} days and about one honest transit in ${fmtInt(oneInHowMany)} is as late as the nineteen's average, so no single hull among them is evidence of anything. Ferrier makes the ship say that first, in writing, before anybody says it for them. The nineteen are individually unremarkable, which leaves their mean, and Ferrier chalks that up as the next question.`}>
 
 The line lands at **{fmt(DELAY_CUTOFF_1PCT, 2)} days**, and {NINETEEN_ABOVE_CUTOFF === 1 ? 'one' : fmtInt(NINETEEN_ABOVE_CUTOFF)} of the nineteen {NINETEEN_ABOVE_CUTOFF === 1 ? 'is' : 'are'} past it. In nineteen honest transits you would expect {fmt(EXPECTED_ABOVE_CUTOFF, 2)} above a one-percent line, so {NINETEEN_ABOVE_CUTOFF === 1 ? 'one' : fmtInt(NINETEEN_ABOVE_CUTOFF)} is the line doing its job. And {fmtPct(P_HONEST_AS_LATE, 1)} of honest transits, about one in {fmtInt(oneInHowMany)}, arrive at Mark 9 at least as late as the nineteen's average of {fmt(NINETEEN_MEAN_DELAY, 2)} days.
 
-Ebele puts all three numbers on one page and looks at them for a while without saying anything, which is new.
+Ebele puts all three numbers on one page. He reads them twice before he says anything.
 
-"I had nineteen late ships this morning, sir," he says at last. "I have nineteen ordinary ships this afternoon and the same nineteen ships."
+"I had nineteen late ships this morning, sir," he says. "I have nineteen ordinary ships this afternoon and the same nineteen ships."
 
-<Dialogue speaker="xo" aside="She is already drafting, and she makes him write the sentence himself so that it is in his hand when it goes up.">
-Then no single one of them is evidence. Say that first, so nobody says it for you. Put it at the top of the page, above anything we compute afterwards, in the plainest words you own.
+<Dialogue speaker="xo" aside="She is already drafting. She pushes the stylus across the console to him and lets him write the sentence himself.">
+Then no single one of them is evidence. Say that first, so nobody says it for you. Top of the page, above anything we compute afterwards.
 </Dialogue>
 
 <Dialogue speaker="comms" aside="He files the Register extract alongside the draft with the check-in times attached, unedited." lag="Register extract · Ceres office · lag 3 min 20 s">
-For the file, sir: the Register holds all nineteen Mark 9 check-ins to the second, and a late-check-in advisory against each of them. So does it hold them for a great many hulls that were simply slow. On the paperwork the nineteen are indistinguishable from any other hull that files 2.9 and flies it.
+For the file, sir: the Register holds all nineteen Mark 9 check-ins to the second, and a late-check-in advisory against each of them. It holds the same advisory against a great many hulls that were simply slow. On the paperwork the nineteen look like any other hull that files 2.9 and flies it.
 </Dialogue>
 
-Which is the shape of the thing, and Sandoval says it on her way through the bridge with a gauge in her hand and no interest in the plot at all: a hull carrying mass it has not declared cannot make the acceleration it filed, so it arrives late, and arriving late is the most ordinary thing on the Lane. The lie hides inside the ordinary. Whoever built this did not have to forge anything.
+Sandoval says the shape of it on her way through the bridge, with a gauge in one hand and no interest in the plot at all. A hull carrying mass it has not declared cannot make the acceleration it filed. So it arrives late. Arriving late is the most ordinary thing on the Lane. Whoever built this did not have to forge anything.
 
-The honest delays are as straight on the probability plot as a real sample gets, skewness {fmt(laneSkew, 3)} across {fmtInt(honestDelays.length)} transits, so the model is not the weak link. The weak link is what one hull can carry, and one hull can carry nothing.
+The honest delays run straight on the probability plot, skewness {fmt(laneSkew, 3)} across {fmtInt(honestDelays.length)} transits. The model holds. One hull still carries nothing.
 
-So the nineteen are individually unremarkable, and that fact is now on the record in the ship's own hand. What is left is the only thing the day did not touch: those {fmtInt(NINETEEN_N)} numbers have an **average**, and an average is a statistic, and a statistic has a sampling distribution of its own. Ferrier writes the next task on the board before she leaves the bridge, in five words, without a number in it.
+The nineteen are individually unremarkable, and that is on the record now in the ship's own hand. One thing the day did not touch: those {fmtInt(NINETEEN_N)} numbers have an **average**. Ferrier writes the next task on the board before she leaves the bridge. Five words, no number in it.
 
 *How far can a mean wander?*
 
