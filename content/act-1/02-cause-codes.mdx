@@ -112,7 +112,7 @@ Take the Mars–Belt corridor's file, 2170–76: {marsBeltTotal} losses, {marsBe
 Now truncate. *Accident* at {fmt(marsBelt[0].relFreq, 3)} is {fmt(mbTrueRatio, 2)} times *unknown* at {fmt(marsBelt[2].relFreq, 3)}. The honest chart draws one bar twice the other. Start the value axis at {fmtPct(mbBaseline, 0)} instead of zero and the drawn lengths become {fmt(marsBelt[0].relFreq - mbBaseline, 3)} against {fmt(marsBelt[2].relFreq - mbBaseline, 3)}: a height ratio of **{fmt(mbDrawnRatio, 1)}**. Nothing in the file changed and the axis labels are still correct. The drawing now overstates the difference by a factor the reader has no way of recovering from the picture alone.
 </Briefing.Worked>
 <Briefing.Caution>
-*A pie for data that are not parts of one whole.* Two offices' *unknown* shares are two numbers from two different denominators; they do not partition anything and they need not sum to one, so they are not slices. Neither are quantities measured on a scale, since hull ages have no slices, and neither is a time series, where a pie throws away the ordering the trend lives in.
+*A pie for data that are not parts of one whole.* Two offices' *unknown* shares are two numbers from two different denominators; they do not partition anything and they need not sum to one, so they are not slices. Neither are quantities measured on a scale, and neither is a time series, where a pie throws away the ordering the trend lives in.
 
 *A truncated axis read as a proportional difference.* "Nearly three times the height" is a statement about the drawing, not about the data. Read the axis before the bars, every time, and read it on charts other people send you as well as on your own.
 </Briefing.Caution>
