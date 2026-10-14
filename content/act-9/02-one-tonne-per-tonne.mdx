@@ -74,16 +74,16 @@ export const intervalRubric = {
 
 <Scene stamp="MET 208/11:05" location="Engineering deck, sink bay · five milligee for Ceres, both wings out" condensed="Thirty-four degrees on the engineering deck with the radiators out and the loop pumps running. Rook brings Sandoval the countersignature for the mast patch and asks her a physical question while she reads it: if a hull is carrying mass it never declared, does the extra fuel show up as a fixed amount per ship or as an amount per tonne? Her answer is the ballast tanks. Ebele arrives with the nineteen's fit and the eight hundred and eighty-one as a control, and writes the degrees of freedom down wrong.">
 
-Thirty-four degrees on the engineering deck and both loop pumps running, so the plates hum through your boots and the whole compartment smells of warm coolant and the char the mast patch left in the frames. Your shirt is stuck to the small of your back inside ninety seconds. Sandoval has been down here since the forenoon watch with her sleeves rolled and a rag through her belt.
+Thirty-four degrees on the engineering deck. Both loop pumps are running and the plates hum through your boots. The compartment smells of warm coolant and of the char the mast patch left in the frames. Your shirt is stuck to the small of your back inside ninety seconds. Sandoval has been down here since the forenoon watch, sleeves rolled, a rag through her belt.
 
 You have brought the countersignature for the patch, because she would not put her name under yours on the slate and asked for paper.
 
 She reads it standing, holding it flat against the cradle rail with two fingers so the airflow does not take it.
 
-While she reads, you ask her the question you came down to ask. A hull that is carrying something it never declared. Does that show up in the fuel as a fixed amount, ship by ship, or as an amount per tonne of the ship?
+While she reads, you ask what you came down to ask. A hull that is carrying something it never declared. Does that show up in the fuel as a fixed amount, ship by ship, or as an amount per tonne of the ship?
 
 <Dialogue speaker="engineer" aside="She does not look up from the form.">
-Per tonne. It has to be. Nobody bolts a crate to a freighter, Skipper. It goes in the trim-ballast tanks, and the trim tanks on a Sulcus are sized off the hull, so a big hull has big tanks and a small one has small ones. Whatever they put in them scales with the ship, so the fuel to move it does too. A fixed amount would mean every hull took the same extra regardless of size, and no cargo works like that. Plus or minus, obviously. I have not seen your numbers.
+Per tonne. It has to be. Nobody bolts a crate to a freighter, Skipper. It goes in the trim-ballast tanks, and Sulcus trim tanks are sized off the hull. Whatever they put in them scales with the ship, so the fuel to move it does too. A fixed amount would mean every hull took the same extra whatever its size, and no cargo works like that. Plus or minus, obviously. I have not seen your numbers.
 </Dialogue>
 
 She signs it and hands it back and puts the pen away before you have the form folded.
@@ -91,16 +91,16 @@ She signs it and hands it back and puts the pen away before you have the form fo
 Ebele comes down the ladder with two slates and stops on the bottom rung because the heat hits him.
 
 <Dialogue speaker="analyst" aside="He is already reading off the upper slate, at the pace he reads at 04:00.">
-So the nineteen, sir, fuel loaded against the Bureau's required-fuel column, which is that departure's own profile against that departure's own declared mass. The line's up. And I ran the same thing on the {fmtInt(HONEST_N)} Perrine hulls that came home, as a control, because they're the same fleet and the same examiner's office and the same six years.
+So the nineteen, sir. Fuel loaded against the Bureau's required-fuel column. That column is the departure's own profile against its own declared mass. The line's up. And I ran the same thing on the {fmtInt(HONEST_N)} Perrine hulls that came home, as a control. Same fleet, same examiner's office, same six years.
 </Dialogue>
 
 He writes on the bulkhead slate in the space Sandoval keeps for loop pressures. Two fits, two intervals, and under the first one, without pausing over it, *df = {fmtInt(DIVERTED_N - 1)}*.
 
 Sandoval reads the loop pressures off the gauge above his hand and writes them in the corner he has left her.
 
-Physics fixes the honest answer here. The Bureau's requirement *is* the fuel: certify a hull at a given mass on a given month's plot, and the plotted profile burns a fraction of that mass getting down the Lane, and an honest master loads the fraction. One tonne for every tonne required, on any geometry, in any season, for any hull.
+Physics fixes the honest answer here. Certify a hull at a given mass on a given month's plot and the plotted profile burns a fraction of that mass getting down the Lane. An honest master loads the fraction. One tonne for every tonne required, on any geometry, for any hull.
 
-So the question is not whether the nineteen's fitted slope is bigger than one. It came out bigger than one, and a slope that came out bigger than one will do that from time to time on nineteen points for no reason at all. The question is whether the interval around it can reach back down and touch one.
+The nineteen's fitted slope came out bigger than one. On nineteen points a slope will do that from time to time with nothing wrong at all. What matters is whether the interval around it can reach back down and touch one.
 
 </Scene>
 
@@ -248,12 +248,12 @@ Notice what the interval did and did not do. It settled a claim about a number n
   hint={`b ± t*·SE(b). Both numbers are in the Coef and SE Coef columns of the slope's row, and the degrees of freedom are not ${fmtInt(DIVERTED_N - 1)}.`}>
   <Success>
   <Dialogue speaker="analyst" aside="He rubs out what he wrote on Sandoval's bulkhead slate and puts the right number under it.">
-  Seventeen. Not eighteen. Two parameters off the same nineteen points, so two of them are gone before I start. And the bottom of it is still above one, sir, with the critical value that being wrong about the degrees of freedom would have made smaller.
+  Seventeen. Not eighteen. Two parameters off the same nineteen points, so two are gone before I start. And the bottom of it is still above one, sir. On the wider interval, not the one I'd have got.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She has come down the ladder with the heat and has not remarked on it.">
-  {fmtInt(DIVERTED_N - 1)} is what you use when you have estimated one thing. You estimated two. Where the line crosses and how steep it is, both out of the same nineteen departures. $n$ minus two, Ensign, and then the critical value, and then the arithmetic.
+  {fmtInt(DIVERTED_N - 1)} is what you use when you have estimated one thing. You estimated two. Where the line crosses and how steep it is, both out of the same nineteen departures. $n$ minus two, Ensign. Then the critical value.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -264,7 +264,7 @@ Notice what the interval did and did not do. It settled a claim about a number n
   {...intervalRubric}>
   <Success>
   <Dialogue speaker="engineer" aside="She has the loop log open and is not writing in it.">
-  Then it is per tonne, Skipper, like I said, and it is more than a tonne for every tonne the Bureau asked for. Sulcus trim tanks run to about a tenth of hull mass. That is the right order for what you are showing me and I would want the pumping records before I said it out loud.
+  Then it is per tonne, Skipper, like I said, and it is more than a tonne for every tonne the Bureau asked for. Sulcus trim tanks run to about a tenth of hull mass. That is the right order for what you are showing me. I would want the pumping records before I said it out loud.
   </Dialogue>
   </Success>
   <Failure>
@@ -279,7 +279,7 @@ Notice what the interval did and did not do. It settled a claim about a number n
   hint="Same construction, a different output table, and a far larger n. Four decimal places, because with this many departures the interval is narrow enough that three would hide the answer.">
   <Success>
   <Dialogue speaker="analyst">
-  So the honest fleet brackets one, sir, and the whole interval is {fmt((nineteenHi - nineteenLo) / (controlHi - controlLo), 0)} times narrower than the nineteen's. Same physics, same office. It isn't the Bureau's process that's wrong, because the Bureau's process is sitting right there doing exactly what it is supposed to do, {fmtInt(HONEST_N)} times.
+  So the honest fleet brackets one, sir, and its interval is {fmt((nineteenHi - nineteenLo) / (controlHi - controlLo), 0)} times narrower than the nineteen's. Same physics, same office. The Bureau's process is sitting right there doing exactly what it is supposed to do, {fmtInt(HONEST_N)} times.
   </Dialogue>
   </Success>
   <Failure>
@@ -293,7 +293,7 @@ Notice what the interval did and did not do. It settled a claim about a number n
 
 <Scene stamp="MET 208/19:30" location="Wardroom · five milligee for Ceres · twenty-five days out" condensed="The finding goes in the annex with its conditions: the nineteen were fuelled above the requirement their own filed profiles set, per tonne, and the eight hundred and eighty-one that came home were not. Ferrier names what it still does not reach. Ostrow's answer is that the masters went rogue at Mark 9, and a hull fuelled heavy at Uruk High is consistent with that, because a heavy hull needs more fuel whatever it intends to do with it.">
 
-The wardroom is the only compartment on the ship still cooler than the passage outside it, and four of you are in it because of that.
+The wardroom is the only compartment still cooler than the passage outside it. Four of you are in it for that reason.
 
 The annex page says what it can. Fuel loaded against the fuel the filed profile required, nineteen diverted departures, slope {fmt(NINETEEN_FUEL_FIT.slope, 3)} tonnes per tonne, standard error {fmt(NINETEEN_FUEL_FIT.seSlope, 3)}, {fmtInt(NINETEEN_FUEL_INTERVAL.df)} degrees of freedom, {fmtPct(0.95, 0)} interval from {fmt(nineteenLo, 3)} to {fmt(nineteenHi, 3)}. Under it, the control: {fmtInt(HONEST_N)} Perrine arrivals, slope {fmt(HONEST_FUEL_FIT.slope, 4)}, interval {fmt(controlLo, 4)} to {fmt(controlHi, 4)}. Under that, in Ferrier's hand, the condition about the spread growing with the hull, and the word *reported* beside it.
 
@@ -311,7 +311,7 @@ Nobody answers her, so you do it.
 
 A hull loaded above the requirement is a hull carrying mass it did not declare. Everyone at this table already knew the mass was there; Ebele weighed it out of the relay net at MET 36 and it has been in the file since. The fuel is the same fact with a Bureau stamp on it.
 
-And Ostrow's story survives it whole. The masters went rogue at Mark 9. Their hulls were heavy because somebody was running undeclared freight for the money, which happens on every corridor in the system, and the extra fuel was for the extra mass, and nobody at Uruk High knew anything except that the certificates balanced. Heavy hull, heavy tanks. It is a complete answer and this page does not touch it.
+And Ostrow's story survives it whole. The masters went rogue at Mark 9. Their hulls were heavy because somebody was running undeclared freight for the money, which happens on every corridor in the system. The extra fuel was for the extra mass. Nobody at Uruk High knew anything except that the certificates balanced. Heavy hull, heavy tanks. It is a complete answer and this page does not touch it.
 
 <Dialogue speaker="xo">
 Then we need a number in that file that has nothing to do with how heavy the hull was.
