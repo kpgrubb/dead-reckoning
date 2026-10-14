@@ -1,12 +1,12 @@
 import { CdfAccumulator } from '@/instruments/act-5/CdfAccumulator'
 
-Ebele offers this one at the bridge door, on a slate, unasked — the same slate, two Acts later. You do not need it to work the watch. It is here because the readout the panel calls *area above the cutoff* has a name in a different room, and the name explains why the inverse direction works at all.
+Optional, and nothing downstream depends on it. The readout the panel calls *area above the cutoff* is an object with a name in calculus, and the name is what explains why the inverse direction works at all.
 
 **The CDF is an accumulation.** A density $f$ has no probability in it until you sweep an interval. Sweep from the far left up to a moving right-hand end $x$ and record the total as you go, and what you have built is a function of where you stopped:
 
 <Formula
   tex="F(x) = \int_{-\infty}^{x} f(t)\,\mathrm{d}t"
-  terms={{ 'f(t)': 'the density — a height, never a probability', 'F(x)': 'the running total of that density up to x: the proportion of the population at or below x', 'x': 'the upper limit — the thing that moves' }}
+  terms={{ 'f(t)': 'the density: a height, never a probability', 'F(x)': 'the running total of that density up to x: the proportion of the population at or below x', 'x': 'the upper limit, the thing that moves' }}
   label="The cumulative function is the density, accumulated from the left"
 />
 
@@ -20,7 +20,7 @@ Push $x$ to the right and every strip you have already added stays added; you ar
 
 <Formula
   tex="F'(x) = f(x)"
-  terms={{ "F'(x)": 'how fast the running total is climbing at x — the slope of the CDF', 'f(x)': 'the density at x — the height of the curve' }}
+  terms={{ "F'(x)": 'how fast the running total is climbing at x: the slope of the CDF', 'f(x)': 'the density at x: the height of the curve' }}
   label="The Fundamental Theorem of Calculus, stated without ceremony"
 />
 
@@ -30,14 +30,14 @@ Which is the whole explanation of the shape of a CDF. It is steepest where the d
 
 <Formula
   tex="x_q = F^{-1}(q) \quad\text{where}\quad F(x_q) = q"
-  terms={{ 'q': 'the area that must lie below the cutoff', 'x_q': 'the only value that accumulates exactly that much', 'F^{-1}': 'the inverse of the accumulation — area in, value out' }}
+  terms={{ 'q': 'the area that must lie below the cutoff', 'x_q': 'the only value that accumulates exactly that much', 'F^{-1}': 'the inverse of the accumulation: area in, value out' }}
   label="Backwards: the area is given, the cutoff is wanted"
 />
 
-The only property this needs is that $F$ is strictly increasing: each step to the right adds a positive slice of area, so no two cutoffs collect the same total, and the $x$ that produces an area $q$ exists and is the only one. That is all the calculator is using when it turns 0.99 into a number of days. Nothing about normality, nothing about symmetry — just a total that only ever goes up.
+The only property this needs is that $F$ is strictly increasing: each step to the right adds a positive slice of area, so no two cutoffs collect the same total, and the $x$ that produces an area $q$ exists and is the only one. That is all the calculator is using when it turns 0.99 into a number of days. Nothing about normality, nothing about symmetry. Just a total that only ever goes up.
 
-Run both experiments below. Drag the cutoff and watch one quantity in two places: the shaded area on the density is the height of the dot on the running total. Then push **accumulation strips** from 4 to 200 and read *strip sum − F(x) · the error* — the rectangles never become the curve, they converge on it, and the error is a number that shrinks rather than a promise. Then look at the second readout row: *slope of F at x* beside *f(x) · normal.pdf*, the Fundamental Theorem as two numbers that agree.
+Run both experiments below. Drag the cutoff and watch one quantity in two places: the shaded area on the density is the height of the dot on the running total. Then push **accumulation strips** from 4 to 200 and read *strip sum − F(x) · the error* — the rectangles converge on the curve without ever becoming it, and the error is a number that shrinks rather than a promise. Then look at the second readout row: *slope of F at x* beside *f(x) · normal.pdf*, the Fundamental Theorem as two numbers that agree.
 
 <CdfAccumulator />
 
-**Why this matters here.** Every inverse-normal cutoff this watch — the delay only one honest transit in a hundred exceeds, the percentile Ferrier wants at the top of the brief — is this accumulation read backwards, and the machine can only read it backwards because the total never turns around. And knowing that it is an accumulation is what keeps *the area above 6.4 days* from being confused with *the height of the curve at 6.4 days*, which is not a probability and never was.
+**Why this matters here.** Every inverse-normal cutoff in this unit is this accumulation read backwards, and the machine can only read it backwards because the total never turns around. Knowing that it is an accumulation is also what keeps *the area above a cutoff* separate from *the height of the curve at that cutoff*. Only the first of those is a probability.
