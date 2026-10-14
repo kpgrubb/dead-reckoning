@@ -1,0 +1,349 @@
+---
+id: act-6-08
+act: 6
+title: "The Accusation"
+kind: module
+ap_topics: ["6.10", "6.11"]
+objectives:
+  - "State hypotheses for a two-proportion z-test and verify its conditions using the pooled proportion"
+  - "Calculate the pooled proportion, the standardized test statistic and the p-value for the difference of two proportions"
+  - "Write the conclusion in context and state the scope of inference the design actually supports"
+prereqs: ["act-6-06", "act-6-07"]
+est_minutes: 30
+calc_briefing: null
+summary: "Four pages: state, plan, do, conclude. Ebele builds the test with the interval's standard error and the p-value comes out four times too big. Then the brief gets a name and a hull number at the bottom of it."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct, pValueZ, twoPropTest } from '@/lib/stats'
+import {
+  BOARD_TABLE,
+  DIFFERENCE_INTERVAL,
+  LANE_LOSSES,
+  LANE_TRANSITS,
+  OTHER_LOSSES,
+  OTHER_RATE,
+  OTHER_TRANSITS,
+  PERRINE_HOLDINGS,
+  PERRINE_LOSSES,
+  PERRINE_RATE,
+  PERRINE_TEST,
+  PERRINE_TRANSITS,
+  POOLED_RATE,
+  PROVIDENT_FUND,
+  SMALLEST_EXPECTED_COUNT,
+} from '@/instruments/act-6/data'
+import { HYPOTHESIS_CASES } from '@/instruments/act-6/HypothesisConsole'
+import { PValueVisualiser } from '@/instruments/act-6/PValueVisualiser'
+import { BeneficiaryTwoWay, ChosenAlpha, DECISION_IDS, Decided } from '@/instruments/act-6/story'
+import { KeyTable } from '@/instruments/act-6/_ui'
+import { fourStepConclusionRubric, pooledConditionsRubric } from '@/lib/problems/generators/act-6/accusation'
+
+export const ALPHA = 0.05
+export const SCOPE = 'transits recorded in the Authority Transit Ledger between 2178 and the Register snapshot'
+/** What the test becomes if the interval's standard error is used in it: the module's misconception, priced. */
+export const unpooledSe = DIFFERENCE_INTERVAL.se
+export const unpooledZ = DIFFERENCE_INTERVAL.estimate / unpooledSe
+export const unpooledP = pValueZ(unpooledZ, 'greater')
+export const pRatio = unpooledP / PERRINE_TEST.pValue
+export const inTenThousand = PERRINE_TEST.pValue * 10000
+/** The Briefing's worked case: the Carme outer loop, two transponder fleets, run end to end. */
+export const carme = HYPOTHESIS_CASES.carme
+export const carmeTest = twoPropTest({ x1: carme.x1, n1: carme.n1, x2: carme.x2, n2: carme.n2, alt: 'greater', random: true })
+export const carmeRate1 = carme.x1 / carme.n1
+export const carmeRate2 = carme.x2 / carme.n2
+export const carmeCounts = [
+  [carme.group1, fmt(carme.n1 * carmeTest.pooled, 1), fmt(carme.n1 * (1 - carmeTest.pooled), 1)],
+  [carme.group2, fmt(carme.n2 * carmeTest.pooled, 1), fmt(carme.n2 * (1 - carmeTest.pooled), 1)],
+]
+export const carmeSmallest = Math.min(carme.n1 * carmeTest.pooled, carme.n2 * carmeTest.pooled, carme.n1 * (1 - carmeTest.pooled), carme.n2 * (1 - carmeTest.pooled))
+export const carmePooledTex = `\\hat p_c = \\frac{x_1 + x_2}{n_1 + n_2} = \\frac{${carme.x1} + ${carme.x2}}{${carme.n1} + ${carme.n2}} = ${fmt(carmeTest.pooled, 5)}`
+export const carmeZTex = `z = \\frac{\\hat p_1 - \\hat p_2}{\\sqrt{\\hat p_c(1-\\hat p_c)\\left(\\frac{1}{n_1} + \\frac{1}{n_2}\\right)}} = \\frac{${fmt(carmeTest.estimate, 5)}}{${fmt(carmeTest.se, 5)}} = ${fmt(carmeTest.statistic, 3)}`
+export const carmePTex = `P = P(Z > ${fmt(carmeTest.statistic, 3)}) = ${fmt(carmeTest.pValue, 4)}`
+/** The Calculator's case: the Board's two corridors, tested rather than estimated. */
+export const corridorTest = twoPropTest({
+  x1: BOARD_TABLE.lane.losses,
+  n1: BOARD_TABLE.lane.transits,
+  x2: BOARD_TABLE.marsBelt.losses,
+  n2: BOARD_TABLE.marsBelt.transits,
+  alt: 'two-sided',
+  random: true,
+})
+export const laneConditionsRubric = pooledConditionsRubric({
+  n1: PERRINE_TRANSITS,
+  n2: OTHER_TRANSITS,
+  pooled: POOLED_RATE,
+  group1: PERRINE_HOLDINGS,
+  group2: 'all other beneficiaries',
+  unit: 'transits',
+  context: 'the Ledger is a census of every transit the Lane recorded over the window, so the randomness is a property of the traffic process rather than of a draw from it',
+})
+export const laneFourStepRubric = fourStepConclusionRubric({
+  pValue: PERRINE_TEST.pValue,
+  alpha: ALPHA,
+  parameter: 'loss rate per transit',
+  population: 'transits on the Hundred-Day Lane',
+  group1: `hulls whose policies name ${PERRINE_HOLDINGS}`,
+  group2: 'the rate for hulls naming any other beneficiary',
+  window: SCOPE,
+  directionWords: ['often'],
+})
+export const flagOptions = [
+  'Board only, through Lane Operations. One file, one addressee, the routing the regulations name and nothing beside it. If it is buried, it is buried in a building where somebody had to sign for it.',
+  'Board through Lane Operations, copy to the Flag Secretary. A second office holds a second copy from the hour it is sent, and a finding that exists in two registries is harder to lose than one that exists in one.',
+]
+
+<Scene stamp="MET 140/06:40" location="Bridge · CSV Nightjar · Compact consular berth four, Ceres · wings out" condensed="Four pages on the chart table before the forenoon: state, plan, do, conclude. Ebele has rebuilt the test overnight using the interval's standard error, and the p-value comes back several times too large. Rook stops the page there. The null hypothesis says there is one rate, so the test is built inside that assumption. That is what pooling is. Then the conditions page, where the smallest expected count passes by less than a hull, and Solberg with the light-lag.">
+
+The wings have been out since the middle watch and the ship is dumping fifty-seven days of stored heat into a Ceres parking orbit in front of forty other hulls. Sandoval wants them in by the forenoon. Until then the deck plates are warm through your boots for the first time since Callisto, and nobody has mentioned it.
+
+Four pages on the chart table, face up, in order. **State. Plan. Do. Conclude.** Ebele laid them out at some point in the middle watch and then went and slept for three hours in the chair at the intel terminal rather than go aft to his rack.
+
+He is awake now and he has rebuilt the second page.
+
+<Dialogue speaker="analyst" aside="He has the working on the slate and the slate flat on the table, turned so you can both read it the same way up.">
+So I redid the statistic with the standard error from yesterday, sir, because it is the same four numbers and I wanted the brief to be internally consistent. It comes out at z equals {fmt(unpooledZ, 2)} and a p of {fmtP(unpooledP)}. Still small enough to decide on.
+</Dialogue>
+
+You put a finger on the denominator and leave it there.
+
+"Read me the null hypothesis off page one."
+
+He turns back to it. "H-nought, p-one equals p-two. The two true loss rates are the same."
+
+"Then where in that line does it say there are two rates?"
+
+He does not answer for a moment. Then he puts the stylus down on the page and leaves it there.
+
+<Dialogue speaker="analyst" aside="He is already rubbing out the denominator with the heel of his hand before he finishes the sentence.">
+It does not. The null says there is one rate and I have just estimated it twice and asked it to disagree with itself. If the null is true then every one of the {fmtInt(LANE_TRANSITS)} transits is evidence about the same number, so the standard error has to be built from all of them.
+
+Pooled. {fmtInt(LANE_LOSSES)} over {fmtInt(LANE_TRANSITS)}.
+</Dialogue>
+
+He rebuilds it standing. The statistic comes up at {fmt(PERRINE_TEST.statistic, 2)}, the p-value at {fmtP(PERRINE_TEST.pValue)}, smaller than the one he brought you by a factor of about {fmt(pRatio, 1)}.
+
+Ferrier has the conditions page and has been reading the same four lines on it since before you came up.
+
+<Dialogue speaker="xo" aside="She turns the page round and puts a fingernail under the fourth line, where the smallest of the expected counts is.">
+This one. {fmt(SMALLEST_EXPECTED_COUNT, 1)}. The rule wants ten and we have {fmt(SMALLEST_EXPECTED_COUNT, 1)}, so it passes, and it passes by less than one hull.
+
+Write the number in. Not *conditions met*. The number, and the arithmetic that produced it, on the page where they will look for it. A reviewer who turns that number up himself has found something. In our own hand it is only our working.
+</Dialogue>
+
+Solberg comes up the ladder without being sent for. He has the geometry already.
+
+<Dialogue speaker="comms" aside="He states it as a fact about the solar system and then stops.">
+Ceres to Valhalla is two point nine astronomical units tonight, Captain. Twenty-four minutes each way, whenever you want it away.
+</Dialogue>
+
+Page four is blank below the heading. Under the blank there is a line for a name and, under that, a line for a hull number.
+
+</Scene>
+
+<BeneficiaryTwoWay />
+
+<Briefing title="The two-proportion z-test, end to end" topics={["6.10", "6.11"]}>
+<Briefing.Intuition>
+The interval asked how big the gap is. The test asks a narrower question with a sharper answer: **if the two populations really share one rate, how often would two samples this size come apart by this much?**
+
+Everything in the procedure follows from taking the null hypothesis seriously.
+
+$H_0: p_1 = p_2$ says there is one rate, not two. So the best estimate of that single rate uses every observation in both samples, and the **pooled proportion** is the total count of successes over the total number of units. The standard error of $\hat p_1 - \hat p_2$ is then built at that one rate rather than at two.
+
+This is the whole difference between the test and the interval, and it is worth stating plainly because the two procedures are run on the same four numbers minutes apart. **The test pools because its null says there is one rate to pool.** The interval does not pool because it assumes nothing of the kind: it is estimating how far apart the rates are. Use the interval's unpooled standard error inside the test and the statistic is computed under an assumption the null hypothesis does not make, which is a procedural error even when the answer comes out on the same side of α.
+
+The conditions move with the standard error. Large Counts for the **test** is checked at the pooled proportion, which gives four *expected* counts rather than four observed ones, and they are generally not the counts the file shows. Where it bites is a rare event in two samples of very different sizes: pooling pulls the smaller sample's expected count towards the larger sample's rate, and a success count that cleared 10 comfortably in the file can arrive at the condition with very little room. The expected count is the one that decides it.
+
+After that the arithmetic is the same shape as every test in the unit. Standardize, find the tail the alternative names, compare with α, write the sentence.
+
+The sentence has one extra part here that an exam will award and a hearing will attack: **scope**. A test of two proportions is a statement about two populations over one window of data, and nothing in it identifies a cause. Two groups that were *observed* rather than *assigned* can differ for any reason that also sorted the units into groups. Say what the finding covers, say what it does not, and say both before somebody else says them for you.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula
+  tex="H_0:\ p_1 = p_2 \qquad H_a:\ p_1 > p_2 \quad\text{or}\quad p_1 < p_2 \quad\text{or}\quad p_1 \ne p_2"
+  terms={{ 'p_1': 'the true proportion in population 1, never the sample proportion', 'H_a': 'chosen from the question, before the data are read' }}
+  label="Hypotheses: about parameters, in the order you will subtract them"
+/>
+
+<Formula
+  tex="\hat p_c = \frac{x_1 + x_2}{n_1 + n_2}"
+  terms={{ '\\hat p_c': 'the pooled (combined) proportion: the single rate H₀ claims', 'x_1 + x_2': 'successes from both samples, counts and not rates' }}
+  label="The pooled proportion"
+/>
+
+<Formula
+  tex="z = \frac{(\hat p_1 - \hat p_2) - 0}{\sqrt{\hat p_c(1 - \hat p_c)\left(\dfrac{1}{n_1} + \dfrac{1}{n_2}\right)}}"
+  terms={{ '- 0': 'the null value of the difference; it is zero, and writing it keeps the shape of every other test visible', '\\hat p_c(1 - \\hat p_c)': 'one rate, used twice, because H₀ says there is only one' }}
+  label="The standardized test statistic"
+/>
+
+**Conditions for the test**, each stated with its number:
+
+1. **Random.** Two independent random samples, or two groups created by random assignment. For a process rather than a frame, say what makes the process behave like a random one.
+2. **10%.** $n_1 \le 0.1N_1$ and $n_2 \le 0.1N_2$, checked separately.
+3. **Large Counts, at the pooled proportion.** All four of $n_1\hat p_c$, $n_1(1 - \hat p_c)$, $n_2\hat p_c$, $n_2(1 - \hat p_c)$ at least 10. Report the smallest.
+
+Then $P$ from the standard normal in the tail $H_a$ names, the comparison with α, and a conclusion that carries the decision, the evidence framing, the direction, the context and the scope.
+</Briefing.Definition>
+<Briefing.Worked>
+The Carme outer loop, 2181. Two transponder fleets on one corridor, and a question written down before the log was pulled: do hulls still carrying the older set drop locks more often than hulls carrying the current one?
+
+**State.** Among {carme.population}, let $p_1$ be the true dropout rate per transit for {carme.group1} and $p_2$ the true rate for {carme.group2}.
+
+$$H_0:\ p_1 = p_2 \qquad H_a:\ p_1 > p_2$$
+
+One-sided: the engineering case was on the record before the season, and it points one way.
+
+**Plan.** A two-proportion z-test. The log holds {fmtInt(carme.x1)} dropouts in {fmtInt(carme.n1)} transits for the older set, against {fmtInt(carme.x2)} in {fmtInt(carme.n2)} for the current one: sample rates of {fmtPct(carmeRate1, 2)} and {fmtPct(carmeRate2, 2)}.
+
+<Formula tex={carmePooledTex} label="Pooled: one rate, estimated from both fleets at once" />
+
+Large Counts at that pooled rate:
+
+<KeyTable
+  columns={['fleet', 'expected dropouts', 'expected clean transits']}
+  rows={carmeCounts}
+  caption={`All four expected counts are at least 10; the smallest is ${fmt(carmeSmallest, 1)}.`}
+  ariaLabel="Expected counts for each fleet under the pooled proportion"
+/>
+
+**Do.**
+
+<Formula tex={carmeZTex} label="The statistic, standardized at the pooled standard error" />
+
+<Formula tex={carmePTex} label="The tail the alternative names" />
+
+**Conclude.** At α = {fmt(ALPHA, 2)}: because $P$ = {fmt(carmeTest.pValue, 4)} is less than α, reject $H_0$. There is convincing evidence that the true dropout rate per transit is higher for {carme.group1} than for {carme.group2}, among {carme.population}.
+
+**Scope.** The finding covers the transits in this log over this season. The two fleets were not assigned at random, so the comparison is observational: anything that put the older set on particular hulls (age, operator, route) travels with the fleet label and is inside the result. The test found a difference and has no opinion about what produced it.
+
+Two things worth noticing before this is left alone. At α = 0.01 the same $P$ of {fmt(carmeTest.pValue, 4)} does **not** clear the bar, and the decision flips while not one digit of the arithmetic changes. And had the unpooled standard error been used here instead, the statistic would have moved, because the two estimates are different quantities and only one of them is the test's.
+</Briefing.Worked>
+<Briefing.Caution>
+*The unpooled standard error inside the test.* The most common procedural error in the topic, and the easiest to make on an exam that asks for an interval and a test on the same data. Pool for the test, do not pool for the interval. If you can say why in one sentence, you will not mix them up: the test is computed inside the world where $H_0$ is true, and in that world there is one rate.
+
+*Large Counts checked on the observed counts.* For an interval that is correct. For a test it is the wrong four numbers. Multiply each sample size by $\hat p_c$ and by $1 - \hat p_c$ and report the smallest of the four, because the smallest is what a reader checks.
+
+*A conclusion phrased about the samples.* "The {fmtPct(PERRINE_RATE, 2)} group was lost more often than the {fmtPct(OTHER_RATE, 2)} group" is a description of the data, which nobody needed a test to obtain. The conclusion is about the true rates in the two populations, and the word *evidence* keeps it honest.
+
+*Scope left off.* Two failures hide here. The first is a conclusion with no window attached, which will be quoted as though it covered every transit in the system. The second is the slide from a difference to a cause: these groups were observed, not assigned, so the test licenses "they differ" and never "this made them differ".
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="Two-proportion z-test (6:2-PropZTest)">
+<Calculator.Step keys={['STAT', '▸ TESTS', '6:2-PropZTest']} note={`x1: ${BOARD_TABLE.lane.losses} · n1: ${BOARD_TABLE.lane.transits} · x2: ${BOARD_TABLE.marsBelt.losses} · n2: ${BOARD_TABLE.marsBelt.transits} · p1: ≠p2 · Calculate`}>Worked here on a different pair from the briefing's: the Board's two corridors, the Hundred-Day Lane against the Mars–Belt run, asked as a test rather than as an interval. All four entries are **counts**. The `p1:` row is the alternative hypothesis, and you choose it from the question before you look at the screen below it.</Calculator.Step>
+<Calculator.Read label="z" value={fmt(corridorTest.statistic, 6)}>the standardized statistic, computed at the pooled standard error. The device pools without telling you.</Calculator.Read>
+<Calculator.Read label="p" value={fmt(corridorTest.pValue, 6)}>the p-value in the tail the `p1:` row named. Change that row and this number changes with it.</Calculator.Read>
+<Calculator.Read label="p̂" value={fmt(corridorTest.pooled, 6)}>the pooled proportion, below `p̂1` and `p̂2` on the screen. It is the one row that tells you which procedure you are running.</Calculator.Read>
+<Calculator.Watch>**`6:2-PropZTest` pools and `B:2-PropZInt` does not.** The same four counts entered into the two menu items return different standard errors, on purpose. If a question asks for a test and an interval on one data set, expect two different standard errors and do not reconcile them. The tell on the screen is the `p̂` row: the test has one, the interval does not.</Calculator.Watch>
+<Calculator.Watch>**`Draw` instead of `Calculate` shades the tail** and prints `z` and `p` on the picture, which is worth doing once to see which tail the `p1:` row selected. It does not print `p̂1`, `p̂2` or `p̂`, so run `Calculate` as well when the working has to be shown.</Calculator.Watch>
+<Calculator.Watch>**The device checks no conditions.** It will not look at $n\hat p_c$, it will not warn you when an expected count is 4, and it prints six decimals either way. Compute the four pooled products yourself, and report the smallest.</Calculator.Watch>
+</Calculator>
+
+<PValueVisualiser mode="two-prop" alt="greater" lockAlt label="BRIEF · THE SIGNED TEST" />
+
+<Drill generator="act-6/pooled-or-unpooled" count={1} />
+<Drill generator="act-6/pooled-test-statistic" count={1} />
+<Drill generator="act-6/two-prop-p-value" count={1} />
+<Drill generator="act-6/pooled-conditions" count={1} />
+<Drill generator="act-6/four-step-test" count={1} />
+<Drill generator="act-6/scope-of-inference" count={1} />
+
+<MissionBeat id="act-6-08-conditions" kind="interpretation" label="PAGE THREE · CONDITIONS"
+  prompt={`Page three of the brief, in full, in your own words.\n\nThe test is H₀: p₁ = p₂ against Hₐ: p₁ > p₂ on ${fmtInt(PERRINE_LOSSES)} losses in ${fmtInt(PERRINE_TRANSITS)} transits against ${fmtInt(OTHER_LOSSES)} in ${fmtInt(OTHER_TRANSITS)}. State all three conditions with their numbers, and say which of the four Large Counts products is the smallest and what it comes to.\n\nFerrier's instruction stands: not *conditions met*, but the arithmetic, on the page where a reviewer will look for it.`}
+  hint="Three conditions. Random is a statement about how these transits came to exist, because the Ledger is a census of a process rather than a draw from a frame. The 10% condition is about how many transits the process could produce. Large Counts for a TEST is computed at the pooled proportion, which gives four expected counts, not the four counts in the file."
+  {...laneConditionsRubric}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it once and initials the foot of the page before she speaks.">
+  That is the page I wanted. The weakest number in the whole brief is on it, in our hand, with the multiplication beside it. Now nobody at Valhalla gets to discover it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has his own conditions page up beside yours and is comparing them line by line.">
+  Sir, the Large Counts line. I used {fmtInt(PERRINE_LOSSES)} and {fmtInt(OTHER_LOSSES)}, which are the counts in the file, and the file is not what the condition is about. Under the null there is one rate, so it is {fmtInt(PERRINE_TRANSITS)} times the pooled proportion, and that is a different number, and it is the one that is tight.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-08-conclusion" kind="interpretation" label="PAGE FOUR · THE CONCLUSION AND ITS SCOPE"
+  prompt={`Page four. The statistic is z = ${fmt(PERRINE_TEST.statistic, 2)} with a one-sided p-value of ${fmtP(PERRINE_TEST.pValue)}, and the level was set before any of it was read.\n\nWrite the conclusion. The decision against α, the finding framed as evidence, the direction, whose ships and which rate, and the scope: which transits, over which window, out of which record. One or two sentences, and they will be read aloud by somebody who wants them to fall apart.`}
+  hint="Five things in the conclusion and one more after it. Decision; the p-value against α with both numbers; convincing evidence, never proof; the direction Hₐ claimed; the population and the variable. Then the scope clause: what the finding covers, and the fact that a difference of two rates names no cause and no party."
+  {...laneFourStepRubric}>
+  <Success>
+  <Dialogue speaker="xo" aside="She copies it onto page four in ink and leaves the two lines below it empty.">
+  It says what we did, it says what we found, and it stops at the edge of the procedure. The scope clause is what will keep it alive through the first hostile reading.
+
+  The lines underneath are yours.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He has the draft and a pen and is reading it backwards from the full stop.">
+  So the arithmetic is all in there and the ships are not, sir. Whose rate, higher than whose, over what. And it needs the window on it, because without it that sentence is about every transit anybody has ever flown.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-6-08-flag-secretary" kind="decision" label="ROUTING"
+  prompt={`The brief is finished and Solberg wants an addressee. The regulations name Lane Operations, which passes it to the Board. The Flag Secretary's office may be copied at your discretion, and the discretion is the whole question: a second copy in a second registry, or one file and one chain of custody.`}
+  options={flagOptions}>
+  <Outcome option={0}>
+  <Dialogue speaker="comms" aside="He enters the single addressee and reads the header back before he queues it.">
+  One addressee, Captain. Lane Operations, for the Board. It is the routing the regulations name and nobody can say we went around anybody.
+  </Dialogue>
+  <Dialogue speaker="xo" aside="She says it to the chart table rather than to either of you.">
+  It also means there is exactly one file, in one building, and we will not know whose desk it is on.
+  </Dialogue>
+  </Outcome>
+  <Outcome option={1}>
+  <Dialogue speaker="comms" aside="He adds the second addressee and then reads both back, in order, the way he does.">
+  Lane Operations for the Board, copy to the Flag Secretary. Two registries, Captain. Two timestamps that have to agree with each other afterwards.
+  </Dialogue>
+  <Dialogue speaker="xo" aside="She does not object. She notes the second addressee in the ship's log herself.">
+  A copy is a witness. It is also a second office that now knows, and we have no idea who sits in it.
+  </Dialogue>
+  </Outcome>
+</MissionBeat>
+
+<Gated by={["act-6-08-conditions", "act-6-08-conclusion"]}>
+
+<Scene stamp="MET 140/08:55" location="Bridge · Compact consular berth four, Ceres · wings coming in" condensed="Four pages finished before the forenoon. The pooled rate, the statistic, the one-sided p, the narrow condition written out, the interval from the day before, the conclusion and its scope. Ebele asks what happens if it is wrong; Ferrier answers with the error ledger from the night before. Then the part nobody has said out loud all week: Perrine Holdings' majority member is the fund every officer aboard pays into, and the brief does not mention it because the brief cannot support it.">
+
+Sandoval brings the wings in at 08:40. Inside twenty minutes the deck plates are going cold again under your boots.
+
+The four pages are finished.
+
+**State.** Two parameters, two hypotheses, one-sided, in the language of true rates and not of counted ones. **Plan.** A two-proportion z-test, pooled under the null, with the three conditions written out and the smallest expected count, {fmt(SMALLEST_EXPECTED_COUNT, 1)}, shown with the multiplication that produced it. **Do.** A pooled rate of {fmt(POOLED_RATE, 4)}, a statistic of {fmt(PERRINE_TEST.statistic, 2)}, and a one-sided p-value of {fmtP(PERRINE_TEST.pValue)}: about {fmt(inTenThousand, 0)} seasons in ten thousand look like this one if nothing is wrong with the Lane. Beside it, from yesterday's page, the interval that says how big the gap is. **Conclude.** The sentence, at <ChosenAlpha />, with its scope under it.
+
+<Decided id={DECISION_IDS.register} is="renn">
+The claims register is cited as Tharsis Mutual's, provided by Adjuster Renn at the Ceres consulate, with the date and the hour she handed it over. Ferrier puts the provenance in the brief rather than in an annex, because the first thing a hostile reader will say about it is *a Martian insurer's file*, and the answer to that is to have said it first.
+</Decided>
+
+<Decided id={DECISION_IDS.register} is="okafor">
+The claims register is cited as the Lane Authority's, released through the Ceres office over Okafor-Reyes's signature, with the file reference he insisted on putting on every page. It took two days longer than Renn's copy and it is an Authority document. The Board will have to argue with its own records.
+</Decided>
+
+<Dialogue speaker="analyst" aside="He has stopped looking at the pages. He is looking at the line where the name goes.">
+So what happens if we are wrong, sir.
+</Dialogue>
+
+<Dialogue speaker="xo" aside="She answers him from the night before's page without going to look for it.">
+Then we are wrong in a way we priced in advance and wrote down, at a rate we chose, for reasons that are in the file in the Captain's own words. That is the most anybody gets. The alternative was to be wrong in the other direction and never find out.
+</Dialogue>
+
+Nothing in any of the four pages says who. Nothing says why. Nothing says where the hulls are, or whether anybody is alive on them, and the brief would be worse if it did.
+
+One thing more, true since the register came aboard and in none of the four pages: {PERRINE_HOLDINGS}' majority member is {PROVIDENT_FUND}. Every officer on this bridge pays into it out of every quarter's salary, and the accusation about to go to Valhalla over your name is, read one way, an accusation that your own pension has been paid for in hulls. There is no procedure in the brief that establishes that. It is a line on a company filing and a thing you know.
+
+You sign page four. Then the hull number, under it, in the same hand.
+
+</Scene>
+
+<LogEntry
+  title="Pool under the null; say what the finding covers"
+  concept="A two-proportion z-test asks how often two samples this size would come apart by this much if the two populations shared one rate. Because H₀ says there is one rate, the procedure estimates it from both samples at once: the pooled proportion is the combined count of successes over the combined sample size, and the standard error is built at that single rate. Large Counts for the test is therefore checked on four EXPECTED counts at the pooled proportion rather than on the four counts the file shows, and the smallest of them is the one to report. The conclusion carries the decision against α, the finding as evidence rather than proof, the direction, the population and the variable, and then the scope: which units, over which window, from which record, with no cause claimed, because two groups that were observed rather than assigned can differ for any reason that also sorted them."
+  formula="\hat p_c = \frac{x_1 + x_2}{n_1 + n_2}, \qquad z = \frac{\hat p_1 - \hat p_2}{\sqrt{\hat p_c(1-\hat p_c)\left(\frac{1}{n_1} + \frac{1}{n_2}\right)}}"
+  mistake="Running the test on the interval's unpooled standard error. The two procedures use the same four counts and different standard errors on purpose: the test is computed inside the world where H₀ holds, and in that world there is one rate. Its companion is checking Large Counts on the observed counts, which is right for the interval and the wrong four numbers for the test."
+  tags={['two-proportion z-test', 'pooled proportion', 'conditions', 'expected counts', 'test statistic', 'p-value', 'conclusion in context', 'scope of inference', 'observational study', '6.10', '6.11']}
+/>
+
+</Gated>
