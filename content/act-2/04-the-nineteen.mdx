@@ -52,7 +52,7 @@ Ebele puts the residual display on the intel terminal, and then, because he want
 
 The band is flat. Same width at the lightest departure in the file as at the heaviest, about as many hulls under it as over, nothing in it that the eye stops on.
 
-Above it, clear of it, with nothing in between, sits a knot of hulls. Not one hull. Not a scatter reaching up. A group, holding a height, spread the whole width of the declared-mass axis from the light end to the heavy. Nobody says anything for a moment, because everyone on the bridge has now seen the same thing and is waiting to find out whether somebody will say it wrong first.
+Above it, clear of it, with nothing in between, sits a knot of hulls. Not one hull. Not a scatter reaching up. A group, holding a height, spread the whole width of the declared-mass axis from the light end to the heavy. Nobody says anything. Everyone on the bridge has seen the same thing.
 
 Ebele reaches past the unit toggle and sets COLOUR BY to *later-lost*.
 
@@ -72,7 +72,7 @@ The display answers her without anybody touching a control. The band does not op
 So — then the data are wrong, sir. The telemetry or the certificates, one of the two, because both of them can't —
 </Dialogue>
 
-You stop him there. He is four words from putting it in a draft, and it is the sentence the whole report turns on.
+You stop him there. He is four words from putting it in a draft.
 
 <Briefing title="Residuals" topics={["2.7"]}>
 <Briefing.Intuition>
@@ -154,7 +154,7 @@ They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="Flat. She has the two numbers in front of her.">
-  You just said it was lighter. Look at the two figures again, Captain: the Lane infers more mass than the line predicts from the certificate, so the actual sits above the prediction and the residual is positive. Actual minus predicted, in that order, always. Reverse it and the report accuses the wrong people of the opposite thing.
+  You just said it was lighter. Look at the two figures again, Captain. The Lane infers more mass than the line predicts from the certificate. The actual sits above the prediction, so the residual is positive. Actual minus predicted, in that order, always. Reverse it and the report accuses the wrong people of the opposite thing.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -186,7 +186,7 @@ They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  Count them again, Captain, and check the axis while you do. Five percent of declared mass is not five hundred tonnes for every hull, which is the point of putting it in percent. The instrument will give you the number outright once it is coloured.
+  Count them again, Captain, and check the axis while you do. Five percent of declared mass is not five hundred tonnes for every hull. That is the point of putting it in percent. The instrument will give you the number outright once it is coloured.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -213,7 +213,7 @@ They sum to {fmt(provingFit.residuals.reduce((s, e) => s + e, 0), 3)}, as least-
 
 So it stands, and it will still stand in the morning.
 
-The Manifest file holds {highLost.length} hulls that departed between {fmt(min(highPct), 0)} and {fmt(max(highPct), 0)} percent heavier than the mass their Bureau certificate declares. Every one of them is a hull that never arrived. Nothing else in the four hundred and twelve comes within a percent of them; below five percent the file is a flat, even band of honest scatter, with a clear gap in between and nobody in it.
+The Manifest file holds {highLost.length} hulls that departed between {fmt(min(highPct), 0)} and {fmt(max(highPct), 0)} percent heavier than the mass their Bureau certificate declares. Every one of them is a hull that never arrived. Nothing else in the four hundred and twelve comes within a percent of them. Below five percent the file is a flat, even band of honest scatter, and the gap between it and them is empty.
 
 It is the first hard fact of this deployment. A number, with a denominator, out of two files that were never meant to be read against each other: the Bureau's signatures on one side, the Lane Authority's telemetry on the other, and neither office in any position to have arranged the agreement.
 
@@ -225,7 +225,7 @@ The group is two groups. There are {lowShelf} of them on a shelf at the lower en
 
 You let it stand unexplained in the file. It will keep.
 
-The last thing is the one nobody wants to look at. The Register has {lostTotal} losses in it. Of those, {highLost.length} are up here. The other {lostTotal - highLost.length} are down in the band with everybody else: ordinary hulls, ordinary certificates, ordinary scatter, and gone. Whatever happened to this file did not happen to all of them.
+The last thing is the one nobody wants to look at. The Register has {lostTotal} losses in it. Of those, {highLost.length} are up here. The other {lostTotal - highLost.length} are down in the band with everybody else: ordinary hulls, ordinary scatter, and gone. Whatever happened to this file did not happen to all of them.
 
 </Scene>
 
@@ -233,7 +233,7 @@ The last thing is the one nobody wants to look at. The Register has {lostTotal} 
 One sentence, Captain. What we know, and nothing we don't.
 </Dialogue>
 
-You give it to her the way it will have to go to the Board: that {highLost.length} hulls subsequently recorded as losses departed with an inferred mass between {fmt(min(highPct), 0)} and {fmt(max(highPct), 0)} percent above their certified declared mass, that no other departure in the file does so, and that the residual plot shows no curvature and no change in spread, so the discrepancy lies in the declarations rather than in the model or the measurement.
+You give it to her as it will have to go to the Board: that {highLost.length} hulls subsequently recorded as losses departed with an inferred mass between {fmt(min(highPct), 0)} and {fmt(max(highPct), 0)} percent above their certified declared mass, that no other departure in the file does so, and that the residual plot shows no curvature and no change in spread, so the discrepancy lies in the declarations rather than in the model or the measurement.
 
 Ferrier makes you say the second half twice: what is *not* proven. Who signed a false figure knowing it. Why. What the extra mass was. Where those hulls went, or whether they went anywhere. None of that is in the file, and the file is all you have.
 

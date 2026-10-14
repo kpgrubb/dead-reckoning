@@ -82,11 +82,11 @@ export const assocRubric = {
   minWords: 15,
 }
 
-<Scene stamp="MET 031/07:40" location="Bridge · intel terminal · 0.44 AU from Callisto, 4 mgee" condensed="The Bureau's 412 certifications are aboard but still behind a checksum. Ebele, told to wait, has cross-tabulated the Register instead: owner class against classification, thirty-one hulls in nine cells. He compares raw counts across rows of very different size and Ferrier stops him. Then he divides the same cell by the wrong total and reports a share that answers a question nobody asked.">
+<Scene stamp="MET 031/07:40" location="Bridge · intel terminal · 0.44 AU from Callisto, 4 mgee" condensed="The Bureau's 412 certifications are aboard, still behind a checksum. Ebele was told to wait and has cross-tabulated the Register instead: owner class against classification, thirty-one hulls in nine cells. He compares raw counts across rows of very different size and Ferrier stops him. Then he divides the same cell by the wrong total and reports a share nobody asked for.">
 
-The Bureau's answer came in at 06:12 and is still coming in. Four hundred and twelve departure certifications behind a checksum Solberg will not release until it closes, which it will do at 09:40 or not at all. Ebele has been told to wait. He has not waited.
+The Bureau's answer came in at 06:12 and is still coming in. Four hundred and twelve departure certifications, behind a checksum Solberg will not release until it closes. It closes at 09:40 or not at all. Ebele was told to wait. He has not waited.
 
-Twenty-one days under four milligee. There is a down, and the crew stopped remarking on it somewhere in the second week. Coffee sits in a cup. A dropped stylus lands where you would expect. The wings are out and radiating because the torch has not stopped since MET 10, and the lithium in the cellar ticks the way it does when it is warming and not yet in trouble. Callisto is three and a half minutes of light astern and getting further every watch.
+Twenty-one days under four milligee. There is a down, and the crew stopped remarking on it somewhere in the second week. Coffee sits in a cup. A dropped stylus lands where you would expect. The wings are out and radiating; the torch has not stopped since MET 10. The lithium in the cellar ticks. It is warming and it is not in trouble. Callisto is three and a half minutes of light astern and getting further every watch.
 
 He has the Register up instead. The thirty-one, the file the preliminary went out from, and he has done to it the thing nobody asked him for. Two variables. Owner class down the side: Perrine, Mercantile, independent. Classification across the top: accident, piracy, unknown. Thirty-one hulls sorted into nine cells, and every cell a count.
 
@@ -98,15 +98,15 @@ That is the shape, and he found it in an hour he was not given. Then he says the
 
 Ferrier does not look up from the plot. "There are {perrineLosses} Perrine hulls in that table, Ensign. There are {mercantileLosses} Mercantile and {independentLosses} independent. You are holding a long row against two short ones and calling the difference a finding. Give me proportions inside each row and then say it again."
 
-He switches the display to percentages. Then he goes to the *unknown* column, divides by the number of losses carrying that code, reports the share of them that are Perrine hulls, and calls it the rate at which a Perrine hull goes unexplained.
+He switches the display to percentages. Then he goes to the *unknown* column and divides by the number of losses carrying that code. He reports the share of them that are Perrine hulls, and calls it the rate at which a Perrine hull goes unexplained.
 
-You stop him on the word *rate*, and make him say both questions out loud before he computes either one. Then you make him find which of the two the Board quoted back at you in the *noted*, and he pulls the line up. *It is noted that a preponderance of unclassified incidents is associated with a single operator.* No number under it. No denominator. The verb buried.
+You stop him on the word *rate*, and make him say both questions out loud before he computes either one. Then you make him find which of the two the Board quoted back at you in the *noted*, and he pulls the line up. *It is noted that a preponderance of unclassified incidents is associated with a single operator.* No number under it. No denominator.
 
 Then he asks whether this is the test. The chi-square thing, he says. The one with expected counts.
 
-Months away, you tell him. Not on this ship and not on this file.
+Months away, you tell him. Not on this file.
 
-He writes one word in the display's margin, fast and complete, the way he writes everything. *Association.*
+He writes one word in the display's margin. *Association.*
 
 </Scene>
 
@@ -115,7 +115,7 @@ Row percent and column percent. Same nine cells, sir, and every number on the le
 </Dialogue>
 
 <Dialogue speaker="xo">
-Then keep them a minute apart on paper. Assuming the Register is complete, which it is not, and we say so every time, the table describes {lossTwoWay.total} incidents two offices wrote down. It describes nothing else. I want both denominators printed on the face of the display before the Captain's name goes anywhere near it.
+Then keep them a minute apart on paper. The Register is not complete and we say so every time. The table describes {lossTwoWay.total} incidents two offices wrote down, and nothing else. I want both denominators on the face of the display before the Captain's name goes near it.
 </Dialogue>
 
 <DecisionAside beat="act-1-checkpoint" match="hold">
@@ -125,7 +125,7 @@ Ma'am. The two piles. The abrupt and the gradual. We held them out of the prelim
 </Dialogue>
 
 <Dialogue speaker="xo">
-Because a shape without a second variable is a shape, not a finding. You have your second variable now. It is categorical, it is coded by the same two offices that coded the first one, and it still does not tell you what happened to a hull. Hold your nerve, Ensign.
+Because a shape without a second variable is a shape, not a finding. You have your second variable now. The same two offices coded it. It still does not tell you what happened to a hull. Hold your nerve, Ensign.
 </Dialogue>
 
 </DecisionAside>
@@ -204,7 +204,7 @@ And a third, quieter one: *appear associated* is a description of the individual
   prompt="Open the Register's loss subtable on the intel terminal — owner class against classification, all 31. Of the losses belonging to **Perrine** hulls, what proportion carry the code *unknown*? Report a proportion to three decimal places."
   hint="The sentence is *of the Perrine losses, what share are unknown*. Whatever follows *of the* is the denominator: the Perrine row total, not 31 and not the unknown column.">
   <Success>
-  <Dialogue speaker="analyst" aside="He looks at it for longer than the number deserves.">
+  <Dialogue speaker="analyst" aside="He reads it, then reads the row total under it.">
   Yes, sir. That's the whole row. Not most of it. The row. Every Perrine hull in the file went into the dark and nobody ever wrote down why.
   </Dialogue>
   </Success>
@@ -220,11 +220,11 @@ And a third, quieter one: *appear associated* is a description of the individual
   hint="Same cell as before, different denominator. Now the group you are conditioning on is the unknown column, so its total goes underneath.">
   <Success>
   <Dialogue speaker="xo">
-  Two numbers from one cell, and they are different numbers. The Board wrote the second one. The Ensign said the first. Put both in the file with their denominators spelled out, and never let anyone quote one of them for the other.
+  Two numbers from one cell, and they are different numbers. The Board wrote the second one. The Ensign said the first. Put both in the file with their denominators spelled out.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="xo" aside="She does not raise her voice. She gets more precise.">
+  <Dialogue speaker="xo" aside="She puts a finger on the column total.">
   You conditioned on the answer, Captain. That is the share of the Perrine losses that are unknown, and I asked for the share of the unknown losses that are Perrine. Column total underneath. Again, out loud, before you touch the key.
   </Dialogue>
   </Failure>
@@ -235,7 +235,7 @@ And a third, quieter one: *appear associated* is a description of the individual
   hint="Two variables appear associated when the conditional distribution of one changes as you move across the categories of the other. Compare rows, not cells, and stop at *appear associated*. Nobody assigned a hull its owner.">
   <Success>
   <Dialogue speaker="xo">
-  A staff officer can attack that and get nowhere. It says what the table says, it says whose table it is, and it does not say a word about why. Log it.
+  A staff officer can attack that and get nowhere. It says what the table says and whose table it is. Log it.
   </Dialogue>
   </Success>
   <Failure>
@@ -251,20 +251,20 @@ And a third, quieter one: *appear associated* is a description of the individual
 
 It goes in the file with both denominators written out, because Ferrier wants a hostile reader to trip over those before he trips over anything else. {fmtPct(pUnknownGivenPerrine, 1)} of the Perrine losses are coded *unknown*. {fmtPct(pPerrineGivenUnknown, 1)} of the losses coded *unknown* are Perrine hulls. Two sentences, two denominators, one cell.
 
-Then what the table is willing to say. Classification depends on owner class in this file, descriptively, in the sense that the conditional distributions are not the same from row to row. Every *piracy* in six years is an independent hull; the Mercantile fleet has not lost one to piracy and neither has Perrine. And every Perrine loss on the Register is coded *unknown*. Every one.
+Then what the table is willing to say. The conditional distributions are not the same from row to row, so classification depends on owner class in this file, descriptively. Every *piracy* in six years is an independent hull. The Mercantile fleet has not lost one to piracy and neither has Perrine. And every Perrine loss on the Register is coded *unknown*. Every one.
 
-What the table will not say is the thing Ebele wants it to. It does not say that being a Perrine hull does anything to a ship. The Register is what two offices wrote down. Owner class was not assigned to anyone by anybody running an experiment, and a hundred honest reasons could put one row where it sits. Different hulls. Different routes. Different cutters sent to look, or not sent. Of the {unknownLosses} losses on the file that nobody ever explained, the table says which hulls they were and nothing whatever about what happened to them.
+What the table will not say is the thing Ebele wants it to. It does not say that being a Perrine hull does anything to a ship. The Register is what two offices wrote down. Nobody ran an experiment and assigned a hull its owner, and a hundred honest reasons could put one row where it sits. Different hulls. Different cutters sent to look, or not sent. Of the {unknownLosses} losses nobody ever explained, the table says which hulls they were. It says nothing about what happened to them.
 
 "So we need a variable that isn't a code," Ebele says. "Something measured."
 
-At 09:38 the checksum closes. Solberg reads the header off verbatim, with the lag on it, and releases the file: four hundred and twelve departure certifications from the Bureau of Hulls and Cargo at Uruk High. Declared mass. Fuel loaded. Drive model. An examiner's signature on every one. In the Authority's archive beside it, for each of those four hundred and twelve hulls, a state vector at Mark 2, and an acceleration good to half a percent.
+At 09:38 the checksum closes. Solberg reads the header off verbatim, with the lag on it, and releases the file: four hundred and twelve departure certifications from the Bureau of Hulls and Cargo at Uruk High. Declared mass. Fuel loaded. Drive model. An examiner's signature on every one. The Authority's archive has a state vector at Mark 2 for every one of those hulls, and an acceleration good to half a percent.
 
 Before anyone opens a column, Ferrier has Solberg log the checksum and the release time into the file's provenance line, and initials it herself.
 
 </Scene>
 
 <Dialogue speaker="xo" aside="Not to him. To the display.">
-A number somebody wrote down. A number somebody measured. They are two different kinds of thing, Captain, and everything we do between here and Mark 9 is the distance between them.
+A number somebody wrote down. A number somebody measured. Two different kinds of thing, Captain, and we now have both.
 </Dialogue>
 
 <LogEntry

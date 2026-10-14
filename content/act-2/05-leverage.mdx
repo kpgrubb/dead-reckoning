@@ -46,7 +46,7 @@ export const nineFit = linearRegression(
   [...proving.map((p) => p.fuel), tug.fuel],
 )
 
-<Scene stamp="MET 040/09:10" location="Intel terminal · 0.90 AU from Callisto, 4 mgee" condensed="MV Cyrene Ore, sixty thousand tonnes, sits alone at the top of the declared-mass axis with nothing inside thirty thousand tonnes of her. Ebele wants her out of the fit because she is distorting it. Ferrier will not have a row deleted for being inconvenient and tells him to run it both ways. Then the Bureau's cover note surfaces: a routine quality figure, an r-squared, and nothing else.">
+<Scene stamp="MET 040/09:10" location="Intel terminal · 0.90 AU from Callisto, 4 mgee" condensed="MV Cyrene Ore, sixty thousand tonnes, sits alone at the top of the declared-mass axis with nothing inside thirty thousand tonnes of her. Ebele wants her out of the fit. Ferrier will not have a row deleted for being inconvenient and tells him to run it both ways. Then the Bureau's cover note surfaces: a routine quality figure, an r-squared, and nothing else.">
 
 The intel terminal is the worst station on the ship for a long argument, because it has one chair and the chair is bolted where the bulkhead cuts the light. Ebele has been in it since the end of the middle watch. He has the scatter up with the line through it and the cursor parked on a single point, far out to the right of everything else, and he has been parked on it long enough that the display has dimmed twice.
 
@@ -66,7 +66,7 @@ So. And if the slope moves, sir? Then she is distorting it, and out she goes.
 Then she is doing something, and the report says so, and shows both. A row leaves a file because it is wrong: a transcription error, a fault in the instrument, a ship that does not belong in the population we are describing. Not because the picture is tidier without it. The Bureau deletes rows it does not like. That is the habit we are here to find.
 </Dialogue>
 
-Solberg has been holding something back through all of this and produces it now: the cover note that came attached to the Bureau file at MET 30 and that nobody read, because it is a form. Two paragraphs of transmittal and a quality line. *Routine QA, declared-to-inferred agreement across the sampled period: r² = {fmt(massFit.r2, 2)}.*
+Solberg has been holding something back and produces it now. The cover note came attached to the Bureau file at MET 30 and nobody read it, because it is a form. Two paragraphs of transmittal and a quality line. *Routine QA, declared-to-inferred agreement across the sampled period: r² = {fmt(massFit.r2, 2)}.*
 
 That is a true number. Ebele checks it against his own terminal in about four seconds and it is, to two places, exactly what the file gives.
 
@@ -148,7 +148,7 @@ Look at what *did* move. $r^2$ went {nineFit.r2 > provingFit.r2 ? 'up' : 'down'}
   hint="On the instrument, set FIT to “without” and read the slope. The 411 remaining departures are refitted from scratch — this is not the old line with one point crossed off."
   prompt={`*${cyrene.hull}* declares ${fmtInt(cyrene.declaredMass)} t and the Lane infers ${fmtInt(cyrene.inferredMass)} t for her. Fitted over all ${fmtInt(manifest.length)} departures, the line of inferred mass on declared mass is\n\n$$\\hat{y} = ${fmt(massFit.intercept, 2)} + ${fmt(massFit.slope, 6)}x$$\n\nTake her out. What is the **slope** of the least-squares line fitted to the other ${fmtInt(manifest.length - 1)} departures? Four decimal places.`}>
   <Success>
-  <Dialogue speaker="analyst" aside="He puts the two slopes one above the other and looks at them for a while.">
+  <Dialogue speaker="analyst" aside="He puts the two slopes one above the other.">
   So. The fourth decimal place, sir. That is where she is. I said she had her hand on the slope and she has her hand on the fourth decimal place.
   </Dialogue>
   <Dialogue speaker="xo">
@@ -157,7 +157,7 @@ Look at what *did* move. $r^2$ went {nineFit.r2 > provingFit.r2 ? 'up' : 'down'}
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="Flat. She reaches past him and sets the toggle herself.">
-  That is the fit with her still in it, Captain. Set it to *without* and let it refit. Every coefficient is recomputed from the four hundred and eleven that are left, and the answer is not the old slope with a hull crossed out. Four decimals. If the two lines agree to that, we have learned something, and if they do not, we have learned something else.
+  That is the fit with her still in it, Captain. Set it to *without* and let it refit. Every coefficient is recomputed from the four hundred and eleven that are left, and the answer is not the old slope with a hull crossed out. Four decimals.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -176,12 +176,12 @@ Look at what *did* move. $r^2$ went {nineFit.r2 > provingFit.r2 ? 'up' : 'down'}
   prompt={`The output block for the fit over all ${fmtInt(manifest.length)} departures prints two summaries. The Bureau's cover note quotes the first: R-Sq = ${fmt(100 * massFit.r2, 1)} %. It does not quote the second: S = ${fmt(massFit.s, 1)} t.\n\nInterpret **s** in context, and say what the cover note's r², on its own, cannot tell a reader. One or two sentences, for the annex.`}>
   <Success>
   <Dialogue speaker="xo" aside="She reads it twice before she answers.">
-  That is the sentence. It gives a reader a yardstick in tonnes and it does not accuse anybody of anything. Put it in the annex under the output block and put the output block in whole, every column of it, including the ones we do not use.
+  That is the sentence. It gives a reader a yardstick in tonnes and it does not accuse anybody of anything. Put it in the annex under the output block, and print the output block whole, every column of it.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="To the Ensign, whose draft says the same thing in more words.">
-  Three parts, Captain, and you are missing one. The number, in tonnes. What the number is a typical distance *between*: an actual inferred mass, and the mass the line predicts for that certificate. And then why a share of the variation, however large, cannot answer the only question a reader has, which is how far off is ordinary.
+  Three parts, Captain, and you are missing one. The number, in tonnes. What the number is a typical distance *between*: an actual inferred mass, and the mass the line predicts for that certificate. And then why a share of the variation, however large, cannot answer the only question a reader has. How far off is ordinary.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -194,7 +194,7 @@ So she stays, and the annex carries both lines, and the paragraph that explains 
 
 Her leverage is {fmt(leverage, 3)}, which is {fmt(leverage / cutoff, 0)} times the conventional flag at $4/n$ = {fmt(cutoff, 4)} and the largest in the file by a distance. Her Cook's distance is {fmt(cooks, 3)}, below the same flag. The slope moves by {fmt(Math.abs(massFit.slope - without.slope), 6)} tonnes per tonne when she is removed; the intercept moves by {fmt(Math.abs(massFit.intercept - without.intercept), 0)} tonnes on a fleet whose lightest hull declares fourteen thousand. Both differences are smaller than the width of the stroke the display draws the line with.
 
-The two summaries behave exactly as the yard's file said they would. Without her, $r^2$ goes from {fmt(massFit.r2, 4)} to {fmt(without.r2, 4)}, because she was widening the range of declared mass and a wider range is more variation for a line to explain. And $s$ goes from {fmt(massFit.s, 1)} to {fmt(without.s, 1)} tonnes, which is to say it does not go anywhere. She was never making the fit more accurate about anybody. She was making it look better.
+The two summaries behave exactly as the yard's file said they would. Without her, $r^2$ goes from {fmt(massFit.r2, 4)} to {fmt(without.r2, 4)}, because she was widening the range of declared mass and a wider range is more variation for a line to explain. And $s$ goes from {fmt(massFit.s, 1)} to {fmt(without.s, 1)} tonnes. It does not move. She was never making the fit more accurate about anybody. She was making it look better.
 
 Ebele writes the second paragraph himself and does not need to be told what goes in it. Six hundred tonnes. That is the yardstick: on a line that agrees to a tonne per declared tonne across four hundred and twelve hulls, an honest hull sits about six hundred tonnes from its own prediction, and most of them within twelve hundred.
 
@@ -207,7 +207,7 @@ Sir. The nineteen are not at the edge of that. They are not at two of those, mos
 </Dialogue>
 
 <Dialogue speaker="xo">
-Is a hull with a number beside it, and the number now has a yardstick beside it, which is what we did not have this morning. Don't finish the sentence with an adjective, Ensign. Finish it in tonnes.
+Is a hull with a number beside it, and the number now has a yardstick beside it. Don't finish the sentence with an adjective, Ensign. Finish it in tonnes.
 </Dialogue>
 
 The Bureau's cover note is still open on the second panel. *Routine QA, declared-to-inferred agreement: r² = {fmt(massFit.r2, 2)}.* Honest, checkable, and pitched exactly at a reader who will not ask the second question. Whoever wrote it may have been filling in a form. Somebody designed the form.
@@ -224,10 +224,10 @@ The Bureau's cover note is still open on the second panel. *Routine QA, declared
   </Dialogue>
   </Outcome>
   <Outcome option={1}>
-  <Dialogue speaker="xo" aside="She does not raise her voice, which is worse.">
-  Justify it or leave it, Captain. She is a certified departure on the Lane with clean telemetry, and the only thing wrong with her is that she is far away on the axis. Write the reason in the annex in full, because a reader who finds a deleted row and no reason stops reading the rest of it, and we are asking that reader to believe nineteen deletions from somebody else's file.
+  <Dialogue speaker="xo" aside="She does not raise her voice.">
+  Justify it or leave it, Captain. She is a certified departure on the Lane with clean telemetry, and the only thing wrong with her is that she is far away on the axis. Write the reason in the annex in full. A reader who finds a deleted row and no reason stops reading. And we are asking that reader to believe nineteen deletions from somebody else's file.
   </Dialogue>
-  <Dialogue speaker="analyst" aside="Logged, and he does not look happy about it.">
+  <Dialogue speaker="analyst" aside="He logs it and starts the caption again from the top.">
   Dropped and stated, sir. I have put her line in the annex anyway. It is the same line.
   </Dialogue>
   </Outcome>
