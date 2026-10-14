@@ -104,7 +104,7 @@ export const writeupRubric = {
 
 <Scene stamp="MET 165/04:15" location="CSV Nightjar · bridge · docked in Halden Reach's lee, 0.12 AU sunward of the Ceres approach" condensed="Eleven pages and an index with a procedure column that is four-fifths blank. Ebele has filled in one entry and it is a two-proportion test against a question about days. Sandoval will not sign off on a normality claim made from nineteen dots and asks what the give-or-take is on the shape itself. Solberg has the relay window at twenty-two fifteen and the lag both ways. Ferrier says the brief will be read for the one procedure that was chosen wrong.">
 
-The intel bay printer jams on the third page of anything, so at a quarter past four you are on the bridge holding the feed roller open with a flat-blade screwdriver while Ebele walks eleven pages through it one at a time.
+The intel bay printer jams on the third page of anything. So at a quarter past four you are on the bridge, holding the feed roller open with a flat-blade screwdriver while Ebele walks eleven pages through it one at a time.
 
 Your thumb has been on the roller spring for twenty minutes and the whole hand has gone to pins. The bridge is at eleven degrees. The tender's hull hums through the deck at a pitch you stopped hearing around MET 158 and can hear again now that nothing else is running.
 
@@ -129,10 +129,10 @@ And a proportion is what fraction of what.
 The printer takes the fourth page and the roller stops fighting you for a second.
 
 <Dialogue speaker="analyst">
-Sir. That's — yes. I had the loss-rate work open on the other slate and I wrote the procedure off the wrong window. It's a mean. It was always a mean.
+Sir. I had the loss-rate work open on the other slate and I wrote the procedure off the wrong window. It's a mean. It was always a mean.
 </Dialogue>
 
-He does not touch the index. He turns it face down, which is worse.
+He does not touch the index. He turns it face down.
 
 Sandoval comes up the ladder with her own two pages rolled in one fist and stops at the top of it.
 
@@ -151,7 +151,7 @@ The window belongs to the tender.
 </Dialogue>
 
 <Dialogue speaker="xo" aside="She squares the draft on her knee and puts it back on the console face up.">
-He will not argue with the arithmetic. He will go down that column, and when he finds the one that does not match the file it ran on, the covering note writes itself.
+Nobody at Valhalla will argue with your arithmetic. He will go down that column until he finds the one that does not match the file it ran on, and then the covering note writes itself.
 </Dialogue>
 
 Five findings. One column, four blanks, and one entry that has to come out before the page goes anywhere.
@@ -331,7 +331,7 @@ Widths {fmt(bayT.ci[1] - bayT.ci[0], 3)} and {fmt(bayBoot.ci[1] - bayBoot.ci[0],
     'Hold the brief. Nothing goes out until the ship has open space around her and a transmitter of her own pointing at Valhalla.',
   ]}>
   <Outcome option={0}>
-  Solberg reads the addressee blocks back twice before he spools it, which he does with every transmission and has done since Callisto. The second copy is addressed to the Flag Secretary and not to the Board, and he does not ask why.
+  Solberg reads the addressee blocks back twice before he spools it, as he has since Callisto. The second copy is addressed to the Flag Secretary and not to the Board, and he does not ask why.
   </Outcome>
   <Outcome option={1}>
   Ferrier logs the decision with the reason next to it. The Board's next convening window is on the far side of that delay, and she writes that down too, in the same hand, without comment.
@@ -356,7 +356,7 @@ Widths {fmt(bayT.ci[1] - bayT.ci[0], 3)} and {fmt(bayBoot.ci[1] - bayBoot.ci[0],
 
 <Scene stamp="MET 165/18:40" location="CSV Nightjar · bridge · docked, 0.12 AU sunward of the Ceres approach" condensed="Eleven pages signed: five findings, each with its procedure, its conditions, its conclusion and one line saying what it does not establish, with the bootstrap on the nineteen annexed beside the t-interval because they agree. Then Ebele's navigation: Marius Regio's vector, propagated through the whole missing interval, passes a six-kilometre body at 3.02 AU that the chart lists as an abandoned claim. Fifteen days' coast. The resupply request goes across the lock and Lindqvist-Oduya puts it in the signature stack without opening it.">
 
-The brief is signed at eighteen forty. Eleven pages, five findings, and the shape of every page is the same shape.
+The brief is signed at eighteen forty. Eleven pages, five findings, and every page the same shape.
 
 Mean certified thrust of the {fmtInt(REFIT_N)} uprated hulls: {fmt(OUTPUT_INTERVAL.ci[0], 1)} to {fmt(OUTPUT_INTERVAL.ci[1], 1)} kilonewtons against a specification of {fmtInt(MK3_SPEC_KN)}, one-sample $t$, conditions at Annex B. The same twelve hulls before and after, paired: {fmt(REFIT_PAIRED.estimate, 2)} days later after the refit, $t$ = {fmt(REFIT_PAIRED.statistic, 2)} on {fmtInt(REFIT_PAIRED.df)} degrees of freedom, $P$ = {fmtP(REFIT_PAIRED.pValue)}, with Annex C on why the two-sample reading of the same twenty-four numbers finds nothing. The loss rates from the claims work at Ceres. The two difference-of-means findings from the Ledger. Under each one, a line that begins *This finding does not establish*.
 
@@ -370,13 +370,13 @@ Ebele has been on the navigation console since the middle of the afternoon and n
 
 He has *Marius Regio*'s last logged vector, from the survey window at MET 102, and he has propagated it forward through the whole of the interval in which she stopped reporting. Not statistics. Two-body arithmetic with a torch-off assumption and an error cone that widens to four hundred thousand kilometres by the far end of it.
 
-<Dialogue speaker="analyst" aside="He puts the cone on the plot and then puts the chart's object catalogue over it, which nobody asked him to do either.">
+<Dialogue speaker="analyst" aside="He puts the cone on the plot and then puts the chart's object catalogue over it.">
 Sir. The line passes inside a hundred thousand kilometres of something at three point oh two astronomical units. Six kilometres across, low albedo, and the chart carries it as a prospector's claim that lapsed in 2171.
 
 The catalogue name is a survey number. The Ceres pilots call it Kettle.
 </Dialogue>
 
-Fourteen days at thirty kilometres a second from the moment the torch goes out. The last two of them cold, on a cellar that gives up {fmt(SINK_WATCH_TEST.estimate, 1)} hours against the book, give or take {fmt(SINK_WATCH_TEST.se, 2)}.
+Fifteen days at thirty kilometres a second from the moment the torch goes out. The last two of them cold, on a cellar that gives up {fmt(SINK_WATCH_TEST.estimate, 1)} hours against the book, give or take {fmt(SINK_WATCH_TEST.se, 2)}.
 
 Ferrier writes the resupply request herself, one page, Hygiea Hold as the destination and a consumables schedule that would survive a reading.
 

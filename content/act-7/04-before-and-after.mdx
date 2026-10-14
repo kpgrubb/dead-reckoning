@@ -116,16 +116,16 @@ On which hull.
 The fitter's bore gauge clicks twice at the far end of the run. Ebele has the slate turned towards himself now and is going down the rows with a finger, and the finger stops on the fourth one.
 
 <Dialogue speaker="analyst">
-Ma'am. That's — yes. The same hull is in both columns. Every row is one ship, twice.
+Ma'am. The same hull is in both columns. Every row is one ship, twice.
 </Dialogue>
 
 <Dialogue speaker="xo" aside="Flat. She has not raised her voice at anybody since Ceres.">
 Twelve ships and twenty-four numbers. Your procedure was told twenty-four ships. Go and find out which of those two files the yard actually sent us.
 </Dialogue>
 
-He does not move. Sandoval reaches past your boot for the lamp, takes it, and holds it steady on the seat you were trying to see, and goes on holding it while the two of them work out what the file is.
+He does not move. Sandoval reaches past your boot for the lamp, takes it, and holds it steady on the seat you were trying to see. She is still holding it when the two of them finish.
 
-Twelve hulls. One question each. Whether a hull ran later after Adlinda opened its drive up than it did before, on its own record, against itself.
+Twelve hulls. One question each. Whether a hull ran later after Adlinda opened its drive up than it did before, against its own record.
 
 </Scene>
 
@@ -258,14 +258,14 @@ One reading finds a shift of {fmt(Math.abs(beaconPaired.estimate), 2)} ms/day th
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  You have a number and no sentence. The Board's counsel reads the sentence. Say which hypothesis you are rejecting, say the P-value and the alpha beside each other, and say what it is evidence about. Mean difference. Days. These hulls.
+  You have a number and no sentence. The Board's counsel reads the sentence. Name the hypothesis you are rejecting, put the P-value and the alpha beside each other, and say what it is evidence about. Mean difference, in days, on these hulls.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <Scene stamp="MET 161/06:05" location="CSV Nightjar · engineering deck, sink bay · sixty tonnes of lithium in the cradle" condensed="The sink comes back at first watch and the bay drops nineteen degrees in four hours. Sandoval has the tender's post-refit cold profiles beside her own pre-refit runs: eight matched loads, same profile, same instrument, before and after. She puts the table on the plates, says the acceptance form is Rook's to sign, and stands there without adding anything to it.">
 
-They bring the cellar back at 04:40 on the tender's boat crane and it is in the cradle and shimmed by 05:20, and by 06:00 the bay has fallen through nine degrees and is still falling. Frost comes back into the rail seats while you watch, a grey bloom that runs along the shim line and stops.
+They bring the cellar back at 04:40 on the tender's boat crane. It is in the cradle and shimmed by 05:20. By 06:00 the bay has fallen through nine degrees and is still falling. Frost comes back into the rail seats while you watch, a grey bloom that runs along the shim line and stops.
 
 Sandoval has a printout. Actual paper, because the tender's format does not import and she would not retype it.
 
@@ -279,7 +279,7 @@ The refit certificate comes out of her breast pocket, unfolded, and goes down fl
 The form is yours to sign, Skipper.
 </Dialogue>
 
-She does not say anything else. She stands at the coaming with her hands in her overall pockets and waits, and the frost goes on running along the shim line, and there are eight rows on the paper with two numbers each.
+She does not say anything else. She stands at the coaming with her hands in her overall pockets and waits. The frost goes on running along the shim line. Eight rows on the paper, two numbers each.
 
 </Scene>
 
@@ -320,13 +320,13 @@ She does not say anything else. She stands at the coaming with her hands in her 
 
 Ebele has the tier work done before the forenoon watch and brings it up himself rather than sending it.
 
-Nine of the {fmtInt(REFIT_N)} Adlinda hulls are in the Register as lost. Not nine of the nineteen picked at random either: he matches them against the mass-residual bands from the manifest work at MET 36 and every one of the nine sits in the upper tier, {fmtPct(tierLow, 0)} to {fmtPct(tierHigh, 0)} over declared mass, the band the uprate would have been bought for. Their mean shift is {fmt(among19Shift, 2)} days later after the refit than before it. The three that are not in the Register are *Erech Sulcus*, *Akkad Sulcus* and *Nippur Sulcus*, and their three differences average {fmt(honestShift, 2)} days, which is nothing at all. Same yard. Same uprate. Same Mk 3 drive.
+Nine of the {fmtInt(REFIT_N)} Adlinda hulls are in the Register as lost. Not nine of the nineteen picked at random either. He matches them against the mass-residual bands from the manifest work at MET 36, and every one of the nine sits in the upper tier, {fmtPct(tierLow, 0)} to {fmtPct(tierHigh, 0)} over declared mass. That is the band the uprate would have been bought for. Their mean shift is {fmt(among19Shift, 2)} days later after the refit than before it. The three that are not in the Register are *Erech Sulcus*, *Akkad Sulcus* and *Nippur Sulcus*, and their three differences average {fmt(honestShift, 2)} days, which is nothing at all. Same yard. Same uprate.
 
 An uprated hull that carries nothing extra flies its filed profile and arrives when it said it would.
 
 You write the sink page yourself, one side, and you do not put it on the relay. You carry it across the lock and ask her yeoman for five minutes.
 
-Lindqvist-Oduya's day cabin has a bunk, a desk and a printed watch bill on the bulkhead squared to the millimetre. She reads the page standing up. Then she puts it on the desk, flattens it with her palm and reads it again.
+Lindqvist-Oduya's day cabin has a bunk and a desk, and a printed watch bill on the bulkhead squared to the millimetre. She reads the page standing up. Then she puts it on the desk, flattens it with her palm and reads it again.
 
 Design endurance on Watch, {fmt(WATCH_DESIGN_BEFORE_H, 1)} hours at {fmtInt(SINK_GJ_DESIGN)} gigajoules. After her yard's refit, {fmt(WATCH_DESIGN_AFTER_H, 1)} at {fmtInt(SINK_GJ_REFIT)}. Measured across four matched loads, {fmt(SINK_WATCH_TEST.estimate, 1)} hours gone, standard error {fmt(SINK_WATCH_TEST.se, 2)}, and a {fmtPct(0.95, 0)} interval running {fmt(SINK_WATCH_INTERVAL.ci[0], 1)} to {fmt(SINK_WATCH_INTERVAL.ci[1], 1)} hours. Sandoval has never run the ship to the design mean. Her working figure is that mean less one standard deviation, sixty-four hours before the refit, and against sixty-four the new number is five hours short rather than nine. The cellar has given up {fmtPct(watchLossPct, 0)} of the endurance the plate on the vault promises.
 

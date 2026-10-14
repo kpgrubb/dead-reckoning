@@ -59,13 +59,13 @@ export const lostRubric = confidenceIntervalInterpretation({
 
 <Scene stamp="MET 163/07:50" location="CSV Nightjar · bridge · alongside CSV Halden Reach, 0.12 AU sunward of the Ceres approach" condensed="Two days with the cellar back and the bridge is eleven degrees again. The inference brief is on the plot in draft and one paragraph of it names every Perrine hull on the Lane. Ferrier asks how many of the nine hundred the ship actually has anything on. Ebele wants to know the sampling frame first, and then whether to pool the standard deviations, because the package has a box for it.">
 
-Two days with the cellar back and the bridge has gone to eleven degrees and the smell of cold polymer. You keep your hands out of your pockets because the plot's housing needs both of them and because Ferrier is standing at the far side of it.
+Two days with the cellar back and the bridge has gone to eleven degrees and the smell of cold polymer. You keep your hands out of your pockets. The plot's housing needs both of them, and Ferrier is standing at the far side of it.
 
 The brief is in draft on the plot, eleven pages, and one paragraph is boxed in amber where Ebele flagged it at 04:00 for a citation he could not find.
 
 The paragraph says Perrine. Nine hundred transits, one beneficiary, one sentence with nine hundred masters standing inside it.
 
-Ferrier reads it upside down, which she does with everything.
+Ferrier reads it upside down from the far side of the plot.
 
 <Dialogue speaker="xo">
 Nine hundred hulls in that paragraph. How many of them do we hold anything on.
@@ -83,7 +83,7 @@ Ebele has come up from the intel bay with his slate held against his chest and d
 So before I build anything, sir. The sampling frame. Perrine hulls that arrived, against every other owner's hull: those are two groups of different ships, no pairing, no matching, nothing to subtract row by row. That one's clean. But the other split I'd want, lost Perrine against surviving Perrine, the nineteen aren't a sample of Perrine transits. They're the ones that stopped.
 </Dialogue>
 
-He is right and it is the thing that will be argued in a wardroom on the fourth day, and it is not this morning's problem.
+He is right. It is the thing that will be argued in a wardroom on the fourth day, and it is not this morning's problem.
 
 <Dialogue speaker="analyst">
 Second thing, and it's the package. There's a box that says *pooled*. The tender's build has it ticked and ours has it clear and the two give different degrees of freedom, so somebody at some point decided, and I can't find out who.
@@ -92,7 +92,7 @@ Second thing, and it's the package. There's a box that says *pooled*. The tender
 Never. Not ticked, not once, not on any file this ship sends anywhere.
 
 <Dialogue speaker="analyst">
-Yes, sir. That's — yes. And the degrees of freedom, then? Ours prints a number with two decimals in it. The hand rule gives a whole number and they don't agree.
+Yes, sir. And the degrees of freedom, then? Ours prints a number with two decimals in it. The hand rule gives a whole number and they don't agree.
 </Dialogue>
 
 Either. Not both, and not silently. Whichever one is in the arithmetic goes in the sentence next to it, so that a man reading it in four days can reproduce the number instead of asking what you did.
@@ -103,7 +103,7 @@ Ferrier straightens the eleven pages by the corner and puts the amber-boxed one 
 Two intervals, then. One of them is the Board's case against us. Build that one first.
 </Dialogue>
 
-The port is full of the tender's radiators, all four wings out and running orange, and the light of them comes across the plot and sits on the boxed paragraph while you read it again.
+The port is full of the tender's radiators, all four wings out and running orange. Their light comes across the plot and sits on the boxed paragraph while you read it again.
 
 </Scene>
 
@@ -279,20 +279,20 @@ The conservative rule would use $\min$({fmtInt(escorted.length - 1)}, {fmtInt(un
 
 The paragraph is out by the end of the afternoon watch and two sentences are in its place, and the first of the two is a concession.
 
-Perrine hulls that completed their transits are indistinguishable, in mean delay against the filed plot, from every other beneficiary's hulls on the Lane. The interval runs {fmt(honestCi[0], 2)} to {fmt(honestCi[1], 2)} days and it contains zero. The Board's officer on the Lane said as much in the tender's wardroom eleven days ago, with {fmtInt(SURVIVING_PERRINE_N + NINETEEN_N)} hulls in his comparison rather than {fmtInt(SURVIVING_PERRINE_N)}, and on the honest hulls he was correct. You write that he was correct and you put your name under it rather than Ferrier's.
+Perrine hulls that completed their transits are indistinguishable, in mean delay against the filed plot, from every other beneficiary's hulls on the Lane. The interval runs {fmt(honestCi[0], 2)} to {fmt(honestCi[1], 2)} days and it contains zero. The Board's officer on the Lane said as much in the tender's wardroom eleven days ago, with {fmtInt(SURVIVING_PERRINE_N + NINETEEN_N)} hulls in his comparison rather than {fmtInt(SURVIVING_PERRINE_N)}, and on the honest hulls he was correct. You write it that way and put your name under it rather than Ferrier's.
 
 Then the second sentence. The {fmtInt(NINETEEN_N)} hulls the Register carries as lost ran later, on average, than the {fmtInt(SURVIVING_PERRINE_N)} hulls of the same owner that arrived, by somewhere between {fmt(lostCi[0], 2)} and {fmt(lostCi[1], 2)} days. Welch's degrees of freedom, {fmt(LOST_VS_SURVIVING_WELCH_DF, 2)}, named in the line beneath it, with the conservative {fmtInt(lostConservative.df)} and its interval of {fmt(lostConservative.ci[0], 2)} to {fmt(lostConservative.ci[1], 2)} in the footnote for anyone checking it against a table.
 
-Same owner. Same lane. Same six years. One group of them stopped.
+Same owner. Same six years. One group of them stopped.
 
 <Dialogue speaker="xo" aside="She reads both sentences off the plot and then reads the first one again.">
 The anomaly is not the owner. Nine hundred hulls fly for Perrine and {fmtInt(SURVIVING_PERRINE_N)} of them file the way everybody else files. Whatever this is, it was done to nineteen of them, one at a time, by somebody choosing which.
 </Dialogue>
 
-Ebele leaves a blank line under the second sentence and a note in the margin about it, because an interval says how much and says nothing about how surprising, and the Board's counsel will ask for the second thing by name.
+Ebele leaves a blank line under the second sentence and a note in the margin. An interval says how much and nothing about how surprising, and the Board's counsel will ask for the second thing by name.
 
 <Dialogue speaker="analyst">
-I can run it tomorrow, sir. Same two groups, same standard error, hypotheses instead of endpoints. It won't be a new finding. It'll be the same finding with a decision attached, and he'll want the decision in the language he uses.
+I can run it tomorrow, sir. Same two groups, same standard error, hypotheses instead of endpoints. It won't be a new finding. It'll be the same finding with a decision attached.
 </Dialogue>
 
 Twenty-four minutes to Valhalla and twenty-four back. Whatever goes into the relay tonight is forty-eight minutes from being anybody's problem but yours.
