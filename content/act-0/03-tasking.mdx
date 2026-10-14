@@ -11,7 +11,7 @@ objectives:
 prereqs: ["act-0-02"]
 est_minutes: 20
 calc_briefing: null
-summary: "Valhalla, forty-one seconds out. The Board's tasking arrives with one page: a mean, a table and a conclusion. You ask for the records."
+summary: "Valhalla, a light-second out. The Board's tasking arrives with one page: a mean, a table and a conclusion. You ask for the records."
 ---
 
 import { fmt } from '@/lib/stats'
@@ -21,7 +21,7 @@ import { RegisterBrowser } from '@/instruments/act-0/RegisterBrowser'
 export const asgardReport = { transits: 2580, lost: 13 }
 export const asgardArrived = asgardReport.transits - asgardReport.lost
 
-<Scene stamp="MET 8/14:00" location="Jovian space · 0.9 light-seconds from Valhalla" condensed="The Board's tasking arrives forty-one seconds out, signed by Ashby-Hale personally: proceed to the Lane, observe and assess the incident pattern, report through the Directorate of Lane Operations.">
+<Scene stamp="MET 8/14:00" location="Jovian space · 0.9 light-seconds from Valhalla" condensed="The Board's tasking arrives a light-second out, signed by Ashby-Hale personally: proceed to the Lane, observe and assess the incident pattern, report through the Directorate of Lane Operations.">
 
 Solberg announces it the way he announces everything.
 
@@ -31,11 +31,11 @@ You are four metres down the passage with a bulb of coffee you have not opened. 
 
 </Scene>
 
-<Dialogue speaker="admiralty" lag="41 s" aside="Transmission, Admiralty Board, Valhalla. Read aloud by Solberg.">
+<Dialogue speaker="admiralty" lag="0.9 s" aside="Transmission, Admiralty Board, Valhalla. Read aloud by Solberg.">
 The Board directs that CSV *Nightjar* proceed to the Jovian–Ceres Transit Lane and observe and assess the incident pattern recorded thereon since 2178. It is noted that the pattern has been found consistent with comparable corridors. Reporting will be through the Directorate of Lane Operations. Signed for the Board: Ashby-Hale, Rear Admiral, Director of Lane Operations.
 </Dialogue>
 
-<Dialogue speaker="ashbyhale" lag="41 s" aside="A second line, personal, after the signature block.">
+<Dialogue speaker="ashbyhale" lag="0.9 s" aside="A second line, personal, after the signature block.">
 Good hunting, Anselm.
 </Dialogue>
 
@@ -195,7 +195,7 @@ There is one more line on the tasking and it is not statistical. Reports go to t
 </Scene>
 
 <MissionBeat id="act-0-03-line" kind="decision" label="THE REPORTING LINE"
-  prompt="The tasking routes your reports through the Directorate of Lane Operations, not the Flag Secretary. Callisto is forty-one seconds away for three more hours. Your call."
+  prompt="The tasking routes your reports through the Directorate of Lane Operations, not the Flag Secretary. Callisto is a second away for three more hours. Your call."
   options={[
     'Accept the tasking as written. Report through Lane Operations.',
     'Query the reporting line: ask the Board, on the record, why the assessment bypasses the Flag Secretary.',
@@ -206,7 +206,7 @@ There is one more line on the tasking and it is not statistical. Reports go to t
   </Dialogue>
   </Outcome>
   <Outcome option={1}>
-  <Dialogue speaker="admiralty" lag="41 s · reply at 12:03" aside="Solberg reads it twice, the second time for the timestamp.">
+  <Dialogue speaker="admiralty" lag="0.9 s · reply at 12:03" aside="Solberg reads it twice, the second time for the timestamp.">
   It is noted that the commanding officer has queried the reporting line. The line is correct. The Board directs that CSV *Nightjar* proceed as tasked.
   </Dialogue>
   <Dialogue speaker="xo">
@@ -226,7 +226,7 @@ Seventy-three days to the Mark 9 region, at the inner end of the Hundred-Day Lan
 </Scene>
 
 <Dialogue speaker="comms" aside="Watching the lag counter rather than the plot.">
-Callisto at forty-one seconds, sir. A minute by tomorrow night. Inside a month you will be able to ask them a question and eat a meal before the answer.
+Callisto at a second, sir. Half a minute by the end of the week. Inside a month you will be able to ask them a question and eat a meal before the answer.
 </Dialogue>
 
 <LogEntry

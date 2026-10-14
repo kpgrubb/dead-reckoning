@@ -25,6 +25,7 @@ import {
   EXAMINER_PERMUTATION,
   EXAMINER_PERMUTATION_REPS,
   EXAMINER_SIM_MAX,
+  FLYBY_SPEED_KMS,
   HE3_INDEX,
   LANE_CARGO_PROBS,
   LANE_UNKNOWN_EXPECTED,
@@ -44,7 +45,9 @@ import {
   SHAPES_STANDING_OFF,
   SINK_PCT_AT_APPROACH,
   SINK_PCT_AT_BRIEF,
+  SLUG_CLOSING_KMS,
   SLUG_FLIGHT_MIN,
+  SLUG_SPEED_KMS,
   TORCH_FROM_WATCH_MIN,
   URUK_TOTAL,
   VOLATILES_INDEX,
@@ -201,6 +204,15 @@ describe('DS-17 · the picket tree and the approach physics', () => {
     expect(SLUG_FLIGHT_MIN).toBeCloseTo(10, 6)
     expect(TORCH_FROM_WATCH_MIN).toBe(22)
     expect(COLD_DISPLACEMENT_M).toBeLessThan(12)
+  })
+
+  // Ferrier says all three of these out loud in act-8/02: "Forty millimetre at thirty a second. We
+  // are crossing at thirty. Three and a half of that is closing, so the slug is inside ten."
+  it('makes the round an intercept rather than a straight line to a stationary target', () => {
+    expect(SLUG_CLOSING_KMS).toBe(3.5)
+    expect(FLYBY_SPEED_KMS).toBe(30)
+    expect(SLUG_SPEED_KMS).toBeGreaterThan(FLYBY_SPEED_KMS)
+    expect(fmt(SLUG_SPEED_KMS, 1)).toBe('30.2')
   })
 
   it('opens a fourteen-minute lidar window around a 38,000 km closest approach', () => {

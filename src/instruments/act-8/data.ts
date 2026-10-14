@@ -254,9 +254,13 @@ export const CLOSEST_APPROACH_KM = 38_000
 export const LIDAR_RANGE_KM = 40_000
 /** Survey camera resolves sunlit hulls to about a million kilometres. */
 export const SURVEY_CAMERA_KM = 1_000_000
-/** Last purge ended MET 179/12 at this range — beyond any civilian-grade sensor's purge detection. */
-export const LAST_PURGE_KM = 4_500_000
-export const PURGE_CIVILIAN_LIMIT_KM = 2_600_000
+/**
+ * Civilian-grade purge detection (bible §2.5): an 8.4 MW purge against a 10⁻¹⁴ W/m² threshold is
+ * R = √(P / 4πF) = 8.2 million km, not 2.6. The last purge therefore has to end well outside that,
+ * and 9 million km is 10% of range (24% of flux) clear of it.
+ */
+export const LAST_PURGE_KM = 9_000_000
+export const PURGE_CIVILIAN_LIMIT_KM = 8_200_000
 
 /** Half-chord of the lidar window: √(40,000² − 38,000²) km. */
 export const LIDAR_HALF_CHORD_KM = Math.sqrt(LIDAR_RANGE_KM ** 2 - CLOSEST_APPROACH_KM ** 2)
@@ -266,9 +270,16 @@ export const LIDAR_WINDOW_MIN = (2 * LIDAR_HALF_CHORD_KM) / FLYBY_SPEED_KMS / 60
 
 /** *Patience*, cold off the approach quarter at closest approach. */
 export const PATIENCE_RANGE_KM = 2_100
-/** Her 40 mm coilgun slug. */
-export const SLUG_SPEED_KMS = 3.5
-export const SLUG_FLIGHT_MIN = PATIENCE_RANGE_KM / SLUG_SPEED_KMS / 60
+/**
+ * Her 40 mm coilgun slug. *Patience* is a cold picket at Kettle and *Nightjar* crosses her at
+ * `FLYBY_SPEED_KMS`, so an intercepting round has to carry the whole crossing rate in cross-range
+ * before any of it closes the 2,100 km stand-off: `v = √(30² + 3.5²)`. A 3.5 km/s round has no
+ * intercept solution at any lead angle. What sets the flight time is the 3.5 km/s that is left
+ * over once the crossing rate is matched, which makes this a tail chase the round barely wins.
+ */
+export const SLUG_CLOSING_KMS = 3.5
+export const SLUG_SPEED_KMS = Math.hypot(FLYBY_SPEED_KMS, SLUG_CLOSING_KMS)
+export const SLUG_FLIGHT_MIN = PATIENCE_RANGE_KM / SLUG_CLOSING_KMS / 60
 
 /** Reactor scrammed on Watch: the torch is twenty-two minutes away, not four. */
 export const TORCH_FROM_WATCH_MIN = 22

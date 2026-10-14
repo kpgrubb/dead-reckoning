@@ -38,7 +38,7 @@ export const yardMissC = Array.from({ length: yard.sample }, (_, j) => (yard.lot
 export const yardOddsC = 1 / yardMissC
 export const yardCrateN = yard.cratesDrawn * yard.crateSize
 
-<Scene stamp="MET 57/07:40" location="Bridge · intel terminal · braking at 4 mgee · 0.68 AU from Callisto" condensed={`The Lane schedule comes down the relay before the watch changes: ${fmtInt(FRAME_N)} masters in transit, sorted by owner class and by convoy. Three contact schedules go up on the second panel and the only column anybody reads is the hours of link: a simple random sample of ${fmtInt(SRS_N)} at ${fmt(srsHours, 1)}, a stratified draw of ${fmtInt(STRATUM_N)} from each owner class at ${fmt(stratHours, 1)}, ${fmtInt(CLUSTER_K)} whole convoys at ${fmt(clusterHours, 1)}. Ferrier makes Ebele price the cheap one and he cannot get it out in front of her. She sends him away to find the number. Nobody on the bridge chooses for you.`}>
+<Scene stamp="MET 57/07:40" location="Bridge · intel terminal · braking at 4 mgee · 1.96 AU from Callisto" condensed={`The Lane schedule comes down the relay before the watch changes: ${fmtInt(FRAME_N)} masters in transit, sorted by owner class and by convoy. Three contact schedules go up on the second panel and the only column anybody reads is the hours of link: a simple random sample of ${fmtInt(SRS_N)} at ${fmt(srsHours, 1)}, a stratified draw of ${fmtInt(STRATUM_N)} from each owner class at ${fmt(stratHours, 1)}, ${fmtInt(CLUSTER_K)} whole convoys at ${fmt(clusterHours, 1)}. Ferrier makes Ebele price the cheap one and he cannot get it out in front of her. She sends him away to find the number. Nobody on the bridge chooses for you.`}>
 
 The schedule comes down the relay at 0530 and Ebele has it on the plot before you are off the ladder. Braking has been on long enough that the last rungs cost you something and you take them one at a time. The bridge is warm and smells of the coffee at his elbow, which he has not touched.
 
@@ -211,7 +211,7 @@ Draw an **SRS of {fmtInt(yard.sample)}**. Every fitting has the same chance, {fm
 
 <Gated by={["act-3-02-justify"]}>
 
-<Scene stamp="MET 57/16:10" location="Bridge · comms station · braking at 4 mgee · 0.68 AU from Callisto" condensed="Solberg builds the contact schedule against the geometry the ship is stuck with: half a minute of round trip to a master in the same slice of the corridor, one day-long window per hull, no second pass. The instrument is built. Nothing has been asked yet.">
+<Scene stamp="MET 57/16:10" location="Bridge · comms station · braking at 4 mgee · 1.97 AU from Callisto" condensed="Solberg builds the contact schedule against the geometry the ship is stuck with: half a minute of round trip to a master in the same slice of the corridor, one day-long window per hull, no second pass. The instrument is built. Nothing has been asked yet.">
 
 The contact schedule goes up at the end of the afternoon watch and it does not look like a survey. It looks like a gunnery plot: a column of hulls, a column of windows, and a diagonal of shaded bars walking down the page as the Lane slides past.
 
