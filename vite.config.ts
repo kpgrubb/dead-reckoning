@@ -66,5 +66,14 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}', 'tests/unit/**/*.test.{ts,tsx}'],
     exclude: ['tests/e2e/**', 'node_modules/**'],
+    /**
+     * Vitest's default is 5s, which was never calibrated against the heaviest work here. Rendering
+     * one content module means a jsdom tree, KaTeX typesetting and several D3 charts, and importing
+     * an Act's data module can run a real simulation first — `act-8/data.ts` does 10,000
+     * permutations on import, measured at 435 ms on its own. Comfortable in isolation; over the
+     * 5s line when 89 files are competing for the CPU. That produced an intermittent timeout on
+     * `act-8-02` in roughly one full-suite run in three, with no assertion ever failing.
+     */
+    testTimeout: 30_000,
   },
 })

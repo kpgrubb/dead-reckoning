@@ -142,3 +142,21 @@ series-alert #d24a43     4.56     4.33!    4.00!    3.61!
 ```
 
 Every `-dim` token except `alert-dim` is used only for borders and rules, where the applicable floor is 3:1 and most clear it. `chart-axis` is drawn on `--dr-chart-surface`, which is `bg-0`, where it makes 3.32:1 — it only fails on the panel surfaces it is never painted on. Series colours are chart marks, not text, so the 3:1 non-text floor applies and all six clear it on `bg-0`.
+
+---
+
+## Added after the fix pass — main-thread cost before Act VIII paints
+
+`src/instruments/act-8/data.ts` runs `permutationTestProportions` with 10,000 reps at module
+scope, so it executes on import, synchronously, before any Act VIII module renders. Measured at
+**435 ms**. It is a one-time cost per session and the module system caches it, so it is not a
+defect, but it is the largest single block of main-thread work in the app and it lands on the
+first paint of an Act. If Act VIII ever feels slow to open, this is why. Moving it behind
+`src/lib/sim`'s worker, or memoising it to a fixture the way `tests/fixtures/` does for the stats
+library, would remove it from the critical path.
+
+It also caused an intermittent test failure that looked like a flaky assertion and was not: with
+89 test files competing for the CPU, the 435 ms import plus a jsdom render of charts and KaTeX
+crossed Vitest's default 5s timeout on `act-8-02` in roughly one full-suite run in three. Fixed by
+calibrating `testTimeout` in `vite.config.ts`, with the reasoning recorded there.
+
