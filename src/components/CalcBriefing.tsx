@@ -22,7 +22,7 @@ export function CalcBriefing({ topic, children, defaultOpen = false }: CalcBrief
   const Body = !children && loader ? lazy(loader) : null
 
   return (
-    <Panel label="CALC REFRESHER" status={t ? `${t.minutes} MIN · OPTIONAL` : 'OPTIONAL'} tone="engineering" className={`dr-calc ${open ? 'is-open' : ''}`}>
+    <Panel headingLevel={2} label="CALC REFRESHER" status={t ? `${t.minutes} MIN · OPTIONAL` : 'OPTIONAL'} tone="engineering" className={`dr-calc ${open ? 'is-open' : ''}`}>
       <button type="button" className="dr-calc__toggle" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
         <span className="dr-calc__title">{t?.title ?? topic}</span>
         <span className="dr-calc__hook">{t?.hook}</span>

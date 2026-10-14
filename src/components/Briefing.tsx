@@ -15,7 +15,7 @@ export interface BriefingProps {
 
 export function Briefing({ title, topics, children }: BriefingProps) {
   return (
-    <Panel label={`BRIEFING · ${title}`} status={topics?.length ? `AP ${topics.join(' · ')}` : undefined} tone="intel" className="dr-briefing">
+    <Panel headingLevel={2} label={`BRIEFING · ${title}`} status={topics?.length ? `AP ${topics.join(' · ')}` : undefined} tone="intel" className="dr-briefing">
       {children}
     </Panel>
   )

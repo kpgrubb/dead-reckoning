@@ -37,6 +37,31 @@ async function routeSync(page: Page, seed: string | null = null) {
 }
 
 /**
+ * Everything on the page that Tab can land on. Counted from the DOM rather than by pressing Tab
+ * hundreds of times: the point of A1 is the size of the number, and the number is what regresses.
+ */
+async function tabStops(page: Page): Promise<number> {
+  return page.evaluate(() => {
+    const candidates = document.querySelectorAll<HTMLElement>(
+      'a[href], button, input, select, textarea, summary, [tabindex], audio[controls], video[controls], iframe',
+    )
+    let n = 0
+    for (const el of candidates) {
+      const ti = el.getAttribute('tabindex')
+      if (ti !== null && Number(ti) < 0) continue
+      if (el.hasAttribute('disabled') || el.getAttribute('aria-hidden') === 'true') continue
+      if (el.closest('[inert], [aria-hidden="true"], .visually-hidden')) continue
+      const box = el.getBoundingClientRect()
+      const style = getComputedStyle(el)
+      if (style.visibility === 'hidden' || style.display === 'none') continue
+      if (box.width === 0 && box.height === 0 && el.tagName !== 'INPUT') continue
+      n++
+    }
+    return n
+  })
+}
+
+/**
  * The question each checkpoint item is asking: its prompt and any data it shows, with the
  * per-item state word and everything from the answer field onwards removed, so that marks,
  * answer keys and worked solutions do not count as a change to the item itself.
@@ -148,12 +173,68 @@ test.describe('reduced motion', () => {
 })
 
 // =================================================================================================
-// Defect reproductions — each is expected to fail until the matching finding is fixed
+// Defect reproductions — each is expected to fail until the matching finding is fixed.
+//
+// `test.fail()` is scope-wide: one call annotates every test in the enclosing describe, which is
+// why the findings that have been fixed live in their own describe below rather than having their
+// `test.fail()` line deleted in place.
 // =================================================================================================
 
 test.describe('defects found by the QA review', () => {
-  // BROKEN-1
-  test.fail(true, 'Autosave overwrites the remote save with the new device\'s empty progress before LOAD')
+  test.fail(true, 'Open findings: A2 Ostrow contrast, A5 no skip link, A6 document title')
+
+  // A11Y-2
+  test('every speaker tag clears 4.5:1 against its background', async ({ page }) => {
+    await openGates(page)
+    await page.goto('/#/module/act-7-03')
+    const tag = page.locator('.dr-dialogue--ostrow .dr-dialogue__speaker').first()
+    await expect(tag).toBeVisible({ timeout: 20_000 })
+    const ratio = await tag.evaluate((el) => {
+      const parse = (c: string) => (c.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number)
+      const lum = ([r, g, b]: number[]) =>
+        0.2126 * ((r / 255 <= 0.04045 ? r / 255 / 12.92 : ((r / 255 + 0.055) / 1.055) ** 2.4)) +
+        0.7152 * ((g / 255 <= 0.04045 ? g / 255 / 12.92 : ((g / 255 + 0.055) / 1.055) ** 2.4)) +
+        0.0722 * ((b / 255 <= 0.04045 ? b / 255 / 12.92 : ((b / 255 + 0.055) / 1.055) ** 2.4))
+      let bg = 'rgba(0, 0, 0, 0)'
+      let n: HTMLElement | null = el as HTMLElement
+      while (n && (bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent')) {
+        bg = getComputedStyle(n).backgroundColor
+        n = n.parentElement
+      }
+      const [a, b2] = [lum(parse(getComputedStyle(el).color)), lum(parse(bg))].sort((x, y) => y - x)
+      return (a + 0.05) / (b2 + 0.05)
+    })
+    expect(ratio).toBeGreaterThanOrEqual(4.5)
+  })
+
+  // A11Y-4
+  test('each route has its own document title', async ({ page }) => {
+    await openGates(page)
+    await page.goto('/')
+    const map = await page.title()
+    await page.goto('/#/module/act-3-02')
+    await expect(page.locator('.dr-module__title')).toBeVisible({ timeout: 20_000 })
+    expect(await page.title()).not.toBe(map)
+  })
+
+  // A11Y-7
+  test('a keyboard user can skip the header navigation', async ({ page }) => {
+    await openGates(page)
+    await page.goto('/#/module/act-0-01')
+    await expect(page.locator('.dr-module__title')).toBeVisible({ timeout: 20_000 })
+    await page.keyboard.press('Tab')
+    const first = await page.evaluate(() => (document.activeElement?.textContent ?? '').trim().toLowerCase())
+    expect(first).toContain('skip')
+  })
+})
+
+// =================================================================================================
+// Findings closed since the review. These pass and must keep passing.
+// =================================================================================================
+
+test.describe('B1 · a second device does not destroy saved progress', () => {
+  // Closed by `pendingRemote` in src/store/sync.ts: a device never writes over a saved copy it
+  // has not taken. The spec's `test.fail()` was left behind when the fix landed.
   test('entering a passcode on a fresh device must not destroy the saved progress', async ({ page }) => {
     const remote = JSON.stringify({
       v: 1,
@@ -189,68 +270,56 @@ test.describe('defects found by the QA review', () => {
     expect(payload.progress.learnerSeed).toBe(4242)
     expect(Object.keys(payload.progress.beats)).toContain('act-0-01-fix-mean')
   })
+})
 
-  // A11Y-1
-  test.fail(true, 'Each of the 412 scatter points is its own tab stop')
+test.describe('A1 · the draggable scatter is one tab stop', () => {
   test('a chart must not take hundreds of Tab presses to pass', async ({ page }) => {
     await openGates(page)
     await page.goto('/#/module/act-2-02')
     await expect(page.locator('circle.dr-mark--draggable').first()).toBeVisible({ timeout: 20_000 })
+    expect(await page.locator('circle.dr-mark--draggable').count()).toBe(412)
     const stops = await page.locator('circle.dr-mark--draggable[tabindex="0"]').count()
     expect(stops).toBeLessThanOrEqual(2)
+
+    // The whole page, not just the chart. 463 tab stops before the fix, 412 of them the scatter's
+    // points. Pin the total so the series can never quietly go back to one tab stop per point.
+    expect(await tabStops(page)).toBeLessThan(80)
   })
 
-  // A11Y-2
-  test.fail(true, 'Ostrow\'s speaker tag uses --dr-alert-dim (#7f3430), 2.3:1 on the void')
-  test('every speaker tag clears 4.5:1 against its background', async ({ page }) => {
+  test('the scatter keeps its nudge keys and gains a way to walk the series', async ({ page }) => {
     await openGates(page)
-    await page.goto('/#/module/act-7-03')
-    const tag = page.locator('.dr-dialogue--ostrow .dr-dialogue__speaker').first()
-    await expect(tag).toBeVisible({ timeout: 20_000 })
-    const ratio = await tag.evaluate((el) => {
-      const parse = (c: string) => (c.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number)
-      const lum = ([r, g, b]: number[]) =>
-        0.2126 * ((r / 255 <= 0.04045 ? r / 255 / 12.92 : ((r / 255 + 0.055) / 1.055) ** 2.4)) +
-        0.7152 * ((g / 255 <= 0.04045 ? g / 255 / 12.92 : ((g / 255 + 0.055) / 1.055) ** 2.4)) +
-        0.0722 * ((b / 255 <= 0.04045 ? b / 255 / 12.92 : ((b / 255 + 0.055) / 1.055) ** 2.4))
-      let bg = 'rgba(0, 0, 0, 0)'
-      let n: HTMLElement | null = el as HTMLElement
-      while (n && (bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent')) {
-        bg = getComputedStyle(n).backgroundColor
-        n = n.parentElement
-      }
-      const [a, b2] = [lum(parse(getComputedStyle(el).color)), lum(parse(bg))].sort((x, y) => y - x)
-      return (a + 0.05) / (b2 + 0.05)
-    })
-    expect(ratio).toBeGreaterThanOrEqual(4.5)
-  })
+    await page.goto('/#/module/act-2-02')
+    const dots = page.locator('circle.dr-mark--draggable')
+    await expect(dots.first()).toBeVisible({ timeout: 20_000 })
+    const r = () => page.locator('.dr-readout').filter({ hasText: 'r · t' }).first().innerText()
+    const chartStatus = page.locator('.dr-panel__status').filter({ hasText: /MANIFEST|POINTS MOVED/ })
 
-  // A11Y-3
-  test.fail(true, 'Modules jump h1 -> h4; nothing emits h2 or h3')
-  test('module headings do not skip a level', async ({ page }) => {
-    await openGates(page)
-    await page.goto('/#/module/act-5-03')
-    await expect(page.locator('.dr-module h4').first()).toBeVisible({ timeout: 20_000 })
-    const levels = await page.$$eval('.dr-module h1, .dr-module h2, .dr-module h3, .dr-module h4, .dr-module h5, .dr-module h6', (ns) =>
-      ns.map((n) => Number(n.tagName[1])),
-    )
-    const skips = levels.filter((lvl, i) => i > 0 && lvl > levels[i - 1] + 1)
-    expect(skips).toEqual([])
-  })
+    // A plain arrow key still moves the focused point, and r still follows it. The review drove
+    // r from 0.990 to 0.988 this way; one 1 % step on one of 412 points does not show at three
+    // decimals, so take the Shift step the contract also promises.
+    await dots.first().focus()
+    const before = await r()
+    await page.keyboard.press('ArrowUp')
+    await expect(chartStatus).toContainText('POINTS MOVED')
+    for (let i = 0; i < 8; i++) await page.keyboard.press('Shift+ArrowUp')
+    expect(await r()).not.toBe(before)
 
-  // A11Y-4
-  test.fail(true, 'index.html\'s <title> is never updated by the router')
-  test('each route has its own document title', async ({ page }) => {
-    await openGates(page)
-    await page.goto('/')
-    const map = await page.title()
-    await page.goto('/#/module/act-3-02')
-    await expect(page.locator('.dr-module__title')).toBeVisible({ timeout: 20_000 })
-    expect(await page.title()).not.toBe(map)
-  })
+    // A modified arrow key walks to the next point instead, and the tab stop follows it.
+    await page.keyboard.press('Alt+ArrowRight')
+    await expect(dots.nth(1)).toBeFocused()
+    expect(await dots.nth(1).getAttribute('tabindex')).toBe('0')
+    expect(await dots.nth(0).getAttribute('tabindex')).toBe('-1')
 
-  // A11Y-5
-  test.fail(true, 'Passing a beat swaps the aria-live gate out for unannounced content')
+    // The selection is spoken.
+    await expect(page.locator('.dr-chart [role="status"]').first()).toContainText('Point 2 of 412')
+
+    // Escape leaves the plot rather than leaving focus on a point.
+    await page.keyboard.press('Escape')
+    await expect(dots.nth(1)).not.toBeFocused()
+  })
+})
+
+test.describe('A4 · passing a mission beat is announced', () => {
   test('resolving a mission beat is announced to a screen reader', async ({ page }) => {
     await openGates(page)
     await page.goto('/#/module/act-0-01')
@@ -273,23 +342,34 @@ test.describe('defects found by the QA review', () => {
       return false
     })
     expect(announced).toBe(true)
+
+    // Exactly one live region owns the verdict: the failure path must not double up with it.
+    expect(await beat.locator('[role="status"], [aria-live]').count()).toBe(1)
+
+    // The gate below says it has opened, but does not read the revealed scene aloud.
+    const gateNote = page.locator('.visually-hidden[role="status"]').filter({ hasText: 'sealed section below' })
+    await expect(gateNote).toHaveCount(1)
+    expect((await gateNote.innerText()).length).toBeLessThan(120)
   })
+})
 
-  // A11Y-6
-  test.describe('narrow viewport', () => {
-    test.use({ viewport: { width: 375, height: 812 } })
+test.describe('A7 · authored tables scroll instead of the page', () => {
+  test.use({ viewport: { width: 375, height: 812 } })
 
-    test.fail(true, 'A 13-column briefing table is 886 px wide inside a 375 px viewport')
-    test('no visible table forces the page to scroll sideways at 375 px', async ({ page }) => {
+  /** Every module the review named under A7. */
+  const TABLE_MODULES = ['act-0-02', 'act-1-02', 'act-2-01', 'act-2-05', 'act-3-02', 'act-3-05', 'act-6-06', 'act-7-07', 'act-8-03', 'act-8-04', 'act-9-01', 'act-9-02', 'act-9-03']
+
+  for (const id of TABLE_MODULES) {
+    test(`${id}: no visible table forces the page to scroll sideways at 375 px`, async ({ page }) => {
       await openGates(page)
-      await page.goto('/#/module/act-9-02')
+      await page.goto(`/#/module/${id}`)
       await expect(page.locator('.dr-module__title')).toBeVisible({ timeout: 20_000 })
-      // Markdown tables inside <Briefing> lay out a beat after the MDX chunk resolves.
-      await expect(page.locator('table.dr-table').first()).toBeVisible({ timeout: 20_000 })
+      // Tables inside <Briefing> lay out a beat after the MDX chunk resolves.
+      await expect(page.locator('table').first()).toBeVisible({ timeout: 20_000 })
       await page.waitForTimeout(1500)
-      const widest = await page.evaluate(() => {
+      const offenders = await page.evaluate(() => {
         const vw = document.documentElement.clientWidth
-        let worst = 0
+        const out: string[] = []
         for (const t of Array.from(document.querySelectorAll('table'))) {
           if (t.closest('.visually-hidden')) continue
           let scroller = false
@@ -299,22 +379,61 @@ test.describe('defects found by the QA review', () => {
             if (ox === 'auto' || ox === 'scroll') { scroller = true; break }
             n = n.parentElement
           }
-          if (!scroller) worst = Math.max(worst, t.getBoundingClientRect().right - vw)
+          const over = t.getBoundingClientRect().right - vw
+          if (!scroller && over > 0) out.push(`${t.className || '(no class)'} in ${t.closest('[class]')?.parentElement?.className ?? '?'} overflows by ${Math.round(over)}px`)
         }
-        return worst
+        return out
       })
-      expect(widest).toBeLessThanOrEqual(0)
+      expect(offenders).toEqual([])
     })
+  }
+
+  test('a table that overflows is reachable and scrollable by keyboard', async ({ page }) => {
+    await openGates(page)
+    await page.goto('/#/module/act-9-02')
+    await expect(page.locator('table').first()).toBeVisible({ timeout: 20_000 })
+    await page.waitForTimeout(1500)
+
+    const wrap = page.locator('.dr-table-wrap[tabindex="0"]').first()
+    await expect(wrap).toBeVisible()
+    // It has a name, so a screen-reader user knows what they have landed in.
+    expect(await wrap.getAttribute('aria-label')).toBeTruthy()
+
+    await wrap.focus()
+    await expect(wrap).toBeFocused()
+    const from = await wrap.evaluate((el) => el.scrollLeft)
+    for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowRight')
+    await page.waitForTimeout(300)
+    expect(await wrap.evaluate((el) => el.scrollLeft)).toBeGreaterThan(from)
   })
 
-  // A11Y-7
-  test.fail(true, 'No skip link; the header is ~12 tab stops on every one of the 72 routes')
-  test('a keyboard user can skip the header navigation', async ({ page }) => {
+  test('a table that fits does not become a pointless tab stop', async ({ page }) => {
     await openGates(page)
-    await page.goto('/#/module/act-0-01')
-    await expect(page.locator('.dr-module__title')).toBeVisible({ timeout: 20_000 })
-    await page.keyboard.press('Tab')
-    const first = await page.evaluate(() => (document.activeElement?.textContent ?? '').trim().toLowerCase())
-    expect(first).toContain('skip')
+    await page.goto('/#/module/act-9-02')
+    await expect(page.locator('table').first()).toBeVisible({ timeout: 20_000 })
+    await page.waitForTimeout(1500)
+    const pointless = await page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>('.dr-table-wrap[tabindex="0"]')].filter((el) => el.scrollWidth - el.clientWidth <= 1).length,
+    )
+    expect(pointless).toBe(0)
   })
+})
+
+test.describe('A3 · module heading levels', () => {
+  // The module sections (<Briefing>, <Drill>, <MissionBeat>, <LogEntry>, …) now render their panel
+  // label as an h2 and the instrument sub-heads as h3, so the h1 -> h4 jump is gone from the
+  // component side. Content-authored headings remain a later pass.
+  for (const id of ['act-5-03', 'act-0-01', 'act-2-02', 'act-9-02']) {
+    test(`${id}: headings do not skip a level`, async ({ page }) => {
+      await openGates(page)
+      await page.goto(`/#/module/${id}`)
+      await expect(page.locator('.dr-module h2').first()).toBeVisible({ timeout: 20_000 })
+      const levels = await page.$$eval('.dr-module h1, .dr-module h2, .dr-module h3, .dr-module h4, .dr-module h5, .dr-module h6', (ns) =>
+        ns.map((n) => Number(n.tagName[1])),
+      )
+      expect(levels[0]).toBe(1)
+      const skips = levels.filter((lvl, i) => i > 0 && lvl > levels[i - 1] + 1)
+      expect(skips).toEqual([])
+    })
+  }
 })

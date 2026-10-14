@@ -10,6 +10,7 @@
 import { useMemo, useState } from 'react'
 import { arc as d3Arc, pie as d3Pie, scaleBand, scaleLinear } from 'd3'
 import { Panel } from '@/components/Panel'
+import { TableScroll } from '@/components/MarkdownTable'
 import { Segmented, Slider, Readout, ReadoutRow, Legend, useChartFrame, ChartSurface, PlotClip, BandAxis, YAxis, chartTheme, seriesColor, semanticColor, fmtTick, type LegendItem } from '@/instruments/shared'
 import { countBy, fmt, fmtInt, fmtPct, twoWay } from '@/lib/stats'
 import { register, losses, type LossRecord } from './data'
@@ -243,6 +244,7 @@ export function DisplayIntegrityPanel(_props: DisplayIntegrityPanelProps = {}) {
               <Legend items={officeLegend} />
             </div>
             <div>
+              <TableScroll className="dr-table-wrap--flush">
               <table className="dr-table" aria-label="Office by classification relative frequencies">
                 <caption className="dr-table__caption">row-conditional relative frequencies · count (row %)</caption>
                 <thead>
@@ -270,6 +272,7 @@ export function DisplayIntegrityPanel(_props: DisplayIntegrityPanelProps = {}) {
                   ))}
                 </tbody>
               </table>
+              </TableScroll>
               <Note>Different n per office: compare relative frequencies, not counts.</Note>
             </div>
           </div>

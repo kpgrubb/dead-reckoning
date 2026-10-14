@@ -1,6 +1,23 @@
 /**
  * Scatter — points with optional least-squares line, residual segments, draggable points
  * (`onPointsChange`), keyboard nudging, and a canvas path above `canvasThreshold` points.
+ *
+ * Keyboard contract for a draggable scatter (`onPointsChange` set). The series is **one tab stop**
+ * with a roving tabindex, so a 412-point chart costs one Tab press and not 412:
+ *
+ *   Tab                  focus the selected point (the only point with tabindex="0")
+ *   Arrow keys           move that point (Shift for a ×10 step) — unchanged from before
+ *   Alt/Ctrl + ◂ ▸ ▴ ▾   select the previous / next point
+ *   Home / End           select the first / last point
+ *   Enter / Space        toggle SELECT mode, where plain arrows select and Alt-arrows move
+ *   Escape               leave SELECT mode, then leave the plot
+ *   Tab                  leave the plot
+ *
+ * Plain arrows move rather than select in the default mode so the published contract — and the
+ * reduced-motion guard that nudges a point and watches r change — keeps working unaltered.
+ * Selection, movement and mode changes are announced through a polite live region beside the SVG;
+ * the SVG itself stays role="img" (its contents are presentational), which is why the live region
+ * lives outside it.
  */
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { scaleLinear } from 'd3'
@@ -46,10 +63,21 @@ export interface ScatterProps {
   className?: string
 }
 
+/** Arrow keys mapped to a step through the series (reading order: left/up back, right/down on). */
+const SELECT_STEP: Record<string, number> = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }
+
 export function Scatter({ points, xLabel, yLabel, xDomain, yDomain, fitLine = false, line, residuals = false, onPointsChange, onFit, highlight, hReferences, color, radius = chartTheme.mark.dotR, height = 300, ariaLabel, description, showTable = false, className }: ScatterProps) {
   const frame = useChartFrame({ height, yLabel: !!yLabel })
   const [dragging, setDragging] = useState<number | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  /** Roving tabindex: the one point in the series that Tab can reach. */
+  const [selected, setSelected] = useState(0)
+  /** SELECT mode swaps the arrow keys over: plain arrows select, Alt-arrows move. */
+  const [selectMode, setSelectMode] = useState(false)
+  const [announcement, setAnnouncement] = useState('')
+  const pointRefs = useRef(new Map<number, SVGCircleElement>())
+  const exitRef = useRef<HTMLDivElement | null>(null)
+  const refocus = useRef(false)
 
   const finite = useMemo(() => points.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y)), [points])
   const xd = useMemo<[number, number]>(() => xDomain ?? (finite.length ? padDomain([Math.min(...finite.map((p) => p.x)), Math.max(...finite.map((p) => p.x))], 0.08) : [0, 1]), [xDomain, finite])
@@ -105,15 +133,40 @@ export function Scatter({ points, xLabel, yLabel, xDomain, yDomain, fitLine = fa
     [points, xLabel, yLabel, theLine],
   )
 
-  const commit = (index: number, nx: number, ny: number) => {
-    if (!onPointsChange) return
+  /** Indices of the points that are actually drawn, in series order — what the arrows walk. */
+  const drawable = useMemo(() => points.map((p, i) => (Number.isFinite(p.x) && Number.isFinite(p.y) ? i : -1)).filter((i) => i >= 0), [points])
+  /** `selected` clamped to a point that exists, so a shrinking series can never strand the tab stop. */
+  const selIdx = drawable.includes(selected) ? selected : (drawable[0] ?? -1)
+
+  const describe = (i: number, p: ScatterPoint = points[i]) =>
+    `${p.label ?? `point ${i + 1}`}: ${xLabel ?? 'x'} ${fmtTick(p.x)}, ${yLabel ?? 'y'} ${fmtTick(p.y)}`
+  const position = (i: number) => `${drawable.indexOf(i) + 1} of ${drawable.length}`
+
+  useEffect(() => {
+    if (!refocus.current) return
+    refocus.current = false
+    pointRefs.current.get(selIdx)?.focus()
+  }, [selIdx])
+
+  const select = (to: number) => {
+    if (to < 0 || to === selIdx) return
+    refocus.current = true
+    setSelected(to)
+    setAnnouncement(`${describe(to)}. Point ${position(to)}.`)
+  }
+
+  const commit = (index: number, nx: number, ny: number): ScatterPoint | null => {
+    if (!onPointsChange) return null
     const next = points.slice()
-    next[index] = { ...next[index], x: Number(Math.max(xd[0], Math.min(xd[1], nx)).toFixed(10)), y: Number(Math.max(yd[0], Math.min(yd[1], ny)).toFixed(10)) }
+    const moved = { ...next[index], x: Number(Math.max(xd[0], Math.min(xd[1], nx)).toFixed(10)), y: Number(Math.max(yd[0], Math.min(yd[1], ny)).toFixed(10)) }
+    next[index] = moved
     onPointsChange(next)
+    return moved
   }
   const onPointerDown = (i: number) => (e: PointerEvent<SVGCircleElement>) => {
     if (!editable) return
     e.currentTarget.setPointerCapture(e.pointerId)
+    setSelected(i)
     setDragging(i)
   }
   const onPointerMove = (i: number) => (e: PointerEvent<SVGCircleElement>) => {
@@ -125,6 +178,42 @@ export function Scatter({ points, xLabel, yLabel, xDomain, yDomain, fitLine = fa
   const onPointerUp = () => setDragging(null)
   const onKeyDown = (i: number) => (e: KeyboardEvent<SVGCircleElement>) => {
     if (!editable) return
+
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      if (selectMode) {
+        setSelectMode(false)
+        setAnnouncement('Move mode. Arrow keys move the selected point.')
+      } else {
+        exitRef.current?.focus()
+      }
+      return
+    }
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault()
+      const on = !selectMode
+      setSelectMode(on)
+      setAnnouncement(on ? 'Select mode. Arrow keys select the next point; hold Alt to move it.' : 'Move mode. Arrow keys move the selected point; hold Alt to select another.')
+      return
+    }
+    if (e.key === 'Home' || e.key === 'End') {
+      e.preventDefault()
+      select(e.key === 'Home' ? drawable[0] : drawable[drawable.length - 1])
+      return
+    }
+
+    const step = SELECT_STEP[e.key]
+    if (step === undefined) return
+    const modified = e.altKey || e.ctrlKey || e.metaKey
+    // Alt/Ctrl always traverses in the default mode; in SELECT mode the plain arrows do, and the
+    // modifier moves the point instead.
+    if (selectMode ? !modified : modified) {
+      e.preventDefault()
+      const at = drawable.indexOf(selIdx)
+      select(drawable[Math.max(0, Math.min(drawable.length - 1, at + step))])
+      return
+    }
+
     const sx = (xd[1] - xd[0]) / 100
     const sy = (yd[1] - yd[0]) / 100
     const k = e.shiftKey ? 10 : 1
@@ -133,7 +222,8 @@ export function Scatter({ points, xLabel, yLabel, xDomain, yDomain, fitLine = fa
     const d = map[e.key]
     if (!d) return
     e.preventDefault()
-    commit(i, p.x + d[0], p.y + d[1])
+    const moved = commit(i, p.x + d[0], p.y + d[1])
+    if (moved) setAnnouncement(`${describe(i, moved)}.`)
   }
 
   const linePath = useMemo(() => {
@@ -142,15 +232,32 @@ export function Scatter({ points, xLabel, yLabel, xDomain, yDomain, fitLine = fa
     return `M${x(x0)},${y(theLine.intercept + theLine.slope * x0)}L${x(x1)},${y(theLine.intercept + theLine.slope * x1)}`
   }, [theLine, xd, x, y])
 
+  const keyboardHelp = editable
+    ? `The ${drawable.length} points are one tab stop. Arrow keys move the selected point, Shift for a larger step. Alt with an arrow key, or Home and End, selects another point. Enter swaps the arrow keys over so they select instead of move. Escape leaves the plot.`
+    : null
+  const fullDescription = keyboardHelp ? [description, keyboardHelp].filter(Boolean).join(' ') : description
+
   return (
     <ChartSurface
       frame={frame}
       ariaLabel={ariaLabel}
-      description={description}
+      description={fullDescription}
       table={table}
       showTable={showTable}
       className={className}
       underlay={useCanvas ? <canvas ref={canvasRef} className="dr-chart__canvas" style={{ width: frame.width, height: frame.height }} aria-hidden="true" /> : undefined}
+      overlay={
+        editable ? (
+          <>
+            <div className="visually-hidden" role="status">
+              {announcement}
+            </div>
+            {/* Escape parks focus here, so the next Tab continues after the chart instead of
+                restarting at the top of the document. */}
+            <div ref={exitRef} tabIndex={-1} className="dr-chart__exit" />
+          </>
+        ) : undefined
+      }
     >
       <g transform={`translate(${frame.margin.left},${frame.margin.top})`}>
         <YAxis scale={y} width={frame.innerWidth} ticks={5} label={yLabel} />
@@ -172,7 +279,15 @@ export function Scatter({ points, xLabel, yLabel, xDomain, yDomain, fitLine = fa
               return (
                 <circle
                   key={i}
-                  className={['dr-mark', 'dr-mark--dot', editable ? 'dr-mark--draggable' : '', dragging === i ? 'is-dragging' : ''].filter(Boolean).join(' ')}
+                  ref={
+                    editable
+                      ? (el) => {
+                          if (el) pointRefs.current.set(i, el)
+                          else pointRefs.current.delete(i)
+                        }
+                      : undefined
+                  }
+                  className={['dr-mark', 'dr-mark--dot', editable ? 'dr-mark--draggable' : '', editable && i === selIdx ? 'is-selected' : '', dragging === i ? 'is-dragging' : ''].filter(Boolean).join(' ')}
                   cx={x(p.x)}
                   cy={y(p.y)}
                   r={isHl ? radius + 2 : radius}
@@ -181,9 +296,10 @@ export function Scatter({ points, xLabel, yLabel, xDomain, yDomain, fitLine = fa
                   stroke={chartTheme.color.ring}
                   strokeWidth={chartTheme.mark.ring}
                   paintOrder="stroke"
-                  tabIndex={editable ? 0 : undefined}
+                  tabIndex={editable ? (i === selIdx ? 0 : -1) : undefined}
                   role={editable ? 'button' : undefined}
-                  aria-label={editable ? `${p.label ?? `point ${i + 1}`}: ${xLabel ?? 'x'} ${fmtTick(p.x)}, ${yLabel ?? 'y'} ${fmtTick(p.y)}. Arrow keys to move.` : undefined}
+                  aria-label={editable ? `${describe(i, p)}. Point ${position(i)}. Arrow keys to move, Alt and an arrow key to select another.` : undefined}
+                  onFocus={editable ? () => setSelected(i) : undefined}
                   onPointerDown={onPointerDown(i)}
                   onPointerMove={onPointerMove(i)}
                   onPointerUp={onPointerUp}

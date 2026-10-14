@@ -32,7 +32,7 @@ export function Drill({ generator, count = 4, label }: DrillProps) {
   }, [])
   if (!hasGenerator(generator)) {
     return (
-      <Panel label="DRILL" tone="alert">
+      <Panel headingLevel={2} label="DRILL" tone="alert">
         <p className="dr-muted">Problem generator “{generator}” is not registered.</p>
       </Panel>
     )
@@ -41,7 +41,7 @@ export function Drill({ generator, count = 4, label }: DrillProps) {
   const done = Object.values(confirmed).filter(Boolean).length
   const complete = done >= count
   return (
-    <Panel label={`DRILL · ${(label ?? g.label).toUpperCase()}`} status={`${done}/${count} CONFIRMED · AP ${g.ap_topics.join(' · ')}`} tone="intel" className="dr-drill">
+    <Panel headingLevel={2} label={`DRILL · ${(label ?? g.label).toUpperCase()}`} status={`${done}/${count} CONFIRMED · AP ${g.ap_topics.join(' · ')}`} tone="intel" className="dr-drill">
       <div className={`dr-drill__progress ${complete ? 'is-complete' : ''}`} role="status" aria-live="polite">
         <span>
           {done}/{count} confirmed{complete ? ' — drill complete' : ''}

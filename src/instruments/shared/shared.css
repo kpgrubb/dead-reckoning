@@ -98,6 +98,20 @@
   stroke: var(--dr-focus);
   stroke-width: 2px;
 }
+/* The roving tab stop: marks which point Tab will land on, without shouting over the data. */
+.dr-mark--draggable.is-selected {
+  stroke: var(--dr-fg-2);
+  stroke-width: 1.5px;
+}
+/* Where Escape parks focus so Tab resumes after the chart. Never rendered visibly. */
+.dr-chart__exit {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  outline: none;
+}
 .dr-mark--dot.is-hover {
   filter: brightness(1.2);
 }

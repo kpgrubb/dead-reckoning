@@ -74,6 +74,13 @@
   min-width: 0;
 }
 .dr-panel--default .dr-panel__label { color: var(--dr-fg-1); }
+/* A section panel renders its label as a real heading (Panel headingLevel). Markup only: the
+   heading inherits the header's type so nothing moves. */
+h2.dr-panel__label, h3.dr-panel__label, h4.dr-panel__label, h5.dr-panel__label, h6.dr-panel__label {
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+}
 .dr-panel__icon { display: inline-flex; color: var(--panel-tone); }
 .dr-panel__status {
   color: var(--dr-fg-2);

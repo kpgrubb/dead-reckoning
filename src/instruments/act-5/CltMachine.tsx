@@ -190,7 +190,7 @@ export function CltMachine({ parent: parent0 = 'lane-delay', n: n0 = NINETEEN_N,
         </div>
 
         <section aria-label="Parent population">
-          <h4 className="dr-act5__head">The population · one transit at a time</h4>
+          <h3 className="dr-act5__head">The population · one transit at a time</h3>
           {pdf ? (
             <DensityCurve curves={{ pdf, label: spec.label, color: 'null' }} domain={domain} references={[{ x: mu, label: 'μ', color: 'reference' }]} xLabel={spec.unitLabel} height={190} ariaLabel={`Density of the parent population: ${spec.label}`} description={parentDescription} />
           ) : (
@@ -208,7 +208,7 @@ export function CltMachine({ parent: parent0 = 'lane-delay', n: n0 = NINETEEN_N,
         </section>
 
         <section aria-label="Sampling distribution of the sample mean">
-          <h4 className="dr-act5__head">The sampling distribution of x̄ · {fmtInt(n)} at a time</h4>
+          <h3 className="dr-act5__head">The sampling distribution of x̄ · {fmtInt(n)} at a time</h3>
           {done ? (
             <Histogram
               values={results}

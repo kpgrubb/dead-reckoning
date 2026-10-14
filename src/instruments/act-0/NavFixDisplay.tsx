@@ -94,7 +94,7 @@ export function NavFixDisplay({ run = loggedFixRun }: NavFixDisplayProps = {}) {
           <Readout label="RUNS" value={runs.length} stale={!current} />
         </ReadoutRow>
 
-        <h4 className="dr-act0-heading">MEANS OF EVERY RUN SO FAR</h4>
+        <h3 className="dr-act0-heading">MEANS OF EVERY RUN SO FAR</h3>
         {current &&
           (runs.length > HISTOGRAM_AFTER ? (
             <Histogram

@@ -31,7 +31,7 @@ export interface CalculatorProps {
 
 export function Calculator({ title, model = 'TI-84 PLUS CE', children }: CalculatorProps) {
   return (
-    <Panel label={`ON THE CALCULATOR · ${title}`} status={model} tone="engineering" className="dr-calc84">
+    <Panel headingLevel={2} label={`ON THE CALCULATOR · ${title}`} status={model} tone="engineering" className="dr-calc84">
       <ol className="dr-calc84__steps">{children}</ol>
     </Panel>
   )

@@ -5,6 +5,11 @@
 
 /* ---------- Rich text: tables & blockquotes ---------- */
 .dr-table-wrap { overflow-x: auto; margin: var(--dr-sp-3) 0; }
+/* Only the wrappers that actually overflow take a tabindex, so the ring only ever shows on a
+   scroller the keyboard can really pan. */
+.dr-table-wrap:focus-visible { outline: none; box-shadow: var(--dr-focus-ring); border-radius: var(--dr-radius); }
+/* For an instrument that already owns the spacing around its table. */
+.dr-table-wrap--flush { margin: 0; }
 .dr-table { border-collapse: collapse; font-family: var(--dr-font-mono); font-size: var(--dr-fs-sm); min-width: 40%; }
 .dr-table th, .dr-table td { border-bottom: 1px solid var(--dr-line); padding: var(--dr-sp-1) var(--dr-sp-3); text-align: left; white-space: nowrap; }
 .dr-table th { color: var(--dr-fg-2); font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: var(--dr-fs-xs); border-bottom-color: var(--dr-line-strong); }
@@ -59,8 +64,8 @@
 .dr-checkpoint__bar { flex: 1; height: 4px; background: var(--dr-bg-3); border-radius: 2px; overflow: hidden; }
 .dr-checkpoint__bar-fill { height: 100%; background: var(--dr-cyan); transition: width var(--dr-dur) var(--dr-ease); }
 .dr-checkpoint__item-head { display: flex; justify-content: space-between; gap: var(--dr-sp-3); font-family: var(--dr-font-mono); font-size: var(--dr-fs-xs); letter-spacing: 0.08em; color: var(--dr-fg-2); text-transform: uppercase; margin-bottom: var(--dr-sp-2); }
-.dr-checkpoint__item-head h4 { margin: 0; font: inherit; color: var(--dr-fg-1); }
-.dr-checkpoint__item.is-answered .dr-checkpoint__item-head h4 { color: var(--dr-fg-0); }
+.dr-checkpoint__item-head h3 { margin: 0; font: inherit; color: var(--dr-fg-1); }
+.dr-checkpoint__item.is-answered .dr-checkpoint__item-head h3 { color: var(--dr-fg-0); }
 .dr-checkpoint__item-state { color: var(--dr-fg-2); }
 .dr-checkpoint__item.is-correct .dr-checkpoint__item-state { color: var(--dr-phosphor); }
 .dr-checkpoint__item.is-wrong .dr-checkpoint__item-state { color: var(--dr-alert); }

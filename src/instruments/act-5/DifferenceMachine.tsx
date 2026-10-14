@@ -170,7 +170,7 @@ export function DifferenceMachine({ preset: preset0 = 'fleets', reps: reps0 = 30
         {isSmallGroup && <Readout label="1-in-1,000 gap · 19 against 881" value={fmt(GAP_1_IN_1000, 4)} units="d" size="sm" tone="log" />}
       </ReadoutRow>
 
-      <h4 className="dr-act5__head">Where the noise comes from</h4>
+      <h3 className="dr-act5__head">Where the noise comes from</h3>
       <BarChart
         categories={[`group 1 · n₁ = ${fmtInt(n1)}`, `group 2 · n₂ = ${fmtInt(n2)}`]}
         values={[varTotal > 0 ? share1 * 100 : 0, varTotal > 0 ? share2 * 100 : 0]}
