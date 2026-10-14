@@ -33,7 +33,7 @@ export const clampSize = sampleSizeForMean({ moe: clampTarget, confidence: 0.95,
 
 There is no engineering to do and the engineering deck is the busiest compartment on the ship.
 
-*Halden Reach*'s fitters have *Nightjar*'s cellar valve gear laid out on a rubber mat across the deck plates in the order it came off, twenty-two pieces, chalk numbers on the mat beside each one. You go the long way round past the lathe with your shoulder against the frame, and a rating you have never met says sir without looking up from a seat face.
+*Halden Reach*'s fitters have *Nightjar*'s cellar valve gear laid out on a rubber mat across the deck plates in the order it came off, twenty-two pieces, chalk numbers on the mat beside each one. You go the long way round past the lathe with your shoulder against the frame. A rating you have never met says sir without looking up from a seat face.
 
 Sandoval is at the far end on her knees with a bore gauge, working the handle in and out of the same hole and not liking what it says.
 
@@ -55,12 +55,12 @@ So they all clear it, sir, every one, and the smallest margin in the file is sti
 
 You tell him to strike that and read you what the file is actually of.
 
-He says it is of twelve reactors, sir. Twelve reactors that the Adlinda yard uprated. And stops, because the sentence he has drafted is about reactors and the sentence he needs is about something he has not measured.
+He says it is of twelve reactors, sir. Twelve reactors that the Adlinda yard uprated. Then he reads his own drafted line back off the slate and stops in the middle of it.
 
 Sandoval puts the bore gauge down on the mat, in its own chalk square.
 
 <Dialogue speaker="engineer">
-Twelve of anything scatter, Ensign. I've stripped Mk 3s that came off the same line a week apart and read forty kilonewtons between them on the same test cell. What I want from you is where the fleet's mean sits and how far out you'd be prepared to be wrong about it, and I want the second half or I don't want the first.
+Twelve of anything scatter, Ensign. I've stripped Mk 3s that came off the same line a week apart and read forty kilonewtons between them on the same test cell. What I want is where the fleet's mean sits and how far out you'd be prepared to be wrong about it. I want the second half or I don't want the first.
 </Dialogue>
 
 She wipes her hands on a rag and reads the file over Ebele's shoulder from four feet away.
@@ -164,13 +164,13 @@ rounded **up**, because a fraction of an observation buys nothing. Planning uses
   prompt={`The thrust column of Okonjo's file: **${fmtInt(REFIT_N)}** post-refit certifications, in kilonewtons, on the **POST-REFIT OUTPUT** panel above. Build the **${fmtPct(0.95, 0)}** one-sample t-interval for the mean post-refit output of a hull through this uprate, and report its **lower endpoint** in kN, to **two decimal places**.\n\nThe bench opens on this file's own summary statistics. Check them against the panel before you trust them.`}
   hint={`x̄ ± t*·s/√n on ${fmtInt(REFIT_N - 1)} degrees of freedom. Carry full precision through the standard error and round once, at the endpoint.`}>
   <Success>
-  <Dialogue speaker="engineer" aside="She reads the two endpoints off the slate and does not write them down, because she is not the one filing anything.">
+  <Dialogue speaker="engineer" aside="She reads the two endpoints off the slate and leaves the slate where it is.">
   {fmt(OUTPUT_INTERVAL.ci[0], 2)} to {fmt(OUTPUT_INTERVAL.ci[1], 2)}, and the plate says {fmtInt(MK3_SPEC_KN)}. That's a figure I'd sign, Skipper. It's got the give-or-take on it and the give-or-take doesn't reach the plate.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="engineer" aside="She picks the bore gauge back up, which is her way of leaving a conversation open.">
-  That's not the bottom of it. Standard error first: the spread over root twelve, not the spread. Then the multiplier off eleven degrees of freedom, not off the normal table. Then take it off the mean. I'll wait.
+  <Dialogue speaker="engineer" aside="She picks the bore gauge back up and stays on her knees beside the mat.">
+  That's not the bottom of it. Standard error first: the spread over root twelve. Then the multiplier off eleven degrees of freedom, not off the normal table. Then take it off the mean. I'll wait.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -193,7 +193,7 @@ rounded **up**, because a fraction of an observation buys nothing. Planning uses
   </Success>
   <Failure>
   <Dialogue speaker="engineer">
-  About the mean, Ensign. Not about the reactors. Those twelve are spread over a good twenty-odd kilonewtons between them and your interval is nine wide; it was never describing them and it never claimed to.
+  About the mean, Ensign. Not about the reactors. Those twelve are spread over a good twenty-odd kilonewtons between them and your interval is nine wide. It was never describing them.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -237,7 +237,7 @@ The interval sits on the slate with the specification written under it. {fmt(OUT
 Sandoval reads it, then reads the refit dates beside it.
 
 <Dialogue speaker="engineer" aside="She has a seat face in one hand and has stopped turning it over.">
-Four percent. Skipper, a freighter doesn't need more torch unless it intends to carry more than it says. You can't spend it. You can't sell it. On a published profile you can't even fly it, because the profile is what the Authority plots you against and the Authority will want to know why you're early.
+Four percent. Skipper, a freighter doesn't need more torch unless it means to carry more than it says. There's nothing else to do with it. On a published profile you can't even fly it: the profile is what the Authority plots you against, and the Authority will want to know why you're early.
 </Dialogue>
 
 <Dialogue speaker="analyst" aside="Quietly, because the rating at the lathe is two metres away.">
@@ -248,7 +248,7 @@ Sandoval puts the seat face down.
 
 Twelve hulls uprated four percent above their plates, and every one of them still flying the three-milligee profile they file. A hull with more thrust than it declares and no time saved on the run is a hull carrying something, and the file on the slate does not say that. It says the reactors are stronger. Nothing in it says what they are pushing.
 
-The other two columns in Okonjo's file are still untouched: the Ledger's Mark-9 delay on the run before each uprate and on the run after. Ebele has the twelve pairs up on the second slate before you have finished the sentence, and he has them in the wrong shape, side by side as two separate columns of twelve.
+The other two columns in Okonjo's file are still untouched: the Ledger's Mark-9 delay on the run before each uprate and on the run after. Ebele has the twelve pairs up on the second slate before you have finished the sentence. He has them side by side, as two separate columns of twelve.
 
 <Dialogue speaker="engineer" aside="On her way past, not stopping.">
 Eighteen hundred, Skipper. The number four seat.
