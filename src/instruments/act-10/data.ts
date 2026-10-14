@@ -36,6 +36,7 @@ import {
   BENEFICIARY_TEST,
   CARGO_GOF,
   CORRIDOR_TEST,
+  COVER_HULLS,
   DACRE_DIVERTED,
   DACRE_SIGNED,
   DIVERTED_N,
@@ -68,7 +69,14 @@ export {
   powerAgainst,
 }
 export { P_PICKET_CAN_RESPOND, P_WRECKER_PRESENT, P_ON_PICKET_GIVEN_PRESENT, SLUG_FLIGHT_MIN, TORCH_FROM_WATCH_MIN, CLOSEST_APPROACH_KM, COLD_DISPLACEMENT_M }
-export { REFIT_N }
+export { REFIT_N, COVER_HULLS, DIVERTED_N }
+
+/**
+ * The charge sheet, as the Inspectorate's sitting list prints it: the cover losses by name, in the
+ * order act-8 holds them. The count is the count of counts, and it is never typed in the prose.
+ */
+export const COVER_LIST = COVER_HULLS.join(', ')
+export const COVER_N = COVER_HULLS.length
 
 // ═════════════════════════════════════════════════════════════════════════════════════════════
 // The findings ledger — what the Inspectorate has, and what each finding is about
