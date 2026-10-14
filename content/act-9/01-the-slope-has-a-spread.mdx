@@ -1,0 +1,314 @@
+---
+id: act-9-01
+act: 9
+title: "The Slope Has a Spread"
+kind: module
+ap_topics: ["9.1"]
+objectives:
+  - "State the population regression model μy = α + βx with SD σ, and name which parts of it a fitted line estimates"
+  - "Describe the sampling distribution of the sample slope b: centred at β, with SD σ/(σx·√n), and say what makes it narrow"
+  - "Read the standard error of a slope off computer output and interpret it as the spread of b across samples"
+  - "Check the conditions for slope inference on the residuals and on the design, never on a graph of the response"
+prereqs: ["act-8-checkpoint"]
+est_minutes: 30
+calc_briefing: null
+summary: "Ebele has a line through Brandt's nineteen and a number at the end of it. Before anyone reads the number, Rook wants to know how far it would have moved on nineteen other hulls."
+---
+
+import { fmt, fmtInt, fmtPct, linearRegression, mean } from '@/lib/stats'
+import {
+  DACRE_DIVERTED_900,
+  DACRE_SIGNED_900,
+  DIVERTED_N,
+  HONEST_N,
+  HONEST_SLOPE_MEAN,
+  HONEST_SLOPE_SD,
+  MARK2_FIX_SD,
+  NINETEEN_FUEL_FIT,
+  NINETEEN_FUEL_OUTPUT,
+  NINETEEN_FUEL_SD_RATIO,
+  NINETEEN_SE_B,
+  PERRINE_DEPARTURES_N,
+  SE_RATIO,
+  SLOPE_SIM_N,
+  SLOPE_SIM_REPS,
+  WHOLE_PHASE_SD,
+  nineteen,
+} from '@/instruments/act-9/data'
+import { ResidualDiagnostics } from '@/instruments/act-9/ResidualDiagnostics'
+import { RegressionOutputPanel } from '@/instruments/act-9/RegressionOutputPanel'
+import { SlopeSpreadSimulator } from '@/instruments/act-9/SlopeSpreadSimulator'
+
+export const loopFlow = [1.1, 1.6, 2.0, 2.4, 2.9, 3.3, 3.8, 4.2, 4.7, 5.2]
+export const loopDraw = [24.6, 28.9, 34.5, 37.2, 45.1, 47.3, 53.0, 58.4, 61.8, 69.9]
+export const loopFit = linearRegression(loopFlow, loopDraw)
+export const loopN = loopFlow.length
+export const loopSxx = loopFit.sxx
+export const nineteenHulls = nineteen.map((c) => c.hull)
+
+<Scene stamp="MET 204/07:20" location="Intel terminal · five milligee for Ceres, both wings out" condensed="Six days of open radiators and the ship is warm for the first time since Callisto. Ebele has been at the terminal since the middle watch with Brandt's nine hundred fuel certifications and has fitted a line through the nineteen diverted departures. Solberg has costed the relay net's whole accelerate-phase archive at two days of link time, and the request is on Rook's slate unsigned. Rook will not read Ebele's number until somebody can tell him how far that number would have moved on a different nineteen.">
+
+Six days with the wings out and the ship smells of itself again. Hot polymer off the returns. Coffee somebody left on a plate in the passage. The dry burnt smell the intel terminal's fan puts out when it has been running a week without a filter change.
+
+At five milligee a dropped stylus takes a slow count of four to reach the deck. Yours gets away from you twice while you are working your way into the second seat, and the second time you leave it.
+
+Ferrante catches you on the ladder coming down and stands a rung below so that he is speaking up at you.
+
+<Dialogue speaker="medic" aside="He has the slate against his chest and does not open it.">
+Twenty-six hours for the Ensign. He goes to his rack and lies in it with the work. Resting pulse up eleven on his own baseline, and he has stopped eating in the mess because it costs him the walk. I have logged it. Yours is up nine and I have logged that too, and one of you is my patient.
+</Dialogue>
+
+He goes aft. You go down.
+
+Brandt's file has been open on the terminal since MET 196. {fmtInt(PERRINE_DEPARTURES_N)} Bureau fuel certifications, every Perrine departure out of Uruk High in six years, the loading officer's measured tonnage against the certified requirement, departure by departure. The examiner column says what the Bureau's own sample of departures already said: Dacre signed {fmtInt(DACRE_SIGNED_900)} of the {fmtInt(PERRINE_DEPARTURES_N)}, and {fmtInt(DACRE_DIVERTED_900)} of those {fmtInt(DACRE_SIGNED_900)} are among the nineteen.
+
+Ebele has the nineteen on one axis against the other and a line through them, and a figure written on the ledge beside the screen in his own hand.
+
+<Dialogue speaker="analyst" aside="Fast, and he has been holding it since about 04:00.">
+So it's above one, sir. It's well above one. Every tonne the profile required, they loaded more than a tonne, and it isn't scatter, it's the whole nineteen, and I can put the fit on your slate in—
+</Dialogue>
+
+You put your hand flat over the figure on the ledge.
+
+He stops.
+
+Solberg's request is on your slate underneath the acceptance form for the mast patch. The relay net keeps every state vector the Lane ever logged, six weeks of them per transit, and pulling the accelerate phase for nineteen hulls costs two days of link time out of eleven remaining before Ceres closes the geometry. You have not signed it. You are not going to sign it for a number you cannot put a standard under.
+
+Ferrier is at the back of the terminal with her cap still on. You did not hear her come down the ladder.
+
+<Dialogue speaker="xo">
+Assuming those nineteen are the nineteen. How far off one is far?
+</Dialogue>
+
+<Dialogue speaker="analyst">
+Ma'am, it's — it's a long way off one.
+</Dialogue>
+
+<Dialogue speaker="xo">
+Off one by how many of what.
+</Dialogue>
+
+The fan cycles up and stays up. Ebele turns the screen a few degrees towards you and then turns it back.
+
+Nineteen points and a line through them. The number at the end of that line has no spread attached to it, and nobody aboard has ever drawn one and then asked how far it would have moved on nineteen other hulls.
+
+</Scene>
+
+<Briefing title="The population regression model, and how far a fitted slope moves" topics={["9.1"]}>
+<Briefing.Intuition>
+Regression inference rests on a model of the process, not on a picture of the data.
+
+**The population regression model.** For every value of the explanatory variable $x$ there is a whole population of possible response values. The model says three things about it:
+
+1. Its mean sits on a straight line: $\mu_y = \alpha + \beta x$.
+2. Its standard deviation is the same $\sigma$ at every $x$.
+3. Its shape is approximately Normal.
+
+So $\alpha$, $\beta$ and $\sigma$ are **parameters**. They are properties of the process that produced the data, and nobody ever sees them. What a sample gives you is a fitted line $\hat{y} = a + bx$, and a residual standard deviation $s$. Those three are **statistics**: $a$ estimates $\alpha$, $b$ estimates $\beta$, $s$ estimates $\sigma$.
+
+**The slope is a statistic, so it has a sampling distribution.** Draw a new sample from the same process, fit a new line, and $b$ comes out different. Do it many times and those slopes pile up into a distribution with three properties worth memorising:
+
+- it is centred at $\beta$, the true slope, so $b$ is unbiased;
+- its standard deviation is $\sigma / (\sigma_x \sqrt{n})$;
+- it is approximately Normal, which is why a $t$ procedure works on it.
+
+Read the SD formula for what it says about design. Three things narrow it. A bigger sample. A smaller $\sigma$, meaning a process with less scatter about its own line. And a larger $\sigma_x$: **spreading the x-values out further makes the slope easier to pin down**, because a line is easier to aim through a long lever than a short one. That last one has no analogue in one-variable inference and it is the one people forget.
+
+**Standard error.** In practice $\sigma$ and $\sigma_x$ are unknown, so the SD of $b$ is estimated from the sample. The estimate is the **standard error of the slope**, and every piece of statistical software prints it in a column beside the slope:
+
+$$SE(b) = \frac{s}{\sqrt{S_{xx}}}, \qquad s = \sqrt{\frac{\sum(y - \hat{y})^2}{n-2}}, \qquad S_{xx} = \sum(x - \bar{x})^2$$
+
+The $n - 2$ is not decoration. Two parameters were estimated from the data to draw the line, so two degrees of freedom were spent, and every $t$ procedure about a slope runs on $df = n - 2$.
+
+**Conditions.** They are usually remembered as **LINE** plus Random, and every one of them is a statement about the *residuals* or about the *design*:
+
+- **L**inear: the residual plot shows no curved pattern.
+- **I**ndependent: the observations are independent of one another, and if sampling without replacement, $n \leq 10\%$ of the population.
+- **N**ormal: the residuals are approximately Normal: a dotplot or histogram of them with no strong skew and no outlier, or a normal probability plot close to straight.
+- **E**qual SD: the residual plot's vertical spread is about the same all the way across, with no fan.
+- **Random**: the data come from a random sample or a randomized experiment.
+
+Nothing on that list is a statement about the response variable on its own. A histogram of $y$ is allowed to be any shape at all: it mixes together populations at many different $x$ values, and the model never claimed it was Normal.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={`\\mu_y = \\alpha + \\beta x, \\qquad y = \\alpha + \\beta x + \\varepsilon, \\quad \\varepsilon \\sim N(0, \\sigma)`} terms={{ '\\alpha': 'the true intercept', '\\beta': 'the true slope, and the parameter every Unit 9 procedure is about', '\\sigma': 'the SD of the responses about the line, the same at every x' }} label="The population regression model" />
+
+<Formula tex={`\\mu_b = \\beta, \\qquad \\sigma_b = \\frac{\\sigma}{\\sigma_x \\sqrt{n}}`} terms={{ '\\sigma_b': 'the SD of the sample slope across repeated samples', '\\sigma_x': 'the SD of the explanatory values', n: 'the number of points in each sample' }} label="The sampling distribution of the sample slope" />
+
+<Formula tex={`SE(b) = \\frac{s}{\\sqrt{S_{xx}}}, \\qquad df = n - 2`} terms={{ s: 'the residual standard deviation, √(SSE/(n − 2))', 'S_{xx}': 'the sum of squared deviations of x from its mean' }} label="The standard error of the slope, and its degrees of freedom" />
+</Briefing.Definition>
+<Briefing.Worked>
+The Chief's shakedown record for the skin loop. {fmtInt(loopN)} runs at different coolant mass flows, each one logging the loop's electrical draw.
+
+<table className="dr-table">
+  <caption className="dr-table__caption">Skin-loop bench runs, CSV Nightjar, MET 3</caption>
+  <thead>
+    <tr><th scope="col">mass flow (kg/s)</th>{loopFlow.map((v, i) => (<th key={i} scope="col">{fmt(v, 1)}</th>))}</tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">loop draw (kW)</th>{loopDraw.map((v, i) => (<td key={i}>{fmt(v, 1)}</td>))}</tr>
+  </tbody>
+</table>
+
+*The fitted line.* Least squares gives $b$ = **{fmt(loopFit.slope, 3)} kW per kg/s** with intercept {fmt(loopFit.intercept, 2)} kW, and $r^2$ = {fmtPct(loopFit.r2, 1)}.
+
+*The residual standard deviation.* The residuals come to {loopFit.residuals.map((v) => fmt(v, 2)).join(', ')} kW, so
+
+<Formula tex={`s = \\sqrt{\\frac{${fmt(loopFit.sse, 3)}}{${fmtInt(loopN)} - 2}} = ${fmt(loopFit.s, 3)}\\ \\text{kW}`} label="Typical distance of a run from the fitted line" />
+
+*The standard error of the slope.* The flows have $\bar{x}$ = {fmt(mean(loopFlow), 3)} kg/s and $S_{xx}$ = {fmt(loopSxx, 3)}, so
+
+<Formula tex={`SE(b) = \\frac{${fmt(loopFit.s, 3)}}{\\sqrt{${fmt(loopSxx, 3)}}} = ${fmt(loopFit.seSlope, 4)}\\ \\text{kW per kg/s}`} label="The spread of the fitted slope across repeated benches" />
+
+*What that number means.* If the Chief ran the same bench again, at the same {fmtInt(loopN)} flows and the same load, she would not get {fmt(loopFit.slope, 3)} again. She would get something else, and the something-elses would scatter around the true slope with a typical departure of about {fmt(loopFit.seSlope, 3)} kW per kg/s. That is the whole content of a standard error: **how far this statistic usually lands from the parameter.**
+
+*Degrees of freedom.* {fmtInt(loopN)} runs, two parameters fitted, $df$ = {fmtInt(loopFit.n - 2)}. Not {fmtInt(loopN - 1)}.
+</Briefing.Worked>
+<Briefing.Caution>
+*Conditions are checked on the residuals, and a graph of the response is the wrong graph.* The model makes no claim about the overall shape of $y$: the responses at large $x$ are supposed to be centred somewhere else from the responses at small $x$, so pooling them into one histogram and calling it skewed says nothing about whether the procedure is valid. Fit the line first, then plot what is left over.
+
+*A slope is not fixed just because the data are.* The nineteen numbers in front of you will not change, and the slope through them is still a statistic. The randomness is in which nineteen the process produced, not in the arithmetic afterwards.
+
+*$SE(b)$ is not $s$.* Software prints both, in different places, and they measure different things. $s$ is how far a single observation typically sits from the line, in the units of $y$. $SE(b)$ is how far a fitted slope typically sits from the true slope, in the units of $y$ per unit of $x$. The second is built out of the first, divided by $\sqrt{S_{xx}}$, and on a well-spread set of $x$ values it is very much the smaller number.
+
+*Degrees of freedom are $n - 2$, always.* One for the intercept, one for the slope. A $t^\star$ or a P-value taken from $n - 1$ is wrong in the safe direction for large $n$ and meaningfully wrong for small $n$, which is where slope problems tend to live.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="LinRegTTest: the only screen that prints s and SE(b)">
+<Calculator.Step keys={['2nd', '0', 'DiagnosticOn', 'ENTER', 'ENTER']} note="Do this once. It persists until somebody resets the RAM.">`2nd 0` is `CATALOG`. Scroll to `DiagnosticOn` and run it. Without it the regression screens print the equation and nothing else: no $r$, no $r^2$. If a classmate's calculator shows $r^2$ and yours does not, this is why.</Calculator.Step>
+<Calculator.Step keys={['STAT', '1:Edit']} note="Worked case: the Chief's ten bench runs above, not Brandt's file below.">Coolant mass flow into `L1`, loop draw into `L2`, one run per row, in the same order in both. {fmtInt(loopN)} rows.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', 'F:LinRegTTest']} note="Xlist: L1 · Ylist: L2 · Freq: 1 · β & ρ: ≠0 · RegEQ: (blank) · Calculate">Item `F`, below `E:LinRegTInt`'s neighbours and above `G:LinRegTInt`. Run it even when no test is wanted, because it is the screen that prints the two numbers a slope procedure needs.</Calculator.Step>
+<Calculator.Read label="s" value={fmt(loopFit.s, 4)}>the residual standard deviation, in the units of $y$. Scroll down for it; it is below the P-value, not above it.</Calculator.Read>
+<Calculator.Read label="b" value={fmt(loopFit.slope, 4)}>the fitted slope.</Calculator.Read>
+<Calculator.Read label="df" value={String(loopFit.n - 2)}>$n - 2$, printed on the screen so you never have to trust your own subtraction.</Calculator.Read>
+<Calculator.Read label="r²" value={fmt(loopFit.r2, 4)}>only if `DiagnosticOn` has been run.</Calculator.Read>
+<Calculator.Watch>**`LinRegTTest` does not print $SE(b)$ on any TI-84 screen, and it gives you everything you need to get it in one keystroke.** The screen shows $t$ and $b$; divide. $SE(b) = b / t$ when the null is zero, which is the calculator's default. Here that is {fmt(loopFit.slope, 4)} ÷ {fmt(loopFit.slope / loopFit.seSlope, 4)} = **{fmt(loopFit.seSlope, 4)}**. Write it down before leaving the screen, because the next test overwrites it.</Calculator.Watch>
+<Calculator.Watch>**`STAT ▸ CALC 8:LinReg(a+bx)` prints neither $s$ nor anything you can get $SE(b)$ from.** It gives $a$, $b$, and (with `DiagnosticOn`) $r$ and $r^2$, and no measure of spread about the line at all. It is the Unit 2 screen. Every Unit 9 question needs `F:LinRegTTest` or `G:LinRegTInt`.</Calculator.Watch>
+<Calculator.Watch>**Two lists, equal length, same order.** If `L1` has {fmtInt(loopN)} entries and `L2` has {fmtInt(loopN - 1)}, the calculator throws `ERR:DIM MISMATCH` and tells you nothing about which list is short. If the two are the same length but a row got transposed, it throws nothing at all and fits a line through the wrong pairing.</Calculator.Watch>
+</Calculator>
+
+<SlopeSpreadSimulator />
+
+<RegressionOutputPanel
+  table={NINETEEN_FUEL_OUTPUT}
+  mode="read"
+  label="INTEL · REGRESSION OUTPUT · DS-16, THE NINETEEN"
+  caption="Fuel loaded against the fuel the plotted profile required, for the nineteen diverted departures. Four numbers on this page are asked for by name in a Unit 9 question."
+/>
+
+<ResidualDiagnostics
+  fit={NINETEEN_FUEL_FIT}
+  xLabel="required Lane fuel (t)"
+  yLabel="fuel loaded (t)"
+  pointLabels={nineteenHulls}
+  label="INTEL · CONDITIONS · THE NINETEEN, THREE WAYS"
+  caption="The same nineteen points as a scatterplot, as residuals against the fitted value, and as a normal probability plot of those residuals."
+  initialView="residual"
+/>
+
+<Drill generator="act-9/population-model" count={1} />
+<Drill generator="act-9/slope-sd-formula" count={1} />
+<Drill generator="act-9/read-slope-output" count={1} />
+<Drill generator="act-9/slope-output-and-conditions" count={1} />
+<Drill generator="act-9/slope-spread-drivers" count={1} />
+<Drill generator="act-9/slope-conditions" count={1} />
+
+<MissionBeat id="act-9-01-spread" kind="numeric" answer={HONEST_SLOPE_SD} answerKind="other" digits={3} tolerance={0.002} label="HOW FAR A SLOPE MOVES ON ITS OWN"
+  prompt={`Open the sampling-distribution simulator at its standard run: ${fmtInt(SLOPE_SIM_REPS)} samples of ${fmtInt(SLOPE_SIM_N)} honest Perrine departures drawn from the ${fmtInt(HONEST_N)} that came home, each one fitted the same way, fuel loaded on required Lane fuel.\n\nReport the **standard deviation of the fitted slopes**, to **three decimal places**. This is the yardstick everything after it is measured against: how far a slope lands from one tonne per tonne when nothing whatever is wrong.`}
+  hint="Not the mean of the stack, which is the true slope recovered. The spread of the stack. The simulator prints both.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes it on the ledge above his own figure and draws a box round it.">
+  So the honest ones come out at {fmt(HONEST_SLOPE_MEAN, 3)} on average, sir, which is one, and they wander off it by about that much. Nineteen honest hulls can hand you a slope that misses by two or three of those and nobody has done anything wrong. That's just nineteen.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  The mean of that stack is the answer to a different question, Ensign. It says the method is not biased. I asked how far one of them lands from the middle.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-9-01-se" kind="numeric" answer={NINETEEN_SE_B} answerKind="other" digits={3} label="WHAT THE OUTPUT SAYS ABOUT THE NINETEEN"
+  prompt={`Now the nineteen diverted departures' own output table, above. Read the **standard error of the slope** off it, to **three decimal places**.\n\nThe column is printed. The trap is which row.`}
+  hint="Two rows: the constant and the explanatory variable. A slope procedure is about the second one. SE Coef is the third column.">
+  <Success>
+  <Dialogue speaker="analyst">
+  That's {fmt(SE_RATIO, 1)} times the honest spread, sir. Same number of hulls, same two columns, same arithmetic, and their fit is that much looser about its own line.
+  </Dialogue>
+  <Dialogue speaker="engineer" aside="She has come up for the acceptance form and reads the screen over the back of the chair without being invited to.">
+  Because the hulls aren't the same weight as each other and whatever they're carrying isn't either. Spread in the cargo, spread in the residual. That's not a fault in your line, Ensign. That's the cargo talking through it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He puts the stylus on the intercept row and then moves it down.">
+  Sir, I did that too. The constant has a standard error as well and it's the bigger number. It's the wrong row. We're not asking anything about where the line crosses.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-9-01-conditions" kind="choice" label="WHAT THE PLOTS WILL AND WILL NOT SUPPORT"
+  prompt={`Ferrier will not let a regression into a brief without the conditions written under it. Work through the three views of the nineteen in the diagnostics panel: the scatterplot, the residual plot against the fitted value, and the normal probability plot of the residuals.\n\nWhich statement is the honest reading?`}
+  options={[
+    `Linear holds: the residual plot shows no curve. Independent holds: the departures are separate certifications from separate voyages. The normal probability plot is close enough to straight at ${fmtInt(DIVERTED_N)} points. Equal SD is the one in doubt, because the residual spread grows with the fitted value.`,
+    `All four conditions are clearly satisfied, and the residual plot shows no pattern of any kind.`,
+    `The Normal condition fails, because a histogram of fuel loaded across the nineteen is right-skewed: the largest hulls carry several times what the smallest do.`,
+    `The conditions are satisfied because $r^2$ is ${fmtPct(NINETEEN_FUEL_FIT.r2, 0)}, which shows the linear model fits well.`,
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    `Look along the residual plot from left to right rather than at it as a whole. The residual standard deviation in the upper half of the fitted range is about ${fmt(NINETEEN_FUEL_SD_RATIO, 1)} times the lower half's. Fuel is measured in tonnes, and a bigger hull's tonnes of anything vary more, so the spread travels with the size of the ship. Saying so does not throw the analysis out; leaving it unsaid is what a hostile reader is looking for.`,
+    `That is the shape of the response, and the model never claimed the response was Normal. The nineteen hulls sit at widely different values of the explanatory variable, so their fuel loads are supposed to be centred in different places; pooling them into one histogram mixes populations the model keeps apart. The Normal condition is about the residuals, which is a different graph of different numbers.`,
+    `$r^2$ measures how much of the variation the line accounts for. It is silent about curvature, about fanning, and about a single stranded point, and a badly curved relationship can post a high $r^2$ while every condition fails. Conditions are read off the residual plot, not off a summary statistic.`,
+  ]}
+  hint="Take them one at a time and name the graph that settles each. Two of these options are checked on the wrong graph entirely.">
+  <Success>
+  <Dialogue speaker="xo" aside="She writes the fourth condition out on the margin of the printout and underlines the word spread.">
+  Then it goes in the brief with that sentence attached and not without it. The Board's counsel reads the conditions before he reads the finding, and a condition we named ourselves is worth more than one he found.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Name the graph, Ensign. For each condition, the graph that settles it. Then tell me what that graph shows. Two of the answers you are looking at are about a graph that has nothing to do with the question.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-9-01-spread", "act-9-01-se", "act-9-01-conditions"]}>
+
+<Scene stamp="MET 204/16:40" location="Comms locker · five milligee for Ceres" condensed="Rook signs Solberg's two days of link time. The Mark 2 fix that gave Act II its masses is good to two percent and the hidden cargo is buried inside that; six weeks of accelerate-phase state vectors per hull gets the error down to half a percent, which is the difference between a residual full of cargo and a residual full of instrument. Solberg schedules it against the Ceres geometry and reads the window back.">
+
+The comms locker is two metres deep and warm enough now to be unpleasant. Solberg has the schedule up with the Ceres window drawn on it in a colour he chose himself, and he stands because there is one seat and you took it.
+
+Two days of link. What it buys is a mass.
+
+Act II weighed these hulls off a single Mark 2 fix: one acceleration, one plume reading, one division. Good to about {fmtPct(MARK2_FIX_SD, 0)} of the ship, which was enough to put the nineteen above every honest hull in the file and is nowhere near enough for what Ebele wants to do next. An error of {fmtPct(MARK2_FIX_SD, 0)} on the denominator and an excess of a few percent on top of it are the same size, and the analysis cannot tell you which of them it is looking at.
+
+The relay net logged every one of those hulls continuously through six weeks of accelerating. Thousands of state vectors instead of one. Fit the whole phase and the mass comes out to about {fmtPct(WHOLE_PHASE_SD, 1)}.
+
+<Dialogue speaker="comms">
+Nineteen hulls, the full accelerate phase, from the Authority's archive at Mark 4. I make it forty-nine hours of link if nothing else wants the antenna, Commander, and the Ceres relay comes over the horizon for us at MET 207 and stays. It will be aboard on the seventh.
+</Dialogue>
+
+You sign it.
+
+<Dialogue speaker="comms" aside="He logs the authorisation and reads the stamp back before you are out of the seat.">
+Two hundred and four, sixteen forty-seven. Noted as the Commander's, not the Ensign's.
+</Dialogue>
+
+Ebele has the honest {fmtInt(HONEST_N)} still stacked on the terminal when you come back through, the {fmtInt(SLOPE_SIM_REPS)} slopes piled up against one, and he has put the nineteen's standard error on the same axis in a second colour so that the two spreads can be looked at together.
+
+Nothing has been proved. A tool has been calibrated, which is a different thing and has to come first.
+
+</Scene>
+
+<LogEntry
+  title="A fitted slope is a statistic, and SE(b) is how far it lands from β"
+  concept="The population regression model says that at each x the responses are Normal about a mean α + βx with the same SD σ; α, β and σ are parameters, and the fitted a, b and s are the statistics that estimate them. Because b would come out differently on a new sample it has a sampling distribution: centred at β, approximately Normal, with SD σ/(σx·√n), so a slope is pinned down by a large sample, a process with little scatter, and explanatory values spread far apart. In practice that SD is estimated by SE(b) = s/√Sxx, which computer output prints beside the slope, and every t procedure for a slope runs on df = n − 2 because two parameters were fitted. The conditions are Linear, Independent, Normal residuals, Equal SD and Random, and all of them are judged on the residual plot, the normal probability plot of the residuals, or the sentence describing how the data were collected."
+  formula="\mu_y = \alpha + \beta x, \quad \sigma_b = \frac{\sigma}{\sigma_x\sqrt{n}}, \quad SE(b) = \frac{s}{\sqrt{S_{xx}}}, \quad df = n - 2"
+  mistake="Checking the Normal condition on a graph of the response. The model never says y is Normal overall. Responses at different x values are centred in different places, so pooling them can produce any shape at all. Fit the line, then graph the residuals, and judge Normal and Equal SD on those."
+  tags={['population regression model', 'sampling distribution of b', 'standard error of the slope', 'conditions', 'residuals', 'df = n − 2', '9.1']}
+/>
+
+</Gated>
