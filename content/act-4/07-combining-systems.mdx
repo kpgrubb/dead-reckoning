@@ -88,15 +88,15 @@ export const MARGIN_FEEDBACK = [
 
 <Scene stamp={metStamp(heat.at)} location={`Engineering deck · Watch, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="Twenty-four hours into the first window Ebele finally asks where the Chief's sixty-four hours came from. It comes from six subsystem loads, each with a mean and a spread. He adds the spreads straight down the column and files a total; the yard's certification from Adlinda puts a margin on the same six loads that is five times smaller. Sandoval taps both of them, says that variances add and not sigmas, and goes back to the gauge without doing the sum.">
 
-Twenty-four hours in. The cellar reads {fmt(heat.sinkPct, 0)} percent and it has been climbing at a rate nobody on this deck has to look up any more, and there are {fmt(hoursLeft, 0)} hours of window left.
+Twenty-four hours in. The cellar reads {fmt(heat.sinkPct, 0)} percent, climbing at a rate nobody on this deck has to look up any more. {fmt(hoursLeft, 0)} hours of window left.
 
 <LoiterEcho
-  near={<>Out at the near point the Lane plot has been busy all watch. Hulls coming inside identification range on schedule, every one of them a set of nav sensors pointed roughly this way, and the gauge has been the second thing on everybody's mind since the window opened.</>}
-  middle={<>The middle point has been quiet in the way the Chief likes: two hulls on the plot at range, the Eyes working through the pattern, and a gauge climbing at exactly the rate the plan said it would.</>}
+  near={<>Out at the near point the Lane plot has been busy all watch. Hulls coming inside identification range on schedule, every one a set of nav sensors pointed roughly this way. Nobody crosses this deck without looking at the gauge.</>}
+  middle={<>The middle point has been quiet. Two hulls on the plot at range, the Eyes working through the pattern, and a gauge climbing at exactly the rate the plan said it would.</>}
   far={<>Out at the far point there has been almost nothing on the plot all watch, and the gauge has been climbing slower than the plan allowed for.</>}
 />
 
-Sandoval has the load schedule spread across the long table. Ebele has been quiet for a day and a half, and he finally asks the question he has been circling since the window opened.
+Sandoval has the load schedule spread across the long table. Ebele has been quiet for a day and a half. Then he asks.
 
 Where does {WATCH_WORKING_HOURS} come from?
 
@@ -304,9 +304,9 @@ Then she converts it, because the bridge has never once asked her for a kilowatt
 That is the whole of it, Skipper. The design curve quotes you the middle of a distribution and calls it an endurance. I work one spread short of it, at {WATCH_WORKING_HOURS} hours, and I put two short of it in writing, at {WATCH_IN_WRITING_HOURS}. At {WATCH_WORKING_HOURS} I am wrong about {fmtPct(P_SATURATE_BEFORE_64, 0)} of windows. At {WATCH_IN_WRITING_HOURS} I am wrong about {fmtPct(P_SATURATE_BEFORE_60, 1)} of them. Four hours of margin buys an order of magnitude. That is the shape of a normal curve.
 </Dialogue>
 
-The three margins go into the log side by side: the Ensign's {fmtInt(NAIVE_SUM_OF_SDS_KW)}, the correct {fmt(WATCH_SD_KW, 1)}, and Adlinda's {fmtInt(YARD_MARGIN_KW)}, the last with the certificate's date beside it and no comment attached, because a comment would be a theory and there is no evidence for one yet.
+The three margins go into the log side by side: the Ensign's {fmtInt(NAIVE_SUM_OF_SDS_KW)}, the correct {fmt(WATCH_SD_KW, 1)}, and Adlinda's {fmtInt(YARD_MARGIN_KW)}. The last one gets the certificate's date beside it and no comment.
 
-It is either a mistake or it is not. A yard that certifies a margin smaller than the rule gives has either averaged six errors it had no business averaging, or it has been asked for a number that makes a hull look better than it is. Both happen. They do not look different on a certificate, and the ship is on Watch with {fmt(closeHoursLeft, 0)} hours to run, and this is not the watch to find out.
+It is either a mistake or it is not. A yard that certifies a margin smaller than the rule gives has either averaged six errors it had no business averaging, or it has been asked for a number that makes a hull look better than it is. Both happen. They do not look different on a certificate. The ship is on Watch with {fmt(closeHoursLeft, 0)} hours to run, and this is not the watch to find out.
 
 Ebele files it and goes back to the plot, and what is on the plot is traffic.
 
@@ -314,7 +314,7 @@ Ebele files it and goes back to the plot, and what is on the plot is traffic.
 <LoiterFigure field="closePasses" /> close passes this window at the <LoiterFigure field="label" />, sir, each one a hull with a nav set, each one about {fmtPct(P_SEEN_PER_PASS_COLD, 0)} to see us while we are cold. I can price *one* pass. What I cannot do yet is price the set of them: at least one detection, or the chance that two of them see us and compare notes at Ceres. That is a distribution over a count, and I do not have it.
 </Dialogue>
 
-He does not have it. It has a name, it has four conditions attached to it, and two of those conditions are the reason Oyelaran stopped him multiplying sweep entries together four days ago.
+He does not have it. Oyelaran took two of its conditions off him four days ago, when she stopped him multiplying sweep entries together.
 
 The window closes at {metStamp(WINDOW_1.to)}. There is time.
 

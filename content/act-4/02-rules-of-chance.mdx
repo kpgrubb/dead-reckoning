@@ -69,7 +69,7 @@ export const naivePurging = purgePasses * P_SEEN_PER_PASS_PURGING
 
 <Scene stamp={metStamp(heat.at)} location={`Sensor bay · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed={`A day into the cold, Oyelaran's sweep log has ${fmtInt(SWEEP_COUNT)} entries in it, each closing exactly one of four ways: thermal, optical, RF, or nothing at all. Ebele adds thermal and optical for "seen" and is right, because no entry sits in two columns. Then he adds the per-sweep probability to itself once for every sector in the ring and hands Oyelaran a probability larger than one.`}>
 
-The sensor bay runs four degrees colder than the rest of the ship. Oyelaran sets it there at the top of every watch. You have come down for the sweep schedule and you stand out of the duct flow with your hands under your arms while she finishes the column she is on.
+The sensor bay runs four degrees colder than the rest of the ship. Oyelaran sets it there at the top of every watch. You have come down for the sweep schedule. You stand out of the duct flow with your hands under your arms and wait for her to finish the column she is on.
 
 A day into the drift the Eyes have {fmtInt(SWEEP_COUNT)} entries logged. Each is a scheduled one-degree sweep of one of the {fmtInt(SWEEP_SECTORS)} sectors she walks, eight to forty seconds of dwell. Each closes one way and one way only: a thermal contact, an optical contact, an RF contact, or nothing. The log will not take two. A sweep that resolves thermally leaves the optical column blank.
 
@@ -261,7 +261,7 @@ Then price this one too, Ensign. {metStamp(nextPurge)}. {fmt(PURGE_HOURS, 1)} ho
 
 You lean in over the plot until your shoulder is against Ebele's and walk a thumb from the first pass to the purge mark.
 
-She does not say what that costs. Nobody aboard can price it yet. Ferrier has already put the shape of it on the wardroom board in her own hand: **given that we are cold**, and **given that we are not**.
+She does not say what that costs. Nobody aboard can price it yet. Ferrier has the shape of it on the wardroom board in her own hand: *given that we are cold*, and *given that we are not*.
 
 The cellar reads {fmt(sinkAt(heat.at + 5 / 24), 0)} per cent.
 

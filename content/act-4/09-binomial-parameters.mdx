@@ -60,9 +60,9 @@ export const tenPercentTex = `n \\le 0.10\\,N \\quad \\Longrightarrow \\quad N \
 
 <Scene stamp={metStamp(heat.at)} location={`Bridge · Mark 9 region, 0.42 AU from Ceres · purging, cellar ${fmt(heat.sinkPct, 0)}%`} condensed={`With the radiators out and the ship a lamp for ${fmt(PURGE_HOURS, 1)} hours, Ebele reopens the Board's staff paper. ${fmtInt(LEDGER_TRANSITS)} transits, ${fmtInt(LEDGER_LOSSES)} losses, and two rates to measure them against: the Board's comparison corridor at ${fmtPct(BASELINES.board.p, 1)} a transit, and your own 2176 report on this Lane at about half of that. He computes the probability of exactly ${fmtInt(LEDGER_LOSSES)} and calls it surprising. Ferrier hands him the likeliest count instead, which is larger, and then orders both baselines worked.`}>
 
-The wings go out on the hour. The cellar reads {fmt(heat.sinkPct, 0)} percent, and for the next {fmt(PURGE_HOURS, 1)} hours this ship is a lamp to anything with a naval-grade aperture inside {fmt(PURGE_NAVAL_AU, 2)} astronomical units. That buys the cellar back to {fmtInt(PURGE_FLOOR_PCT)} percent before the second window.
+The wings go out on the hour. The cellar reads {fmt(heat.sinkPct, 0)} percent. For the next {fmt(PURGE_HOURS, 1)} hours this ship is a lamp to anything with a naval-grade aperture inside {fmt(PURGE_NAVAL_AU, 2)} astronomical units. That buys the cellar back to {fmtInt(PURGE_FLOOR_PCT)} percent before the second window.
 
-Nobody can hide during a purge. The purge loop takes the cellar's heat out through the trunk behind the bridge bulkhead. The bridge comes up eight degrees while the radiators are out and stays there, and you put your jacket over the back of the chair and leave it.
+Nobody can hide during a purge. The purge loop takes the cellar's heat out through the trunk behind the bridge bulkhead. The bridge comes up eight degrees while the radiators are out and stays there. You put your jacket over the back of the chair and leave it.
 
 Ebele has gone back to the paperwork. The Board's staff paper is on the plot beside the Transit Ledger, and he has found the sentence again. It took three readings to notice it was an argument at all.
 
@@ -84,7 +84,7 @@ Ebele works for two minutes and comes back with a number and an adjective.
 Under the Board's own rate, sir, the probability of exactly {fmtInt(LEDGER_LOSSES)} losses is {fmt(boardPoint, 4)}. That is {oneIn(boardPoint)}, and that is *surprising*. Even the Board's own baseline makes this file unusual.
 </Dialogue>
 
-Ferrier has been waiting for this one since the Board's reply came in. You leave it to her.
+Ferrier puts her slate face down on the plot. You leave it to her.
 
 <Dialogue speaker="xo" aside="She does not raise her voice. She puts two fingers on the plot, a hand's width apart, and leaves them there while she talks.">
 Ensign. Under the Board's rate, the probability of exactly {fmtInt(boardModeK)} losses. It is {fmt(boardModeCell, 4)}. That is the likeliest single count there is, and it is larger than the one you have just called surprising. You have found that there are a great many possible counts.
@@ -285,7 +285,7 @@ Same file. Same {fmtInt(LEDGER_TRANSITS)} transits. Same {fmtInt(LEDGER_LOSSES)}
 The Board borrowed the roughest corridor in the system and called it comparable, sir. After that the arithmetic did the rest by itself. Nobody had to write a false sentence anywhere. What I cannot do is prove ours is right. Thirteen losses in two and a half thousand transits over eight years. That is one file too.
 </Dialogue>
 
-He is right. You can say what thirty-one looks like under a rate. You cannot yet say which rate a corridor is entitled to. That is a question about how far a measured rate wanders from one file to the next, and nothing aboard this ship can answer it. A rate computed off {fmtInt(rookTransits)} transits is a statistic, and statistics have distributions of their own.
+He is right. You can say what thirty-one looks like under a rate. You cannot say which rate a corridor is entitled to, and nothing aboard this ship can settle it.
 
 The Chief wants the second window planned before the shift changes. Her question is plainer than the Board's and more expensive: how long does this ship sit in the dark before a Perrine hull does something.
 
