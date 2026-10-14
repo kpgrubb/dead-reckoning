@@ -40,6 +40,9 @@ export const asgardRate = ASGARD_2176.losses / ASGARD_2176.transits
 export const seeOneIn = (m) => binomial.atLeast(1, m, lossRate)
 export const transitsToDetect = (rate) => Math.ceil(Math.log(1 - detectTarget) / Math.log(1 - rate))
 export const transitsFor90 = transitsToDetect(lossRate)
+/** What a trial of 1/π transits actually buys: the shortcut the inversion exists to replace. */
+export const meanWaitTransits = Math.round(1 / lossRate)
+export const meanWaitChance = binomial.atLeast(1, meanWaitTransits, lossRate)
 export const asgardTransitsFor90 = transitsToDetect(asgardRate)
 
 <Scene stamp="MET 74/07:40" location="Bridge · braking at 4 mgee · 0.84 AU from Callisto" condensed="Twelve hulls are on the Authority's schedule to transit Mark 6 to Mark 7 in the coming week. Asgard can cover six of them. As the Board's assessing officer the escort assignment is yours to make and nobody at Valhalla can answer inside forty minutes. Ferrier lays out what the warrant does and does not cover, and declines to tell you what to do with it.">
@@ -189,6 +192,12 @@ Three more things the p-value is not.
 **Not significant is not "no effect".** Failing to find evidence is not finding evidence of none. A trial that could never have detected an effect this small has not tested for it; it has been silent about it.
 
 And a trial cannot see what it cannot generate. If the event you care about happens on a fraction $\pi$ of transits, a trial of $m$ transits produces at least one of them with probability $1 - (1-\pi)^m$. If that probability is small, the trial's silence on the matter was decided before it sailed.
+
+Run that formula backwards and it sizes the trial, which is the version a planning officer needs. Fix the chance $c$ you want of generating at least one, and require $1 - (1-\pi)^m \ge c$. Subtract and the condition becomes $(1-\pi)^m \le 1 - c$. Take natural logs of both sides: $m \ln(1-\pi) \le \ln(1-c)$. Now divide by $\ln(1-\pi)$, which is **negative** because $1-\pi$ is less than one, and dividing an inequality by a negative number reverses it:
+
+$$m \ge \frac{\ln(1-c)}{\ln(1-\pi)}$$
+
+That right-hand side is a positive number with a fraction on the end of it, and transits come whole, so round **up**. The tempting shortcut, $m = 1/\pi$, is the average wait for a loss. At the working rate below that is {fmtInt(meanWaitTransits)} transits, and a trial that long sees at least one loss only {fmtPct(meanWaitChance, 0)} of the time, which is not a standard any directorate would sign.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula tex="d_{\text{obs}} = \bar{x}_{\text{treated}} - \bar{x}_{\text{control}}" terms={{ 'd_{\\text{obs}}': 'the observed difference in group means', '\\bar{x}_{\\text{treated}}': 'mean response of the treated group' }} label="The statistic being tested" />
@@ -196,6 +205,8 @@ And a trial cannot see what it cannot generate. If the event you care about happ
 <Formula tex="p_{\text{one-sided}} = \frac{\#\left\{\, i \,:\, d_i \le d_{\text{obs}} \,\right\}}{\binom{n}{k}}, \qquad p_{\text{two-sided}} = \frac{\#\left\{\, i \,:\, |d_i| \ge |d_{\text{obs}}| \,\right\}}{\binom{n}{k}}" terms={{ 'd_i': 'the difference produced by relabelling i', n: 'units in the trial', k: 'units assigned to the treatment' }} label="The exact randomization p-value" />
 
 <Formula tex="P(\text{at least one loss in } m \text{ transits}) = 1 - (1 - \pi)^{m}" terms={{ '\\pi': 'probability a single transit ends in a loss', m: 'transits in the trial' }} label="What a trial is able to see at all" />
+
+<Formula tex="m \ge \frac{\ln(1 - c)}{\ln(1 - \pi)}, \text{ rounded up to a whole transit}" terms={{ c: 'the chance of generating at least one loss that the trial is designed for', '\\ln(1 - \\pi)': 'negative, which is why the inequality turns over when you divide by it' }} label="The same statement solved for the size of the trial" />
 </Briefing.Definition>
 <Briefing.Worked>
 *Tindr*'s beacon trial, 2181, run on the Themis Reach by an officer who is now retired and who did it properly.
@@ -206,7 +217,7 @@ There are {fmtInt(tindrWays)} ways for those {fmtInt(tindrEscorted.length)} esco
 
 So on {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits, chance produces a gap that lopsided about {fmtPct(tindrExact.pLess, 0)} of the time. That is a result. The coin licenses the word *because* for those {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits, and for nothing else, because the Reach did not hand the officer a random sample of anything.
 
-Now the other arithmetic, which is the one nobody runs before commissioning a trial. Your own {ASGARD_2176.years} return from *Asgard*: {fmtInt(ASGARD_2176.losses)} losses in {fmtInt(ASGARD_2176.transits)} transits, a rate of {fmt(asgardRate, 4)}, about {fmt(1 / asgardRate, 0)} transits to the loss. Take a rounder working figure of {fmtPct(lossRate, 0)} a transit. A trial of {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits then contains at least one loss with probability {fmtPct(seeOneIn(tindrEscorted.length + tindrUnescorted.length), 1)}; a trial of {fmtInt(bigTrial)} transits, {fmtPct(seeOneIn(bigTrial), 0)}. To be {fmtPct(detectTarget, 0)} sure of seeing even one you need {fmtInt(transitsFor90)} transits at {fmtPct(lossRate, 0)}, and {fmtInt(asgardTransitsFor90)} at *Asgard*'s measured rate. **A trial with losses as its response needs hundreds of transits before its silence carries any information at all.**
+Now the other arithmetic, which is the one nobody runs before commissioning a trial. Your own {ASGARD_2176.years} return from *Asgard*: {fmtInt(ASGARD_2176.losses)} losses in {fmtInt(ASGARD_2176.transits)} transits, a rate of {fmt(asgardRate, 4)}, about {fmt(1 / asgardRate, 0)} transits to the loss. Take a rounder working figure of {fmtPct(lossRate, 0)} a transit. A trial of {fmtInt(tindrEscorted.length + tindrUnescorted.length)} transits then contains at least one loss with probability {fmtPct(seeOneIn(tindrEscorted.length + tindrUnescorted.length), 1)}; a trial of {fmtInt(bigTrial)} transits, {fmtPct(seeOneIn(bigTrial), 0)}. To be {fmtPct(detectTarget, 0)} sure of seeing even one, put $c$ = {fmt(detectTarget, 2)} through the inversion above and round up: {fmtInt(transitsFor90)} transits at {fmtPct(lossRate, 0)}, and {fmtInt(asgardTransitsFor90)} at *Asgard*'s measured rate. **A trial with losses as its response needs hundreds of transits before its silence carries any information at all.**
 </Briefing.Worked>
 <Briefing.Caution>
 *"Significant" read as "important".* They are different questions and the answer to one does not constrain the other. A p-value near zero on ten thousand transits can attach to a difference of two hundredths of an advisory, which no captain would spend a cutter on; and a difference worth the whole escort budget can sit in the middle of a randomization distribution built from twelve hulls. Report the **size** of the effect next to the p-value, always, and let the reader do the second job.

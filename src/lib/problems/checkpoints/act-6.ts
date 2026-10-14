@@ -5,9 +5,24 @@
  * counsel will read it: every claim, every condition, every sentence that could be quoted back
  * without its qualifier. The checkpoint is that reading.
  *
- * Item mix per the blueprint: 4 MC, 4 NUM, 3 INT (q4, q7, q8 at weight 1.5 — the three sentences
- * the hearing would actually quote) and exactly one DISP (q12, the shaded normal curve). Generators
- * live in src/lib/problems/generators/act-6/ and are drawn fresh on every attempt.
+ * Items run in module order, act-6-01 through act-6-08, with the one DISP (q12, the shaded normal
+ * curve) last. The three sentences the hearing would actually quote carry weight 1.5 and are the
+ * same three generators the blueprint weighted: the interval interpretation, the p-value
+ * interpretation and the conclusion. Generators live in src/lib/problems/generators/act-6/ and are
+ * drawn fresh on every attempt.
+ *
+ * Topic coverage is the contract, and it is now complete: one item per CED topic 6.1 through 6.11,
+ * with 6.5 the only topic assessed twice (q5 in words, q12 in a picture). Twelve items cannot hold
+ * eleven topics and three duplicated ones, so two blueprint items gave up their slots:
+ *   - `sample-size-margin` (6.3) → `interval-contains-zero` (6.9). The blueprint's q10 asked for
+ *     "endpoints; does it contain 0" and the built item answered only the first half; q8 keeps the
+ *     endpoints and q9 now asks the second. 6.3 is still assessed by q3.
+ *   - `interval-conditions` (6.2) → `scope-of-inference` (6.11). The blueprint's q11 asked for
+ *     6.10 AND 6.11 and no generator carries both, so the test's arithmetic stays at q10 and its
+ *     scope becomes q11. 6.2 is still assessed by q2, which builds the interval.
+ * The cost is that Act VI's checkpoint no longer has a standalone conditions item or a
+ * sample-size-for-a-margin item; both skills are still drilled in act-6-01 and act-6-02, and
+ * conditions are assessed at the act-7, act-8 and act-9 checkpoints.
  */
 import type { CheckpointSpec } from '../checkpoints'
 
@@ -21,27 +36,20 @@ export const act6Checkpoint: CheckpointSpec = {
   items: [
     {
       id: 'q1',
-      generator: 'act-6/interval-conditions',
-      review: ['act-6-01'],
-      debrief:
-        'Ferrier: "Three conditions, three sentences, each with its number in it. Random is a statement about how the data came to exist. Ten percent is a statement about how much more there could have been. Large counts is arithmetic, and you show the arithmetic."',
-    },
-    {
-      id: 'q2',
       generator: 'act-6/interpret-confidence-level',
       review: ['act-6-01'],
       debrief:
         'Ferrier: "Which interval? The confidence is in the method — run it a hundred times and about ninety-five of the intervals it builds contain the rate. The one on your screen either has it or it has not, and neither of us will ever know which."',
     },
     {
-      id: 'q3',
+      id: 'q2',
       generator: 'act-6/one-prop-interval',
       review: ['act-6-02'],
       debrief:
         'Ebele: "So — p-hat, then z-star times the standard error, then both endpoints. I keep giving one endpoint and a shrug. An interval is two numbers or it is not an interval."',
     },
     {
-      id: 'q4',
+      id: 'q3',
       generator: 'act-6/interval-interpretation',
       review: ['act-6-02'],
       weight: 1.5,
@@ -49,21 +57,14 @@ export const act6Checkpoint: CheckpointSpec = {
         'Ferrier: "Level, both endpoints, the word *true*, and what it is the true rate of. Four things. Leave out *true* and you have written a sentence about the sample, which nobody asked you for."',
     },
     {
-      id: 'q5',
-      generator: 'act-6/sample-size-margin',
-      review: ['act-6-02'],
-      debrief:
-        'Solberg: "The arithmetic gives transits, Captain. I convert transits to years, and the answer is the reason this argument is not the one we are making."',
-    },
-    {
-      id: 'q6',
+      id: 'q4',
       generator: 'act-6/state-hypotheses',
       review: ['act-6-03'],
       debrief:
         'Ferrier: "Hypotheses are about the parameter and they are written before the number. You wrote p-hat. P-hat is what we measured; there is nothing to test about a thing we already know."',
     },
     {
-      id: 'q7',
+      id: 'q5',
       generator: 'act-6/interpret-p-value',
       review: ['act-6-04'],
       weight: 1.5,
@@ -71,7 +72,7 @@ export const act6Checkpoint: CheckpointSpec = {
         'Ferrier: "Assuming the null is true. A result at least as extreme as this one. That is the whole sentence, and every word of it is load-bearing. *Due to chance* is what they will read out, and it is not what you computed."',
     },
     {
-      id: 'q8',
+      id: 'q6',
       generator: 'act-6/test-conclusion',
       review: ['act-6-05'],
       weight: 1.5,
@@ -79,25 +80,39 @@ export const act6Checkpoint: CheckpointSpec = {
         'Ferrier: "Decision, p against alpha, evidence — not proof — direction, and whose ships. Strike *proves*. Strike *accept*. The data says what it says and it does not say more when you push it."',
     },
     {
-      id: 'q9',
+      id: 'q7',
       generator: 'act-6/type-i-ii',
       review: ['act-6-06'],
       debrief:
         'Ferrante: "One error costs you a career and the Service a scandal. The other costs hulls, and the people in them. They are not the same error and they are not the same price, and the alpha you set is where you wrote down which one you would rather make."',
     },
     {
-      id: 'q10',
+      id: 'q8',
       generator: 'act-6/two-prop-interval',
       review: ['act-6-07'],
       debrief:
         'Ebele: "Unpooled for the interval, sir. And the order of subtraction is a decision, not an accident — say which minus which before you read the sign."',
     },
     {
-      id: 'q11',
+      id: 'q9',
+      generator: 'act-6/interval-contains-zero',
+      review: ['act-6-07'],
+      debrief:
+        'Ebele: "Zero was not ruled out, sir. Neither was the far endpoint, and that one would be worth acting on. An interval that spans zero prices the comparison. It does not close it."',
+    },
+    {
+      id: 'q10',
       generator: 'act-6/pooled-test-statistic',
       review: ['act-6-08'],
       debrief:
         'Ebele: "Pool under the null, because the null says there is one rate. Do not pool for the interval, because the interval is not assuming they are equal. I had it the wrong way round exactly once."',
+    },
+    {
+      id: 'q11',
+      generator: 'act-6/scope-of-inference',
+      review: ['act-6-08'],
+      debrief:
+        'Ferrier: "The file is one corridor over one window, and there is no actor anywhere in the arithmetic. Name the population in the same sentence as the number, and strike every verb that puts a hand on the outcome."',
     },
     {
       id: 'q12',

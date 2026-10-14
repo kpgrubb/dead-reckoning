@@ -6,6 +6,16 @@
  * it is the plan review, and a wrong number is heat the ship does not have.
  *
  * Exactly one display item (q12, the geometric pmf); q8 carries the interpretation weight.
+ *
+ * Topic coverage is the contract the blueprint's topic column states, and it is complete: one item
+ * per CED topic 4.1 through 4.12, with 4.5 the only topic drilled twice. Two blueprint items were
+ * traded to get there, both of them for a generator that assesses the same topic:
+ *   - q3 runs `two-way-probability` (4.3 AND 4.4) in place of `complement-rule` (4.3 only), which
+ *     is what the blueprint's q2 asked for — "complement / addition rule for mutually exclusive
+ *     events" — and the built item had dropped the second half.
+ *   - `general-addition` (4.6) gives up its slot to `streaks` (4.1, previously assessed nowhere).
+ *     4.6 is still assessed by q6, and the "or" branch of q3's generator subtracts an overlap, so
+ *     the general addition rule is still exercised; the multiplication rule is not.
  */
 import type { CheckpointSpec } from '../checkpoints'
 
@@ -19,39 +29,41 @@ export const act4Checkpoint: CheckpointSpec = {
   items: [
     {
       id: 'q1',
+      generator: 'act-4/streaks',
+      review: ['act-4-01'],
+      debrief:
+        'Sandoval: "A clump is what chance looks like close up. The next berth does not know about the last six, and the long run gets to its rate by burying them, never by settling an account."',
+    },
+    {
+      id: 'q2',
       generator: 'act-4/simulation-design',
       review: ['act-4-01'],
       debrief: 'Ebele: "Model, one trial, statistic. In that order, and the statistic is the thing you stack. Yes, sir. That\'s — yes."',
     },
     {
-      id: 'q2',
-      generator: 'act-4/complement-rule',
+      id: 'q3',
+      generator: 'act-4/two-way-probability',
       review: ['act-4-02'],
-      debrief: 'Oyelaran: "The Eyes do not see anything twice. They can see nothing twice. Take one minus the nothing, sir."',
+      debrief:
+        'Oyelaran: "Three questions off one table and they differ only in the denominator. If the two outcomes can land together, the overlap comes off once. Add it twice and the Lane has run more transits than it has hulls."',
     },
     {
-      id: 'q3',
+      id: 'q4',
       generator: 'act-4/conditional-from-table',
       review: ['act-4-03'],
       debrief: 'Ferrier: "Whatever follows *of the* is the denominator. Write the sentence out before you divide."',
     },
     {
-      id: 'q4',
+      id: 'q5',
       generator: 'act-4/reverse-conditional',
       review: ['act-4-03'],
       debrief: 'Ferrier: "That is the Board\'s error, in the Board\'s favour. The joint over the other margin, Captain. Say it back to me."',
     },
     {
-      id: 'q5',
+      id: 'q6',
       generator: 'act-4/independence-check',
       review: ['act-4-04'],
       debrief: 'Ebele: "So — independent means the given changes nothing. Mutually exclusive means they cannot both happen. Those are different sentences."',
-    },
-    {
-      id: 'q6',
-      generator: 'act-4/general-addition',
-      review: ['act-4-04'],
-      debrief: 'Oyelaran: "You added an overlap twice. Say that number again."',
     },
     {
       id: 'q7',

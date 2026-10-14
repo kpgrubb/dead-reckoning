@@ -15,12 +15,16 @@ summary: "The first cold runs. The Chief logs the cellar with a plus-or-minus; C
 ---
 
 import { fmt } from '@/lib/stats'
-import { PROFILES, SINK_CAPACITY_GJ, enduranceHours, quietRun, watchRun, quietShortfallPct, quietShortfallPmPct, WATCH_DETECTION_H, EYES_DETECTION_H, yardAcceptanceRuns } from '@/instruments/act-0/data'
+import { PROFILES, SINK_CAPACITY_GJ, enduranceHours, quietRun, watchRun, quietShortfallPct, quietShortfallPmPct, shortfallPct, WATCH_DETECTION_H, EYES_DETECTION_H, yardAcceptanceRuns } from '@/instruments/act-0/data'
 import { HeatSinkGauge } from '@/instruments/act-0/HeatSinkGauge'
 
 export const a1 = yardAcceptanceRuns[0]
 export const a1Endurance = enduranceHours(SINK_CAPACITY_GJ, a1.loadKw)
 export const a1Shortfall = (100 * (PROFILES.Quiet.designMeanH - a1Endurance)) / PROFILES.Quiet.designMeanH
+export const a1Drain = (a1.sinkEndPct - a1.sinkStartPct) / a1.hours
+export const a1Projected = 100 / a1Drain
+export const a1ProjectedShortfall = shortfallPct(PROFILES.Quiet.designMeanH, a1Projected)
+export const a1Gap = Math.abs(a1Endurance - a1Projected)
 
 <Scene stamp="MET 2/00:00 → 6/19:00" location="Jovian space · cold runs 1 and 2 · Callisto's telescopes watching" condensed={`Forty hours cold on Quiet and the ship cooks from the inside. Sandoval will not give you the Quiet figure until the run is done, and will not give you one number at all for Watch: the loads wander, so the hours do. The second run ends at ${WATCH_DETECTION_H} hours, when the skin loop lags and Callisto's telescopes find the ship.`}>
 
@@ -103,7 +107,7 @@ Three runs from the yard's acceptance log, one run per row:
 
 <table>
   <thead>
-    <tr><th>Run</th><th>Profile</th><th>Hours cold</th><th>Mean load (kW)</th><th>Sink at end (%)</th><th>Purges</th><th>Detected</th></tr>
+    <tr><th>Run</th><th>Profile</th><th>Hours cold</th><th>Mean load (kW)</th><th>Sink at start (%)</th><th>Sink at end (%)</th><th>Purges</th><th>Detected</th></tr>
   </thead>
   <tbody>
     {yardAcceptanceRuns.map((r) => (
@@ -112,6 +116,7 @@ Three runs from the yard's acceptance log, one run per row:
         <td>{r.profile}</td>
         <td>{r.hours}</td>
         <td>{r.loadKw}</td>
+        <td>{fmt(r.sinkStartPct, 1)}</td>
         <td>{fmt(r.sinkEndPct, 1)}</td>
         <td>{r.purges}</td>
         <td>{r.detected}</td>
@@ -127,6 +132,14 @@ Three runs from the yard's acceptance log, one run per row:
 *Arithmetic on a quantitative column.* The design endurance on Quiet is capacity over load: {SINK_CAPACITY_GJ} GJ at {PROFILES.Quiet.loadKw} kW gives {fmt(PROFILES.Quiet.designMeanH, 1)} h. Run {a1.run} ran the same profile at {a1.loadKw} kW, which projects {fmt(a1Endurance, 1)} h. The shortfall against the design figure is ({fmt(PROFILES.Quiet.designMeanH, 1)} − {fmt(a1Endurance, 1)}) ÷ {fmt(PROFILES.Quiet.designMeanH, 1)} × 100 = **{fmt(a1Shortfall, 1)} %**.
 
 Same profile, different load, different endurance. The load is the variable; the hours follow it.
+
+*The same question answered off the gauge.* A load in kilowatts is a summary somebody wrote after the run. The cellar percentage is a reading taken on the hour, and when that is all the log gives you, the endurance is projected from the rate the sink filled at. Three steps, always in this order.
+
+1. **Fill rate.** Run {a1.run} stood at {fmt(a1.sinkStartPct, 1)} % at torch-off and {fmt(a1.sinkEndPct, 1)} % after {a1.hours} h cold, so the sink filled at ({fmt(a1.sinkEndPct, 1)} − {fmt(a1.sinkStartPct, 1)}) ÷ {a1.hours} = **{fmt(a1Drain, 3)} % per hour**.
+2. **Endurance.** A full cellar is 100 %, so that rate buys 100 ÷ {fmt(a1Drain, 3)} = **{fmt(a1Projected, 1)} h** from empty.
+3. **Shortfall.** Against the design curve: ({fmt(PROFILES.Quiet.designMeanH, 1)} − {fmt(a1Projected, 1)}) ÷ {fmt(PROFILES.Quiet.designMeanH, 1)} × 100 = **{fmt(a1ProjectedShortfall, 1)} %**.
+
+That is {fmt(a1Gap, 1)} h below the {fmt(a1Endurance, 1)} h the quotient $E = C/L$ gives for the same run, and the gap is worth a sentence. The gauge integrates every kilowatt the run actually drew, hour by hour. The load column is one rounded average of all of them. Where the two disagree, the gauge is the measurement and the quotient is the estimate, and the Chief logs the gauge.
 </Briefing.Worked>
 <Briefing.Caution>
 **"The cause code is 3, so it is quantitative."** It is a name written with a numeral. The mean of a set of cause codes names nothing. Test any column by asking whether its mean would mean anything.
