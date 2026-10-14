@@ -180,13 +180,19 @@ describe('content MDX lint', () => {
    * Flags any distinctive phrase of 4+ words repeated across 3+ modules inside <Dialogue> blocks.
    */
   it('does not let a crew voice become a catchphrase', () => {
-    // Function words carry no voice, so a run of them is not a catchphrase. Spelled-out numerals
-    // are here for a stronger reason: the correctness rule *requires* a pinned dataset figure to be
-    // worded the same everywhere ("two thousand six hundred and twelve transits" appears in three
-    // modules because it is the same 2,612). Counting those would push each module to say one
-    // number differently, which is the opposite of what the book needs.
+    // Function words carry no voice, so a run of them is not a catchphrase.
     const STOP =
-      /^(the|a|an|and|but|so|then|that|this|it|is|are|was|were|be|been|am|of|to|in|on|at|for|with|from|by|as|about|out|up|if|or|all|one|you|your|i|we|they|he|she|me|my|there|what|which|have|has|had|will|would|do|does|did|not|no|yes|same|sir|captain|skipper|zero|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million)$/
+      /^(the|a|an|and|but|so|then|that|this|it|is|are|was|were|be|been|am|of|to|in|on|at|for|with|from|by|as|about|out|up|if|or|all|you|your|i|we|they|he|she|me|my|there|what|which|have|has|had|will|would|do|does|did|not|no|yes|same|sir|captain|skipper)$/
+    /**
+     * A phrase carrying a spoken figure is reporting data, never repeating a verbal tic. The
+     * correctness rule *requires* a pinned value to be worded the same everywhere, so "two thousand
+     * six hundred and twelve transits" in three modules is the same 2,612 said correctly, and
+     * "twenty-four minutes each way" is the same light-lag at the same range. Counting those would
+     * push each module to say one number differently, which is the opposite of what the book needs.
+     * A real catchphrase ("say it back to me") carries no figure at all.
+     */
+    const NUMERAL =
+      /^(zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|half|quarter|point|percent)$/
     const seen = new Map<string, Set<string>>()
 
     for (const file of files) {
@@ -201,6 +207,7 @@ describe('content MDX lint', () => {
           .filter(Boolean)
         for (let i = 0; i + 4 <= words.length; i++) {
           const gram = words.slice(i, i + 5)
+          if (gram.some((w) => NUMERAL.test(w))) continue // a spoken figure, not a voice
           // Only phrases with real content words are distinctive enough to matter.
           if (gram.filter((w) => !STOP.test(w)).length < 2) continue
           const key = gram.join(' ')

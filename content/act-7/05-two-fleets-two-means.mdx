@@ -168,7 +168,7 @@ The conservative rule would use $\min$({fmtInt(escorted.length - 1)}, {fmtInt(un
 
 <Calculator title="Two-sample t-interval">
 <Calculator.Step keys={['STAT', '1:Edit']} note="Worked case: the 2176 Mars–Belt escort trial above — not the Ledger comparisons below.">With raw data, put the escorted delays in `L1` and the independently routed delays in `L2`. The two lists have different lengths and that is correct: these are two separate groups, not two measurements of one.</Calculator.Step>
-<Calculator.Step keys={['STAT', '▸ TESTS', '0:2-SampTInt']} note="Inpt: Data · List1: L1 · List2: L2 · Freq1: 1 · Freq2: 1 · C-Level: .95 · Pooled: No · Calculate">Scroll to the bottom of the TESTS menu; `0:2-SampTInt` sits below `9:2-PropZInt`. With summary statistics instead, set `Inpt: Stats` and type x̄1, Sx1, n1, x̄2, Sx2, n2.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '0:2-SampTInt']} note="Inpt: Data · List1: L1 · List2: L2 · Freq1: 1 · Freq2: 1 · C-Level: .95 · Pooled: No · Calculate">Scroll to the bottom of the TESTS menu; `0:2-SampTInt` sits directly below `9:2-SampZInt`. With summary statistics instead, set `Inpt: Stats` and type x̄1, Sx1, n1, x̄2, Sx2, n2.</Calculator.Step>
 <Calculator.Read label="( , )" value={`(${fmt(escortWelch.ci[0], 4)}, ${fmt(escortWelch.ci[1], 4)})`}>the interval for μ₁ − μ₂, in the order the lists were entered.</Calculator.Read>
 <Calculator.Read label="df" value={fmt(escortWelchDf, 4)}>Welch's degrees of freedom.</Calculator.Read>
 <Calculator.Read label="x̄1" value={fmt(mean(escorted), 4)} />
