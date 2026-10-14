@@ -25,7 +25,7 @@ function shortTime(iso: string | null): string {
 }
 
 export function SyncControl() {
-  const { passcode, status, message, lastSavedAt, remoteSavedAt } = useSync()
+  const { passcode, status, message, lastSavedAt, remoteSavedAt, pendingRemote } = useSync()
   const { unlock, lock, save, load } = useSync.getState()
   const [open, setOpen] = useState(false)
   const [entry, setEntry] = useState('')
@@ -40,9 +40,22 @@ export function SyncControl() {
       firstRun.current = false
       return
     }
+    // Never autosave over a saved copy this device has not taken. See `pendingRemote` in the store.
+    if (pendingRemote) return
     const t = setTimeout(() => void useSync.getState().save(), AUTOSAVE_DELAY_MS)
     return () => clearTimeout(t)
-  }, [progressStamp, passcode])
+  }, [progressStamp, passcode, pendingRemote])
+
+  /**
+   * A passcode is remembered across reloads but `pendingRemote` is not, so a rehydrated device
+   * would re-arm autosave and could overwrite a copy another device saved in the meantime. Start
+   * suppressed and let `check` decide.
+   */
+  useEffect(() => {
+    if (!passcode) return
+    useSync.setState({ pendingRemote: true })
+    void useSync.getState().check()
+  }, [passcode])
 
   useEffect(() => {
     if (open) inputRef.current?.focus()
@@ -87,11 +100,19 @@ export function SyncControl() {
       <button type="button" className="dr-sync__btn" onClick={() => void save()} disabled={busy}>
         SAVE
       </button>
-      <button type="button" className="dr-sync__btn" onClick={() => void load()} disabled={busy}>
+      <button type="button" className={`dr-sync__btn ${pendingRemote ? 'dr-sync__btn--go' : ''}`} onClick={() => void load()} disabled={busy}>
         LOAD
       </button>
       <span className="dr-sync__stamp" aria-live="polite">
-        {busy ? 'SYNCING…' : status === 'error' ? (message ?? 'error') : `SAVED ${shortTime(lastSavedAt ?? remoteSavedAt)}`}
+        {busy
+          ? 'SYNCING…'
+          : status === 'error'
+            ? (message ?? 'error')
+            : pendingRemote
+              ? `LOAD TO SYNC · saved copy ${shortTime(remoteSavedAt)}`
+              : lastSavedAt
+                ? `SAVED ${shortTime(lastSavedAt)}`
+                : 'NOT SAVED YET'}
       </span>
     </div>
   )

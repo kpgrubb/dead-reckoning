@@ -18,6 +18,15 @@ interface SyncState {
   message: string | null
   /** Timestamp found on the remote copy at the last check, for the LOAD prompt. */
   remoteSavedAt: string | null
+  /**
+   * True while a saved copy exists that this device has not taken. Autosave is suppressed until it
+   * clears, because the alternative is silent data loss: entering the passcode on a second device
+   * and then merely navigating used to push that device's empty progress over the saved copy, with
+   * one revision per passcode and no undo. Cleared by LOAD, by an explicit SAVE (the user choosing
+   * to overwrite), or by `check` finding nothing remote or nothing newer than this device has.
+   * Not persisted, so a rehydrated passcode starts suppressed until `check` proves it safe.
+   */
+  pendingRemote: boolean
 
   unlock: (passcode: string) => Promise<void>
   lock: () => void
@@ -63,6 +72,7 @@ export const useSync = create<SyncState>()(
       status: 'idle',
       message: null,
       remoteSavedAt: null,
+      pendingRemote: false,
 
       unlock: async (passcode) => {
         const code = passcode.trim().toUpperCase()
@@ -73,14 +83,15 @@ export const useSync = create<SyncState>()(
           set({
             status: 'ok',
             remoteSavedAt: remote?.savedAt ?? null,
-            message: remote ? 'Saved progress found for this passcode.' : 'No saved progress yet. SAVE writes this device’s progress.',
+            pendingRemote: !!remote,
+            message: remote ? 'Saved progress found. Press LOAD to take it; this device will not save over it until you do.' : 'No saved progress yet. SAVE writes this device’s progress.',
           })
         } catch (e) {
           set({ status: 'error', message: describe(e) })
         }
       },
 
-      lock: () => set({ passcode: null, status: 'idle', message: null, remoteSavedAt: null, lastSavedAt: null }),
+      lock: () => set({ passcode: null, status: 'idle', message: null, remoteSavedAt: null, lastSavedAt: null, pendingRemote: false }),
 
       save: async () => {
         const code = get().passcode
@@ -89,7 +100,7 @@ export const useSync = create<SyncState>()(
         const payload = snapshot()
         try {
           await push(code, payload)
-          set({ status: 'ok', lastSavedAt: payload.savedAt, remoteSavedAt: payload.savedAt, message: 'Progress saved.' })
+          set({ status: 'ok', lastSavedAt: payload.savedAt, remoteSavedAt: payload.savedAt, pendingRemote: false, message: 'Progress saved.' })
         } catch (e) {
           set({ status: 'error', message: describe(e) })
         }
@@ -106,7 +117,7 @@ export const useSync = create<SyncState>()(
             return
           }
           restore(remote)
-          set({ status: 'ok', remoteSavedAt: remote.savedAt, message: 'Progress loaded from the saved copy.' })
+          set({ status: 'ok', remoteSavedAt: remote.savedAt, lastSavedAt: remote.savedAt, pendingRemote: false, message: 'Progress loaded from the saved copy.' })
         } catch (e) {
           set({ status: 'error', message: describe(e) })
         }
@@ -117,9 +128,12 @@ export const useSync = create<SyncState>()(
         if (!code) return
         try {
           const remote = await pull(code)
-          set({ remoteSavedAt: remote?.savedAt ?? null })
+          const seen = get().lastSavedAt
+          // Safe to autosave when there is nothing remote, or nothing newer than this device holds.
+          const stale = !remote || (!!seen && remote.savedAt <= seen)
+          set({ remoteSavedAt: remote?.savedAt ?? null, pendingRemote: !stale })
         } catch {
-          /* a failed background check is not worth reporting */
+          /* a failed background check leaves autosave suppressed, which is the safe direction */
         }
       },
     }),
