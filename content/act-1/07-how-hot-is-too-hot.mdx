@@ -35,7 +35,7 @@ export const ratedVarianceTrap = normal.sf(harpagia.ratio_pct, 100, RATED_SPREAD
 
 <Scene stamp="MET 025/09:15" location="Sensor bay · 0.22 AU from Callisto, 4 mgee" condensed={`Twelve days after the contact that dragged the mean of the first eleven, Oyelaran has reduced it three more times and it will not move: ${fmt(harpagia.ratio_pct, 1)} percent of the class-table expectation, plus or minus three. Her z of ${fmt(oyelaranZ, 1)} was taken against the table's rated spread, which is a specification and not a measurement; the fleet's own sixty have a spread of their own. Sandoval converts percent to tonnes and shows that a change of units moves the centre and the spread but never the z.`}>
 
-Somebody has taped a thermal blanket over the sensor bay's inboard hatch frame. It is against standing orders. Nobody is going to mention it. Twenty-five days out. Callisto twenty-two hundredths of an astronomical unit astern, fifty-one kilometres a second, a minute and fifty seconds of light each way. The Bureau's file on one hull was requested eleven days ago and has not come back.
+Somebody has taped a thermal blanket over the sensor bay's inboard hatch frame. It is against standing orders. Twenty-five days out. Callisto twenty-two hundredths of an astronomical unit astern, fifty-one kilometres a second, a minute and fifty seconds of light each way. The Bureau's file on one hull was requested eleven days ago and has not come back.
 
 You duck the cable run, having learned that much, and come in with your collar up. Oyelaran has the contact on the main display. She had it up before you were down the ladder.
 
@@ -191,7 +191,7 @@ The centre lands essentially on the declaration itself, and the spread becomes a
 
 {fmt(harpagiaZ, 2)} standard deviations above the centre of the fleet's own model, and a tail of {fmt(harpagiaTail, 4)}. About one hull in {fmtInt(Math.round(1 / harpagiaTail))}, if the hulls of the Lane are honest and the model is right.
 
-Oyelaran does not say anything for a while. She runs the reduction a fourth time while you stand there, with her back to the three of you and her hands flat on the console either side of the readout. It comes back the same. Everyone expected that. She needed it anyway.
+Oyelaran does not say anything for a while. She runs the reduction a fourth time while you stand there, with her back to the three of you and her hands flat on the console either side of the readout. It comes back the same.
 
 "Two things," she says at last. "The first is that my number was worse arithmetic than I thought it was. I divided by the certificate. I should have divided by the fleet, and if I had, I would have brought you a bigger number eleven days ago." She does not apologise for it and you do not want her to. "The second is that this is a model. Sixty contacts, one corridor, thirteen days, and a normal curve I chose because the sixty looked like one. The tail is a statement about the curve. It is not a statement about that hull."
 
@@ -206,13 +206,13 @@ You have her put all three in the preliminary, in that order, with the tail and 
 </Scene>
 
 <DecisionEcho beat="act-1-03-trust" option="Trust the class table">
-<Dialogue speaker="sensors" aside="She brings this up herself, without being asked, which is its own kind of report.">
+<Dialogue speaker="sensors" aside="She brings this up herself, at the end of the watch report.">
 Eleven days ago you went with the table against me, sir, and I have just spent a morning proving the table was the worse ruler. I want it on the log that you were right to want a second opinion and wrong about which one. The contact was real, the table's spread was a promise, and it took sixty measurements to know which. If you had ordered me to drop it, I would have dropped it.
 </Dialogue>
 </DecisionEcho>
 
 <DecisionEcho beat="act-1-03-trust" option="Trust Oyelaran">
-<Dialogue speaker="sensors" aside="She brings this up herself, without being asked, which is its own kind of report.">
+<Dialogue speaker="sensors" aside="She brings this up herself, at the end of the watch report.">
 You backed my read eleven days ago, sir, and I want the rest of it on the log too: I was right that the contact was real and wrong to distrust the table on nothing but instinct. What made the table the worse ruler was sixty measurements, not my certainty. If the sixty had come back with the table's spread, you would have backed a wrong call, and it would have been my fault.
 </Dialogue>
 </DecisionEcho>
