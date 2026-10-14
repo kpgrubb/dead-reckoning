@@ -118,6 +118,31 @@ describe('content MDX lint', () => {
   })
 
   /**
+   * The same failure as the one above, in Markdown's other literal region. A backtick code span in
+   * MDX prose is not parsed for JSX, so `binompdf({fmtInt(n)}, …)` reaches the DOM as its own
+   * source. It compiles and builds clean, and it is tempting in a <Calculator> panel, where
+   * keystrokes want monospace and the arguments want to be computed. Build the string in the ESM
+   * block and render it through `<code>{cmd}</code>`. Found in act-4/08 by the render smoke test.
+   */
+  it('never puts a JSX expression inside a Markdown code span', () => {
+    const offences: string[] = []
+    for (const file of files) {
+      const src = body(fs.readFileSync(file, 'utf8'))
+      const lineOf = (idx: number) => src.slice(0, idx).split('\n').length
+      for (const m of src.matchAll(/`([^`\n]+)`/g)) {
+        // A backtick after `={`, `(` or `=` opens a JS template literal, whose `${…}` *is*
+        // evaluated. Only a bare span sitting in Markdown prose is literal.
+        const before = src.slice(Math.max(0, m.index! - 2), m.index!).trimEnd()
+        if (before.endsWith('={') || before.endsWith('(') || before.endsWith('=') || before.endsWith(',')) continue
+        // `{ident(` or `{ident.` — a call or property access. `{n}` in TeX like \binom{n}{k} is not.
+        const hit = /(?<!\$)\{\s*[A-Za-z_$][\w$]*\s*[(.]/.exec(m[1])
+        if (hit) offences.push(`${rel(file)}:${lineOf(m.index!)}: JSX expression inside a code span — "${m[1].trim().slice(0, 60)}"`)
+      }
+    }
+    expect(offences).toEqual([])
+  })
+
+  /**
    * A JSX expression returns a *string*, and MDX inserts it as a text node — it is never parsed as
    * Markdown. So `{rows.map(r => `| ${r.a} | ${r.b} |`).join('\n')}` under a literal `| … |` header
    * renders an empty table followed by a line of raw pipes. It compiles and builds clean. Write the
