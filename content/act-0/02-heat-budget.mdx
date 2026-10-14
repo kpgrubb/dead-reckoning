@@ -30,15 +30,13 @@ export const a1Gap = Math.abs(a1Endurance - a1Projected)
 
 Forty hours cold on the Quiet profile: life support, passive sensors, the least computing anyone can work with, and the skin loops pumping the hull's warmth inward into sixty tonnes of lithium at seventy kilowatts.
 
-By hour thirty the ship is warm the way a shut room is warm. Everything the heat crosses on its way to the cellar is you. Shirts off in the wardroom. Water standing in beads on the cold-plate handrails and going nowhere without gravity to take it. Ebele has taped a thermometer to the bulkhead by his terminal and writes the reading down every hour.
-
 Sandoval has the design curve up with the cellar's actual reading laid over it, refreshed on the hour. The book's line is straight. Hers is not, quite.
 
 By hour ten the two have separated. You ask by how much.
 
 "Not yet."
 
-You stay. There is a rail at the back of the engineering space at head height and you hook an arm through it and wait, and the pumps run, and after a while she talks without turning round.
+You stay. There is a rail at the back of the engineering space at head height. You hook an arm through it and wait. The pumps run. After a while she talks without turning round.
 
 "The book's ahead of the cellar, Skipper. It was written by people who weren't sitting on it." She thumbs the display over to the hourly column. "You'll get the figure when the run's done. With its plus-or-minus. And you'll work it out yourself, because when the yard asks how we got it I want you to have got it."
 
@@ -50,17 +48,19 @@ She scrolls the trace back three hours before she answers.
 
 She still has her back to you.
 
-"Ask me for one and you'll get something that's out by hours in both directions and no way to know which way on the day. The suite draws what it draws. The loops lag the sun angle by half a shift. And there's sixteen people breathing in here. You've no idea what a man puts out when he can't sleep, Skipper. Eighty watts. All of it into the lithium."
+"Ask me for one and you'll get something that's out by hours in both directions, and no way to know which way on the day. The suite draws what it draws. The loops lag the sun angle by half a shift. And there's sixteen people breathing in here. You've no idea what a man puts out when he can't sleep, Skipper. Eighty watts. All of it into the lithium."
 
 Somebody drops a panel two frames aft and swears. She waits it out.
 
 "You'll get a figure I'd work to. It'll be under the book's, and it'll have a plus-or-minus on it, or it didn't come from me."
 
-The run ends at hour forty with the cellar at {fmt(quietRun.sinkEndPct, 0)} percent. The wings come out and for two hours and thirty-six minutes *Nightjar* is the brightest object in Jovian space, throwing away what she spent forty hours swallowing. Sandoval logs the drain rate, then the endurance the drain rate projects, then a plus-or-minus for the next run. She draws a box round the third one.
+By hour thirty the ship is warm the way a shut room is warm. Everything the heat crosses on its way to the cellar is you. Shirts off in the wardroom. Water standing in beads on the cold-plate handrails, going nowhere without gravity to take it. Ebele has taped a thermometer to the bulkhead by his terminal and writes the reading down every hour.
 
-The second run is Watch. Reactor scrammed, torch cold, the Eyes and the ears and the whole analysis suite live on the fuel cells. Valhalla's telescopes have the search volume and they have the schedule, and the test is how long they need to put a mark on the ship.
+The run ends at hour forty with the cellar at {fmt(quietRun.sinkEndPct, 0)} percent. The wings come out. For two hours and thirty-six minutes *Nightjar* is the brightest object in Jovian space, throwing away what she spent forty hours swallowing. Sandoval logs the drain rate, then the endurance it projects, then a plus-or-minus for the next run. She draws a box round the third one.
 
-{WATCH_DETECTION_H} hours. The skin loop falls behind the lithium's warming, the outside of the hull comes up a few kelvin over the sky, and Callisto has her. The cellar reads {fmt(watchRun.sinkEndPct, 0)} percent at the moment they call it.
+The second run is Watch. Reactor scrammed, torch cold, the Eyes and the ears and the whole analysis suite live on the fuel cells. Valhalla's telescopes have the search volume and the schedule. The test is how long they need to put a mark on the ship.
+
+{WATCH_DETECTION_H} hours. The skin loop falls behind the lithium's warming. The outside of the hull comes up a few kelvin over the sky, and Callisto has her. The cellar reads {fmt(watchRun.sinkEndPct, 0)} percent at the moment they call it.
 
 </Scene>
 
@@ -188,12 +188,12 @@ That is {fmt(a1Gap, 1)} h below the {fmt(a1Endurance, 1)} h the quotient $E = C/
   hint="Ask of each column: would its mean mean anything? If not, it is categorical. If so, is it a count or a measurement?">
   <Success>
   <Dialogue speaker="analyst">
-  Yes, sir. Two groups, two measurements. I had detection down as a count because it's a one or a zero in the log. That's — yes. It's a name.
+  Two groups, two measurements. I had detection down as a count because the log writes it one or zero. It's a name, sir.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="engineer" aside="She does not answer. She looks at a gauge for a while, then back at the table.">
-  Skipper. Read the column headings out loud and ask which ones you could add up.
+  <Dialogue speaker="engineer" aside="She reaches past you and puts a finger on the first column heading.">
+  Skipper. Read these out loud and ask which ones you could add up.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -203,11 +203,11 @@ That is {fmt(a1Gap, 1)} h below the {fmt(a1Endurance, 1)} h the quotient $E = C/
   hint={`Drain rate = (end % − start %) ÷ hours. Endurance = 100 ÷ drain rate. Shortfall = (design − endurance) ÷ design × 100.`}>
   <Success>
   <Dialogue speaker="engineer" aside="She writes it on the card taped over the yard's brass plate, under her own numbers.">
-  Call it {fmt(quietRun.projectedEnduranceH, 0)} hours on Quiet, give or take {fmt(quietRun.enduranceSdH, 0)}. The book was {fmt(quietShortfallPct, 1)} percent generous. The give-or-take is {fmt(quietShortfallPmPct, 1)} points of the book's figure on its own, so the next run won't land on that number either. Nobody at Adlinda is going to like the second half of that sentence. Log both halves.
+  Call it {fmt(quietRun.projectedEnduranceH, 0)} hours on Quiet, give or take {fmt(quietRun.enduranceSdH, 0)}. The book was {fmt(quietShortfallPct, 1)} percent generous. And the give-or-take is {fmt(quietShortfallPmPct, 1)} points of the book's figure on its own, so the next run won't land on that number either. Log both halves.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="engineer" aside="Silence. She checks the cellar gauge, which has not changed, and then the drain rate, which has not either.">
+  <Dialogue speaker="engineer" aside="She takes the stylus out of your hand and writes three lines on the slate, numbered.">
   Drain first, Skipper. Percent per hour. Then how many hours a hundred percent buys at that rate. Then how far short of the book that is, as a share of the book.
   </Dialogue>
   </Failure>
@@ -223,9 +223,9 @@ The wings are out and the ship is a lamp again, throwing sixty hours of Watch in
 
 Ferrier: "Where does {Math.round(PROFILES.Watch.workingH)} come from?"
 
-"The book's figure, less the spread I've watched the load wander by. The other one is less twice the spread. I'll show the arithmetic when it's worth showing." She looks at the plot, where the three cold runs lie across each other in three colours, one procedure and three answers. "Hours aren't a number, Lieutenant Commander. They're a spread with a number in the middle of it, and I'd rather you planned for the low edge."
+"The book's figure, less the spread I've watched the load wander by. The other one is less twice the spread. I'll show the arithmetic when it's worth showing." She looks at the plot, where the three cold runs lie across each other in three colours. "Hours aren't a number, Lieutenant Commander. They're a spread with a number in the middle, and I'd rather you planned for the low edge."
 
-Ebele's table goes into the log as built: fourteen columns, each with its kind and its units, and a line in your own hand at the bottom saying the endurance column is continuous, varies run to run, and is not to be quoted without its plus-or-minus. Oyelaran's {EYES_DETECTION_H} hours goes in beside Valhalla's {WATCH_DETECTION_H}, labelled as an estimate.
+Ebele's table goes into the log as built: fourteen columns, each with its kind and its units. At the bottom, in your own hand, a line saying the endurance column is continuous, varies run to run, and is not to be quoted without its plus-or-minus. Oyelaran's {EYES_DETECTION_H} hours goes in beside Valhalla's {WATCH_DETECTION_H}, labelled as an estimate.
 
 Down in the vault the lithium ticks as it cools. Days. Not weeks.
 
