@@ -42,7 +42,7 @@ export const PERRINE_SHARE = PERRINE_N / LEDGER_N
 
 <Scene stamp="MET 116/09:20" location="Bridge · coasting cold · two days to the torch" condensed="Two days out from the torch. Ebele arrives on the bridge with the Ledger sorted by owner class and the observed loss counts for each, the comparison the whole file has been pointing at since the mass residuals. Ferrier stops him before the first number leaves his mouth and makes him put the sheet face down. The ship is going to build the picture of two fleets losing hulls at exactly the same rate first, and look at what it actually saw afterwards, in that order, on the record.">
 
-The middle watch handed over at 08:00. The cellar is at forty-one per cent and falling on the Chief's schedule. Two hundred and sixty-three kilometres a second in the tanks. Callisto is twenty-one and a half minutes away, and nobody up there can help you with the next two days.
+The middle watch handed over at 08:00. The cellar is at forty-one percent and falling on the Chief's schedule. Two hundred and sixty-three kilometres a second in the tanks. Callisto is twenty-one and a half minutes away, and nobody up there can help you with the next two days.
 
 Ebele comes onto the bridge at a speed that is not quite running, with a slate held against his chest, face in.
 
@@ -78,7 +78,7 @@ A loss rate is a mean in disguise. Score every transit 1 if the hull is lost and
 
 **Large Counts:** $np \ge 10$ **and** $n(1-p) \ge 10$.
 
-At a rate near one per cent that condition bites. It takes several hundred transits before the expected number of losses reaches ten at all, and on a fleet of {fmtInt(SMALL_N)} transits the expected count is {fmt(SMALL_COUNTS, 2)}: the sampling distribution is still there, but it is lumpy and right-skewed and a normal curve laid over it is a lie told with a smooth line. Quote the counts. Never quote the verdict alone.
+At a rate near one percent that condition bites. It takes several hundred transits before the expected number of losses reaches ten at all, and on a fleet of {fmtInt(SMALL_N)} transits the expected count is {fmt(SMALL_COUNTS, 2)}: the sampling distribution is still there, but it is lumpy and right-skewed and a normal curve laid over it is a lie told with a smooth line. Quote the counts. Never quote the verdict alone.
 
 **Independence** is the second condition and it is about where the $n$ came from. The textbook form is the **10 % condition**: when sampling *without replacement* from a finite population, take no more than a tenth of it, or the draws start informing each other. A corridor's transits are not a bin. They are draws from an ongoing operation that will keep running next year and the year after, and a six-year archive of {fmtInt(LEDGER_N)} rows is a window on a process rather than the whole of it. That is why nine hundred transits, {fmtPct(PERRINE_SHARE, 0)} of the rows in the snapshot, does not break independence, and it is the sentence a reviewer will want written out rather than assumed.
 
@@ -137,7 +137,7 @@ About {fmtPct(WORKED_P, 1)} of pairs of identical fleets this size land that far
 <Calculator.Read label="Ans" value={fmt(WORKED_GAP_1_IN_100, 5)}>the gap between these two classes that a common rate produces once in a hundred comparisons. Equivalently `invNorm(0.99)` returns $z^\star$ = {fmt(WORKED_ZSTAR, 4)}, and {fmt(WORKED_ZSTAR, 4)} × {fmt(SD_DIFF_WORKED, 5)} is the same number.</Calculator.Read>
 <Calculator.Watch>**The standard deviation argument is the combined one, and the calculator cannot tell you when it is not.** Put one fleet's {fmt(SD_MERCANTILE, 5)} in that slot and the forward question returns {fmt(WORKED_P_WRONG_SD, 4)} instead of {fmt(WORKED_P, 4)}: a plausible number, correctly typed, answering a question about one fleet's rate when you asked about a gap between two. The same slot in a question about a sample mean wants **σ/√n** rather than σ, and nothing on the screen distinguishes the two cases. Compute the spread on its own line, look at it, store it, and paste it in.</Calculator.Watch>
 <Calculator.Watch>**`invNorm` takes the area to the LEFT, and it is one-tailed.** For a one-in-a-hundred gap in one direction, enter 0.99. Entering 0.995, which is the two-tailed critical value, sets the bar higher than the question asked for; entering 0.01 returns the same distance below zero with a minus sign. Say in the brief which tail the bar is in and why.</Calculator.Watch>
-<Calculator.Watch>**`normalcdf` will draw a smooth answer over a lumpy distribution without comment.** Nothing in the command checks $np$ and $n(1-p)$. At {fmtInt(SMALL_N)} transits and a rate near one per cent the expected count is {fmt(SMALL_COUNTS, 2)} and the normal model has no licence, but the screen returns four decimal places exactly as fast.</Calculator.Watch>
+<Calculator.Watch>**`normalcdf` will draw a smooth answer over a lumpy distribution without comment.** Nothing in the command checks $np$ and $n(1-p)$. At {fmtInt(SMALL_N)} transits and a rate near one percent the expected count is {fmt(SMALL_COUNTS, 2)} and the normal model has no licence, but the screen returns four decimal places exactly as fast.</Calculator.Watch>
 </Calculator>
 
 Ebele builds it as a machine rather than as a formula, because he has stopped trusting formulas he has not watched run. **ONE FLEET** draws a fleet of $n$ transits at a true rate $p$, counts the losses, divides, and puts one dot on the stack. Do it five hundred times and the pile that grows is the sampling distribution of a loss rate.
@@ -175,12 +175,12 @@ So it is lumpy, sir. At two hundred transits the whole distribution is six or se
     `Large Counts holds: expected losses $np = ${fmt(LARGE_COUNTS_PERRINE, 2)}$ and expected arrivals $n(1-p) = ${fmt(PERRINE_N - LARGE_COUNTS_PERRINE, 1)}$, both at least ten, the first of them narrowly. The ${fmtInt(PERRINE_N)} transits are draws from an ongoing corridor operation rather than scoops from a fixed bin, so they may be treated as independent.`,
     `The sample is large, ${fmtInt(PERRINE_N)} being far past 30, so the Central Limit Theorem licenses a normal model for $\\hat p$ whatever the expected counts are.`,
     `The 10 % condition fails: ${fmtInt(PERRINE_N)} transits are ${fmtPct(PERRINE_SHARE, 0)} of the ${fmtInt(LEDGER_N)} in the Ledger, well over a tenth, so no normal model is available for this fleet.`,
-    `Large Counts fails on the loss side, because the observed rate is near one per cent and one per cent of anything is a small number, so the sampling distribution must be handled as a binomial count instead.`,
+    `Large Counts fails on the loss side, because the observed rate is near one percent and one percent of anything is a small number, so the sampling distribution must be handled as a binomial count instead.`,
   ]}
   correct={0}
   feedback={[
     null,
-    `n ≥ 30 is the licence for a sample MEAN of a general population. A proportion is pinned between 0 and 1, so what matters is whether there is room on both sides of it: np and n(1 − p), both at least ten. At a rate near one per cent, 30 transits expect a third of a loss.`,
+    `n ≥ 30 is the licence for a sample MEAN of a general population. A proportion is pinned between 0 and 1, so what matters is whether there is room on both sides of it: np and n(1 − p), both at least ten. At a rate near one percent, 30 transits expect a third of a loss.`,
     `That is the right condition applied to the wrong population. The 10 % rule guards independence when you are drawing WITHOUT replacement from a fixed, finite bin. A fleet's transits are draws from a corridor that will still be running next year, a process rather than a bin, and the ${fmtInt(LEDGER_N)}-row snapshot is a window on it. Say so in the brief and the condition is met.`,
     `Check it rather than eyeballing it: ${fmtInt(PERRINE_N)} × ${fmt(POOLED_RATE, 5)} = ${fmt(LARGE_COUNTS_PERRINE, 2)}, which clears ten, narrowly, which is why the number and not the verdict belongs in the brief. Had it come out at eight, your answer would have been the right one.`,
   ]}>
@@ -247,7 +247,7 @@ Variances add, Ensign. Squares go in, the root comes out at the end, and what co
   </Success>
   <Failure>
   <Dialogue speaker="analyst" aside="He has the two-tailed value on his slate and finds it himself, two lines down, before anybody says anything.">
-  Yes. I have put the whole one per cent in both tails, sir. That answers *how big a gap in either direction*, and the question was how big a gap with one class above the other. One tail. The critical value comes down and so does the bar. Same spread, same centre, different question, and I should have read the word "above".
+  Yes. I have put the whole one percent in both tails, sir. That answers *how big a gap in either direction*, and the question was how big a gap with one class above the other. One tail. The critical value comes down and so does the bar. Same spread, same centre, different question, and I should have read the word "above".
   </Dialogue>
   </Failure>
 </MissionBeat>

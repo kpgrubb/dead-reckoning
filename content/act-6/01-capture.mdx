@@ -40,7 +40,7 @@ export const levelRubric = confidenceLevelRubric({
     'If the Lane traffic were sampled repeatedly in the same way and a 95% confidence interval were built from each sample, about 95% of those intervals would contain the true loss rate per transit for all transits on the Hundred-Day Lane.',
 })
 
-<Scene stamp="MET 133/08:20" location="Intel terminal · CSV Nightjar · Compact consular berth, Ceres" condensed="Docked at Ceres with the transponder lit and forty plumes in the sky, Ebele has written the report's first sentence: the interval has a 95 per cent chance of containing the Lane's loss rate. Ferrier asks him which interval, the one on the screen or the method, and sends him to build a hundred of them before he writes anything else.">
+<Scene stamp="MET 133/08:20" location="Intel terminal · CSV Nightjar · Compact consular berth, Ceres" condensed="Docked at Ceres with the transponder lit and forty plumes in the sky, Ebele has written the report's first sentence: the interval has a 95 percent chance of containing the Lane's loss rate. Ferrier asks him which interval, the one on the screen or the method, and sends him to build a hundred of them before he writes anything else.">
 
 For a hundred and thirty-three days the hull has been the coldest thing anybody could have looked at. This morning there is a docking collar on it and a fuel line into the port tank. The transponder is reading your hull number to a Ceres controller who has already said it back twice.
 
@@ -54,7 +54,7 @@ Ebele has been at the intel terminal since before the collar mated. The coffee b
 
 He reads it out without being asked.
 
-"So. The Lane's loss rate is {fmt(LANE_RATE, 4)} per transit, and the ninety-five per cent interval has a ninety-five per cent chance of containing the true rate. Sir."
+"So. The Lane's loss rate is {fmt(LANE_RATE, 4)} per transit, and the ninety-five percent interval has a ninety-five percent chance of containing the true rate. Sir."
 
 Ferrier does not look up from the fuel log.
 
@@ -62,7 +62,7 @@ Ferrier does not look up from the fuel log.
 
 "The." He stops. "The one on the screen."
 
-"That one is built. It contains the rate or it does not, and neither of us will ever know which. So say again what has a ninety-five per cent chance."
+"That one is built. It contains the rate or it does not, and neither of us will ever know which. So say again what has a ninety-five percent chance."
 
 "Yes, sir."
 
@@ -173,7 +173,7 @@ Notice the price of the margin. {fmtInt(ROOK_2176.transits)} transits, eight yea
 
 <Scene stamp="MET 133/22:05" location="Wardroom · CSV Nightjar · Compact consular berth, Ceres" condensed="Ebele logs the corrected sentence with the three conditions above it and their numbers beside them. Master Yevgenia Marsh comes aboard with a bottle and a grievance about a two-line finding on her brother's ship, and asks whose ships this is about.">
 
-Ebele writes it into the appendix at 21:40, conditions above it, the numbers beside each one. Ferrier has been trying to get that form out of him since Callisto. Random: a stated property of the process. Ten per cent: a process that will produce far more than {fmtInt(10 * LANE_TRANSITS)} transits. Large counts: {fmtInt(LANE_LOSSES)} and {fmtInt(laneArrivals)}, with a note that the first of them is the weak link and that a reviewer will find it.
+Ebele writes it into the appendix at 21:40, conditions above it, the numbers beside each one. Ferrier has been trying to get that form out of him since Callisto. Random: a stated property of the process. Ten percent: a process that will produce far more than {fmtInt(10 * LANE_TRANSITS)} transits. Large counts: {fmtInt(LANE_LOSSES)} and {fmtInt(laneArrivals)}, with a note that the first of them is the weak link and that a reviewer will find it.
 
 At 22:05 the watch officer passes up a name from the collar. Master Yevgenia Marsh, *Thessaly Dawn*, nine days on a Ceres berth waiting for a cargo that is not coming, carrying a bottle of something clear.
 
@@ -191,7 +191,7 @@ She leaves the bottle. Nobody opens it.
 
 <LogEntry
   title="Confidence is a property of the method, not of one interval"
-  concept="A confidence interval is a statistic plus or minus a margin of error, and the margin is borrowed from the sampling distribution of that statistic: for a proportion it is a critical value times the standard error estimated from the sample. The confidence level is the long-run capture rate of the procedure, the share of intervals it would produce over many repeated samples drawn the same way that contain the true parameter. It says nothing about the one interval in front of you, which is already built and either contains the parameter or does not. Before any of it applies, three conditions must hold: random (for a census of a process, a stated property of that process), 10 per cent or independence (the process could produce far more than ten times these units), and Large Counts (at least ten successes and ten failures)."
+  concept="A confidence interval is a statistic plus or minus a margin of error, and the margin is borrowed from the sampling distribution of that statistic: for a proportion it is a critical value times the standard error estimated from the sample. The confidence level is the long-run capture rate of the procedure, the share of intervals it would produce over many repeated samples drawn the same way that contain the true parameter. It says nothing about the one interval in front of you, which is already built and either contains the parameter or does not. Before any of it applies, three conditions must hold: random (for a census of a process, a stated property of that process), 10 percent or independence (the process could produce far more than ten times these units), and Large Counts (at least ten successes and ten failures)."
   formula="\hat{p} \pm z^\star\sqrt{\frac{\hat{p}(1 - \hat{p})}{n}}, \qquad z^\star = \Phi^{-1}\!\left(\frac{1 + C}{2}\right)"
   mistake="Writing “there is a 95% chance the parameter is in this interval”. The parameter is fixed and the interval is computed; the probability is 1 or 0 and nobody will ever know which. The 95% belongs to the method, over repetitions. The same error dressed up is “95% of the data fall in the interval”, which is a claim about individual units rather than about a parameter."
   tags={['confidence interval', 'confidence level', 'capture rate', 'margin of error', 'critical value', 'one-proportion z-interval', 'conditions', 'random', '10% condition', 'large counts', '6.1', '6.2']}

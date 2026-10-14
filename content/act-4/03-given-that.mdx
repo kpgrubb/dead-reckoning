@@ -61,9 +61,9 @@ export const pColdGivenSeen = jointColdSeen / pSeen
 export const perrineIndex = OWNER_CLASSES.indexOf('Perrine')
 export const gradualByOwner = OWNER_CLASSES.map((oc, i) => ({ owner: oc, gradual: fadeByOwnerCounts[i][0], abrupt: fadeByOwnerCounts[i][1] }))
 
-<Scene stamp={metStamp(heat.at)} location={`Bridge · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed={`The cellar is half full and the first purge is ${fmt(hoursToPurge, 0)} hours out. Ebele builds the tree the whole heat plan rests on: the chance a passing freighter sees you cold against the chance it sees you with the wings out. Then Ferrier puts up the staff paper that came back attached to the first report. Eighty-four per cent of gradual transponder degradations on the Lane were faults resolved without loss, computed over all ${GRADUAL_TOTAL} of them. True. Ferrier wants the other question asked.`}>
+<Scene stamp={metStamp(heat.at)} location={`Bridge · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed={`The cellar is half full and the first purge is ${fmt(hoursToPurge, 0)} hours out. Ebele builds the tree the whole heat plan rests on: the chance a passing freighter sees you cold against the chance it sees you with the wings out. Then Ferrier puts up the staff paper that came back attached to the first report. Eighty-four percent of gradual transponder degradations on the Lane were faults resolved without loss, computed over all ${GRADUAL_TOTAL} of them. True. Ferrier wants the other question asked.`}>
 
-The cellar reads {fmt(heat.sinkPct, 0)} per cent and the first purge goes in {fmt(hoursToPurge, 0)} hours. Nobody has mentioned either number since breakfast. The deck under the plot is warm through your boots. You shift your weight off it and keep reading.
+The cellar reads {fmt(heat.sinkPct, 0)} percent and the first purge goes in {fmt(hoursToPurge, 0)} hours. Nobody has mentioned either number since breakfast. The deck under the plot is warm through your boots. You shift your weight off it and keep reading.
 
 Ebele has the being-seen model up because Sandoval asked him for it in writing. Two branches deep.
 
@@ -78,12 +78,12 @@ He puts the two conditionals on the board, the ones the Chief measured at Halden
 She puts up the staff paper that came back attached to the first report. Four paragraphs and no annex, over a flag secretary's signature.
 
 <Dialogue speaker="admiralty" aside="Board staff paper, appended to the reply of MET 11. Ebele has read it eleven times and can quote the sentence from memory." lag="lag 21.6 min · Valhalla">
-*It is noted that eighty-four per cent of gradual transponder degradations recorded on the Lane over the six-year period were faults subsequently resolved without loss of the hull. A gradual fade is therefore consistent with a failing unit, and the Board sees no basis in the record for treating gradual degradation as an indicator of hostile action.*
+*It is noted that eighty-four percent of gradual transponder degradations recorded on the Lane over the six-year period were faults subsequently resolved without loss of the hull. A gradual fade is therefore consistent with a failing unit, and the Board sees no basis in the record for treating gradual degradation as an indicator of hostile action.*
 </Dialogue>
 
 "Check the number," Ferrier says.
 
-Ebele already has. "It's true, sir. I pulled every gradual degradation in the Register. Not the losses. Every one, across all {fmtInt(REGISTER_RECORDS)} records. {fmtInt(GRADUAL_TOTAL)} of them. {fmtInt(gradualResolved)} were faults somebody repaired and the hull carried on. The other {fmtInt(gradualLosses)} were losses." He does the division on the board rather than in his head. "Their eighty-four per cent is {fmtInt(gradualResolved)} over {fmtInt(GRADUAL_TOTAL)}. Exactly right. I cannot find a thing wrong with the arithmetic."
+Ebele already has. "It's true, sir. I pulled every gradual degradation in the Register. Not the losses. Every one, across all {fmtInt(REGISTER_RECORDS)} records. {fmtInt(GRADUAL_TOTAL)} of them. {fmtInt(gradualResolved)} were faults somebody repaired and the hull carried on. The other {fmtInt(gradualLosses)} were losses." He does the division on the board rather than in his head. "Their eighty-four percent is {fmtInt(gradualResolved)} over {fmtInt(GRADUAL_TOTAL)}. Exactly right. I cannot find a thing wrong with the arithmetic."
 
 "No," Ferrier says. "There is nothing wrong with the arithmetic."
 
