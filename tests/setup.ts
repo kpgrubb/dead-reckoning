@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom/vitest'
+import { beforeEach } from 'vitest'
 import { useProgress } from '@/store/progress'
 
 /**
@@ -9,8 +10,16 @@ import { useProgress } from '@/store/progress'
  * failed about one run in three, because with finite reps that gap is itself a random quantity and
  * the claim holds in distribution rather than always. Everything else in the project is seeded; this
  * was the one input that was not.
+ *
+ * Pinned per test, not once per file. A test that legitimately writes a whole progress payload —
+ * `sync-store.test.ts` restoring a remote copy carrying its own `learnerSeed` — leaks that seed
+ * into the shared store, and the next file to read it reseeds its simulations. That is exactly
+ * what reintroduced the act-5 CltMachine flake: its `seedFor` helper reads the learner seed at
+ * call time, so a leaked 1234 moved the simulated SD past the test's hand-picked 0.02 margin.
  */
-useProgress.setState({ learnerSeed: 20_260_101 })
+beforeEach(() => {
+  useProgress.setState({ learnerSeed: 20_260_101 })
+})
 
 /**
  * Browser APIs jsdom does not implement, stubbed so instruments can be rendered in tests.
