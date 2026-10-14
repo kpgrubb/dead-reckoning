@@ -41,6 +41,9 @@ export const heat = heatFor('act-4-02')
 export const nextPurge = PURGE_STARTS.find((t) => t > heat.at)
 /** Ebele's wrong arithmetic, rendered rather than asserted: one ring of the Eyes, probabilities added. */
 export const ringSum = SWEEP_SECTORS * P_SWEEP_DETECTS
+/** The window panel opens on a round rate rather than on P_SWEEP_DETECTS, which is
+    act-4-02-detects' answer: the learner dials in the one they computed. */
+export const WINDOW_OPENS_AT_P = 0.25
 export const ringCrossesAt = Math.ceil(1 / P_SWEEP_DETECTS)
 /** The two-way the Briefing works: range band against resolving mode, among the detections only. */
 export const BANDS = ['near', 'middle', 'far']
@@ -199,9 +202,11 @@ Raise the per-pass probability and the error stops being subtle. During a purge 
 
 <SinkReadout sinkPct={heat.sinkPct} stamp={metStamp(heat.at)} profile="Quiet" />
 
-<EventSpacePanel />
+{/* Event A opens on a pair that overlaps B without being either beat's answer: the default
+    (thermal, optical, RF) reads out act-4-02-detects' answer on first paint. */}
+<EventSpacePanel eventA={['thermal', 'RF']} />
 
-<EventSpacePanel mode="window" perSweepP={P_SWEEP_DETECTS} sweepsInWindow={SWEEP_SECTORS} />
+<EventSpacePanel mode="window" perSweepP={WINDOW_OPENS_AT_P} sweepsInWindow={SWEEP_SECTORS} />
 
 <Drill generator="act-4/sample-space" count={1} />
 <Drill generator="act-4/addition-exclusive" count={1} />

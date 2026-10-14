@@ -84,6 +84,9 @@ export const dockSim = permutationTestProportions(
 )
 export const dockObserved = dockTable[0][0] / (dockTable[0][0] + dockTable[0][1]) - dockTable[1][0] / (dockTable[1][0] + dockTable[1][1])
 export const ALPHA = 0.05
+/** The tail panel opens here rather than on BENEFICIARY_TEST: χ², its df and its P are what
+    act-8-04-chisq and act-8-04-conclude ask for, and none of the three appears above the gate. */
+export const TAIL_PANEL_OPENS_AT = 6
 export const beneficiaryBase = significanceTestConclusion({
   pValue: BENEFICIARY_TEST.pValue,
   alpha: ALPHA,
@@ -303,9 +306,10 @@ No curve was used and no condition about expected counts was needed, because not
   rowAxisLabel="beneficiary"
   colAxisLabel="outcome"
   highlight={[0, 0]}
+  showTest={false}
 />
 
-<ChiSquareTail statistic={BENEFICIARY_TEST.statistic} df={BENEFICIARY_TEST.df} caseName="the beneficiary table" alpha={ALPHA} />
+<ChiSquareTail statistic={BENEFICIARY_TEST.statistic} df={BENEFICIARY_TEST.df} caseName="the beneficiary table" alpha={ALPHA} openAt={TAIL_PANEL_OPENS_AT} />
 
 <TwoWayVisualiser
   label="INTEL · CAUSE CODE BY CORRIDOR · DS-15"
@@ -369,6 +373,10 @@ The observed gap on the Bureau file is {fmt(EXAMINER_OBSERVED_DIFF, 3)}. Run the
   </Failure>
 </MissionBeat>
 
+{/* Gated on the statistic beat: this prompt hands over χ² to two decimals and the P beside it,
+    which is exactly what act-8-04-chisq asks for. Visible together, the prompt answers the beat. */}
+<Gated by="act-8-04-chisq">
+
 <MissionBeat id="act-8-04-conclude" kind="interpretation" label="WHAT GOES IN THE ANNEX"
   prompt={`The test returns χ² = ${fmt(BENEFICIARY_TEST.statistic, 2)} on ${fmtInt(BENEFICIARY_TEST.df)} degree of freedom, P = ${fmtP(BENEFICIARY_TEST.pValue)}, at α = ${fmt(ALPHA, 2)}. Write the conclusion that goes under the table in the annex. Name the cell whose contribution drives the statistic, say which way it went, and state the limit on what the finding establishes.`}
   hint="Four parts. Decision with P beside α. Convincing evidence of what, in the words of the Ledger rather than in symbols. Which cell carried the statistic, and whether it came in above or below the count the margins predicted. And what a table of records cannot establish, however small the P-value."
@@ -384,6 +392,8 @@ The observed gap on the Bureau file is {fmt(EXAMINER_OBSERVED_DIFF, 3)}. Run the
   </Dialogue>
   </Failure>
 </MissionBeat>
+
+</Gated>
 
 <MissionBeat id="act-8-04-examiner" kind="choice" label="EBELE'S HAND IS OVER THE KEY"
   prompt={`The Bureau file: ${fmtInt(MANIFEST_N)} certified departures out of Uruk High, one examiner's signature on each. R. Dacre signed ${fmtInt(DACRE_SIGNED)} of them and ${fmtInt(DACRE_DIVERTED)} of those ${fmtInt(DACRE_SIGNED)} are among the ${fmtInt(DIVERTED_N)} whose hulls are on Oyelaran's rock. The panel above has the table and its expected counts.\n\nWhat do you order?`}

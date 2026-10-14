@@ -27,11 +27,16 @@ export const WORKED_GAP = 0.3
 export const WORKED_Z = WORKED_GAP / SD_DIFF_PATROLS
 export const WORKED_P = normal.sf(WORKED_Z)
 export const WORKED_P_WRONG_SD = normal.sf(WORKED_GAP / SE_PATROL)
-export const WRONG_SUBTRACTED = LANE_DELAY_SD / Math.sqrt(NINETEEN_N) - LANE_DELAY_SD / Math.sqrt(SURVIVING_PERRINE_N)
+/** The Caution's lopsided pair: a short patrol against a full one, so the subtraction error is shown
+    on numbers no beat asks for. SD_DIFF_MEANS_SMALL is act-5-05-sd-small's answer and is never
+    rendered above the gate. */
+export const SHORT_PATROL_N = 25
+export const SD_DIFF_PATROLS_LOPSIDED = sdOfDifferenceOfMeans(LANE_DELAY_SD, SHORT_PATROL_N, LANE_DELAY_SD, PATROL_N)
+export const SE_SHORT_PATROL = LANE_DELAY_SD / Math.sqrt(SHORT_PATROL_N)
+export const WRONG_SUBTRACTED = SE_SHORT_PATROL - SE_PATROL
 export const VAR_SMALL = LANE_DELAY_SD ** 2 / NINETEEN_N
 export const VAR_BIG = LANE_DELAY_SD ** 2 / SURVIVING_PERRINE_N
 export const SHARE_SMALL = VAR_SMALL / (VAR_SMALL + VAR_BIG)
-export const SE_19_ALONE = LANE_DELAY_SD / Math.sqrt(NINETEEN_N)
 export const WIDTH_RATIO = SD_DIFF_MEANS_SMALL / SD_DIFF_MEANS_FLEETS
 export const LANE_SKEW = skewness(honestDelays)
 export const Z_1_IN_1000 = normal.isf(0.001)
@@ -116,7 +121,7 @@ So {fmtPct(WORKED_P, 1)} of pairs of honest patrols this size differ by {fmt(WOR
 **Backwards** is the direction a null model needs. Fix the rarity, find the gap: a one-in-a-thousand event in one tail has a $z^\star$ of {fmt(Z_1_IN_1000, 4)}, and the gap is $z^\star \sigma_{\bar x_1 - \bar x_2}$. For these two patrols that comes to {fmt(WORKED_GAP_1_IN_1000, 3)} d, a bar drawn before any measurement, which is the only kind worth drawing.
 </Briefing.Worked>
 <Briefing.Caution>
-*Subtracting variances, or subtracting standard errors.* Both produce a number smaller than either piece. For the lopsided comparison in this module the honest spread of the difference between {fmtInt(NINETEEN_N)} and {fmtInt(SURVIVING_PERRINE_N)} is {fmt(SD_DIFF_MEANS_SMALL, 3)} d; subtracting the two standard errors instead of adding their squares gives {fmt(WRONG_SUBTRACTED, 3)} d, which is *less than measuring the nineteen on their own*, {fmt(SE_19_ALONE, 3)} d. Think about what that claims: that comparing a badly-measured group against a well-measured one is more precise than measuring the badly-measured group by itself. Information does not appear because somebody wrote a minus sign.
+*Subtracting variances, or subtracting standard errors.* Both produce a number smaller than either piece. Take the two patrols again and make them lopsided: *Tindr* is pulled off the corridor after {fmtInt(SHORT_PATROL_N)} transits while *Asgard* runs its full {fmtInt(PATROL_N)}, same $\sigma$ on both sides. Added properly, the spread of the difference is {fmt(SD_DIFF_PATROLS_LOPSIDED, 3)} d. Subtracting the two standard errors instead gives {fmt(WRONG_SUBTRACTED, 3)} d, which is *less than measuring the short patrol on its own*, {fmt(SE_SHORT_PATROL, 3)} d. Think about what that claims: that comparing a badly-measured group against a well-measured one is more precise than measuring the badly-measured group by itself. Information does not appear because somebody wrote a minus sign.
 
 *Reading "n = 900" as "this comparison is precise."* The comparison is only as good as its worst-served group. Check which term dominates before quoting any figure: here $\sigma^2/n$ for the nineteen is {fmt(VAR_SMALL / VAR_BIG, 0)} times the other group's, so the comparison is a measurement of the nineteen with a well-known constant subtracted from it.
 

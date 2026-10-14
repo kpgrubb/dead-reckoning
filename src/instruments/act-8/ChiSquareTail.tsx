@@ -6,6 +6,9 @@
  * only way to see that a statistic has no size of its own: χ² = 10 is decisive on 1 df and
  * unremarkable on 20.
  *
+ * `openAt` withholds the module's own figures: the panel opens on a neutral statistic and the
+ * caption names none, for a module (8-04) whose statistic is the answer to a beat below it.
+ *
  * Everything numeric comes from `@/lib/stats` (`chi2.pdf`, `chi2.sf`, `chi2Star`). The component
  * owns no arithmetic beyond laying out the curve.
  */
@@ -31,17 +34,24 @@ export interface ChiSquareTailProps {
   /** Lock df (8-01/8-02 want it draggable; a checkpoint display might not). */
   lockDf?: boolean
   statMax?: number
+  /**
+   * Opt out of opening on the module's own figures, for a module whose statistic is the answer to a
+   * beat further down the page: the slider opens here instead and the caption names no figure.
+   * `statistic` is then used only to size the axis. 8-04 passes it; 8-02 does not.
+   */
+  openAt?: number
 }
 
-export function ChiSquareTail({ statistic, df, label = 'CHI-SQUARE REFERENCE · UPPER TAIL', tone = 'intel', alpha = 0.05, caseName, lockDf = false, statMax }: ChiSquareTailProps) {
+export function ChiSquareTail({ statistic, df, label = 'CHI-SQUARE REFERENCE · UPPER TAIL', tone = 'intel', alpha = 0.05, caseName, lockDf = false, statMax, openAt }: ChiSquareTailProps) {
+  const withheld = openAt !== undefined
   const [k, setK] = useState(df)
-  const [x, setX] = useState(statistic)
+  const [x, setX] = useState(openAt ?? statistic)
 
   const top = statMax ?? Math.max(Math.ceil(statistic * 1.25), 20)
   const domain: [number, number] = [0, Math.max(top, chi2Star(0.001, k) * 1.1)]
   const p = chi2.sf(x, k)
   const crit = chi2Star(alpha, k)
-  const atModule = Math.abs(k - df) < 0.5 && Math.abs(x - statistic) < 1e-9
+  const atModule = !withheld && Math.abs(k - df) < 0.5 && Math.abs(x - statistic) < 1e-9
 
   return (
     <Panel label={label} status={`df ${fmtInt(k)} · χ² ${fmt(x, 2)}`} tone={tone} led={p < alpha ? 'alert' : 'on'}>
@@ -74,10 +84,12 @@ export function ChiSquareTail({ statistic, df, label = 'CHI-SQUARE REFERENCE · 
           <Readout label="decision" value={p < alpha ? 'reject H₀' : 'fail to reject H₀'} tone={p < alpha ? 'alert' : 'log'} live />
         </ReadoutGrid>
 
-        <Note tone={atModule ? 'muted' : 'warn'} live>
-          {atModule
-            ? `Opened on ${caseName ?? 'this module'}: χ² = ${fmt(statistic, 2)} on ${fmtInt(df)} degrees of freedom, P = ${fmtP(chi2.sf(statistic, df))}.`
-            : `Moved off ${caseName ?? 'the module'}'s own figures (χ² = ${fmt(statistic, 2)}, df ${fmtInt(df)}). Set df to ${fmtInt(df)} and the statistic to ${fmt(statistic, 2)} to get back to them.`}
+        <Note tone={withheld || atModule ? 'muted' : 'warn'} live>
+          {withheld
+            ? `A reference curve and nothing else: this panel is not opened on ${caseName ?? 'the module'}'s own figures. Set the degrees of freedom and the statistic to the ones you have computed, and the shaded area is the P-value.`
+            : atModule
+              ? `Opened on ${caseName ?? 'this module'}: χ² = ${fmt(statistic, 2)} on ${fmtInt(df)} ${df === 1 ? 'degree' : 'degrees'} of freedom, P = ${fmtP(chi2.sf(statistic, df))}.`
+              : `Moved off ${caseName ?? 'the module'}'s own figures (χ² = ${fmt(statistic, 2)}, df ${fmtInt(df)}). Set df to ${fmtInt(df)} and the statistic to ${fmt(statistic, 2)} to get back to them.`}
         </Note>
         <Note>
           The same statistic answers to its degrees of freedom. At χ² = {fmt(x, 2)} the tail is {fmtP(chi2.sf(x, 1))} on 1 df and {fmtP(chi2.sf(x, 10))} on 10.
