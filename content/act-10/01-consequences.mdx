@@ -10,7 +10,7 @@ objectives:
   - "Name the population a finding is about and one limitation it carries, and concede both before a hostile reviewer extracts them"
   - "Judge a decision taken under uncertainty by the odds it was computed on rather than by how it came out"
 prereqs: ["act-9-checkpoint"]
-est_minutes: 20
+est_minutes: 25
 calc_briefing: null
 summary: "Thirteen days into the Inspectorate hearing, Achterberg asks which of your findings would survive a review that wants them not to, and which of your decisions you would make again."
 ---
@@ -19,6 +19,7 @@ import { fmt, fmtInt, fmtP, fmtPct, normal } from '@/lib/stats'
 import {
   ALTERNATIVE_COMPARABLE,
   ALTERNATIVE_DOUBLING,
+  COVER_LIST,
   EXAMINER,
   OTHER_LOSSES,
   OTHER_TRANSITS,
@@ -47,7 +48,47 @@ export const alphaCommitmentTex = `P(\\text{reject } H_0 \\mid H_0 \\text{ true}
 export const powerCostTex = `\\text{power}(0.05) - \\text{power}(0.01) = ${fmt(powerConventional.power, 3)} - ${fmt(powerStrict.power, 3)} = ${fmt(powerConventional.power - powerStrict.power, 3)}`
 export const picketTex = `P(\\text{a picket can respond}) = ${fmt(PICKET.present, 2)} \\times ${fmt(PICKET.onPicketGivenPresent, 2)} = ${fmt(PICKET.canRespond, 2)}`
 
-<Scene stamp="MET 319/10:05" location="Service Inspectorate, hearing room four · Valhalla, Callisto · the thirteenth day" condensed="Thirteen days of testimony in a room with no window. The exhibits are in numbered sleeves on a side table and one of them is the lidar buffer, in foam, with the mount's fracture face still on it. Achterberg asks two questions with the recorder running: which of the findings would survive a review conducted by somebody who wants them not to, and which of the decisions Rook would make again. Ferrante is on the bench by the door, finished as a witness two days ago and still coming in.">
+<Scene variant="log" stamp="MET 316/22:40" location="CSV Nightjar · commanding officer's log · written ashore at Valhalla" condensed="Rook's log on the tenth night of the hearing, in a Service room on the Valhalla rim. The Naval Committee sat in closed session the day before and he was not called. One page came up to him: findings received, and a resolution carried without a division that the eleven auxiliaries at Kettle and the cores stockpiled with them are retained in Compact service under an Inspectorate officer, subject to review two Close Seasons out. First Delegate Vail's one published line. Tharsis Mutual repaid in full over twenty years on a schedule the Committee has sealed. The Director's commission was resigned on the eleventh and accepted the same day, and there is no proceeding against a commission the Service no longer holds. Lane Operations has already asked the Inspectorate for the manning requirement of the eleven.">
+
+Tenth day in the chair. I am writing this in a Service room on the rim with the heater on a timer and my ship eleven kilometres down the basin in a slip with her mast off.
+
+The Naval Committee sat yesterday in closed session and I was not called. What came up to me this morning is one page: findings received, the Inspectorate's recommendation noted, and a resolution carried without a division.
+
+The resolution is that the eleven auxiliaries at Kettle and the cores stockpiled with them are retained in Compact service under an Inspectorate officer, subject to review in the Close Season after next.
+
+They have kept it. Every hull of it, and the stockpile.
+
+First Delegate Vail gave the only line that was published. *The Compact does not return what it needs to those who would use it against us.* I have read it four times. Nineteen families buried nobody, and the ships are still out there, and they are ours now, and the line is true.
+
+Tharsis Mutual is to be repaid in full over twenty years, out of a vote nobody intends to debate, on a schedule the Committee has sealed for thirty.
+
+The Director's commission was resigned on the eleventh and accepted the same day. I have read the standing order twice. There is no proceeding against a commission the Service no longer holds, and nobody has told me there was going to be one.
+
+A signal came across from Lane Operations this afternoon, over a captain's name I do not know, asking the Inspectorate for the manning requirement of the eleven. They want to know who gets to command them.
+
+Room four at ten.
+
+</Scene>
+
+<Scene stamp="MET 319/09:35" location="Service Inspectorate, ground floor · Valhalla, Callisto · the thirteenth morning" condensed="The Gazette board in the ground-floor hall, changed that morning: Ashby-Hale's commission resigned and accepted on MET 311, two lines in the same type as a retiring paymaster. Pinned beside it, an Inspectorate circulation to the Free Holds and the Mercantile's port offices: a warrant for J. Vasque, master of the Davida-registered salvage tug Patience, and a request to detain the hull. Last reported Hygiea Hold, armed, do not board. In the hall a rating works down the building with pension-continuation forms; the box with the Provident Fund's name in it now carries a second line putting the Fund in Inspectorate trusteeship from MET 321.">
+
+The Gazette board is under glass in the ground-floor hall and the Inspectorate changes the sheets on a Tuesday. You stop at it because the lifts are full and because everybody stops at it.
+
+Second column, resignations and retirements, fourth entry down. *Ashby-Hale, C., Rear Admiral, Director of Lane Operations. Commission resigned. Accepted MET 311.* The same type as the paymaster above him, who is sixty-one and going home to Ganymede. There is no third line.
+
+Pinned to the frame beside the glass, on Inspectorate paper, is a circulation to the Free Holds and to the Mercantile's port offices. A warrant for the master of the Davida-registered salvage tug *Patience*, J. Vasque, and a request to any authority able to do it to detain the hull. Under the request, in capitals: LAST REPORTED HYGIEA HOLD MET 290. ARMED. DO NOT BOARD.
+
+You have never seen her. You have one burst off the starboard quarter, ten minutes of flight time, and the frame ringing once.
+
+A rating comes along the hall with a clipboard and asks whether you are Rook, A., and apologises for the place, and does not go away. Pension continuation, two copies. You read it against the wall because there is nowhere in the hall to put anything down. The box where the Fund's name goes has the Fund's name in it, and under the name, inside the same box, somebody has printed *in trusteeship. Service Inspectorate. From MET 321.*
+
+Thirty-four years of pay, and the allowance that goes out every month to every family on the Register's lost column, in the same fund, under the same line.
+
+You sign both copies against the wall. He takes one and gives you the other and says they are doing the whole building this week, sir, two floors a day.
+
+</Scene>
+
+<Scene stamp="MET 319/10:05" location="Service Inspectorate, hearing room four · Valhalla, Callisto · the thirteenth day" condensed="Thirteen days of testimony in a room with no window. The exhibits are in numbered sleeves on a side table and one of them is the lidar buffer, in foam, with the mount's fracture face still on it; twenty-four has a card clipped to it releasing a copy to the Bureau's prosecuting officer for fraud. On the morning's sitting list Ostrow has come out of the witness column, with the cover hulls typed under his name and the words conspiracy to murder, referred, Assembly's court. Achterberg asks two questions with the recorder running: which of the findings would survive a review conducted by somebody who wants them not to, and which of the decisions Rook would make again. Ferrante is on the bench by the door, finished as a witness two days ago and still coming in.">
 
 The hearing room is on the fourth floor of the Inspectorate block and has no window, which is a thing you had not thought about before you had sat in it for thirteen days. The air return is in the ceiling directly over the witness chair. It has been running cold since the eighth day and nobody has come.
 
@@ -55,9 +96,13 @@ The chair's left arm has a screw that has worked itself proud of the veneer. You
 
 There is a water jug on the recorder's table and none on yours. You asked on the second day and a rating brought one and it has not been there since.
 
-The exhibits are in numbered sleeves on a side table against the wall, in a run, so that from the chair you read them end on. Fourteen is two sheets of the Transit Ledger. Sixteen is the cargo table. Twenty-one is the Adlinda uprate logs, which came to you through a fitter who is not named in the transcript and will not be. Twenty-four is the Bureau file with Dacre's signature column.
+The exhibits are in numbered sleeves on a side table against the wall, in a run, so that from the chair you read them end on. Fourteen is two sheets of the Transit Ledger. Sixteen is the cargo table. Twenty-one is the Adlinda uprate logs, which came to you through a fitter who is not named in the transcript and will not be. Twenty-four is the Bureau file with Dacre's signature column, and since Friday it has carried a card clipped to the outside of the sleeve in a hand that is not the lieutenant's: *copy released to the Bureau's prosecuting officer. Fraud.*
 
 Forty-one is not in a sleeve. It is in a grey foam tray with a lid, because it does not go flat: the lidar buffer, and eleven centimetres of the mount it came off, with the fracture face still on it where the frame let go. On the fourth day an Inspectorate lieutenant carried it round to the chair and asked you to identify it for the record, and you did, and she carried it back and set it down on the felt without a sound.
+
+The sitting list goes round at ten and this morning's is not Monday's. Ostrow has come out of the witness column. He is at the foot of the page under the heading the Inspectorate uses for a disposal, with the hull names typed under his: <em>{COVER_LIST}</em>. Beside them, *conspiracy to murder. Referred, Assembly's court.*
+
+Those are the four that went nowhere, and the people who were aboard them. *Nightjar* is not on the page.
 
 Achterberg sits at the end of the table nearest the door. In thirteen days she has asked you perhaps forty questions and not one of them twice. The Board's counsel sits opposite with three juniors and a case of files, and has objected eleven times.
 
@@ -213,6 +258,54 @@ He goes out through the doors into the cold and the yard lights, and you stand i
 Thirteen days of it. {fmtInt(findings.length)} findings on the side table: one that will not survive its own conditions, one that is another of them written down twice, and {fmtInt(REFIT_N)} hulls of paired differences that somebody is entitled to ask what population they came from.
 
 Tomorrow the counsel gets the cargo table, and you are going to concede the word *declared* in the first sentence rather than the fourth.
+
+</Scene>
+
+<Scene stamp="MET 327/11:20" location="Adlinda Yards, slip three · the yard office over the gantry · Callisto" condensed="Eight days on from room four, in the yard office over slip three, with Nightjar open from frame nine aft and no mast. A stack of paper to sign. Nineteen Lane Authority amendments striking the diverted hulls out of unknown, presumed lost, each wanting the initials of an officer who saw the hull, and Oyelaran is not there to give them. The repatriation schedule: eighty-seven people at Kettle, hulls crewed home in ones and twos, a column of dates past the end of next year, families told in the order the hulls were lost. Sandoval brings the class specification up the ladder and will not leave until the acceptance test on the new sink is written in longhand and handed to somebody who has never drawn pay off the Fund. Ferrier's orders are near the bottom: Asgard. Ebele has left a request to stay. The last sheet is Rook's own promotion, with the second hull of the class authorised at the foot of it; he signs it where it says sign and carries it to the post office with the other nineteen.">
+
+The yard office over slip three has a trestle table, a window that does not shut, a heater somebody has hung off a stanchion with signal wire, and a 2181 yard calendar on the bulkhead. Below the window *Nightjar* is open from frame nine aft and has no mast, and Sandoval's people have been at the sink vault with air hammers since seven.
+
+The first thing in the stack is nineteen sheets from the Lane Authority, one to a hull, each with a line of the Register printed across the middle and the words *unknown, presumed lost* ruled through in red by a clerk at Ceres. The Authority will not amend a loss on a naval finding alone. It wants the initials of an officer who saw the hull.
+
+The hulls were seen through a manual lidar head at {fmtInt(PICKET.rangeKm)} kilometres by Lieutenant Dagny Oyelaran, who cannot initial anything. You put your own on all nineteen. The pen gives out on the fifteenth and there is another in the drawer.
+
+Under them is the repatriation order. Eighty-seven people at Kettle, nineteen hulls to be crewed home in ones and twos because the Service has nobody spare to go and get them, and a column of dates that runs past the end of next year. The families are told in the order the hulls were lost. First on the page is a woman on the rim who buried a coffin six years ago with her husband's watch in it.
+
+Sandoval comes up the ladder at eleven with the specification rolled under her arm and unrolls it on the table and puts the heater's lead across one corner to hold it flat.
+
+<Dialogue speaker="engineer" aside="Still in her yard rig, with the hammers going underneath her. She does not sit down and there is nowhere for her to sit.">
+Page eleven. Acceptance test on the vault, and it says the yard runs it. Adlinda built the last one and Adlinda certified it, and the certificate was wrong by more than its own margin, and I found that out in the dark off Kettle.
+</Dialogue>
+
+You ask her what she wants on the page.
+
+<Dialogue speaker="engineer">
+A name that is not the yard's. Somebody out of Valhalla who has never drawn a day's pay off that Fund. Every profile I ran on the shakedown, run again on acceptance, and the raw curve, Skipper. Not their summary of it.
+</Dialogue>
+
+You write it in under page eleven in longhand, all of it, and initial the insertion and sign at the foot.
+
+<Dialogue speaker="engineer" aside="Rolling the sheet up off the table with the heater's lead still lying where it was.">
+That is the class book, Skipper. It takes the next one with it.
+</Dialogue>
+
+She goes down the ladder with it and it does not come back to the stack.
+
+Ferrier's orders are near the bottom, copied to you as her commanding officer. *Asgard.* You had her from 2172 to 2176 with a cracked sixty-centimetre dish and a wardroom you could not stand up straight in.
+
+<Dialogue speaker="xo" aside="In the doorway with her cap under her arm. She has had her own copy since eight.">
+They have given me the cutter, Captain.
+</Dialogue>
+
+You tell her about the dish.
+
+<Dialogue speaker="xo">
+It is still cracked. I have the survey. They have been filling it with resin since before I was commissioned.
+</Dialogue>
+
+Ebele left a request on the table before you came up. The correct form, filled in correctly, and then the whole of it again on the back in his own hand. He would like to stay.
+
+The last sheet in the stack is yours, over Maalouf's signature, in the form the Board uses for all of them, with the date and the seniority and a line at the foot authorising the second hull of the class, whose frames have been standing in slip four since the spring on the yard's own money. You sign it where it says sign. The nineteen go in one envelope and your own goes in another, and you take both down the ladder to the yard post office yourself, because the rating who would have carried them is on the two o'clock boat.
 
 </Scene>
 

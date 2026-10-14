@@ -11,9 +11,13 @@ import { describe, expect, it } from 'vitest'
 import { PERRINE_TEST as ACT6_PERRINE_TEST, powerAgainst as act6Power, ALTERNATIVE_DOUBLING as ACT6_ALT } from '@/instruments/act-6/data'
 import { REFIT_PAIRED as ACT7_PAIRED } from '@/instruments/act-7/data'
 import { BENEFICIARY_TEST as ACT8_BENEFICIARY, CARGO_GOF as ACT8_CARGO, CORRIDOR_TEST as ACT8_CORRIDOR } from '@/instruments/act-8/data'
+import { COVER_HULLS as ACT8_COVER_HULLS } from '@/instruments/act-8/data'
 import {
   BASE_RATE_ASSUMED,
   BASE_RATE_MEASURED,
+  COVER_LIST,
+  COVER_N,
+  DIVERTED_N,
   EXAMINER_BOUND,
   FREQUENCY_BASE,
   PICKET,
@@ -129,6 +133,24 @@ describe('the findings ledger', () => {
       expect(f.conditions.length).toBeGreaterThan(0)
     }
     expect(findings).toHaveLength(6)
+  })
+})
+
+describe('the dispositions the Epilogue states in words', () => {
+  /**
+   * The sitting list prints the cover losses by name and the prose never types their number, so the
+   * count has to come from act-8 or the page is a guess. Nineteen is the same contract for the
+   * Register amendment Rook initials at the yard.
+   */
+  it('takes the charge sheet from act-8 and counts four cover losses', () => {
+    expect(COVER_N).toBe(4)
+    expect(COVER_N).toBe(ACT8_COVER_HULLS.length)
+    expect(COVER_LIST).toBe(ACT8_COVER_HULLS.join(', '))
+    expect(COVER_LIST).toMatch(/Thessaly Ember/)
+  })
+
+  it('holds the nineteen diverted hulls the Register amendment strikes out', () => {
+    expect(DIVERTED_N).toBe(19)
   })
 })
 
