@@ -284,10 +284,19 @@ describe('content MDX lint', () => {
    * Scoped to the revised Acts; each joins as the sweep reaches it.
    */
   it('does not gloss a behaviour for the reader', () => {
+    /**
+     * The narrative sweep found nine glosses in Act II alone that every pattern below missed,
+     * because they used `the way she/he` rather than `the way a/one/people`, or a `, which means`
+     * clause rather than `, which is how`. Widened to match: the tell is a *person* plus a verb of
+     * habit, and a post-comma relative clause whose job is interpretation.
+     */
     const patterns = [
       /,\s*which from (?:her|him|them|it)\b/i,
       /,\s*which is (?:how|what|why) (?:he|she|they|you|one)\b/i,
-      /\bthe way (?:a|one|people|men|women|somebody|someone|a man|a person)\b[^.;!?]{0,60}\b(?:do|does|say|says|when)\b/i,
+      // An evaluative judgement hung on the end of an action. `, which means …` is deliberately
+      // NOT here: it is ordinary exposition in a Briefing and matched 30+ innocent lines.
+      /,\s*which (?:is|was) (?:new|worse|deliberate|unprecedented|a first|the point|the answer|her way|his way)\b/i,
+      /\bthe way (?:a|an|one|people|men|women|somebody|someone|he|she|they|other people|most people)\b[^.;!?]{0,70}\b(?:do|does|did|say|says|said|when|who|that)\b/i,
     ]
     const offences: string[] = []
     for (const file of files.filter((f) => REVISED.some((a) => rel(f).startsWith(a)))) {
