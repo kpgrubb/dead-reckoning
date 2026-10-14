@@ -30,12 +30,14 @@ import {
   P_ON_PICKET_GIVEN_PRESENT,
   P_PICKET_CAN_RESPOND,
   P_WRECKER_PRESENT,
+  QUIET_HOURS,
   SHAPES_DOCKED,
   SHAPES_STANDING_OFF,
   SHIP_MASS_T,
   SINK_PCT_AT_APPROACH,
   SLUG_FLIGHT_MIN,
   TORCH_FROM_WATCH_MIN,
+  WATCH_HOURS_LEFT_AT_APPROACH,
   cargoObserved,
   dwellReturns,
   lidarBuffer,
@@ -87,11 +89,17 @@ export const cargoConclusion = {
 export const longNames = lidarBuffer.slice(0, 5).map((r) => r.hull_id)
 export const shortNames = dwellReturns(DWELL_SHORT_S).slice(0, 4).map((r) => r.hull_id)
 
-<Scene stamp="MET 181/05:40" location={`CSV Nightjar · bridge · Watch, cellar ${fmt(SINK_PCT_AT_APPROACH, 0)}%, twenty minutes from closest approach`} condensed={`The cargo table has been up on the plot since midnight: ${fmt(CARGO_GOF.statistic, 2)} on ${fmtInt(CARGO_GOF.df)} degrees of freedom, and no scale for it yet. Ebele drafts a sentence saying every cargo class differs from the Lane's share and you strike it. Oyelaran will not take the refit array's word for anything at ${fmtInt(CLOSEST_APPROACH_KM)} kilometres and asks for the blister and the manual lidar head; you approve it. Kettle is ${fmtInt(SHAPES_DOCKED)} warm shapes alongside and ${fmtInt(SHAPES_STANDING_OFF)} standing off, still without names.`}>
+<Scene stamp="MET 181/05:40" location={`CSV Nightjar · bridge · Watch, cellar ${fmt(SINK_PCT_AT_APPROACH, 0)}%, twenty minutes from closest approach`} condensed={`The cellar is at ${fmt(SINK_PCT_AT_APPROACH, 0)}%, with ${fmt(WATCH_HOURS_LEFT_AT_APPROACH, 1)} hours of Watch left in it after ${fmt(QUIET_HOURS, 0)} hours of Quiet on the way in. The cargo table has been up on the plot since midnight: ${fmt(CARGO_GOF.statistic, 2)} on ${fmtInt(CARGO_GOF.df)} degrees of freedom, and no scale for it yet. Ebele drafts a sentence saying every cargo class differs from the Lane's share and you strike it. Oyelaran will not take the refit array's word for anything at ${fmtInt(CLOSEST_APPROACH_KM)} kilometres and asks for the blister and the manual lidar head; you approve it. Kettle is ${fmtInt(SHAPES_DOCKED)} warm shapes alongside and ${fmtInt(SHAPES_STANDING_OFF)} standing off, still without names.`}>
 
 Everybody has been up all night and the bridge smells of it.
 
 The cellar reads {fmt(SINK_PCT_AT_APPROACH, 0)} percent. Nothing has burned since the turnover; the ship is falling past a rock at thirty kilometres a second on a line laid in two weeks ago, and there is nothing to fly. You have the left-hand seat and a cup of something that went cold an hour ago wedged in the arm rest.
+
+Sandoval, on the engineering channel, to you and not to the compartment.
+
+<Dialogue speaker="engineer" aside="She has the purge checklist open on the second page.">
+{fmt(WATCH_HOURS_LEFT_AT_APPROACH, 1)} hours of Watch left, Skipper. I ran {fmt(QUIET_HOURS, 0)} hours on a whisper to have them.
+</Dialogue>
 
 Kettle is on the main plot: a grey lump six kilometres across with {fmtInt(SHAPES_DOCKED)} warm blocks along one face and {fmtInt(SHAPES_STANDING_OFF)} more standing off it, all of them shapes and none of them names.
 

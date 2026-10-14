@@ -23,12 +23,14 @@ import {
   LANE_CARGO_PROBS,
   LANE_TRANSIT_TOTAL,
   LOSS_N,
+  QUIET_HOURS,
   SHAPES_DOCKED,
   SHAPES_STANDING_OFF,
   SINK_PCT_AT_BRIEF,
   SURVEY_CAMERA_KM,
   VOLATILES_INDEX,
   WATCH_HOURS_AT_BRIEF,
+  WATCH_HOURS_LEFT_AT_BRIEF,
   cargoObserved,
 } from '@/instruments/act-8/data'
 import { KeyTable } from '@/instruments/act-8/_ui'
@@ -47,15 +49,21 @@ export const auditTotalExpected = auditGof.expected.reduce((a, b) => a + b, 0)
 export const auditDriver = auditGof.largestContributor
 export const cargoMinExpected = Math.min(...CARGO_EXPECTED)
 
-<Scene stamp="MET 180/22:00" location={`CSV Nightjar · intel terminal · Watch, cellar ${fmt(SINK_PCT_AT_BRIEF, 0)}%, eight hours from closest approach`} condensed={`${fmtInt(WATCH_HOURS_AT_BRIEF)} hours on Watch and the ship is holding every joule it has made. Ebele has the Register's cargo column for the ${fmtInt(LOSS_N)} lost hulls open against the Lane's declared mix over ${fmtInt(LANE_TRANSIT_TOTAL)} transits: He-3 and deuterium ${fmtPct(LANE_CARGO_PROBS[0], 0)} of traffic, volatiles ${fmtPct(LANE_CARGO_PROBS[1], 0)}, metals ${fmtPct(LANE_CARGO_PROBS[2], 0)}, the rest ${fmtPct(LANE_CARGO_PROBS[3], 0)}. Among the lost: ${cargoObserved.map((o) => fmtInt(o)).join(', ')}. He checks the smallest number in the observed column against five and says the table cannot be run; you send him back to the column he has not built. Oyelaran, at the refit array's console, does not trust what it is telling her about a reference star.`}>
+<Scene stamp="MET 180/22:00" location={`CSV Nightjar · intel terminal · Watch, cellar ${fmt(SINK_PCT_AT_BRIEF, 0)}%, eight hours from closest approach`} condensed={`${fmt(QUIET_HOURS, 0)} hours of Quiet since the last purge and ${fmtInt(WATCH_HOURS_AT_BRIEF * 60)} minutes of Watch since the survey camera found the rock; the ship is holding every joule it has made and Sandoval gives the margin as ${fmt(WATCH_HOURS_LEFT_AT_BRIEF, 1)} hours. Ebele has the Register's cargo column for the ${fmtInt(LOSS_N)} lost hulls open against the Lane's declared mix over ${fmtInt(LANE_TRANSIT_TOTAL)} transits: He-3 and deuterium ${fmtPct(LANE_CARGO_PROBS[0], 0)} of traffic, volatiles ${fmtPct(LANE_CARGO_PROBS[1], 0)}, metals ${fmtPct(LANE_CARGO_PROBS[2], 0)}, the rest ${fmtPct(LANE_CARGO_PROBS[3], 0)}. Among the lost: ${cargoObserved.map((o) => fmtInt(o)).join(', ')}. He checks the smallest number in the observed column against five and says the table cannot be run; you send him back to the column he has not built. Oyelaran, at the refit array's console, does not trust what it is telling her about a reference star.`}>
 
-The intel terminal sits in the two-metre gap between the sensor bay and the frame, and at twenty-two hundred it is the warmest compartment aboard. {fmtInt(WATCH_HOURS_AT_BRIEF)} hours on Watch with the wings folded flat and the parasol out, and every joule sixteen people have made in that time is still in the ship. The cellar reads {fmt(SINK_PCT_AT_BRIEF, 0)} percent. The air down here has stopped moving and smells of hot dust off the terminal housing.
+The intel terminal sits in the two-metre gap between the sensor bay and the frame, and at twenty-two hundred it is the warmest compartment aboard. {fmt(QUIET_HOURS, 0)} hours of Quiet since the last purge: wings folded flat, the parasol out, half the suite down at the breaker. Every joule sixteen people have made since the wings last went out is still in the ship. The cellar reads {fmt(SINK_PCT_AT_BRIEF, 0)} percent. The air down here has stopped moving and smells of hot dust off the terminal housing.
 
 Ebele has the only seat. You put your back against the frame, which runs a couple of degrees cooler than anything else in the compartment, and hold the slate flat against your chest.
 
-Kettle has been on the survey camera since half past twenty. At {fmtInt(SURVEY_CAMERA_KM / 1e6)} million kilometres the camera gives warm shapes and no names: {fmtInt(SHAPES_DOCKED)} of them alongside the rock, {fmtInt(SHAPES_STANDING_OFF)} standing off it. Names want the lidar, the lidar wants {fmtInt(CLOSEST_APPROACH_KM)} kilometres, and closest approach is at 06:00. Nothing about that can be advanced for eight hours, so Ebele has gone back into the Register.
+Kettle has been on the survey camera since half past twenty, and the suite came up to Watch to feed it. At {fmtInt(SURVEY_CAMERA_KM / 1e6)} million kilometres the camera gives warm shapes and no names: {fmtInt(SHAPES_DOCKED)} of them alongside the rock, {fmtInt(SHAPES_STANDING_OFF)} standing off it. Names want the lidar, the lidar wants {fmtInt(CLOSEST_APPROACH_KM)} kilometres, and closest approach is at 06:00. Nothing about that can be advanced for eight hours, so Ebele has gone back into the Register.
 
-He has the screen split. Left, the loss subtable, all {fmtInt(LOSS_N)} of them with a declared cargo class beside each hull. Right, the Lane's own mix, taken off the whole Ledger.
+The slate buzzes against your sternum. Engineering channel, Sandoval, third call since the suite came up at half past twenty.
+
+<Dialogue speaker="engineer" aside="The cellar page gives the fill in percent at the top and the margin in hours underneath. She reads the second line.">
+{fmt(WATCH_HOURS_LEFT_AT_BRIEF, 1)} hours of Watch in the cellar, Captain. Eight of them are spoken for.
+</Dialogue>
+
+Ebele has the screen split. Left, the loss subtable, all {fmtInt(LOSS_N)} of them with a declared cargo class beside each hull. Right, the Lane's own mix, taken off the whole Ledger.
 
 "So the Authority publishes the corridor mix over all {fmtInt(LANE_TRANSIT_TOTAL)} transits, sir. He-3 and deuterium, {fmtPct(LANE_CARGO_PROBS[0], 0)}. Volatiles, {fmtPct(LANE_CARGO_PROBS[1], 0)}. Metals, {fmtPct(LANE_CARGO_PROBS[2], 0)}. Manufactured and everything else, {fmtPct(LANE_CARGO_PROBS[3], 0)}." He taps the left panel twice. "And if what a hull is carrying has nothing to do with whether it comes home, the {fmtInt(LOSS_N)} ought to look like that."
 
