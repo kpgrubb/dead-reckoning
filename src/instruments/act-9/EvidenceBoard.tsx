@@ -20,42 +20,14 @@ import { useMemo, useState, type CSSProperties } from 'react'
 import { Panel, type PanelTone } from '@/components/Panel'
 import { Readout } from '@/instruments/shared'
 import { fmtInt, fmtPct } from '@/lib/stats'
-import { ALL_PROCEDURES, CASE_FILE, PROCEDURE_LABEL, type Finding, type Procedure } from './case-file'
+import { ALL_PROCEDURES, CASE_FILE, LIMITATION_KEY, LIMITATION_LABEL, LIMITATIONS, PROCEDURE_LABEL, type Finding, type Limitation, type Procedure } from './case-file'
 import { Note, ReadoutGrid, Subhead, stackStyle } from './_ui'
 
 // ────────────────────────────────────────────────────────────────────────────────────────────────
-// The limitation column
+// The limitation column — the key lives in `./case-file` so the act-9-04 drills share it.
 // ────────────────────────────────────────────────────────────────────────────────────────────────
 
-export type Limitation = 'no-cause' | 'scope' | 'descriptive' | 'narrow-condition' | 'not-random'
-
-export const LIMITATION_LABEL: Record<Limitation, string> = {
-  'no-cause': 'no cause',
-  scope: 'scope: these units only',
-  descriptive: 'descriptive, not inference',
-  'narrow-condition': 'a condition passed narrowly',
-  'not-random': 'not a random sample',
-}
-
-const LIMITATIONS: readonly Limitation[] = ['no-cause', 'scope', 'descriptive', 'narrow-condition', 'not-random']
-
-/** Which category the beat sheet's limit text falls into, finding by finding. */
-export const LIMITATION_KEY: Record<string, Limitation> = {
-  'two-piles': 'descriptive',
-  'nineteen-heavy-hulls': 'no-cause',
-  'survey-bias-escort-trial': 'scope',
-  'clustered-dates': 'scope',
-  'perrine-loss-rate': 'narrow-condition',
-  'uprate-above-spec': 'scope',
-  'before-after': 'not-random',
-  'lost-vs-surviving-perrine': 'not-random',
-  'cargo-mix': 'scope',
-  'loss-by-beneficiary': 'no-cause',
-  'dacres-stamp': 'narrow-condition',
-  'fourteen-ids': 'descriptive',
-  'fuel-per-required-tonne': 'scope',
-  'excess-fuel-vs-kettle-dv': 'no-cause',
-}
+export { LIMITATION_KEY, LIMITATION_LABEL, type Limitation }
 
 /** Rows whose beat-sheet cell names a second procedure: the board accepts either. */
 const ALSO_ACCEPTED: Record<string, readonly Procedure[]> = {

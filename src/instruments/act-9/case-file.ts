@@ -41,6 +41,41 @@ export interface Finding {
   limit: string
 }
 
+/**
+ * The category each row's `limit` text falls into. The board asks for the category; the row's own
+ * sentence is what goes in the brief. Re-exported by `EvidenceBoard` so the instrument and the
+ * act-9-04 drills grade against one key.
+ */
+export type Limitation = 'no-cause' | 'scope' | 'descriptive' | 'narrow-condition' | 'not-random'
+
+export const LIMITATION_LABEL: Record<Limitation, string> = {
+  'no-cause': 'no cause',
+  scope: 'scope: these units only',
+  descriptive: 'descriptive, not inference',
+  'narrow-condition': 'a condition passed narrowly',
+  'not-random': 'not a random sample',
+}
+
+export const LIMITATIONS: readonly Limitation[] = ['no-cause', 'scope', 'descriptive', 'narrow-condition', 'not-random']
+
+/** Which category the beat sheet's limit text falls into, finding by finding. */
+export const LIMITATION_KEY: Record<string, Limitation> = {
+  'two-piles': 'descriptive',
+  'nineteen-heavy-hulls': 'no-cause',
+  'survey-bias-escort-trial': 'scope',
+  'clustered-dates': 'scope',
+  'perrine-loss-rate': 'narrow-condition',
+  'uprate-above-spec': 'scope',
+  'before-after': 'not-random',
+  'lost-vs-surviving-perrine': 'not-random',
+  'cargo-mix': 'scope',
+  'loss-by-beneficiary': 'no-cause',
+  'dacres-stamp': 'narrow-condition',
+  'fourteen-ids': 'descriptive',
+  'fuel-per-required-tonne': 'scope',
+  'excess-fuel-vs-kettle-dv': 'no-cause',
+}
+
 export const PROCEDURE_LABEL: Record<Procedure, string> = {
   description: 'Description (dotplot, comparison)',
   'regression-residuals': 'Regression residuals',

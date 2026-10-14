@@ -1,0 +1,329 @@
+---
+id: act-9-04
+act: 9
+title: "The Evidence Board"
+kind: module
+ap_topics: ["9.6"]
+objectives:
+  - "Select the inference procedure a question calls for across proportions, means, chi-square and slopes, from the design rather than from the subject matter"
+  - "Communicate a finding in full: procedure, conditions, result, conclusion in context, and the limit it carries"
+  - "Judge a body of evidence finding by finding, without treating several P-values as one"
+  - "State what an assembled case establishes and what it cannot, and concede the weakest row before a reviewer extracts it"
+prereqs: ["act-9-03"]
+est_minutes: 30
+calc_briefing: null
+summary: "Fourteen findings, from the two piles in the Callisto dotplot to a slope that locates nineteen tanks at a berth. Every one of them with its procedure, its conclusion and the sentence that says where it stops."
+---
+
+import { fmt, fmtInt, fmtPct } from '@/lib/stats'
+import { DIVERTED_N, KETTLE_TEST_ZERO, NINETEEN_FUEL_FIT, NINETEEN_FUEL_INTERVAL } from '@/instruments/act-9/data'
+import { CASE_FILE, PROCEDURE_LABEL } from '@/instruments/act-9/case-file'
+import { EvidenceBoard, ProcedurePicker } from '@/instruments/act-9/EvidenceBoard'
+import { DECISION_IDS } from '@/instruments/act-9/story'
+
+export const stamp = CASE_FILE.find((f) => f.id === 'dacres-stamp')
+export const cargo = CASE_FILE.find((f) => f.id === 'cargo-mix')
+export const slope = CASE_FILE.find((f) => f.id === 'excess-fuel-vs-kettle-dv')
+export const fuelLo = NINETEEN_FUEL_INTERVAL.ci[0]
+export const fuelHi = NINETEEN_FUEL_INTERVAL.ci[1]
+export const caseSize = CASE_FILE.length
+
+export const limitsRubric = {
+  required: [
+    {
+      label: 'States what the case does establish',
+      phrasings: [/convincing evidence/i, /establish/i, /shows?\b/i, /finding/i, /evidence/i],
+      polarity: 'any',
+      feedback: 'Open with what the file holds: a pattern across the losses, an owner who benefits, a false ledger, a stockpile at Kettle, and fuel loaded for Kettle before each hull sailed.',
+    },
+    {
+      label: 'Names causation as unestablished, with the reason',
+      phrasings: [/not cause/i, /not causal/i, /association/i, /observational/i, /not assign/i, /not attribute/i],
+      polarity: 'any',
+      feedback: 'Nothing in the file was assigned to anybody. Say that the findings are associations, and say why.',
+    },
+    {
+      label: 'States the scope: these departures, these losses, no wider',
+      phrasings: [/nineteen/i, /not generaliz/i, /no wider/i, /these departures/i, /scope/i, /only/i],
+      polarity: 'any',
+      feedback: 'Say how far it reaches. Every table in the file was built from the nineteen diverted departures or from the losses themselves, and nothing extends past them.',
+    },
+    {
+      label: 'Concedes a condition or a design weakness',
+      phrasings: [/expected count/i, /large counts/i, /10\.7/, /narrow/i, /not (?:a )?random sample/i, /declared/i, /simulat/i, /condition/i],
+      polarity: 'any',
+      feedback: 'Name the softest row yourself: the Large Counts check that passed at 10.7, the examiner table whose expected count forced a simulation, the nineteen that are the losses rather than a sample, or the word declared in front of the cargo mix.',
+    },
+    {
+      label: 'States what the case cannot reach: who ordered it, and why',
+      phrasings: [/who ordered/i, /not who/i, /not name/i, /names nobody/i, /motive/i, /not why/i, /no reason/i],
+      polarity: 'any',
+      feedback: 'Write the sentence the brief exists for: the file does not establish who gave the order, and it does not establish why.',
+    },
+    {
+      label: 'Refuses to treat the findings as one probability',
+      phrasings: [/not one p/i, /separate/i, /each finding/i, /finding by finding/i, /not multipl/i, /not combin/i, /not independent/i],
+      polarity: 'any',
+      feedback: `There is no P-value for a case. The ${fmtInt(caseSize)} findings were built from overlapping records, so they are judged one at a time rather than multiplied together.`,
+    },
+  ],
+  forbidden: [
+    { phrase: 'prove', label: 'Claims proof', why: 'A body of evidence supports findings with limits attached. Proof is a word from a courtroom, and writing it hands a reviewer the first line of the reply.' },
+  ],
+  exemplar: `The file gives convincing evidence of a pattern across the losses, of an owner who collects on them, of a ledger that does not match the hulls, of a stockpile at Kettle, and of fuel loaded at Uruk High for the Kettle burn before each hull sailed. Every finding is observational: nothing was assigned, so these are associations and no finding establishes a cause. The scope is the nineteen diverted departures and the losses themselves, and nothing generalises beyond them. Two rows are narrower than the rest and are stated here rather than left to be found: the Large Counts check on the loss-rate test passed at 10.7, and the examiner column had an expected count small enough that the null had to be simulated. The ${fmtInt(caseSize)} findings are judged finding by finding and are not one probability, because they were built from overlapping records. What the case does not establish is who ordered it, or why.`,
+  minWords: 60,
+}
+
+<Scene stamp="MET 216/14:20" location="Wardroom · five milligee for Ceres, both wings out" condensed="Every finding since Callisto on one table, in order, with the procedure that made it and the conclusion it is entitled to carry. Ferrier wants the limit written under each one before the cover sheet gets its addresses. Rook looks up the regulation that lets an officer address the Service Inspectorate directly when the chain of command is the subject, and reads the paragraph twice.">
+
+Fourteen pages laid out in two rows down the wardroom table, and the table is not long enough, so the last three are on the bench.
+
+You have not eaten since the middle watch. There is a tray somewhere aft with your name chalked on it and Ferrante will find you about it before the end of the day.
+
+Ebele has them in the order they were made rather than the order they matter. That is the order Ferrier taught him at Ceres. Page one is the Callisto dotplot with the two piles in it. Page fourteen is this morning's slope.
+
+Each page has the same five lines under the table on it. What was asked. What procedure answered it. What the conditions were, with their arithmetic. What the conclusion is, in context. And then one line, last, saying what the finding does not establish.
+
+Seven of the fourteen have that last line blank.
+
+<Dialogue speaker="xo" aside="She has walked the table twice and has stopped at the sixth page, the loss rate.">
+This one says the counts condition is met. Write the number.
+</Dialogue>
+
+<Dialogue speaker="analyst">
+Ten point seven, ma'am. It clears.
+</Dialogue>
+
+<Dialogue speaker="xo">
+Then write ten point seven. Counsel will find it in an afternoon and read it out as though we hid it. It costs you four words to have found it first.
+</Dialogue>
+
+Solberg is in the doorway with the transmission window on a slate and the cover sheet, which has three address blocks on it and nothing in them.
+
+The regulation is on your own slate, where it has been open since the forenoon watch. Any officer may address the Service Inspectorate directly on a matter where the chain of command is itself the subject of the report. Thirty-four years and you have never read the paragraph for any reason except that it was in the book.
+
+You read it twice. The second time for the phrase *is itself the subject*.
+
+<Dialogue speaker="comms" aside="He has the geometry worked out already and recites it without looking down.">
+Ceres relay holds until two twenty-four, Commander. Twenty-one minutes of spool for the whole file with the annexes. One burst, as many address blocks as you want on it, and they all leave at the same instant so nobody can say which one we sent first.
+</Dialogue>
+
+Ferrier reaches the end of the second row and turns the last page round so it faces you.
+
+<Dialogue speaker="xo">
+What does the whole of it prove.
+</Dialogue>
+
+A pattern in the losses. An owner who collects on them. A ledger that does not match the hulls. Eleven auxiliaries and a stockpile at a rock nobody files for. And nineteen sets of tanks filled at Uruk High for a burn that does not appear on any certificate.
+
+<Dialogue speaker="xo">
+And what does it not.
+</Dialogue>
+
+Your name is the one going on the cover sheet. She waits.
+
+</Scene>
+
+<Briefing title="Choosing the procedure, and judging a body of evidence" topics={["9.6"]}>
+<Briefing.Intuition>
+By the end of Unit 9 there are roughly a dozen procedures available, and almost every exam question that asks you to pick one can be settled by three readings of the design. The subject matter is never the clue: fuel, delay and output each appear under proportions, means and slopes depending on what was recorded.
+
+**Reading 1 — what was recorded on each unit?**
+
+- A yes/no outcome → **proportions**.
+- One quantitative measurement → **means**.
+- A category label → **counts**, which means $\chi^2$.
+- Two quantitative measurements → **regression**, which means a slope.
+
+**Reading 2 — how many samples, and were their sizes fixed in advance?**
+
+- One sample against a published value → one-sample procedure.
+- Two samples drawn separately → two-sample procedure.
+- Two measurements on the *same* unit → **paired**, and the data are one column of differences.
+- One sample classified two ways → $\chi^2$ **independence**.
+- Several samples compared on one categorical variable → $\chi^2$ **homogeneity**.
+
+**Reading 3 — does the question want an estimate or a verdict?** "How much" is an interval. "Is it this value" is a test. An interval can settle a claim about a stated value as well, and it reports the precision while it does so.
+
+Two answers are not a procedure at all, and both are earned rather than defaulted to.
+
+- **Simulate the null.** When an expected count falls below five, the $\chi^2$ curve is not the sampling distribution of that statistic, and no significance level repairs it. Shuffle the labels a few thousand times and count.
+- **Describe.** When the file holds every unit the question is about, there is no sampling variability for a P-value to describe. The answer is counts, percentages and a sentence.
+
+**Communicating one finding.** Any finding that will be read by somebody else needs five parts, and the fifth is the one that gets dropped.
+
+1. The question, with the population named.
+2. The procedure, and why the design calls for it.
+3. The conditions, with their arithmetic shown.
+4. The conclusion, in context, in the units of the parameter.
+5. **The limit**: what this finding does not establish.
+
+A finding written without part 5 is read as a claim about everything, and the reader supplies the bound you declined to write. A limit the author conceded reads as rigour; the identical limit extracted under questioning reads as concealment.
+
+**Judging a body of evidence.** Several findings do not combine into one number, and the two attempts at making them are both wrong.
+
+- **Multiplying P-values** requires independence, and findings drawn from overlapping records are not independent. It also produces the wrong kind of quantity: a P-value is the probability of data under a hypothesis, never the probability that a hypothesis is true, and no arithmetic on a set of them turns one into the other.
+- **Quoting the smallest** is worse, because the smallest result in a set of tests is the one most likely to have arrived by looking. A procedure that runs several tests and reports the best of them has an error rate nothing like the level printed beside it.
+
+What a body of evidence is actually judged on is a list of questions, each answered in a sentence. Do the findings point the same way? Was each procedure the one its design called for? Did the conditions hold, and where did they pass narrowly? Do the findings rest on independent sources, or on one archive? And the one that carries the most weight: **is there a single innocent explanation that accounts for all of them at once?** A finding constructed so that no innocent account predicts it is worth more than three findings that an innocent account predicts comfortably.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={`\\text{procedure} = f(\\text{what was measured},\\ \\text{how many samples},\\ \\text{estimate or verdict})`} terms={{ '\\text{what was measured}': 'yes/no → proportions · a measurement → means · a label → χ² · two measurements → slope', '\\text{how many samples}': 'one, two separate, or two on the same unit (paired)', '\\text{estimate or verdict}': 'interval, or test' }} label="The three readings that choose a procedure" />
+
+<Formula tex={`\\text{finding} = \\text{question} + \\text{procedure} + \\text{conditions} + \\text{conclusion in context} + \\text{limit}`} terms={{ '\\text{limit}': 'what the finding does not establish: cause, scope, or a condition that passed narrowly' }} label="What a communicated finding contains" />
+
+<Formula tex={`P_1 \\times P_2 \\times \\cdots \\times P_k \\ \\text{is not the probability that a case is wrong}`} terms={{ 'P_i': 'the P-value of one finding: the probability of its own data under its own null', k: 'the number of findings, which are rarely independent of one another' }} label="The arithmetic that is not available" />
+</Briefing.Definition>
+<Briefing.Worked>
+One finding in all five parts: the fuel regression on the nineteen diverted departures.
+
+**1. The question.** For the {fmtInt(DIVERTED_N)} diverted Perrine departures, how many tonnes of fuel went into the tanks per tonne the filed profile required?
+
+**2. The procedure.** Each departure carries two quantitative columns, the fuel required and the fuel pumped, and the question asks for a rate with its precision. That is a **t-interval for the slope** of a population regression model, on $n - 2$ = {fmtInt(NINETEEN_FUEL_INTERVAL.df)} degrees of freedom.
+
+**3. The conditions.** Linear: the residual plot shows no curve. Independent: {fmtInt(DIVERTED_N)} separate certifications from {fmtInt(DIVERTED_N)} separate voyages. Normal: a normal probability plot of the residuals is close enough to straight at this sample size. Equal SD: **this one is narrow**. The residual spread grows with the size of the hull, because fuel is measured in tonnes and a larger hull's tonnes of anything vary more. Random: the departures are the whole of one owner's diverted traffic rather than a random sample, which is the limit in line 5.
+
+**4. The conclusion.** The fitted slope is {fmt(NINETEEN_FUEL_FIT.slope, 3)} tonnes per tonne required, with standard error {fmt(NINETEEN_FUEL_FIT.seSlope, 3)}. We are {fmtPct(0.95, 0)} confident that the true slope for these departures is between {fmt(fuelLo, 3)} and {fmt(fuelHi, 3)} tonnes of fuel per tonne required. Every value in that interval is above 1.00, so the interval excludes the requirement: these hulls were fuelled above what their own filed profiles called for, by roughly {fmtPct(NINETEEN_FUEL_FIT.slope - 1, 0)}.
+
+**5. The limit.** The {fmtInt(DIVERTED_N)} are the diverted departures, not a random sample of departures, so this describes those {fmtInt(DIVERTED_N)} and generalises to nothing. The Equal SD condition is met loosely rather than comfortably. And nothing here establishes who authorised the loading, or why.
+
+*The same five parts for the slope that closed the case.* Procedure: a **t-test for the slope**, run twice. Against $\beta = 0$, which is what every innocent account of the diversion predicts, $t$ = {fmt(KETTLE_TEST_ZERO.statistic, 2)} on {fmtInt(KETTLE_TEST_ZERO.df)} degrees of freedom, one-sided. Against the rocket equation's marginal fuel fraction at the thrust-limited Lane burn, two-sided, the test fails to reject. Conclusion: among those {fmtInt(DIVERTED_N)} departures, excess fuel per true tonne rises with the Kettle delta-v on the departure date, at a rate consistent with the physics of braking into Kettle. Limit: it locates the arithmetic at the berth and it names nobody.
+
+Two findings, two procedures, two limits. What makes the pair worth more than either alone is **reading 5** above: the first is comfortably explained by undeclared freight, and the second is explained by nothing innocent at all.
+</Briefing.Worked>
+<Briefing.Caution>
+*Choosing the procedure from the subject matter.* Fuel appears in this Act as a proportion, as a mean, as a count in a cargo table and as a slope. What decides is the design, every time.
+
+*A $\chi^2$ on banded quantitative data.* Two measurements per unit can always be cut into categories, and the resulting table always returns a P-value. It answers a smaller question than the data support, it discards most of the information, and the statistic depends on where somebody put the cut points.
+
+*Overclaiming cause.* Random **assignment** licenses a causal claim; random **sampling** licenses a generalisation. An archive supplies neither by itself, and a small P-value supplies neither at all.
+
+*Stacking P-values.* No arithmetic on a set of P-values produces the probability that a case is right. Judge the findings one at a time, then ask whether one innocent account explains all of them together.
+
+*Leaving the limit line blank.* The unbounded version of a finding is the version a hostile review answers, and it is always the stronger version to attack.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="STAT ▸ TESTS: the design chooses the screen">
+<Calculator.Step keys={['STAT', '▸ TESTS', '5:1-PropZTest']} note="one sample · a yes/no outcome · a published proportion to read it against">`A:1-PropZInt` is the same design asking for an estimate instead of a verdict.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '6:2-PropZTest']} note="two samples drawn separately · a yes/no outcome in each">The interval is `B:2-PropZInt`. A 2 × 2 table run through the χ² screen gives the same P-value two-sided and cannot state a direction, which is why the z-test is the right screen when the question names a side.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '2:T-Test']} note="one sample · one measurement per unit · also the paired test">There is no paired-t screen on this calculator. Put the differences in a third list with `L1 − L2 → L3` and run `2:T-Test` on `L3` against $\mu_0 = 0$. The interval is `8:TInterval`.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', '4:2-SampTTest']} note="two samples drawn separately · a measurement in each · Pooled: No">Leave `Pooled` on `No` unless a problem states equal population standard deviations, which almost none do. The interval is `0:2-SampTInt`.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', 'D:χ²GOF-Test']} note="one sample · one categorical variable · a distribution claimed in advance">Observed counts in one list, expected counts in another, `df` typed in as categories minus one. The calculator will not compute the expected counts for you.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', 'C:χ²-Test']} note="a two-way table, entered in matrix [A]">Homogeneity and independence are the same screen and the same arithmetic. Which one it is was decided by how the data were collected, and the calculator has no idea.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', 'F:LinRegTTest']} note="two measurements per unit · a slope against zero">`G:LinRegTInt` for the interval. Both need `DiagnosticOn` if you want $r$ and $r^2$ with them.</Calculator.Step>
+<Calculator.Watch>**Two of the answers have no screen.** When an expected count falls below five, the χ² screen will still return a number and the number is not trustworthy; the null gets simulated instead. When the file is a census, there is nothing to infer to and the answer is a table of percentages. A calculator cannot tell you either of these things, because neither is in the data you typed in.</Calculator.Watch>
+<Calculator.Watch>**`F:LinRegTTest` tests zero and only zero.** A slope held against a value physics or a contract fixes is computed by hand from the `Coef` and `SE Coef` of the output, and the tail area comes from `2nd` `DISTR` `6:tcdf(`.</Calculator.Watch>
+<Calculator.Watch>**No screen has a field for the scope of your conclusion.** Every procedure on this menu returns the same output whether the units were sampled at random from a population or scraped out of whatever file happened to exist. The limit line is yours.</Calculator.Watch>
+</Calculator>
+
+<ProcedurePicker />
+
+<EvidenceBoard />
+
+<Drill generator="act-9/select-inference-procedure" count={1} />
+<Drill generator="act-9/procedure-and-limit" count={1} />
+<Drill generator="act-9/quantitative-or-categorical" count={1} />
+<Drill generator="act-9/weakest-link" count={1} />
+<Drill generator="act-9/stacked-p-values" count={1} />
+<Drill generator="act-9/case-limitations" count={1} />
+
+<MissionBeat id="act-9-04-procedures" kind="choice" label="THREE PAGES, THREE PROCEDURES"
+  prompt={`Three of the ${fmtInt(caseSize)} pages on the wardroom table, each with the question it answered:\n\n**A.** *${cargo.finding}* — do the lost hulls' declared cargo classes follow the corridor's published mix?\n**B.** *${stamp.finding}* — is seventeen of nineteen under one examiner's signature more than chance would give him?\n**C.** *${slope.finding}* — does excess fuel per true tonne rise with the Kettle delta-v on the departure date?\n\n**Which assignment of procedures is the one the file carries?**`}
+  options={[
+    `A: ${PROCEDURE_LABEL[cargo.procedure]}. B: ${PROCEDURE_LABEL[stamp.procedure]}. C: ${PROCEDURE_LABEL[slope.procedure]}.`,
+    `A: ${PROCEDURE_LABEL[cargo.procedure]}. B: ${PROCEDURE_LABEL['chi-square-independence']}. C: ${PROCEDURE_LABEL[slope.procedure]}.`,
+    `A: ${PROCEDURE_LABEL['chi-square-independence']}. B: ${PROCEDURE_LABEL[stamp.procedure]}. C: ${PROCEDURE_LABEL['slope-t-interval']}.`,
+    `A: ${PROCEDURE_LABEL[cargo.procedure]}. B: ${PROCEDURE_LABEL[stamp.procedure]}. C: ${PROCEDURE_LABEL['two-sample-t']}, comparing the hulls with high and low Kettle delta-v.`,
+  ]}
+  correct={0}
+  feedback={[
+    null,
+    `B is the one to look at again. The design points at independence and the arithmetic refuses it: nineteen diverted departures spread over an examiner column expect well under five in the cell that matters, so the χ² curve is not the sampling distribution of that statistic. Relabel the signatures at random a few thousand times and count how often one examiner collects seventeen. ${stamp.limit}.`,
+    `Two wrong. A is one sample and one categorical variable against a distribution published before the data existed, which is goodness of fit rather than independence. And C asks whether a rate differs from a stated value, which is a test; an interval would estimate the rate, and the question is whether the innocent value of zero survives.`,
+    `C is the one to look at again. Both columns on every row are measurements, so cutting the delta-v into high and low throws away most of the file, makes the answer depend on where the cut went, and returns a difference in means where the question asks for a rate in tonnes per tonne per kilometre per second.`,
+  ]}
+  hint="For each page, read the design rather than the subject. What was recorded on each unit, how many samples there were, and whether the question wants an estimate or a verdict. One of the three has a right design and a failed condition.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He writes the word simulation across the top of the examiner page in the margin, where the procedure line already says it.">
+  And the examiner page says why on its own face, sir, which is the only reason I'm not worried about it. Expected count under five, chi-square withdrawn, null simulated, and the simulation is in the annex with the number of relabellings on it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Not the subject. The design. What was written down about each hull, how many groups it came from, and whether we want the number or the verdict. Then go back to the page where the design is right and the arithmetic is not.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-9-04-limits" kind="interpretation" label="THE LAST PAGE"
+  prompt={`The cover sheet needs a paragraph, and it is the page every reader will reach first.\n\nWrite it. State what the ${fmtInt(caseSize)} findings establish and what they do not; say why no finding reaches a cause; name the population the file is about; concede the narrowest row before somebody else finds it; and say what the whole body of evidence cannot be turned into.`}
+  hint="Six sentences at most. What it holds. Why association and not cause. Whose departures. The soft row, named by you. Why there is no single P-value for a case. And then the line you have been putting off: who, and why."
+  {...limitsRubric}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it standing, puts it face up on the last page, and takes her hand off it.">
+  That is the paragraph. Nothing on this table is stronger than that paragraph, because that paragraph is the only part of it a hostile reader cannot improve on.
+  </Dialogue>
+  <Dialogue speaker="analyst">
+  It feels thinner than the file is, sir.
+  </Dialogue>
+  <Dialogue speaker="xo">
+  It is exactly as thick as the file is. That was the work.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  You have written what we found. Now write what we did not. Cause, and why not. Whose departures, and nobody else's. The row you would rather concede than have taken off you. And the last sentence, which is the one I have been waiting a fortnight for.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-9-04-procedures", "act-9-04-limits"]}>
+
+<MissionBeat id={DECISION_IDS.delivery} kind="decision" label="THE COVER SHEET"
+  prompt={`Three empty address blocks and twenty-one minutes of spool. Lane Operations has ordered the brief to the Board through its own office, which is Rear Admiral Ashby-Hale's office. Doctrine says the Flag Secretary gets a copy of anything that goes to the Board. The regulation on your slate says any officer may address the Service Inspectorate directly where the chain of command is itself the subject.\n\nCaptain Marsh has been asking about her brother for two years. The Lane Authority owns the corridor. Tharsis Mutual has paid out on every one of the nineteen.\n\n**Who gets it?**`}
+  options={[
+    'The Board, through Lane Operations, as ordered. Nothing else, and nowhere else.',
+    'The Board, the Flag Secretary and the Service Inspectorate. Three blocks, one burst, all leaving at the same instant.',
+    'Everyone at once. The Board, the Lane Authority, Tharsis Mutual and Captain Marsh, in clear, with the annexes.',
+  ]}>
+  <Outcome option={0}>
+  Solberg reads the single address block back and does not ask about the other two. Ferrier logs the decision with the regulation's paragraph number beside it, in her own hand, and no comment under that.
+  </Outcome>
+  <Outcome option={1}>
+  Solberg reads all three blocks back twice and then asks you to confirm the third one by name, because he has never spooled an Inspectorate address off a corvette and wants the log to show that he asked.
+  </Outcome>
+  <Outcome option={2}>
+  Ferrier asks once whether you want the Authority's block in the same burst as the Board's, and when you say yes she does not ask again. Solberg spools it. Somewhere in the next forty hours a Belt hauler master is going to read the annex about *Thessaly Ember* before the Service has finished reading the covering page.
+  </Outcome>
+</MissionBeat>
+
+<Scene stamp="MET 216/19:05" location="Wardroom · five milligee for Ceres" condensed="The file is squared, the addresses are chosen and the window holds until MET 224. Ferrier will not put her name under the brief until the officer who wrote it can say it back from memory, finding by finding, with the limits in place. Solberg will spool it at MET 219 and not before.">
+
+The pages go back into one stack and the stack goes into a sleeve with the cover sheet on top of it.
+
+Ebele has been awake for most of two days and Ferrante has been in the doorway twice without coming in. He will come in tonight.
+
+Sandoval signs nothing and reads all of it, standing at the end of the table with her thumbs in her belt, and at the fuel annex she says *trim tanks* out loud to herself and moves on.
+
+The window holds until MET 224. Solberg will spool at MET 219 and not a minute earlier, because Ferrier has not signed and will not sign yet.
+
+<Dialogue speaker="xo" aside="She puts the sleeve down on the table between you and leaves her hand flat on it.">
+Tomorrow morning. The whole file, out loud, from memory, with the limits attached. Not the page.
+</Dialogue>
+
+She takes her hand off it and goes.
+
+Fourteen findings and one paragraph. Somewhere out ahead of you at nine hours and closing, *Halden Reach* has been ordered to escort this ship to Callisto by the office that will receive the first copy of what is in that sleeve.
+
+</Scene>
+
+<LogEntry
+  title="The design chooses the procedure, and the limit line is part of the finding"
+  concept="A procedure is chosen from three readings of the design and never from the subject matter: what was recorded on each unit (yes/no for proportions, a measurement for means, a label for counts, two measurements for a slope), how many samples there were and whether their sizes were fixed in advance, and whether the question wants an estimate or a verdict. Two answers are not procedures: simulate the null when an expected count falls below five, and describe the table when the file is a census. A finding that will be read by anybody else carries five parts, and the fifth — what it does not establish — is the one that gets left out and the one a hostile reader opens with. A body of several findings is judged finding by finding and then on whether one innocent account explains all of them together; no arithmetic on a set of P-values produces the probability that a case is right, and the findings in a real file are drawn from overlapping records and are not independent."
+  formula="\text{finding} = \text{question} + \text{procedure} + \text{conditions} + \text{conclusion in context} + \text{limit}"
+  mistake="Treating several P-values as one. Multiplying them needs independence the file does not have and produces the wrong kind of quantity anyway, since no P-value is the probability that a hypothesis is true. Quoting the smallest is worse: the smallest result in a set of tests is the one most likely to have arrived by looking."
+  tags={['procedure selection', 'units 6–9', 'communicating a finding', 'limitations', 'scope of inference', 'causation', 'stacking p-values', 'census', 'simulation', '9.6', '3.7']}
+/>
+
+</Gated>
