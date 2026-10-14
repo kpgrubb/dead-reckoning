@@ -93,7 +93,7 @@ export const shortNames = dwellReturns(DWELL_SHORT_S).slice(0, 4).map((r) => r.h
 
 Everybody has been up all night and the bridge smells of it.
 
-The cellar reads {fmt(SINK_PCT_AT_APPROACH, 0)} percent. Nothing has burned since the turnover; the ship is falling past a rock at thirty kilometres a second on a line laid in two weeks ago, and there is nothing to fly. You have the left-hand seat and a cup of something that went cold an hour ago wedged in the arm rest.
+The cellar reads {fmt(SINK_PCT_AT_APPROACH, 0)} percent. Nothing has burned since the turnover. The ship is falling past a rock at thirty kilometres a second on a line laid in two weeks ago, and there is nothing to fly. You have the left-hand seat and a cup of something that went cold an hour ago wedged in the arm rest.
 
 Sandoval, on the engineering channel, to you and not to the compartment.
 
@@ -117,7 +117,7 @@ He does. Three of them are smaller than one and a half. He gets to the end of th
 
 Ferrier, from the plot, without turning round: "Say what the test is entitled to say, Ensign. Then say the other thing separately, and label it."
 
-The draft goes back to being one line with a statistic on it and no adjective. What nobody on this bridge can do yet is say how strange {fmt(CARGO_GOF.statistic, 2)} is, because a chi-square has no size of its own and the curve it belongs to has not been drawn.
+The draft goes back to one line with a statistic on it and no adjective. Nobody on this bridge can yet say how strange {fmt(CARGO_GOF.statistic, 2)} is. A chi-square has no size of its own, and the curve it belongs to has not been drawn.
 
 Oyelaran is at the sensor console with the refit array's calibration log open. She has been on that log since the middle of the watch.
 
@@ -125,7 +125,7 @@ Oyelaran is at the sensor console with the refit array's calibration log open. S
 Eleven degrees warm, five calibrations. It is not drifting, sir. It is just wrong, and I cannot tell you by how much on anything else.
 </Dialogue>
 
-The Eyes are folded and stay folded. That leaves the array she does not trust, or the manual head in the blister, which is one person in a suit at the top of the mast cranking a lidar round by hand and reading the returns into a buffer at her elbow.
+The Eyes are folded and stay folded. That leaves the array she does not trust. Or the manual head at the top of the mast, cranked round by hand by one person in a suit, reading the returns into a buffer at her elbow.
 
 <Dialogue speaker="sensors">
 Fourteen minutes of window. I want the blister and the manual head. I can be up and strapped in by fifty-five.
@@ -141,7 +141,7 @@ She is off the bridge inside a minute and you hear her going aft through the sen
 
 Oyelaran calls the blister at fifty-one. Suit checks at fifty-two. Her voice on the sensor loop has the flatness suits put into people.
 
-You put the sensor loop on the bridge speaker rather than in your ear, so that the whole compartment can hear her, and get the cold cup out of the arm rest and set it on the deck by your boot where it cannot go anywhere at three tenths of nothing.
+You put the sensor loop on the bridge speaker rather than in your ear, so the whole compartment can hear her. Then you get the cold cup out of the arm rest and set it on the deck by your boot, where it cannot go anywhere at three tenths of nothing.
 
 Ferrier has the tree up on the plot, drawn in the same four lines Ebele has been drawing since Callisto.
 
@@ -156,13 +156,13 @@ The window is {fmtInt(Math.round(LIDAR_WINDOW_MIN))} minutes wide: inside {fmtIn
 The dwell is the thing you have to say out loud. Forty seconds of illumination writes the whole face of the rock into the buffer. Twelve seconds writes the strongest returns and leaves the rest as shapes.
 
 <Dialogue speaker="engineer" aside="On the engineering channel, to you, with the reactor page up.">
-Skipper. We're on Watch. From here the torch is {fmtInt(TORCH_FROM_WATCH_MIN)} minutes, plus or minus two, and cold gas moves this hull about a boat-length in ten. I'm not offering you a third option. I'm telling you what the second one isn't.
+Skipper. We're on Watch. From here the torch is {fmtInt(TORCH_FROM_WATCH_MIN)} minutes, plus or minus two, and cold gas moves this hull about a boat-length in ten. I'm not offering you a third option.
 </Dialogue>
 
 Ferrier turns the plot round so the tree faces the left-hand seat.
 
 <Dialogue speaker="xo">
-Multiply it out and sign it, Captain. Then give the order, and I will log the number next to the order.
+Multiply it out and sign it, Captain. Then give the order.
 </Dialogue>
 
 </Scene>
@@ -284,12 +284,12 @@ The *Asgard* boarding report of 2176. The cutter boarded **{fmtInt(asgardN)}** h
   {...cargoConclusion}>
   <Success>
   <Dialogue speaker="xo" aside="She reads it once and puts it into the brief herself rather than handing it back.">
-  That is the sentence. It says the mix is wrong. It names no hull, no office, no year, and it will still be true in a year when somebody at Valhalla is looking for a reason it is not.
+  That is the sentence. It says the mix is wrong, and it names nobody. It will still be true in a year, when somebody at Valhalla goes looking for a reason it is not.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="analyst" aside="He has the four terms up again and reads his own draft back off the screen before he says anything about it.">
-  I wrote four when the test gives me one, sir. It says the distribution is wrong. It doesn't hand me the classes one at a time. — And the second sentence has to be labelled, because the contributions aren't a test and if I put a p next to one of them somebody will quote it.
+  I wrote four when the test gives me one, sir. It says the distribution is wrong. It doesn't hand me the classes one at a time. And the second sentence has to be labelled. The contributions aren't a test, and if I put a p next to one of them somebody will quote it.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -299,7 +299,7 @@ The *Asgard* boarding report of 2176. The cutter boarded **{fmtInt(asgardN)}** h
   hint="One path through the tree ends in a picket that can answer. A path's probability is the product along it, and the second figure is already conditional on the first.">
   <Success>
   <Dialogue speaker="xo" aside="She writes it on the plot under the tree and puts the time beside it.">
-  Signed at fifty-six. The number and the order go in the same entry, Captain, in that sequence, so that whoever reads it can see which one came first.
+  Signed at fifty-six. The number and the order go in the same entry, Captain, in that sequence.
   </Dialogue>
   </Success>
   <Failure>
@@ -316,7 +316,7 @@ The *Asgard* boarding report of 2176. The cutter boarded **{fmtInt(asgardN)}** h
   Forty seconds. Solberg reads it back with the time on it and Oyelaran acknowledges from the blister in three words. Ferrier logs the dwell length, the signed number and the order in one entry, and does not put an opinion under it.
   </Outcome>
   <Outcome option={1}>
-  Twelve seconds. Ebele says nothing at the time and writes *partial* next to the buffer line in the intel log, because what comes back on a short dwell is a list with holes in it and he would rather the holes were labelled tonight than argued about later.
+  Twelve seconds. Ebele says nothing at the time. He writes *partial* next to the buffer line in the intel log, because a short dwell comes back as a list with holes in it, and he would rather the holes were labelled tonight than argued about later.
   </Outcome>
 </MissionBeat>
 
@@ -328,7 +328,7 @@ The dwell goes at 06:00:00 and runs for <DwellLength /> seconds.
 
 Nothing happens on the bridge. The head is thirty metres aft of where you are sitting and eleven above it, and from here it is a green figure on a status line.
 
-By 06:01 the buffer has <IdCount words /> hull identifications in it, and they have names.
+By 06:01 the buffer has <IdCount words /> hull identifications in it. Names, not shapes.
 
 <Decided id={DECISION_IDS.dwell} is="long">
 
@@ -344,9 +344,9 @@ Oyelaran reads the first four off the head as they land. *{shortNames[0]}*. *{sh
 
 <LidarBufferTable />
 
-Every name in that list that the Register carries at all, the Register carries as *unknown, presumed lost*, at a Uruk desk.
+The Register carries some of those names. Every one of them it carries as *unknown, presumed lost*, at a Uruk desk.
 
-Nobody says anything for eleven seconds. Ferrier is the one who breaks it, and what she says is "Log it. All of it. Now, not at the end of the watch."
+Nobody says anything for eleven seconds. Ferrier breaks it. "Log it. All of it. Now, not at the end of the watch."
 
 Solberg, at 06:02.
 
@@ -354,7 +354,7 @@ Solberg, at 06:02.
 Bridge, comms. RF transient at 06:01:44 ship time, bearing two-two-zero, range {fmtInt(PATIENCE_RANGE_KM)} kilometres. Single burst, four hundred milliseconds. There is no lag on that one, sir. It is inside the ship's own light-second.
 </Dialogue>
 
-Ebele has the cone up before Solberg has finished. A cold source at {fmtInt(PATIENCE_RANGE_KM)} kilometres off the quarter you are coming through, which is the quarter in the tree.
+Ebele has the cone up before Solberg has finished. A cold source at {fmtInt(PATIENCE_RANGE_KM)} kilometres, off the quarter you are coming through. The quarter in the tree.
 
 Sandoval, on the engineering channel, flat.
 
@@ -368,7 +368,7 @@ Ferrier, at the plot, doing the arithmetic out loud because it is quicker than w
 Forty millimetre at thirty a second. We are crossing at thirty. Three and a half of that is closing, so the slug is inside ten.
 </Dialogue>
 
-{fmtInt(SLUG_FLIGHT_MIN)} minutes, and {fmtInt(TORCH_FROM_WATCH_MIN)} to the torch. Cold gas would move {fmtInt(SHIP_MASS_T)} tonnes about {fmt(COLD_DISPLACEMENT_M, 0)} metres in that time, a sixth of the hull's length, against a round that does not care where the hull is going. Nobody suggests it.
+{fmtInt(SLUG_FLIGHT_MIN)} minutes, and {fmtInt(TORCH_FROM_WATCH_MIN)} to the torch. Cold gas would move {fmtInt(SHIP_MASS_T)} tonnes about {fmt(COLD_DISPLACEMENT_M, 0)} metres in that time. A sixth of the hull's length, against a round that does not care where the hull is going. Nobody suggests it.
 
 You get out of the seat and go aft through the sensor bay to the mast root. Ferrante is already at the root hatch with the medical bag between his boots.
 
@@ -376,7 +376,7 @@ The frame rings once at 06:12.
 
 A single note through the length of the hull. Then the mast-head indicator on the panel beside the hatch goes from green to grey and stays grey.
 
-Ferrante is through the hatch and down the trunk before the note has stopped. You stand at the coaming with your hand on the ladder rail and you can feel the cold coming up out of the trunk.
+Ferrante is through the hatch and down the trunk before the note has stopped. You stand at the coaming with your hand on the ladder rail. Cold comes up out of the trunk.
 
 He is four minutes. When he comes back up he stops on the second rung from the top so that his face is level with yours.
 
@@ -394,13 +394,13 @@ He waits, and then says the other thing before you have got to it.
 The buffer wrote out at 06:01. It is on the bridge and it is whole. I would rather you had both of those from the same person.
 </Dialogue>
 
-You go forward to the bridge. The order you give when you get there is to light the torch, and Sandoval has the reactor coming up before Solberg has logged it.
+You go forward to the bridge and order the torch lit. Sandoval has the reactor coming up before Solberg has logged it.
 
-The torch lights at 06:24. *Nightjar* runs at three tenths of a gravity with the wings out and every joule of the cellar going over the side, the brightest thing inside half an astronomical unit, for four hours, in full view of everything in the Belt with a lens.
+The torch lights at 06:24. *Nightjar* runs at three tenths of a gravity for four hours, wings out, every joule of the cellar going over the side. The brightest thing inside half an astronomical unit, in full view of everything in the Belt with a lens.
 
 *Patience* does not follow. A tug cannot.
 
-Ferrier logs the dwell, the signed number, the order and the time of each. She writes Oyelaran's name into the casualty line in the same hand as the rest of it, and then she comes and stands at your shoulder for a while without saying anything, and then she goes and finds Ebele, who has not moved from the intel repeater and has not opened the buffer.
+Ferrier logs the dwell, the signed number, the order and the time of each. She writes Oyelaran's name into the casualty line in the same hand as the rest of it. Then she comes and stands at your shoulder for a while without saying anything. Then she goes and finds Ebele, who has not moved from the intel repeater and has not opened the buffer.
 
 </Scene>
 

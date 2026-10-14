@@ -53,9 +53,9 @@ export const cargoMinExpected = Math.min(...CARGO_EXPECTED)
 
 The intel terminal sits in the two-metre gap between the sensor bay and the frame, and at twenty-two hundred it is the warmest compartment aboard. {fmt(QUIET_HOURS, 0)} hours of Quiet since the last purge: wings folded flat, the parasol out, half the suite down at the breaker. Every joule sixteen people have made since the wings last went out is still in the ship. The cellar reads {fmt(SINK_PCT_AT_BRIEF, 0)} percent. The air down here has stopped moving and smells of hot dust off the terminal housing.
 
-Ebele has the only seat. You put your back against the frame, which runs a couple of degrees cooler than anything else in the compartment, and hold the slate flat against your chest.
+Ebele has the only seat. You put your back against the frame. It runs a couple of degrees cooler than anything else down here. You hold the slate flat against your chest.
 
-Kettle has been on the survey camera since half past twenty, and the suite came up to Watch to feed it. At {fmtInt(SURVEY_CAMERA_KM / 1e6)} million kilometres the camera gives warm shapes and no names: {fmtInt(SHAPES_DOCKED)} of them alongside the rock, {fmtInt(SHAPES_STANDING_OFF)} standing off it. Names want the lidar, the lidar wants {fmtInt(CLOSEST_APPROACH_KM)} kilometres, and closest approach is at 06:00. Nothing about that can be advanced for eight hours, so Ebele has gone back into the Register.
+Kettle has been on the survey camera since half past twenty, and the suite came up to Watch to feed it. At {fmtInt(SURVEY_CAMERA_KM / 1e6)} million kilometres the camera gives warm shapes and no names: {fmtInt(SHAPES_DOCKED)} of them alongside the rock, {fmtInt(SHAPES_STANDING_OFF)} standing off it. Names want the lidar. The lidar wants {fmtInt(CLOSEST_APPROACH_KM)} kilometres, and closest approach is at 06:00. None of that can be advanced for eight hours, so Ebele has gone back into the Register.
 
 The slate buzzes against your sternum. Engineering channel, Sandoval, third call since the suite came up at half past twenty.
 
@@ -85,7 +85,7 @@ Ebele has already gone past her.
 
 You ask him which column that rule is about.
 
-He says the observed one, sir, and the sentence comes apart in his mouth halfway through. He looks at the right-hand panel, where there are four percentages and no counts at all.
+He says the observed one, sir, and the sentence comes apart in his mouth halfway through. He looks at the right-hand panel. There is nothing in it but percentages.
 
 <Dialogue speaker="analyst" aside="He has the cursor sitting in an empty third column before he answers.">
 Yes, sir. That's — yes. Five what, and out of how many. I'll build it.
@@ -213,7 +213,7 @@ What {fmt(auditGof.statistic, 2)} on {fmtInt(auditGof.df)} degrees of freedom *m
   hint="E = n·π for that class: the number of lost hulls times the Lane's share. The observed column plays no part in it.">
   <Success>
   <Dialogue speaker="analyst" aside="He fills all four cells and runs the sum along the bottom of the column before he says anything about any of them.">
-  So they add to {fmtInt(LOSS_N)}, which they have to. And the smallest one is metals, at {fmt(cargoMinExpected, 2)}. The condition holds, sir, and I had it facing the wrong way. It was never about how many metals hulls we lost.
+  So they add to {fmtInt(LOSS_N)}, which they have to. And the smallest one is metals, at {fmt(cargoMinExpected, 2)}. The condition holds, sir, and I had it facing the wrong way.
   </Dialogue>
   </Success>
   <Failure>
@@ -275,14 +275,14 @@ What {fmt(auditGof.statistic, 2)} on {fmtInt(auditGof.df)} degrees of freedom *m
 Ebele reaches for the stylus. Ferrier puts a hand flat on the slate.
 
 <Dialogue speaker="xo" aside="She has the four contributions up on the terminal beside the statistic and has not remarked on any of them.">
-Not yet. You have a number and no scale for it. Nothing goes in a draft until somebody has read it against the curve it belongs to, and I will strike the word you are reaching for.
+Not yet. You have a number and no scale for it. Nothing goes in a draft until somebody has read it against the curve it belongs to. And I will strike the word you are reaching for.
 </Dialogue>
 
-That reading wants the distribution, and the distribution wants a decision about what counts as far. It will take the middle of the night.
+The reading needs the curve, and the curve needs somebody to decide what counts as far off. It will take the middle of the night.
 
 Ebele asks whether he can pull the berthing records from Hygiea Hold while he waits. You tell him to pull whatever he likes provided nothing goes out, and he says the Hold's file is four years old and already aboard.
 
-What he wants to know, and says to the terminal rather than to either of you, is what ammonia weighs against what it earns. A tonne of it buys almost nothing at Ceres. A tonne of it fills a tank, and a full tank of something declared is a tank nobody opens.
+He says the next part to the terminal rather than to either of you: what ammonia weighs against what it earns. A tonne of it buys almost nothing at Ceres. A tonne of it fills a tank, and a full tank of something declared is a tank nobody opens.
 
 Through the hatch, the refit array is still telling Oyelaran that a star in a catalogue is eleven degrees warmer than the catalogue says. She has run the calibration twice more and had eleven both times. She has not asked again.
 
