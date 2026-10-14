@@ -292,7 +292,6 @@ export const gofDegreesOfFreedom = defineGenerator({
       (v) => !reservedCount(v),
     )
     const df = k - 1
-    const wrongTwoWay = (k - 1) * (2 - 1)
     const crit = chi2.isf(0.05, df)
 
     return {
@@ -302,7 +301,7 @@ export const gofDegreesOfFreedom = defineGenerator({
         'Degrees of freedom count how many of the cells are free to move once the total is fixed. Fix the total, fill in all but one cell, and the last one is determined.',
         `This is one row of ${fmtInt(k)} classes tested against a claimed distribution, so the count is about the number of classes and not about ${fmtInt(n)}.`,
       ],
-      solution: `$$df = k - 1 = ${fmtInt(k)} - 1 = \\mathbf{${fmtInt(df)}}$$\n\n$k$ is the number of **classes**, ${fmtInt(k)} here. The sample size ${fmtInt(n)} does not appear: it sets how precise the test is, not how many degrees of freedom it has, and a file of ${fmtInt(n * 10)} ${ctx.units} in the same ${fmtInt(k)} classes would still carry ${fmtInt(df)}.\n\nThe df is the whole scale of the statistic. A $\\chi^2$ of ${fmt(crit, 2)} sits exactly on the 5% critical value at ${fmtInt(df)} df; the same ${fmt(crit, 2)} against 1 df has a P-value of ${fmtP(chi2.sf(crit, 1))}, and against 15 it has ${fmtP(chi2.sf(crit, 15))}. Report the statistic without its df and you have reported nothing.\n\nOn a TI-84 the \`χ²GOF-Test\` screen has a \`df:\` field and it will accept whatever you type. It is ${fmtInt(k)} − 1, not the $(r-1)(c-1) = ${fmtInt(wrongTwoWay)}$ that belongs to a two-way table.`,
+      solution: `$$df = k - 1 = ${fmtInt(k)} - 1 = \\mathbf{${fmtInt(df)}}$$\n\n$k$ is the number of **classes**, ${fmtInt(k)} here. The sample size ${fmtInt(n)} does not appear: it sets how precise the test is, not how many degrees of freedom it has, and a file of ${fmtInt(n * 10)} ${ctx.units} in the same ${fmtInt(k)} classes would still carry ${fmtInt(df)}.\n\nThe df is the whole scale of the statistic. A $\\chi^2$ of ${fmt(crit, 2)} sits exactly on the 5% critical value at ${fmtInt(df)} df; the same ${fmt(crit, 2)} against 1 df has a P-value of ${fmtP(chi2.sf(crit, 1))}, and against 15 it has ${fmtP(chi2.sf(crit, 15))}. Report the statistic without its df and you have reported nothing.\n\nOn a TI-84 the \`χ²GOF-Test\` screen has a \`df:\` field and it will accept whatever you type. It is ${fmtInt(k)} − 1. The $(r-1)(c-1)$ rule belongs to a two-way table, where the classes of one variable are crossed with the classes of a second; here there is one variable and one row of ${fmtInt(k)} classes. Writing the observed and expected counts as two columns does not make it a two-way table.`,
       misconception: `Using n − 1, or reaching for (rows − 1)(columns − 1). Goodness of fit has one row of ${fmtInt(k)} classes, and df = k − 1.`,
     }
   },

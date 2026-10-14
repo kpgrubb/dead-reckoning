@@ -194,7 +194,7 @@ Notice what the interval did and did not do. It settled a claim about a number n
 
 <Calculator title="LinRegTInt: the interval screen, and the two ways to miss it">
 <Calculator.Step keys={['STAT', '1:Edit']} note="Worked case: the twelve Authority relay stations above, not Brandt's file below.">Range into `L1`, measured delay into `L2`, one station per row. {fmtInt(relayN)} rows in each.</Calculator.Step>
-<Calculator.Step keys={['STAT', '▸ TESTS', 'G:LinRegTInt']} note="Xlist: L1 · Ylist: L2 · Freq: 1 · C-Level: .95 · RegEQ: (blank) · Calculate">Item `G`, directly below `F:LinRegTTest`. It is the last entry on the `TESTS` menu on most operating systems, so scroll past `H:` if your list runs on.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', 'G:LinRegTInt']} note="Xlist: L1 · Ylist: L2 · Freq: 1 · C-Level: .95 · RegEQ: (blank) · Calculate">Item `G`, directly below `F:LinRegTTest` and above `H:ANOVA(`, which is the last entry on the `TESTS` menu.</Calculator.Step>
 <Calculator.Read label="(a, b)" value={`(${fmt(relayInterval.ci[0], 4)}, ${fmt(relayInterval.ci[1], 4)})`}>the interval for the **slope**. The screen prints it first, before anything else, with no label saying which parameter it belongs to.</Calculator.Read>
 <Calculator.Read label="b" value={fmt(relayFit.slope, 4)}>the fitted slope, at the centre of the interval.</Calculator.Read>
 <Calculator.Read label="df" value={String(relayN - 2)}>$n - 2$. Check it against your own count of rows before writing anything down.</Calculator.Read>

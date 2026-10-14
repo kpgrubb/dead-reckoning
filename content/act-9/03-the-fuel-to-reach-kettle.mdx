@@ -280,7 +280,8 @@ with $s$ = {fmt(standFit.s, 3)} kN and $n$ = {fmtInt(standN)}.
 </MissionBeat>
 
 <MissionBeat id="act-9-03-p" kind="numeric" answer={KETTLE_TEST_ZERO.pValue} answerKind="pValue" label="HOW OFTEN AN INNOCENT FLEET DOES THIS"
-  prompt={`Now the **P-value** for that one-sided test, on ${fmtInt(KETTLE_OUTPUT.df)} degrees of freedom.\n\nThe output table prints a P beside the slope. Decide what that printed figure is before you use it, and report the P-value for H₀: β = 0 against Hₐ: β > 0. Four decimal places, or the inequality if it is smaller than that.`}
+  digits={6} tolerance={0.000003} allowInequality={{ max: 0.0001 }}
+  prompt={`Now the **P-value** for that one-sided test, on ${fmtInt(KETTLE_OUTPUT.df)} degrees of freedom.\n\nThe output table prints a P beside the slope. Decide what that printed figure is before you use it, and report the P-value for H₀: β = 0 against Hₐ: β > 0. Six decimal places, or an AP-style bound such as \`< 0.0001\`.`}
   hint="Software prints a two-sided test against zero. This alternative names one side, and the sign of b agrees with it.">
   <Success>
   <Dialogue speaker="analyst">
