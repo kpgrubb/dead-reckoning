@@ -74,108 +74,108 @@ export const PROFILE_ORDERS = [
 
 <SinkReadout sinkPct={heat.sinkPct} stamp={metStamp(heat.at)} profile="Quiet · four days cold" />
 
-<Scene stamp={metStamp(heat.at)} location={`Engineering deck · Mark 9 region, 0.42 AU from Ceres · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="Sandoval builds the load budget out of two random variables. The first is a table: hours of cold running required to cross the picket's sweep pattern, with a probability against each value — and Ebele's first version sums to 1.04. The second is a temperature at hour 60 of a Watch run, which is a curve, and when Ebele asks for the probability that it lands on exactly 240 the Chief tells him zero, and that it is still the most likely number.">
+<Scene stamp={metStamp(heat.at)} location={`Engineering deck · Mark 9 region, 0.42 AU from Ceres · Quiet, cellar ${fmt(heat.sinkPct, 0)}%`} condensed="Sandoval builds the load budget out of two random variables. The first is Ebele's table: hours of cold running the crossing needs, with a probability against each value. It sums to 1.04 and he finds the four hundredths in under a minute. The second is the sink temperature at hour sixty of a Watch run: a curve, with no rows to write in. Ebele asks what probability goes against 240 degrees. The Chief says zero, says it is still the most likely number, and goes back to the gauge. Oyelaran puts her head through the hatch to say the Quiet suite finds hulls and cannot hold them.">
 
-The cellar reads {fmt(heat.sinkPct, 0)} percent on the fourth day of running cold, and Sandoval has the whole heat plan spread across the engineering deck's long table in the form she trusts, which is paper.
+The cellar reads {fmt(heat.sinkPct, 0)} percent on the fourth day of running cold. Sandoval has the whole heat plan spread across the engineering deck's long table, on paper, held flat at one corner by a torque wrench.
 
 She does not talk about stealth. She talks about what a window costs. Two windows on the plan, a Watch profile at {fmtInt(PROFILE_LOAD_KW.watch)} kilowatts, {fmt(WATCH_DESIGN_HOURS, 1)} hours of endurance by the design curve, {WATCH_WORKING_HOURS} hours as the figure she works to and {WATCH_IN_WRITING_HOURS} as the figure she will put in writing. Below that, in her own hand, the alternative: Quiet at {fmtInt(PROFILE_LOAD_KW.quiet)} kilowatts and {QUIET_MEASURED_HOURS} hours, with a line ruled under it and nothing written beside it yet.
 
 <Dialogue speaker="engineer" aside="She has one hand flat on the plan and does not move it while she talks.">
-Everything on this sheet is a number I do not know yet, Skipper. That is not an excuse, it is the job. A quantity I cannot predict but whose behaviour I can write down is still something I can budget for — I just budget for all of it at once, with a weight on each.
+Everything on this sheet is a number I do not know yet, Skipper. I still have to buy lithium against it. So I budget for all of it at once, with a weight on each.
 </Dialogue>
 
 The first one is Ebele's, and he has been three days building it: how many hours of cold running the crossing actually takes. The picket does not sweep on a timetable you can read off a schedule; it walks a pattern, and the pattern's coverage is in the sweep log, sector by sector. Out of that he has a list of possible durations, four hours apart, and a probability against each one.
 
-He puts the table up, and it is a good piece of work, and it is wrong.
+He puts the table up. It is a good piece of work and it is wrong.
 
 <KeyTable
   columns={['hours of cold running required, x', 'p(x) as filed']}
   rows={[...badRows, ['Σ', fmt(badTotal, 2)]]}
-  caption="The Ensign's first table — hours required to cross the picket's sweep pattern"
+  caption="The Ensign's first table: hours required to cross the picket's sweep pattern"
   ariaLabel="Ebele's probability table for hours of cold running required"
   alertRows={[badRows.length]}
 />
 
-Sandoval reads down the column the way she reads a gauge, which is bottom line first.
+Sandoval reads the column from the bottom line up.
 
-<Dialogue speaker="engineer" aside="She does not tell him what is wrong with it. She tells him what a probability model owes her.">
-A distribution owes me two things and nothing else. Every number in it is at least zero, and all of them together come to exactly one — because the crossing takes *some* number of hours, Ensign, and whatever that number is, it is in your table. Yours comes to {fmt(badTotal, 2)}. You have sold me {fmt(badExcess, 2)} of a certainty that does not exist and I would have spent lithium on it.
+<Dialogue speaker="engineer" aside="She puts a pencil point on the Σ row and leaves it there.">
+Yours comes to {fmt(badTotal, 2)}, Ensign. You have sold me {fmt(badExcess, 2)} of a certainty that does not exist and I would have spent lithium on it.
 </Dialogue>
 
-Ebele finds it in under a minute: {fmt(badExcess, 2)} sitting on the tallest cell, the {badValue}-hour column, left over from a rounding pass he ran at the wrong end of the arithmetic. He takes it off. The column comes to one, and now every question anybody asks of it has an answer — the chance the crossing takes at most so many hours, the chance it runs longer than the Chief's limit, the average over many crossings.
+Ebele finds it in under a minute: {fmt(badExcess, 2)} sitting on the tallest cell, the {badValue}-hour column, left over from a rounding pass he ran at the wrong end of the arithmetic. He takes it off and the column comes to one.
 
 Then Sandoval turns the sheet over to the other kind.
 
-Sink temperature at hour sixty of a Watch run: the working fluid's temperature in the lithium cellar, {SINK_TEMP.mean} degrees nominal, and from three hulls of the class she has enough runs to say it scatters about that by {SINK_TEMP.sd} degrees either way in the usual sense of the word.
+Sink temperature at hour sixty of a Watch run: the working fluid in the lithium cellar, {SINK_TEMP.mean} degrees nominal, and from three hulls of the class she has enough runs to put {SINK_TEMP.sd} degrees of scatter on it either way.
 
-<Dialogue speaker="analyst" aside="Pen hovering. He has spotted that this table has no rows and is trying to work out where to put one.">
-So — what do I write against {SINK_TEMP.mean}, Chief? The probability it comes out at exactly {SINK_TEMP.mean} degrees at hour sixty. That is the number I want for the annex.
+<Dialogue speaker="analyst" aside="Pen hovering over a table that has no rows in it.">
+What do I write against {SINK_TEMP.mean}, Chief? The probability it comes out at exactly {SINK_TEMP.mean} degrees at hour sixty. The annex wants a number.
 </Dialogue>
 
-<Dialogue speaker="engineer" aside="She says it while she is doing something else, which is how she says most things.">
-Zero. — And I'll show you why it's still the most likely number.
+<Dialogue speaker="engineer" aside="She is pencilling a purge time into the margin and does not stop.">
+Zero. And it is still the most likely number.
 </Dialogue>
 
-She does not show him. She goes back to the gauge.
+She does not explain that. Ebele writes down both halves of it and underlines neither.
 
-Oyelaran has been in the hatch for a minute with a plot she has not put up yet, and she says one thing before she does.
+Oyelaran has been in the hatch for a minute with a plot she has not put up.
 
-<Dialogue speaker="sensors" aside="She waits until the Chief has finished, which is not politeness so much as procedure.">
-Whatever you pick for the windows, sir, pick it before the first one opens. The suite I can run on Quiet finds hulls. It does not hold them. That is not a preference, it is a power budget.
+<Dialogue speaker="sensors" aside="She waits for the Chief to finish writing.">
+Whatever you pick for the windows, sir, pick it before the first one opens. The suite I can run on Quiet finds hulls. It does not hold them.
 </Dialogue>
 
-So: a table that had to be repaired before it meant anything, a curve on which a single point means nothing at all, and a cellar with a number of hours in it. The Chief's question is one line long, and she has already written it at the bottom of the sheet: **how often does the crossing need more hours than we have?**
+The Chief's question is already at the bottom of the sheet in her own hand: **how often does the crossing need more hours than we have?**
 
 </Scene>
 
 <Briefing title="Mass at points, area over intervals" topics={["4.7"]}>
 <Briefing.Intuition>
-A **random variable** is a number attached to the outcome of a chance process: hours a crossing takes, close passes in a window, degrees on a gauge. Write it $X$; write a particular value it can take $x$. The whole subject from here forward is the behaviour of such numbers.
+A **random variable** is a number attached to the outcome of a chance process: hours a crossing takes, degrees on a gauge. Write it $X$; write a particular value it can take $x$. The whole subject from here forward is the behaviour of such numbers.
 
-A **discrete** random variable takes values you can list — 0, 1, 2, 3; or 44, 48, 52. Its **probability distribution** is a table, one row per value, and the table has exactly two obligations:
+A **discrete** random variable takes values you can list: 0, 1, 2, 3, or 44, 48, 52. Its **probability distribution** is a table, one row per value, and the table has exactly two obligations:
 
 - every probability is between 0 and 1, and
 - they sum to exactly **1**.
 
-The second is not bookkeeping. It is the statement that the outcome is *somewhere* in the table. A table that sums to 1.04 is not a slightly-wrong distribution; it is not a distribution, and every probability computed off it — every expected cost, every tail — is wrong by the same factor, in the direction that flatters whoever filed it.
+The second obligation is the statement that the outcome is *somewhere* in the table. A table that sums to 1.04 has stopped being a distribution, and every probability computed off it (every expected cost, every tail) is wrong by the same factor, in the direction that flatters whoever filed it.
 
 With the table in hand, a probability about a range of values is a **sum of cells** and nothing cleverer:
 
 - $P(X = k)$ is one cell.
 - $P(X \le k)$, the **cumulative** probability, is every cell from the bottom up to and including $k$.
-- $P(X > k)$ is everything above $k$ — most easily got as $1 - P(X \le k)$, which is the complement rule doing the work.
+- $P(X > k)$ is everything above $k$, most easily got as $1 - P(X \le k)$, which is the complement rule doing the work.
 
-And now the thing that costs people marks and costs ships lithium. On a discrete variable the boundary value is a **real quantity of probability**:
+On a discrete variable the boundary value carries a **real quantity of probability**:
 
 $$P(X \ge k) = P(X > k) + p(k)$$
 
-"At least $k$" keeps the cell at $k$; "more than $k$" throws it away. If the table puts fifteen hundredths on that value, the two answers differ by fifteen hundredths — a difference nobody can round away and everybody assumes is a formality. Read the wording twice. *At most* includes. *Less than* excludes. *At least* includes. *More than* excludes.
+"At least $k$" keeps the cell at $k$; "more than $k$" throws it away. If the table puts fifteen hundredths on that value, the two answers differ by fifteen hundredths. Read the wording twice. *At most* includes. *Less than* excludes. *At least* includes. *More than* excludes.
 
-A **continuous** random variable is the other kind: a temperature, a pressure, a range, a duration measured as finely as the gauge allows. Between any two values it can take there is another one, so the values cannot be listed and no table can hold them. Its distribution is a **density curve** $f(x)$, and probability is the **area under it**:
+A **continuous** random variable is the other kind: a temperature, a pressure, a duration measured as finely as the gauge allows. Between any two values it can take there is another one, so the values cannot be listed and no table can hold them. Its distribution is a **density curve** $f(x)$, and probability is the **area under it**:
 
 $$P(a \le X \le b) = \int_a^b f(x)\,\mathrm{d}x$$
 
 Three consequences, all of which are the same consequence.
 
-**The height is not a probability.** $f(x)$ is probability *per unit* of the axis — per degree, per second, per tonne. Multiply it by a width and you have a probability. Because it is a rate, it may exceed 1 without anything being wrong: squeeze a distribution into a narrow enough interval and the curve must rise to keep the area at one.
+**The height is not a probability.** $f(x)$ is probability *per unit* of the axis: per degree, per second, per tonne. Multiply it by a width and you have a probability. Because it is a rate, it may exceed 1 without anything being wrong: squeeze a distribution into a narrow enough interval and the curve must rise to keep the area at one.
 
-**A single point has probability zero.** An interval of width zero has area zero, whatever the height above it. $P(X = 240) = 0$, exactly, and it is not a near-miss: the model assigns nothing to any point. What Sandoval means by "still the most likely number" is a statement about *density*: of any two intervals of the same width, the one under the tallest part of the curve carries the most probability.
+**A single point has probability zero.** An interval of width zero has area zero, whatever the height above it. $P(X = x) = 0$ exactly, for every $x$, and the model assigns nothing to any point. What Sandoval means by "still the most likely number" is a statement about *density*: of any two intervals of the same width, the one under the tallest part of the curve carries the most probability.
 
-**"At least" and "more than" become the same question.** No point carries mass, so $P(X \ge a) = P(X > a)$ for a continuous variable. The off-by-one that matters so much on the hours table does not exist on the temperature curve — and confidently applying either rule to the wrong kind of variable is how a report ends up wrong in both directions at once.
+**"At least" and "more than" become the same question.** No point carries mass, so $P(X \ge a) = P(X > a)$ for a continuous variable. The off-by-one that matters so much on the hours table does not exist on the temperature curve. Apply either rule to the wrong kind of variable and the report comes out wrong in both directions at once.
 
 Both kinds hand out a total of one. The discrete model puts it in cells you can point at; the continuous model spreads it along an axis so that only intervals carry any.
 </Briefing.Intuition>
 <Briefing.Definition>
-<Formula tex="0 \le p(x) \le 1 \qquad \sum_{x} p(x) = 1" terms={{ 'p(x)': 'the probability that X takes the value x — one cell of the table', '\\sum_{x} p(x)': 'every cell added up: the outcome is somewhere in the table' }} label="What makes a table a probability distribution" />
+<Formula tex="0 \le p(x) \le 1 \qquad \sum_{x} p(x) = 1" terms={{ 'p(x)': 'the probability that X takes the value x: one cell of the table', '\\sum_{x} p(x)': 'every cell added up, because the outcome is somewhere in the table' }} label="What makes a table a probability distribution" />
 
-<Formula tex="F(k) = P(X \le k) = \sum_{x \le k} p(x) \qquad P(X > k) = 1 - F(k)" terms={{ 'F(k)': 'the cumulative probability up to and including k', 'P(X > k)': 'the upper tail — the complement of the cumulative' }} label="Cumulative probability, and its complement" />
+<Formula tex="F(k) = P(X \le k) = \sum_{x \le k} p(x) \qquad P(X > k) = 1 - F(k)" terms={{ 'F(k)': 'the cumulative probability up to and including k', 'P(X > k)': 'the upper tail: the complement of the cumulative' }} label="Cumulative probability, and its complement" />
 
-<Formula tex="P(X \ge k) = P(X > k) + p(k)" terms={{ 'p(k)': 'the cell sitting on the boundary — kept by “at least”, discarded by “more than”' }} label="The off-by-one, made explicit" />
+<Formula tex="P(X \ge k) = P(X > k) + p(k)" terms={{ 'p(k)': 'the cell sitting on the boundary, kept by “at least” and discarded by “more than”' }} label="The off-by-one, made explicit" />
 
-<Formula tex="P(a \le X \le b) = \int_a^b f(x)\,\mathrm{d}x \qquad P(X = a) = 0" terms={{ 'f(x)': 'the density at x — probability PER UNIT of x, never a probability', '\\int_a^b': 'the area between the two readings, which is the probability' }} label="A continuous variable: probability is area" />
+<Formula tex="P(a \le X \le b) = \int_a^b f(x)\,\mathrm{d}x \qquad P(X = a) = 0" terms={{ 'f(x)': 'the density at x: probability PER UNIT of x, never a probability', '\\int_a^b': 'the area between the two readings, which is the probability' }} label="A continuous variable: probability is area" />
 </Briefing.Definition>
 <Briefing.Worked>
-**The discrete one.** Ebele's table with the {fmt(badExcess, 2)} taken off the {badValue}-hour cell — hours of cold running required to cross the picket's sweep pattern, $X$:
+**The discrete one.** Ebele's table with the {fmt(badExcess, 2)} taken off the {badValue}-hour cell. $X$ is the hours of cold running required to cross the picket's sweep pattern.
 
 <KeyTable
   columns={['hours required, x', 'p(x)']}
@@ -187,9 +187,9 @@ Both kinds hand out a total of one. The discrete model puts it in cells you can 
 
 Every cell is between 0 and 1 and the column sums to 1, so it is a distribution and the questions have answers.
 
-*A cumulative probability* — the chance the crossing is done inside fifty-two hours. Add the cells from the bottom:
+*A cumulative probability.* The chance the crossing is done inside fifty-two hours: add the cells from the bottom.
 
-<Formula tex={cumulativeTex} label="P(X ≤ 52) — three cells, added" />
+<Formula tex={cumulativeTex} label="P(X ≤ 52): three cells, added" />
 
 So {fmtPct(pAtMost52, 0)} of crossings are finished by fifty-two hours, and by the complement rule {fmt(1 - pAtMost52, 2)} of them run longer.
 
@@ -197,7 +197,7 @@ So {fmtPct(pAtMost52, 0)} of crossings are finished by fifty-two hours, and by t
 
 <Formula tex={boundaryTex} label="At least fifty-six, against more than fifty-six" />
 
-{fmtPct(massAt56, 0)} of the whole distribution sits in that one cell. Four hours of cellar, and which side of the inequality they fall on is a decision, not a rounding.
+{fmtPct(massAt56, 0)} of the whole distribution sits in that one cell. Four hours of cellar, and which side of the inequality they fall on is a decision rather than a rounding.
 
 **The continuous one.** Sink temperature at hour sixty of a Watch run, $T$, modelled as a normal density with mean {SINK_TEMP.mean} {SINK_TEMP.units} and standard deviation {SINK_TEMP.sd} {SINK_TEMP.units}.
 
@@ -207,20 +207,35 @@ And yet the curve is tallest there, and that is what "most likely" means for a c
 
 <Formula tex={sliverTex} label="Density × width ≈ probability" />
 
-The same sliver two standard deviations out — a degree wide, centred on {fmt(SINK_TEMP.mean + 2 * SINK_TEMP.sd, 0)} — carries {fmt(halfDegreeOut, 5)}, about {fmt(densityRatio, 1)} times less. That is the entire content of "most likely": not that any single value is probable, but that neighbourhoods near the peak carry more area than neighbourhoods of the same width anywhere else.
+The same sliver two standard deviations out, a degree wide and centred on {fmt(SINK_TEMP.mean + 2 * SINK_TEMP.sd, 0)}, carries {fmt(halfDegreeOut, 5)}, about {fmt(densityRatio, 1)} times less. That is the entire content of "most likely" for a continuous variable: neighbourhoods near the peak carry more area than neighbourhoods of the same width anywhere else.
 
-Widen the interval and the probability grows: within one standard deviation of nominal, {fmt(oneSd, 4)}; above {fmt(SINK_TEMP.mean + 2 * SINK_TEMP.sd, 0)} {SINK_TEMP.units}, {fmt(overRated, 4)}. And because no point carries mass, "at or above {fmt(SINK_TEMP.mean + 2 * SINK_TEMP.sd, 0)}" is that same {fmt(overRated, 4)} — on this side of the plan the off-by-one does not exist.
+Widen the interval and the probability grows: within one standard deviation of nominal, {fmt(oneSd, 4)}; above {fmt(SINK_TEMP.mean + 2 * SINK_TEMP.sd, 0)} {SINK_TEMP.units}, {fmt(overRated, 4)}. And because no point carries mass, "at or above {fmt(SINK_TEMP.mean + 2 * SINK_TEMP.sd, 0)}" is that same {fmt(overRated, 4)}. On this side of the plan the off-by-one does not exist.
 </Briefing.Worked>
 <Briefing.Caution>
-*A table that does not sum to 1.* Ebele's first draft was over by {fmt(badExcess, 2)} and every figure read off it was over by the same share. Check the column before you use it: the two obligations are non-negative cells and a total of exactly one, and a model that fails the second is not approximately right, it is not a probability model. Repairing it by dividing every cell through is a different operation from correcting the cell that was mistyped — the first spreads one error across every value of $X$.
+*A table that does not sum to 1.* Ebele's first draft was over by {fmt(badExcess, 2)} and every figure read off it was over by the same share. Check the column before you use it: the two obligations are non-negative cells and a total of exactly one, and a model that fails the second has stopped being a probability model. Repairing it by dividing every cell through is a different operation from correcting the cell that was mistyped, and the first spreads one error across every value of $X$.
 
-*"At least" read as "more than".* On a discrete variable $P(X \ge k)$ and $P(X > k)$ differ by exactly $p(k)$, the cell on the boundary — here {fmt(massAt56, 2)} at fifty-six hours, and more than that at the Chief's limit. It is the single commonest arithmetic error in this topic and it is always worth the whole boundary cell, in whichever direction hurts.
+*"At least" read as "more than".* On a discrete variable $P(X \ge k)$ and $P(X > k)$ differ by exactly $p(k)$, the cell on the boundary: here {fmt(massAt56, 2)} at fifty-six hours, and more than that at the Chief's limit. It is the single commonest arithmetic error in this topic and it is always worth the whole boundary cell, in whichever direction hurts.
 
-*$P(X = x)$ for a continuous $X$.* Zero, for every $x$, always. A density's height is probability per unit and not probability; asking for the chance of exactly {SINK_TEMP.mean} degrees is asking for the area of a line. Ask for an interval instead, and keep the units of the density in mind — per degree — because that is what turns a height into a probability when you multiply by a width.
+*$P(X = x)$ for a continuous $X$.* Zero, for every $x$, always. A density's height is probability per unit and not probability; asking for the chance of exactly {SINK_TEMP.mean} degrees is asking for the area of a line. Ask for an interval instead, and keep the units of the density in mind, per degree, because that is what turns a height into a probability when you multiply by a width.
 
 *Reading the two rules onto the wrong variable.* Boundaries matter on tables and do not matter on densities. Applying the discrete rule to a curve makes you hunt for a mass that is not there; applying the continuous rule to a table makes you throw away a cell worth {fmtPct(massAt56, 0)} of the distribution and call it a rounding convention.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="A probability table in two lists: sum(, and 1-Var Stats with a FreqList">
+<Calculator.Step keys={['STAT', '1:Edit']} note={`Worked case: the repaired hours table above, ${fmtInt(COLD_HOURS_VALUES.length)} rows.`}>The values go into `L1` and their probabilities into `L2`, one row each, in the same order. `L1` is `2nd` `1` and `L2` is `2nd` `2`. The two columns are paired by row number and by nothing else, so read them side by side before you leave the editor.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'MODE']}>QUIT to the home screen. List arithmetic runs from there, not from inside the editor.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'STAT', '▸ MATH', '5:sum(']} note="sum(L2)">The first obligation, checked before anything else is read off the table. `2nd` `STAT` opens LIST.</Calculator.Step>
+<Calculator.Read label="sum(L2)" value="1">exactly 1. Ebele's filed column would have returned {fmt(badTotal, 2)} here, and every figure computed after that point would have been over by the same share.</Calculator.Read>
+<Calculator.Step keys={['2nd', 'STAT', '▸ MATH', '5:sum(']} note="sum(L2,1,3)">A cumulative probability is a partial sum. The second and third arguments are the first and last **row numbers** to add, so `sum(L2,1,3)` adds rows 1 to 3: the cells at {COLD_HOURS_VALUES.slice(0, 3).map((v) => fmtInt(v)).join(', ')} hours.</Calculator.Step>
+<Calculator.Read label="sum(L2,1,3)" value={fmt(pAtMost52, 2)}>$P(X \le 52)$. For $P(X > 52)$, subtract this from 1 rather than retyping row numbers at the other end of the column.</Calculator.Read>
+<Calculator.Step keys={['STAT', '▸ CALC', '1:1-Var Stats']} note="List: L1 · FreqList: L2 · Calculate">`FreqList` takes the probability column directly. Non-integer frequencies are allowed here, and a column that sums to 1 is what turns the screen's weighted average into the distribution's own centre.</Calculator.Step>
+<Calculator.Read label="x̄" value={fmt(coldHoursRV.mean, 2)}>the mean of the distribution, $\sum x\,p(x)$, in hours.</Calculator.Read>
+<Calculator.Read label="σx" value={fmt(coldHoursRV.sd, 2)}>its standard deviation, weighted by the same column.</Calculator.Read>
+<Calculator.Watch>**Read `σx`, never `Sx`.** `Sx` divides by $n-1$ and belongs to a *sample*. A probability column is the whole distribution rather than a draw from one, so the population form is the right one. With non-integer frequencies the calculator cannot form `Sx` at all and leaves it blank or errors on it.</Calculator.Watch>
+<Calculator.Watch>**`n` comes back as 1.** The screen prints the sum of the frequency column, and that column sums to 1 by construction. It is not a count of rows and nothing is wrong. If `n` reads {fmtInt(COLD_HOURS_VALUES.length)} instead, `FreqList` was left blank and the screen has averaged the axis you drew rather than the windows you will fly.</Calculator.Watch>
+<Calculator.Watch>**There is no keystroke for the probability of a single temperature**, because on a continuous variable there is no quantity there to return. The screen that answers a question about a density wants two bounds: `2nd` `DISTR` `2:normalcdf(` with a lower and an upper reading. Enter the same number twice and it returns 0, which is the correct answer and is also what the model says about every single point on the axis.</Calculator.Watch>
+</Calculator>
 
 <DistributionEditor values={COLD_HOURS_VALUES} probs={COLD_HOURS_PROBS_BAD} editable={true} mode="discrete" />
 
@@ -236,37 +251,37 @@ Widen the interval and the probability grows: within one standard deviation of n
 
 <MissionBeat id="act-4-05-saturate" kind="numeric" label="THE CHIEF'S LINE"
   answer={rvProb(coldHoursRV, (v) => v > WATCH_WORKING_HOURS)} answerKind="proportion" digits={3}
-  prompt={`Ebele's table, repaired — the four hundredths off the ${badValue}-hour cell, column summing to one — is on the panel above.\n\nThe Chief works to **${WATCH_WORKING_HOURS} hours** of Watch-profile endurance. Let $X$ be the hours of cold running the crossing requires.\n\nWhat is $P(X > ${WATCH_WORKING_HOURS})$ — the probability that the crossing needs **more hours than the cellar has**, so that the sink saturates before the next Perrine hull is in range? Report a probability to three decimal places.`}
-  hint={`Add the cells the wording keeps. "More than ${WATCH_WORKING_HOURS}" keeps every value above ${WATCH_WORKING_HOURS} and excludes the ${WATCH_WORKING_HOURS} itself — which is a cell with real weight in it, not a rounding detail. The complement route works too: 1 − P(X ≤ ${WATCH_WORKING_HOURS}).`}>
+  prompt={`Ebele's table is repaired and on the panel above: the ${fmt(badExcess, 2)} is off the ${badValue}-hour cell and the column sums to one.\n\nThe Chief works to **${WATCH_WORKING_HOURS} hours** of Watch-profile endurance. Let $X$ be the hours of cold running the crossing requires.\n\nWhat is $P(X > ${WATCH_WORKING_HOURS})$, the probability that the crossing needs **more hours than the cellar has**, so that the sink saturates before the next Perrine hull is in range? Report a probability to three decimal places.`}
+  hint={`Add the cells the wording keeps. "More than ${WATCH_WORKING_HOURS}" keeps every value above ${WATCH_WORKING_HOURS} and excludes the ${WATCH_WORKING_HOURS} itself, which is a cell with real weight in it. The complement route works too: 1 − P(X ≤ ${WATCH_WORKING_HOURS}).`}>
   <Success>
   <Dialogue speaker="engineer" aside="She writes it on the plan in the margin, in pencil, next to the Watch line.">
-  About one crossing in five, then. That is not a small number, Skipper, and it is not a reason not to go — it is the price. I can carry one in five if the ship knows it is carrying it and the alternative is written down beside it.
+  About one crossing in five, then. That is the price, Skipper. I can carry it if the alternative is written down beside it.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="engineer" aside="She turns the sheet round and puts one finger on the sixty-four column, and leaves it there.">
-  More than sixty-four, Skipper. Not sixty-four or more. That cell is four hours of cellar and it goes on one side of the line or the other — you do not get to leave it standing in the middle. — Past sixty I want it in writing, and that number is how often I would have to write it.
+  More than sixty-four, Skipper. Not sixty-four or more. That cell is four hours of cellar and it goes on one side of the line or the other.
   </Dialogue>
   </Failure>
 </MissionBeat>
 
 <Gated by="act-4-05-saturate">
 
-<Scene stamp={metStamp(decisionAt)} location={`Engineering deck · Quiet, cellar ${fmt(sinkAt(decisionAt), 0)}%`} condensed="The risk term goes on the heat plan in pencil and the Chief asks for the decision that has been sitting under the ruled line all afternoon: which profile the ship flies in both Watch windows. Watch is the full passive suite and sixty-four hours of cellar; Quiet is a hundred and eight hours and a suite that can find a hull but not hold it.">
+<Scene stamp={metStamp(decisionAt)} location={`Engineering deck · Quiet, cellar ${fmt(sinkAt(decisionAt), 0)}%`} condensed="The risk term goes on the heat plan in pencil, boxed. Then Sandoval taps the ruled line and the empty space under it and puts the costs of both profiles on the record: Watch is the full passive suite and sixty-four hours of cellar, Quiet is a hundred and eight hours and a suite that can find a hull but not hold it. Oyelaran puts up the aperture's power budget with two modes greyed out. Ferrier says nothing and leaves the log open at a blank entry.">
 
-The number goes on the plan beside the Watch line, and Sandoval draws a box round it, because a risk term that is not boxed gets read as a footnote.
+The number goes on the plan beside the Watch line and Sandoval draws a box round it.
 
-Then she taps the ruled line and the empty space under it, which is the thing she has been waiting all afternoon to make you look at.
+Then she taps the ruled line and the empty space under it.
 
-<Dialogue speaker="engineer" aside="Both hands on the table now. She is not arguing for either one. She is making sure the cost of both is on the record before you speak.">
-Two windows, Skipper, and one profile for both — I am not rebuilding this plan twice. On Watch the whole passive suite runs: {fmtInt(PROFILE_LOAD_KW.watch)} kilowatts, {fmt(WATCH_DESIGN_HOURS, 1)} hours by the book, {WATCH_WORKING_HOURS} by mine, {WATCH_IN_WRITING_HOURS} in writing — and the number in that box says how often the crossing outruns it. — The alternative is {fmtInt(PROFILE_LOAD_KW.quiet)} kilowatts and {QUIET_MEASURED_HOURS} hours. Getting on for twice the endurance, a colder ship while she runs it, and a plan with no risk term on the top of it.
+<Dialogue speaker="engineer" aside="Both hands on the table now. She has the Quiet figures already written out on the same sheet, in the same hand, at the same size.">
+Two windows, Skipper, and one profile for both. I am not rebuilding this plan twice. On Watch the whole passive suite runs: {fmtInt(PROFILE_LOAD_KW.watch)} kilowatts, {fmt(WATCH_DESIGN_HOURS, 1)} hours by the book, {WATCH_WORKING_HOURS} by mine, {WATCH_IN_WRITING_HOURS} in writing, and the number in that box says how often the crossing outruns it. The alternative is {fmtInt(PROFILE_LOAD_KW.quiet)} kilowatts and {QUIET_MEASURED_HOURS} hours. Getting on for twice the endurance, and no risk term on the top of the plan.
 </Dialogue>
 
 <Dialogue speaker="sensors" aside="She puts her plot up now: the aperture's power budget, mode by mode, with two columns of it greyed out.">
-And on that profile the Eyes are a detector, not a tracker. I will see a plume. I will tell you a bearing and a rough range. I will not hold it long enough to give you a vector, and without a vector a hull that turns is a hull that faded. — Sir.
+And on that profile the Eyes are a detector. I will see a plume and give you a bearing and a rough range. I will not hold it long enough for a vector, and a hull that turns without a vector is a hull that faded. Sir.
 </Dialogue>
 
-Ferrier says nothing at all, which from her is a whole paragraph: the decision is a command decision, the costs are both real, and she has declined to put a thumb on either scale in front of the Chief.
+Ferrier closes the paper Register and says nothing. The log stays open in front of her at a blank entry.
 
 </Scene>
 
@@ -274,49 +289,47 @@ Ferrier says nothing at all, which from her is a whole paragraph: the decision i
   prompt={`Both Watch windows fly the same profile, and it goes on the plan now.\n\n**Watch** — the full passive suite at ${fmtInt(PROFILE_LOAD_KW.watch)} kW, ${WATCH_WORKING_HOURS} hours of cellar to the Chief's working figure, and a tracker that can hold a plume's vector.\n\n**Quiet** — ${fmtInt(PROFILE_LOAD_KW.quiet)} kW and ${QUIET_MEASURED_HOURS} hours, a far smaller ship to find, and a suite that can see a plume but not follow it.\n\nGive the order.`}
   options={PROFILE_ORDERS}>
   <Outcome option={0}>
-  <Dialogue speaker="engineer" aside="She writes it in, and the pencil does not hesitate, and she says the second sentence to the plan rather than to you.">
-  Watch, both windows. Logged. — I'll log that I asked for the alternative, Skipper. Not as a protest. So that when somebody at Valhalla reads this in a year they can see the cellar was spent on purpose and not by accident.
+  <Dialogue speaker="engineer" aside="She writes it in and says the rest of it to the plan rather than to you.">
+  Watch, both windows. Logged. And logged that I asked for the alternative, Skipper. Not as a protest.
   </Dialogue>
-  <Dialogue speaker="sensors" aside="Already re-cutting the sweep pattern for the wider aperture, which she started doing four minutes ago.">
-  Understood. Tracker's up in both windows, sir. If something on the Lane turns, I will give you the bearing, the range and the eleven degrees. That is what the profile buys.
+  <Dialogue speaker="sensors" aside="Already re-cutting the sweep pattern for the wider aperture.">
+  Understood. Tracker's up in both windows, sir. If something on the Lane turns I will give you the bearing, the range and the eleven degrees.
   </Dialogue>
   </Outcome>
   <Outcome option={1}>
-  <Dialogue speaker="engineer" aside="She writes it in, and something in her shoulders lets go, and she is honest enough to say why.">
-  Quiet, both windows. Logged, and I will not pretend I am sorry — that is a hundred and eight hours instead of sixty-four and it takes my risk term off the top of the plan. — The cost is on the Eyes' sheet, not on mine, and the Eyes have said what it is.
+  <Dialogue speaker="engineer" aside="She writes it in and does not reach for the Watch column again.">
+  Quiet, both windows. Logged, and I will not pretend I am sorry. A hundred and eight hours instead of sixty-four, and my risk term comes off the top of the plan. The cost is on the Eyes' sheet, and the Eyes have said what it is.
   </Dialogue>
-  <Dialogue speaker="sensors" aside="Flat. She logs it and does not argue, because she has already made the argument once and once is how many times she makes it.">
-  Noted, sir. Detection only. If a hull goes off profile in either window I will have a bearing, a degrading transponder and no vector — and a plume that stops looks exactly like a plume that turns. Quiet is for hiding. It is not for looking.
+  <Dialogue speaker="sensors" aside="Flat. She logs it and does not make the argument a second time.">
+  Noted, sir. Detection only. If a hull goes off profile in either window I will have a bearing, a degrading transponder and no vector, and a plume that stops looks exactly like a plume that turns.
   </Dialogue>
   </Outcome>
 </MissionBeat>
 
-<Scene stamp={metStamp(logAt)} location={`Engineering deck · Quiet, cellar ${fmt(sinkAt(logAt), 0)}%`} condensed="The plan goes to the log with the profile, the endurance and the risk term on the same page. What the table cannot yet say is what a window costs on average — the next question, and the one the Chief actually asked.">
+<Scene stamp={metStamp(logAt)} location={`Engineering deck · Quiet, cellar ${fmt(sinkAt(logAt), 0)}%`} condensed="The plan goes to the log with the profile, the endurance it buys and the risk term on the same page. Ebele is still reading down the p(x) column, and what he wants now is the one thing the table has not been asked for: what a window costs on average, which is not the middle of the values.">
 
 The plan goes into the log at the top of the hour with three things on the same page: the profile, the endurance it buys and the probability that the crossing wants more hours than the cellar holds.
 
 <ProfileEcho
-  watch={<>Sandoval has the aperture's load schedule out already and is arguing with herself about the cryo loops, because the full suite draws what it draws and the cellar does not care that the decision was correct.</>}
-  quiet={<>Sandoval has gone quiet in the other sense, checking a gauge she has already checked, because a hundred and eight hours is a comfortable number and she has been doing this long enough to distrust comfort.</>}
+  watch={<>Sandoval has the aperture's load schedule out already and is arguing with herself about the cryo loops.</>}
+  quiet={<>Sandoval is re-reading the Quiet endurance line and has pencilled a question mark beside it, where the shakedown found the design curve five percent optimistic.</>}
 />
 
-Ebele is still looking at the repaired table, and he asks the question that is the whole of the next module, and he asks it the right way round for once.
+Ebele is still looking at the repaired table.
 
 <Dialogue speaker="analyst" aside="One finger running down the p(x) column, not the values column.">
-So — sir. I can tell you how often the crossing beats the cellar. I cannot yet tell you what a window *costs*. Every one of those durations is a different number of hours of lithium, and they do not all weigh the same, because they are not all equally likely. — There is an average in this table and it is not the middle of the values. I want it.
+Sir. I can tell you how often the crossing beats the cellar. I cannot tell you what a window *costs*. Every duration in that column is a different number of hours of lithium and they are not all equally likely. There is an average in this table and it is not the middle of the values. I want it.
 </Dialogue>
 
-There is, and it is not, and it is what the Chief has been waiting for somebody to ask for since the first day of the loiter. A table of values with weights on them has a centre of mass, and the centre of mass is what a window costs when you fly enough of them.
-
-The heat ledger starts there.
+Sandoval puts the pencil down and turns the sheet round for him.
 
 </Scene>
 
 <LogEntry
   title="Mass at points; area over intervals"
-  concept="A discrete random variable's distribution is a table of values with probabilities against them: every cell between 0 and 1, and the cells summing to exactly one, because the outcome is somewhere in the table. Probabilities about ranges are sums of cells — P(X ≤ k) up to and including k, P(X > k) as its complement — and on a discrete variable the boundary cell is real weight, so P(X ≥ k) exceeds P(X > k) by exactly p(k). A continuous random variable takes any value in an interval, so no point can carry probability; its distribution is a density whose height is probability per unit, and probability is the area under it between two readings."
+  concept="A discrete random variable's distribution is a table of values with probabilities against them: every cell between 0 and 1, and the cells summing to exactly one, because the outcome is somewhere in the table. Probabilities about ranges are sums of cells, with P(X ≤ k) running up to and including k and P(X > k) got as its complement, and on a discrete variable the boundary cell is real weight, so P(X ≥ k) exceeds P(X > k) by exactly p(k). A continuous random variable takes any value in an interval, so no point can carry probability; its distribution is a density whose height is probability per unit, and probability is the area under it between two readings."
   formula="\sum_x p(x) = 1 \qquad P(X > k) = 1 - P(X \le k) \qquad P(X \ge k) = P(X > k) + p(k) \qquad P(a \le X \le b) = \int_a^b f(x)\,\mathrm{d}x"
-  mistake="Reading P(X = x) as a positive number for a continuous X. A single value is an interval of zero width, so its area — and therefore its probability — is exactly zero, however tall the density is above it; the height is probability per unit, not probability. Its mirror image is treating the boundary cell of a discrete table as a rounding detail: there, “at least k” and “more than k” differ by the whole of p(k)."
+  mistake="Reading P(X = x) as a positive number for a continuous X. A single value is an interval of zero width, so its area, and therefore its probability, is exactly zero however tall the density is above it; the height is probability per unit rather than probability. Its mirror image is treating the boundary cell of a discrete table as a rounding detail: there, “at least k” and “more than k” differ by the whole of p(k)."
   tags={['random variable', 'discrete', 'continuous', 'probability distribution', 'pmf', 'cumulative probability', 'density', 'area under a curve', '4.7']}
 />
 
