@@ -151,7 +151,7 @@ rounded **up**, because a fraction of an observation buys nothing. Planning uses
 
 <ReactorOutputPanel />
 
-<TIntervalBench />
+<TIntervalBench confidence={0.9} />
 
 <Drill generator="act-7/t-interval-endpoint" count={1} />
 <Drill generator="act-7/margin-of-error-mean" count={1} />
@@ -176,7 +176,7 @@ rounded **up**, because a fraction of an observation buys nothing. Planning uses
 </MissionBeat>
 
 <MissionBeat id="act-7-02-interpret" kind="interpretation" label="WHAT THE INTERVAL SAYS"
-  prompt={`Write the sentence that goes under the interval in the brief. Interpret **(${fmt(OUTPUT_INTERVAL.ci[0], 2)}, ${fmt(OUTPUT_INTERVAL.ci[1], 2)}) kN** in context. One sentence, and Ebele's struck line is the thing to avoid.`}
+  prompt={`Write the sentence that goes under the interval in the brief. Interpret **the ${fmtPct(0.95, 0)} interval you have just built**, in context and with both endpoints in kilonewtons. One sentence, and Ebele's struck line is the thing to avoid.`}
   hint="Four parts: the level, the word confident, the TRUE mean named with its population, and both endpoints with units. Then check that no part of your sentence is about the twelve individual reactors."
   {...confidenceIntervalInterpretation({
     level: 0.95,

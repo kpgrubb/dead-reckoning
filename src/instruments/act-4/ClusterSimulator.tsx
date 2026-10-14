@@ -41,7 +41,6 @@ import {
   CLUSTER_WINDOW_DAYS,
   LOSS_TOTAL,
   OBSERVED_CLUSTER,
-  P_CLUSTER_SIMULATED,
   REGISTER_SPAN_DAYS,
   clusterAtLeastObservedCount,
   clusterDistribution,
@@ -176,6 +175,12 @@ export function ClusterSimulator({
   const activeLabel = shown === 'yours' && study ? `your study · ${fmtInt(study.runs)} runs` : `logged study · ${fmtInt(CLUSTER_RUNS)} runs`
   const proportion = active.atOrAbove / active.runs
   const loggedProportion = clusterAtLeastObservedCount / CLUSTER_RUNS
+  /**
+   * The console divides for a study the learner has run, and never for the logged one: the logged
+   * study is the mission beat's own target, and a simulated probability is a count over a run size
+   * the learner is asked to form. Both figures are always on screen; the quotient is theirs.
+   */
+  const ownStudy = shown === 'yours' && study !== null
 
   /* ---- The distribution ---- */
   const categories = active.distribution.map((d) => String(d.value))
@@ -290,12 +295,12 @@ export function ClusterSimulator({
             <Readout label="runs completed" value={fmtInt(active.runs)} tone="intel" live />
             <Readout label={`runs with ${observed} or more`} value={fmtInt(active.atOrAbove)} tone="intel" live />
             <Readout label="that is" value={`${fmtInt(active.atOrAbove)} of ${fmtInt(active.runs)}`} size="sm" live />
-            <Readout label="estimated P" value={fmtP(proportion)} tone={proportion < 0.05 ? 'alert' : 'intel'} live />
-            <Readout label="or" value={oneIn(proportion)} size="sm" live />
+            <Readout label="estimated P" value={ownStudy ? fmtP(proportion) : '—'} tone={ownStudy && proportion < 0.05 ? 'alert' : 'intel'} stale={!ownStudy} live />
+            <Readout label="or" value={ownStudy ? oneIn(proportion) : '—'} size="sm" stale={!ownStudy} live />
             <Readout label="mean largest cluster" value={fmt(meanStat, 2)} size="sm" />
           </ReadoutRow>
           <Note tone={proportion < 0.05 ? 'warn' : 'muted'} live>
-            {fmtInt(active.atOrAbove)} of {fmtInt(active.runs)} runs produced a {windowDays}-day cluster of {observed} or more: {inAHundred(proportion)}. Write it that way. A simulated probability is an estimate, and the estimate is worth exactly as many runs as it took — {fmtP(proportion)} off {fmtInt(active.runs)} runs is not the same claim as {fmtP(proportion)} off a hundred.
+            {fmtInt(active.atOrAbove)} of {fmtInt(active.runs)} runs produced a {windowDays}-day cluster of {observed} or more: {inAHundred(proportion)}. Write it that way. A simulated probability is an estimate, and the estimate is worth exactly as many runs as it took, so a count of {fmtInt(active.atOrAbove)} out of {fmtInt(active.runs)} is not the claim the same quotient off a hundred runs would be.
           </Note>
         </section>
 
@@ -304,8 +309,6 @@ export function ClusterSimulator({
           <ReadoutRow>
             <Readout label="runs" value={fmtInt(CLUSTER_RUNS)} size="sm" />
             <Readout label={`at or above ${OBSERVED_CLUSTER}`} value={fmtInt(clusterAtLeastObservedCount)} size="sm" tone="intel" />
-            <Readout label="estimated P" value={fmtP(loggedProportion)} size="sm" tone="intel" />
-            <Readout label="registry figure" value={fmtP(P_CLUSTER_SIMULATED)} size="sm" stale />
           </ReadoutRow>
           <Note>
             The Register holds {OBSERVED_CLUSTER} losses inside {CLUSTER_WINDOW_DAYS} days. Under a model that scatters {fmtInt(LOSS_TOTAL)} losses uniformly across the Register's {fmtInt(REGISTER_SPAN_DAYS)} days, {fmtInt(clusterAtLeastObservedCount)} of {fmtInt(CLUSTER_RUNS)} runs matched it or beat it — {inAHundred(loggedProportion)}. Rare under the model is not proof of a cause. It is a reason to stop calling the cluster ordinary.
@@ -324,7 +327,7 @@ export function ClusterSimulator({
         )}
         {study !== null && (
           <Note>
-            Your {fmtInt(study.runs)} runs against the logged {fmtInt(CLUSTER_RUNS)}: {fmtP(study.atOrAbove / study.runs)} against {fmtP(loggedProportion)}. Run a hundred and the estimate wanders by whole percentage points; run ten thousand and it settles. The model did not change. The precision did. Mean of {fmtInt(study.runs)} statistics: {fmt(mean(study.stats), 2)}.
+            Your {fmtInt(study.runs)} runs against the logged {fmtInt(CLUSTER_RUNS)}: {fmtInt(study.atOrAbove)} at or above {observed}, against the logged study's {fmtInt(clusterAtLeastObservedCount)}. Run a hundred and the estimate wanders by whole percentage points; run ten thousand and it settles. The model did not change. The precision did. Mean of {fmtInt(study.runs)} statistics: {fmt(mean(study.stats), 2)}.
           </Note>
         )}
       </div>

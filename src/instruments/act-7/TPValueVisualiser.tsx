@@ -85,6 +85,13 @@ export interface TPValueVisualiserProps {
   lockObserved?: boolean
   /** Open with the standard normal drawn beside t(df). */
   showNormal?: boolean
+  /**
+   * Whether the panel opens with its slider already on the observed statistic. `false` opens it at
+   * zero and withdraws RESET TO OBSERVED, so the module's own t is not printed before the learner
+   * has computed it; everything the panel shows is then a reading of the statistic they set. Mirrors
+   * `showTest` on `<TwoWayVisualiser>`.
+   */
+  showTest?: boolean
   /** What the statistic is about, for the readouts: "mean delay", "difference in mean delay". */
   quantity?: string
   label?: string
@@ -105,6 +112,7 @@ export function TPValueVisualiser({
   lockAlt = false,
   lockObserved = false,
   showNormal = false,
+  showTest = true,
   quantity,
   label = 'TACTICAL · t P-VALUE',
   tone = 'tactical',
@@ -126,7 +134,7 @@ export function TPValueVisualiser({
   const dfDigits = Number.isInteger(df) ? 0 : 2
 
   const [sides, setSides] = useState<Sides>(alt === 'two-sided' ? 'two' : 'one')
-  const [statistic, setStatistic] = useState(observed)
+  const [statistic, setStatistic] = useState(showTest ? observed : 0)
   const [normalOn, setNormalOn] = useState(showNormal)
 
   const reading: Alternative = sides === 'two' ? 'two-sided' : alt === 'less' ? 'less' : 'greater'
@@ -209,7 +217,7 @@ export function TPValueVisualiser({
               format={(v) => fmt(v, 2)}
             />
           )}
-          {!lockObserved && !atObserved && (
+          {!lockObserved && showTest && !atObserved && (
             <button type="button" className="dr-btn dr-btn--ghost dr-btn--sm" onClick={() => setStatistic(observed)}>
               RESET TO OBSERVED
             </button>
@@ -272,10 +280,13 @@ export function TPValueVisualiser({
           </Note>
         </section>
 
-        {!atObserved && !lockObserved && (
+        {!atObserved && !lockObserved && showTest && (
           <Note tone="warn">
             The slider is at {fmt(statistic, 2)}; the statistic this data produced is {fmt(observed, 2)}. Press <strong>RESET TO OBSERVED</strong> to put it back.
           </Note>
+        )}
+        {!showTest && (
+          <Note>Set the slider to the statistic you computed and read the tail off the curve. This panel prices a statistic; it does not hand you one.</Note>
         )}
       </div>
     </Panel>

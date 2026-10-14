@@ -15,10 +15,16 @@ import { KeyTable, Note, Subhead, stackStyle } from './_ui'
 export interface BoxplotBuilderProps {
   /** Which batch opens: the sixty plume ratios or the thirty-one times to silence. */
   dataset?: 'ratio' | 'silence'
+  /**
+   * Whether the 1.5×IQR fences open drawn and printed. `'hidden'` opens on the five numbers alone
+   * and leaves the fence arithmetic to the learner, which is what act-1/05's mission beat asks for.
+   */
+  fences?: 'shown' | 'hidden'
 }
 
 type Dataset = 'ratio' | 'silence'
 type Dots = 'show' | 'hide'
+type Fences = 'shown' | 'hidden'
 
 interface DatasetSpec {
   values: number[]
@@ -57,9 +63,11 @@ const SPEC: Record<Dataset, DatasetSpec> = {
   },
 }
 
-export function BoxplotBuilder({ dataset: initialDataset = 'ratio' }: BoxplotBuilderProps) {
+export function BoxplotBuilder({ dataset: initialDataset = 'ratio', fences: initialFences = 'shown' }: BoxplotBuilderProps) {
   const [dataset, setDataset] = useState<Dataset>(initialDataset)
   const [dots, setDots] = useState<Dots>('show')
+  const [fences, setFences] = useState<Fences>(initialFences)
+  const showFences = fences === 'shown'
   const [edited, setEdited] = useState<Record<Dataset, number[]>>({ ratio: ratioPct.slice(), silence: timeToSilence.slice() })
 
   const spec = SPEC[dataset]
@@ -111,6 +119,15 @@ export function BoxplotBuilder({ dataset: initialDataset = 'ratio' }: BoxplotBui
               { value: 'hide', label: 'box only' },
             ]}
           />
+          <Segmented<Fences>
+            label="1.5 × IQR fences"
+            value={fences}
+            onChange={setFences}
+            options={[
+              { value: 'hidden', label: 'five numbers only' },
+              { value: 'shown', label: 'draw the fences' },
+            ]}
+          />
           <button type="button" className="dr-btn dr-btn--primary" onClick={reset} disabled={!touched}>
             RESET TO LOGGED VALUES
           </button>
@@ -125,9 +142,9 @@ export function BoxplotBuilder({ dataset: initialDataset = 'ratio' }: BoxplotBui
           <Readout label="IQR" value={fmt(iqrValue, d)} units={spec.units} tone="sensor" live />
         </ReadoutRow>
         <ReadoutRow>
-          <Readout label="lower fence · Q1 − 1.5·IQR" value={fmt(fence.lowFence, d)} units={spec.units} size="sm" />
-          <Readout label="upper fence · Q3 + 1.5·IQR" value={fmt(fence.highFence, d)} units={spec.units} size="sm" />
-          <Readout label="beyond a fence" value={fmtInt(fence.values.length)} tone={fence.values.length > 0 ? 'alert' : 'sensor'} live />
+          <Readout label="lower fence · Q1 − 1.5·IQR" value={showFences ? fmt(fence.lowFence, d) : '—'} units={showFences ? spec.units : undefined} size="sm" stale={!showFences} />
+          <Readout label="upper fence · Q3 + 1.5·IQR" value={showFences ? fmt(fence.highFence, d) : '—'} units={showFences ? spec.units : undefined} size="sm" stale={!showFences} />
+          <Readout label="beyond a fence" value={showFences ? fmtInt(fence.values.length) : '—'} tone={showFences && fence.values.length > 0 ? 'alert' : 'sensor'} stale={!showFences} live />
         </ReadoutRow>
 
         {dots === 'show' ? (
@@ -141,7 +158,7 @@ export function BoxplotBuilder({ dataset: initialDataset = 'ratio' }: BoxplotBui
             height={190}
             label={spec.axis}
             ariaLabel={`Dotplot of ${spec.name} for ${values.length} records, above the boxplot of the same values`}
-            description={`One dot per record. Dots are draggable: focus one and press the left or right arrow key (Shift for ten steps) to move a value and watch the quartiles, the fences and the whiskers follow. ${fence.values.length} value${fence.values.length === 1 ? ' is' : 's are'} beyond a fence. The data table lists every value.`}
+            description={`One dot per record. Dots are draggable: focus one and press the left or right arrow key (Shift for ten steps) to move a value and watch the quartiles, the fences and the whiskers follow.${showFences ? ` ${fence.values.length} value${fence.values.length === 1 ? ' is' : 's are'} beyond a fence.` : ''} The data table lists every value.`}
           />
         ) : (
           <Note tone="warn">The dots are hidden. Everything the box does not draw — the gap, the second pile, the shape — is hidden with them.</Note>
@@ -150,11 +167,11 @@ export function BoxplotBuilder({ dataset: initialDataset = 'ratio' }: BoxplotBui
         <Boxplot
           groups={[{ name: spec.group, stats: boxStats, color: seriesColor(0) }]}
           domain={spec.domain}
-          showFences
+          showFences={showFences}
           label={spec.axis}
           height={140}
-          ariaLabel={`Boxplot of ${spec.name} for ${values.length} records with the 1.5 times IQR fences drawn`}
-          description={`Five-number summary: minimum ${fmt(five.min, d)}, Q1 ${fmt(five.q1, d)}, median ${fmt(five.median, d)}, Q3 ${fmt(five.q3, d)}, maximum ${fmt(five.max, d)} ${spec.units}. IQR ${fmt(iqrValue, d)}. Fences at ${fmt(fence.lowFence, d)} and ${fmt(fence.highFence, d)}; ${fence.values.length} value${fence.values.length === 1 ? '' : 's'} beyond them.`}
+          ariaLabel={showFences ? `Boxplot of ${spec.name} for ${values.length} records with the 1.5 times IQR fences drawn` : `Boxplot of ${spec.name} for ${values.length} records`}
+          description={`Five-number summary: minimum ${fmt(five.min, d)}, Q1 ${fmt(five.q1, d)}, median ${fmt(five.median, d)}, Q3 ${fmt(five.q3, d)}, maximum ${fmt(five.max, d)} ${spec.units}. IQR ${fmt(iqrValue, d)}.${showFences ? ` Fences at ${fmt(fence.lowFence, d)} and ${fmt(fence.highFence, d)}; ${fence.values.length} value${fence.values.length === 1 ? '' : 's'} beyond them.` : ' The fences are not drawn: switch the fence control to draw them.'}`}
         />
 
         <section aria-label="Five-number summary table">
@@ -162,13 +179,14 @@ export function BoxplotBuilder({ dataset: initialDataset = 'ratio' }: BoxplotBui
           <KeyTable
             ariaLabel="Five-number summary and fences"
             caption={`${spec.name} · ${spec.units}`}
-            columns={['min', 'Q1', 'median', 'Q3', 'max', 'IQR', 'lower fence', 'upper fence', 'beyond']}
-            rows={[[fmt(five.min, d), fmt(five.q1, d), fmt(five.median, d), fmt(five.q3, d), fmt(five.max, d), fmt(iqrValue, d), fmt(fence.lowFence, d), fmt(fence.highFence, d), fmtInt(fence.values.length)]]}
+            columns={['min', 'Q1', 'median', 'Q3', 'max', 'IQR', ...(showFences ? ['lower fence', 'upper fence', 'beyond'] : [])]}
+            rows={[[fmt(five.min, d), fmt(five.q1, d), fmt(five.median, d), fmt(five.q3, d), fmt(five.max, d), fmt(iqrValue, d), ...(showFences ? [fmt(fence.lowFence, d), fmt(fence.highFence, d), fmtInt(fence.values.length)] : [])]]}
           />
         </section>
 
         <Note>{spec.note}</Note>
-        {fence.values.length > 0 && (
+        {!showFences && <Note tone="muted">The fences are off. Q1, Q3 and the IQR are on the readouts; Q3 + 1.5 × IQR is the line the rule draws, and it is yours to work out.</Note>}
+        {showFences && fence.values.length > 0 && (
           <Note tone="alert" live>
             Beyond a fence: {fence.values.slice().sort((a, b) => a - b).map((v) => fmt(v, d)).join(', ')} {spec.units}.
           </Note>

@@ -57,10 +57,13 @@ describe('<GofVisualiser>', () => {
     render(<GofVisualiser />)
     fireEvent.change(screen.getByLabelText('categories accumulated'), { target: { value: '0' } })
     expect(readout('χ² over 0 of 4 categories')).toHaveTextContent(fmt(0, 2))
-    expect(readout('still to come')).toHaveTextContent(fmt(CARGO_GOF.statistic, 2))
+    // With nothing accumulated, "still to come" would be the whole statistic, which act-8/01's
+    // mission beat asks the learner to produce. The panel withholds it until a category is in.
+    expect(readout('still to come')).toHaveTextContent('—')
 
     fireEvent.click(screen.getByRole('button', { name: /ADD ONE CATEGORY/ }))
     expect(readout('χ² over 1 of 4 categories')).toHaveTextContent(fmt(CARGO_GOF.contributions[0], 2))
+    expect(readout('still to come')).toHaveTextContent(fmt(CARGO_GOF.statistic - CARGO_GOF.contributions[0], 2))
 
     fireEvent.click(screen.getByRole('button', { name: /ADD ONE CATEGORY/ }))
     const two = CARGO_GOF.contributions[0] + CARGO_GOF.contributions[1]

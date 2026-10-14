@@ -49,6 +49,13 @@ export interface BinomialExplorerProps {
   observed?: number
   /** What one trial is, in words ("a Lane transit", "a close pass"). */
   label?: string
+  /**
+   * Whether the parameters note closes with the two baselines side by side. Off by default: that
+   * sentence quotes both fits' z and tail whatever `p` the panel is set to, so an explorer opened
+   * on the Board's baseline would still print the 2176 report's tail. act-4/09 turns it on below
+   * its gate, where the comparison is the module's payoff rather than its answer key.
+   */
+  compare?: boolean
 }
 
 type Mode = 'probability' | 'parameters'
@@ -77,6 +84,7 @@ export function BinomialExplorer({
   mode: modeProp = 'probability',
   observed: observedProp = LEDGER_LOSSES,
   label = 'a Lane transit',
+  compare = false,
 }: BinomialExplorerProps) {
   const [mode, setMode] = useState<Mode>(modeProp)
   const [n, setNRaw] = useState(nProp)
@@ -393,7 +401,7 @@ export function BinomialExplorer({
           </Note>
         ) : (
           <Note tone="alert" live>
-            Under {presetLabel}, a count of {fmtInt(n)} trials centres on {fmt(mu, 2)} with a standard deviation of {fmt(sigma, 3)}. The observed {fmtInt(observed)} sits {fmt(z, 2)} standard deviations out, and P(X ≥ {fmtInt(observed)}) = {fmtP(tailAtObserved)} — {oneIn(tailAtObserved)}. Change nothing but the baseline: under {BASELINES.board.label} the same count is z = {fmt(BOARD_FIT.z, 2)} and a tail of {fmtP(BOARD_FIT.tail)}; under {BASELINES.rook.label} it is z = {fmt(ROOK_FIT.z, 2)} and {fmtP(ROOK_FIT.tail)}. Same n, same count, same arithmetic. The argument is entirely about which p the Lane is entitled to.
+            Under {presetLabel}, a count of {fmtInt(n)} trials centres on {fmt(mu, 2)} with a standard deviation of {fmt(sigma, 3)}. The observed {fmtInt(observed)} sits {fmt(z, 2)} standard deviations out, and P(X ≥ {fmtInt(observed)}) = {fmtP(tailAtObserved)} — {oneIn(tailAtObserved)}.{compare ? <> Change nothing but the baseline: under {BASELINES.board.label} the same count is z = {fmt(BOARD_FIT.z, 2)} and a tail of {fmtP(BOARD_FIT.tail)}; under {BASELINES.rook.label} it is z = {fmt(ROOK_FIT.z, 2)} and {fmtP(ROOK_FIT.tail)}.</> : <> The baseline control re-reads the same count against a different p.</>} Same n, same count, same arithmetic. The argument is entirely about which p the Lane is entitled to.
           </Note>
         )}
 

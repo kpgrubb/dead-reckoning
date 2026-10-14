@@ -76,7 +76,7 @@ export function HeatBudgetPlanner({ options = LOITER_OPTIONS, capacityHours = WA
     o.label,
     fmt(expectedValue(o.pmf.values, o.pmf.probs), 1),
     fmt(rvSd(o.pmf.values, o.pmf.probs), 2),
-    fmt(pExceedNormal, 4),
+    fmtPct(pExceedNormal, 1),
     fmt(o.pPerrineInRange, 2),
     String(o.closePasses),
     fmt(o.pSeenCold, 3),
@@ -163,14 +163,14 @@ export function HeatBudgetPlanner({ options = LOITER_OPTIONS, capacityHours = WA
                   showValues={false}
                   height={190}
                   ariaLabel={`Probability distribution of sink-hours for the ${o.label}, with the cells above ${fmt(capacity, 0)} hours shaded`}
-                  description={`The ${o.label} costs ${fmt(o.meanHours, 0)} sink-hours on average with a standard deviation of ${fmt(o.sdHours, 0)} hours. The probability that a window costs more than the cellar's ${fmt(capacity, 0)} hours is ${fmt(pExceedNormal, 4)}. The data table lists every cell and its probability.`}
+                  description={`The ${o.label} costs ${fmt(o.meanHours, 0)} sink-hours on average with a standard deviation of ${fmt(o.sdHours, 0)} hours. The probability that a window costs more than the cellar's ${fmt(capacity, 0)} hours is ${fmtPct(pExceedNormal, 1)}. The data table lists every cell and its probability.`}
                 />
                 <ProbabilityBar
                   value={pExceedNormal}
                   label={`${o.label} · P(exceed ${fmt(capacity, 0)} h)`}
                   complementLabel="window completes cold"
                   color={semanticColor('rejected')}
-                  digits={4}
+                  digits={2}
                 />
               </div>
             ))}

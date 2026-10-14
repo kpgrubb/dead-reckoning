@@ -155,7 +155,7 @@ The tender's own workshop logged the run-up time of **{fmtInt(pumpN)}** reclaime
 <Calculator.Watch>`normalcdf` on the same bounds returns {fmt(2 * normal.sf(1.96), 6)} for the pair of tails, against t's {fmt(2 * t.sf(1.96, pumpDf), 6)}. Both screens will produce a number without complaint. Only one of them is a statement about a mean with $s$ in the denominator.</Calculator.Watch>
 </Calculator>
 
-<TvsNormal />
+<TvsNormal confidence={0.9} />
 
 <Drill generator="act-7/why-t" count={1} />
 <Drill generator="act-7/t-critical-value" count={1} />
