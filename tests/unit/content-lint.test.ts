@@ -33,6 +33,15 @@ function body(src: string): string {
 const files = mdxFiles(contentDir)
 const rel = (f: string) => path.relative(contentDir, f).split(path.sep).join('/')
 
+/**
+ * Prefixes the prose rules below apply to. These rules are heuristics over style, not correctness,
+ * so an Act joins the list only once it has been revised to the standard — otherwise a half-written
+ * Act reddens the suite and the signal is lost. Every Act is now revised, so the list is complete;
+ * it stays a list rather than becoming `files` so that a mid-build Act can be dropped out of it
+ * deliberately and visibly, the way act-4 through act-6 were.
+ */
+const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-4/', 'act-5/', 'act-6/', 'act-7/', 'act-8/', 'act-9/', 'act-10/', 'calc/']
+
 describe('content MDX lint', () => {
   it('finds MDX files to lint', () => {
     expect(files.length).toBeGreaterThan(0)
@@ -171,7 +180,13 @@ describe('content MDX lint', () => {
    * Flags any distinctive phrase of 4+ words repeated across 3+ modules inside <Dialogue> blocks.
    */
   it('does not let a crew voice become a catchphrase', () => {
-    const STOP = /^(the|a|an|and|but|so|then|that|this|it|is|are|of|to|in|on|for|with|you|your|i|we|they|he|she|not|no|yes|sir|captain|skipper)$/
+    // Function words carry no voice, so a run of them is not a catchphrase. Spelled-out numerals
+    // are here for a stronger reason: the correctness rule *requires* a pinned dataset figure to be
+    // worded the same everywhere ("two thousand six hundred and twelve transits" appears in three
+    // modules because it is the same 2,612). Counting those would push each module to say one
+    // number differently, which is the opposite of what the book needs.
+    const STOP =
+      /^(the|a|an|and|but|so|then|that|this|it|is|are|was|were|be|been|am|of|to|in|on|at|for|with|from|by|as|about|out|up|if|or|all|one|you|your|i|we|they|he|she|me|my|there|what|which|have|has|had|will|would|do|does|did|not|no|yes|same|sir|captain|skipper|zero|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million)$/
     const seen = new Map<string, Set<string>>()
 
     for (const file of files) {
@@ -198,7 +213,6 @@ describe('content MDX lint', () => {
     // Acts revised to the post-Prologue prose standard. Acts III–IX were written before it and carry
     // known catchphrase debt ("say it back to me" is in 16 modules); the voice sweep clears it, and
     // each Act joins this list as it is revised. Guarding the revised Acts stops new instances.
-    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-7/', 'act-8/']
     const offences = [...seen.entries()]
       .map(([phrase, inFiles]) => [phrase, [...inFiles].filter((f) => REVISED.some((a) => f.startsWith(a)))] as const)
       .filter(([, inFiles]) => inFiles.length >= 3)
@@ -213,7 +227,6 @@ describe('content MDX lint', () => {
    * that the voice sweep clears, and each Act joins REVISED as it is revised.
    */
   it('does not lean on the corrective reframe', () => {
-    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-7/', 'act-8/']
     const patterns = [
       /\b(?:is|was|are|were)\s+not\s+[^.;!?]{2,45}[,;.]\s+(?:it|that|they|those|the)\s+(?:is|are|was|were)\b/i,
       /\b(?:isn't|aren't|wasn't|it's not)\s+[^.;!?]{2,45},\s+(?:it's|it is|they're|they are|that's)\b/i,
@@ -247,7 +260,6 @@ describe('content MDX lint', () => {
    * each joins REVISED as the sweep reaches it. Numeric ranges (2178–84) use an en dash and are fine.
    */
   it('keeps em dashes under budget', () => {
-    const REVISED = ['act-0/', 'act-1/', 'act-3/', 'act-7/', 'act-8/']
     const BUDGET = 8
     const offences: string[] = []
     for (const file of files.filter((f) => REVISED.some((a) => rel(f).startsWith(a)))) {
@@ -265,7 +277,6 @@ describe('content MDX lint', () => {
    * Scoped to the revised Acts; each joins as the sweep reaches it.
    */
   it('does not gloss a behaviour for the reader', () => {
-    const REVISED = ['act-0/', 'act-1/', 'act-2/', 'act-3/', 'act-7/', 'act-8/', 'calc/']
     const patterns = [
       /,\s*which from (?:her|him|them|it)\b/i,
       /,\s*which is (?:how|what|why) (?:he|she|they|you|one)\b/i,

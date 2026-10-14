@@ -18,7 +18,7 @@ export const tMid = t.quantile(cumulative, dfMid)
 export const tLarge = t.quantile(cumulative, dfLarge)
 export const criticalTex = `z^\\star = \\Phi^{-1}\\!\\left(\\frac{1 + C}{2}\\right) = \\Phi^{-1}(${fmt(cumulative, 4)}) = ${fmt(zc, 4)}`
 
-Ebele has this one on a slate before you ask for it, because he has just been caught saying a number he could not derive. You do not need it to write the interval. It is here because the number in front of the square root is not a constant anybody chose — it is a function run backwards, and you are about to sign your name under it.
+Ebele has this one on a slate before you ask for it, because he has just been caught saying a number he could not derive. You do not need it to write the interval. It is here because the number in front of the square root is a function run backwards rather than a constant anybody chose, and you are about to sign your name under it.
 
 Everything so far has run the curve forwards: pick a cutoff, get an area. The cumulative distribution function **is** that reading, and it is an integral.
 
@@ -38,7 +38,7 @@ A critical value runs it the other way. You are handed an area and asked for the
 
 At {fmtPct(C, 0)} the tails carry {fmt(tail, 4)} each, the middle carries {fmt(C, 4)}, and the cutoff is whatever value makes that true: {fmt(zc, 4)}, which rounds to the {fmt(zc, 2)} everybody quotes. Nothing was looked up.
 
-This is also why the commonest error in the topic happens *before* the inverse rather than inside it. Hand the inverse the level $C$ instead of $(1 + C)/2$ and it answers honestly — with the cutoff that has {fmtPct(C, 0)} below it and {fmtPct(1 - C, 0)} in a single tail, {fmt(wrongCut, 4)}. A perfectly good number, for a different question.
+This is also why the commonest error in the topic happens *before* the inverse rather than inside it. Hand the inverse the level $C$ instead of $(1 + C)/2$ and it answers honestly, with the cutoff that has {fmtPct(C, 0)} below it and {fmtPct(1 - C, 0)} in a single tail, {fmt(wrongCut, 4)}. A perfectly good number, for a different question.
 
 **There is no formula for it.** $\Phi$ has no elementary antiderivative and its inverse has no closed form, so the value is computed by inverting numerically: guess a cutoff, read the area, correct the guess. Newton's method does exactly that, and the correction it uses is the derivative of the inverse.
 

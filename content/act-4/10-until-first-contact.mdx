@@ -17,6 +17,7 @@ summary: "The second window opens with the cellar empty and the Chief buying a w
 import { fmt, fmtInt, fmtPct, geometric, geometricMoments } from '@/lib/stats'
 import {
   ARRIVALS_PER_DAY,
+  ACT_END,
   CLOSE_PASSES,
   CLOSE_PASS_KM,
   DIVERSION_RATE_LAST_YEAR,
@@ -370,7 +371,7 @@ Sir. Off profile, eleven degrees, still braking, on a bearing that does not go t
 
 You do not either, and the honest list of what this ship holds is short. A hull that turned. A vector. The odds that nobody watched you take it. And no way at all to say whether *Marius Regio* is one crooked master running a private errand, or the nineteenth of nineteen.
 
-The report goes to Valhalla at MET {fmtInt(106)}. Solberg has the slot, Sandoval wants every number in the annex defended before it leaves the ship, and the defence is where the annex runs out. Every figure on that sheet was measured off a single file, and nobody aboard can yet say how far a number taken off a single file is allowed to be wrong. At Valhalla there will be four files and four answers.
+The report goes to Valhalla at MET {metStamp(ACT_END).slice(4)}. Solberg has the slot, Sandoval wants every number in the annex defended before it leaves the ship, and the defence is where the annex runs out. Every figure on that sheet was measured off a single file, and nobody aboard can yet say how far a number taken off a single file is allowed to be wrong. At Valhalla there will be four files and four answers.
 
 <LogEntry
   title="Geometric: trials until the first success, mean 1/p, and most waits are shorter than it"

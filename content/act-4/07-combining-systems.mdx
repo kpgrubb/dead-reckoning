@@ -268,6 +268,10 @@ All six loads. The rule is on the board. Do the arithmetic the Chief declined to
   </Failure>
 </MissionBeat>
 
+{/* Gated on the SD beat: option 1 renders the summed-variance margin to one decimal, which is
+    inside act-4-07-sd's tolerance. Visible together, the choice list answers the numeric beat. */}
+<Gated by="act-4-07-sd">
+
 <MissionBeat id="act-4-07-margin" kind="choice" label="WHAT THE SPEC SHEET SHOULD SAY"
   options={MARGIN_OPTIONS} correct={MARGIN_CORRECT} feedback={MARGIN_FEEDBACK}
   prompt={`Three margins on the same six loads are on the engineering deck's table, and Adlinda Yards certified one of them when this hull was commissioned.\n\nWhich figure should the spec sheet have quoted for the total Watch load?`}
@@ -283,6 +287,8 @@ All six loads. The rule is on the board. Do the arithmetic the Chief declined to
   </Dialogue>
   </Failure>
 </MissionBeat>
+
+</Gated>
 
 <Gated by={["act-4-07-sd", "act-4-07-saturate", "act-4-07-margin"]}>
 
