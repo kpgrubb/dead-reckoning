@@ -55,9 +55,9 @@ export const laneRubric = interpretPValueRubric({
 
 <Scene stamp="MET 137/06:50" location="Bridge · alongside, Ceres, transponder on, sink at eleven per cent" condensed="Ebele has the statistic and the p-value on the board before the forenoon watch, with a sentence written underneath them saying there is a small chance the difference is due to chance. Ferrier puts her hand over the numbers and will not look at them until the sentence is struck and rewritten. Rook takes the stylus off him and does the striking himself.">
 
-Ebele has been at the intel terminal since the middle watch. The coffee bulb wedged against the console has gone cold again, and the board behind him carries three columns of working with the top of the first one rubbed out twice.
+Ebele has been at the intel terminal since the middle watch. The coffee bulb wedged against the console has gone cold again. The board behind him carries three columns of working, the top of the first one rubbed out twice.
 
-He has the number. Two numbers, in fact, the standardized statistic and the area beyond it, and he has written a sentence under them in the careful hand he uses when he knows the sentence matters.
+He has the number. Two numbers: the standardized statistic and the area beyond it. Under them he has written a sentence, in the careful hand he uses when he knows the sentence matters.
 
 Ferrier comes onto the bridge at 06:50 with the watch list in one hand, looks at the board, and puts her palm flat over the top half of it.
 
@@ -65,7 +65,7 @@ Ferrier comes onto the bridge at 06:50 with the watch list in one hand, looks at
 Not yet. Read me the sentence.
 </Dialogue>
 
-<Dialogue speaker="analyst" aside="He reads it off the board the way you read something you are pleased with, which is the last time this morning he will sound like that.">
+<Dialogue speaker="analyst" aside="He does not need the board to read it off. He has had it since the middle watch.">
 So. There is a small chance that the difference between the two loss rates is due to chance.
 </Dialogue>
 
@@ -79,20 +79,20 @@ Strike it.
 Sir, it is a small number. That is what a small number means.
 </Dialogue>
 
-The correction is yours to make rather than Ferrier's. You wrote that sentence once, badly, on a report with your own signature under it, and you are the only officer on this deck who has been read his own wording back by somebody who wanted it to fail.
+The correction is yours to make rather than Ferrier's. You wrote that sentence once, badly, on a report with your own signature under it. You are the only officer on this deck who has been read his own wording back by somebody who wanted it to fail.
 
 So you take the stylus off him, strike the words *due to chance* yourself, and ask him what assumption the number was computed under.
 
-He gets there in about four seconds, which is fast.
+He gets there in about four seconds.
 
-<Dialogue speaker="analyst" aside="He is looking at the struck words rather than at either of you, and his voice drops into the register he uses when he is reasoning out loud instead of reporting.">
+<Dialogue speaker="analyst" aside="He is looking at the struck words rather than at either of you. His voice drops.">
 Yes, sir. Under the null. Every step of that calculation assumed the two rates are equal. So chance is not one of the explanations in there. Under the null, chance is the only thing in there, and the number measures how often chance on its own throws a gap this big. It is about the data. I wrote it about the Lane.
 </Dialogue>
 
 Ferrier takes her hand off the board.
 
 <Dialogue speaker="xo" aside="She reads the numbers once, without expression, and goes back to the struck sentence.">
-The number will be recomputed by every analyst at Valhalla inside an hour of reading it, and they will all get the same one, because arithmetic is not where this file is vulnerable. The sentence is. Somebody in a panelled room reads your sentence out loud in the voice people use when they have already decided it is wrong, and then explains, slowly, to a board of flag officers, that this ship does not understand what it has computed. The number survives that. We do not.
+The number will be recomputed by every analyst at Valhalla inside an hour of reading it, and they will all get the same one. Arithmetic is not where this file is vulnerable. The sentence is. Somebody in a panelled room reads it out loud to a board of flag officers, and then explains, slowly, that this ship does not understand what it has computed. The number survives that. We do not.
 </Dialogue>
 
 She hands the stylus back to him.
@@ -257,7 +257,7 @@ Ebele runs it the other way before anybody asks him to. Ten thousand seasons of 
 
 {fmtInt(simRuns)} of them.
 
-<Dialogue speaker="analyst" aside="He has the two numbers side by side to five places, which is more places than either of them deserves, and he is not apologising for the gap.">
+<Dialogue speaker="analyst" aside="He has the two numbers side by side to five places. He is not apologising for the gap.">
 So the curve says {fmt(PERRINE_TEST.pValue, 5)} and the ten thousand seasons say {fmt(simP, 5)}, and they disagree in the fifth place. They are supposed to. The simulation cannot count in units finer than one season in ten thousand, which is {fmt(simFloor, 5)}, and every simulated p-value is a whole number of seasons divided by ten thousand. It could give me {fmtInt(simRuns)} or {fmtInt(simRuns + 1)}. It could not give me {fmt(PERRINE_TEST.pValue, 5)} if the universe insisted.
 
 They are not two estimates of different things, sir. The curve is a *description* of the machine the simulation is running. The only reason to run both is that if they disagreed by a lot, the description would be the thing at fault, and out here in the tail the description is at its worst.
