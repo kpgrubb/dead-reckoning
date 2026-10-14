@@ -143,7 +143,7 @@ export function LimitStack({ parent: parent0 = 'time-to-silence', n: n0 = 4 }: L
 
         <div className="dr-act5__split">
           <section aria-label="Parent population">
-            <h4 className="dr-act5__head">The population · does not move</h4>
+            <h3 className="dr-act5__head">The population · does not move</h3>
             {pdf ? (
               <DensityCurve curves={{ pdf, label: spec.label, color: 'null' }} domain={domain} references={[{ x: mu, label: 'μ', color: 'reference' }]} xLabel={spec.unitLabel} height={200} ariaLabel={`Density of the parent population: ${spec.label}`} description={parentDescription} />
             ) : (
@@ -160,13 +160,13 @@ export function LimitStack({ parent: parent0 = 'time-to-silence', n: n0 = 4 }: L
           </section>
 
           <section aria-label="How fast the spread falls">
-            <h4 className="dr-act5__head">How fast · σ/√n against n</h4>
+            <h3 className="dr-act5__head">How fast · σ/√n against n</h3>
             <Scatter points={sePoints} highlight={n - 1} xLabel="sample size n" yLabel="σ/√n" xDomain={[0, N_MAX]} height={200} radius={2} ariaLabel="Standard deviation of the sample mean against sample size" description={seDescription} />
           </section>
         </div>
 
         <section aria-label="Standardized sampling distribution">
-          <h4 className="dr-act5__head">What converges · (x̄ − μ) ÷ (σ/√n)</h4>
+          <h3 className="dr-act5__head">What converges · (x̄ − μ) ÷ (σ/√n)</h3>
           <Histogram
             values={zs}
             density

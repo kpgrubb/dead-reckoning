@@ -20,7 +20,7 @@
  *    (sessionStorage `dead-reckoning:consults`) so the narrative can acknowledge them later.
  * Answers MUST be computed by code (import from @/lib/stats in the MDX file).
  */
-import { Children, isValidElement, useEffect, useState, type ReactNode } from 'react'
+import { Children, isValidElement, useEffect, useRef, useState, type ReactNode } from 'react'
 import { grade } from '@/lib/problems/grade'
 import type { Answer, ForbiddenPhrase, GradeResult, NumericKind, Response, RubricGroup, RubricPhrase } from '@/lib/problems/types'
 import { useProgress } from '@/store/progress'
@@ -161,7 +161,7 @@ export function MissionBeat(props: MissionBeatProps) {
   const chosenIndex = props.kind === 'decision' && record?.choice ? props.options.indexOf(record.choice) : -1
 
   return (
-    <Panel label={`MISSION · ${(label ?? 'YOUR CALL').toUpperCase()}`} status={passed ? 'RESOLVED' : `ATTEMPTS ${record?.attempts ?? 0}`} tone={passed ? 'tactical' : 'alert'} className={`dr-beat ${passed ? 'is-passed' : ''}`} id={id}>
+    <Panel headingLevel={2} label={`MISSION · ${(label ?? 'YOUR CALL').toUpperCase()}`} status={passed ? 'RESOLVED' : `ATTEMPTS ${record?.attempts ?? 0}`} tone={passed ? 'tactical' : 'alert'} className={`dr-beat ${passed ? 'is-passed' : ''}`} id={id}>
       <RichText text={prompt} className="dr-beat__prompt" />
       {!passed && (
         <form
@@ -202,25 +202,60 @@ export function MissionBeat(props: MissionBeatProps) {
           <RichText text={hint} />
         </div>
       )}
-      {result && !result.correct && (
-        <div className="dr-beat__debrief" role="status">
-          <div className="dr-beat__debrief-tag">DEBRIEF — {result.feedback}</div>
-          {result.rubric && <ResultBlock result={result} />}
-          {pick(children, Failure)}
-        </div>
-      )}
-      {passed && props.kind !== 'decision' && <div className="dr-beat__outcome">{pick(children, Success)}</div>}
-      {passed && props.kind === 'decision' && <div className="dr-beat__outcome">{pick(children, Outcome, chosenIndex)}</div>}
+      {/*
+       * One live region for both verdicts. It is always in the DOM — a status node inserted at the
+       * same moment as its text is unreliable in several screen readers — and the debrief and the
+       * outcome swap inside it, so passing is announced exactly as failing already was and the two
+       * can never speak over each other. Content already present when the beat first mounts (a
+       * reload of a resolved beat) is not a change, so nothing is read on load.
+       */}
+      <div className="dr-beat__report" role="status">
+        {result && !result.correct && (
+          <div className="dr-beat__debrief">
+            <div className="dr-beat__debrief-tag">DEBRIEF — {result.feedback}</div>
+            {result.rubric && <ResultBlock result={result} />}
+            {pick(children, Failure)}
+          </div>
+        )}
+        {passed && props.kind !== 'decision' && <div className="dr-beat__outcome">{pick(children, Success)}</div>}
+        {passed && props.kind === 'decision' && <div className="dr-beat__outcome">{pick(children, Outcome, chosenIndex)}</div>}
+      </div>
     </Panel>
   )
 }
 
+/**
+ * Said once, the first time each gate opens in this session. The revealed scene itself stays
+ * outside the live region: announcing "the section below is open" is useful, reading a 600-word
+ * scene aloud because a beat resolved is not.
+ */
+const announced = new Set<string>()
+
 /** Hides content until the named beat(s) have passed. */
 export function Gated({ by, children }: { by: string | string[]; children: ReactNode }) {
   const ids = Array.isArray(by) ? by : [by]
+  const key = ids.join('+')
   const beats = useProgress((s) => s.beats)
   const ok = ids.every((i) => beats[i]?.passed)
-  if (ok) return <>{children}</>
+  const wasSealed = useRef(!ok)
+  const [note, setNote] = useState('')
+
+  useEffect(() => {
+    if (!ok || !wasSealed.current || announced.has(key)) return
+    wasSealed.current = false
+    announced.add(key)
+    setNote('Mission call resolved. The sealed section below is now open.')
+  }, [ok, key])
+
+  if (ok)
+    return (
+      <>
+        <div className="visually-hidden" role="status">
+          {note}
+        </div>
+        {children}
+      </>
+    )
   return (
     <div className="dr-gated" aria-live="polite">
       <span className="dr-gated__tag">SEALED</span> Resolve the mission call above to continue.

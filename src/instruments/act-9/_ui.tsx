@@ -29,7 +29,7 @@ const subheadStyle: CSSProperties = {
 }
 
 export function Subhead({ children }: { children: ReactNode }) {
-  return <h4 style={subheadStyle}>{children}</h4>
+  return <h3 style={subheadStyle}>{children}</h3>
 }
 
 export function Note({ children, tone = 'muted', live = false }: { children: ReactNode; tone?: 'muted' | 'alert' | 'ok' | 'warn'; live?: boolean }) {

@@ -64,7 +64,15 @@ const [pts, setPts] = useState(points)
          onFit={(fit) => setR(fit?.r)} ariaLabel="…" />
 ```
 
-`fitLine` draws a locally computed least-squares line (display only); pass `line={{ slope, intercept }}` from `@/lib/stats` to draw the course's fit instead. `residuals` draws amber segments to the line. `hReferences={[{ y: 0 }]}` for residual plots. Drag points or focus + arrow keys. Points may carry `series` (0–4) for colour and `label`. Props: `points`, `xLabel?`, `yLabel?`, `xDomain?`, `yDomain?`, `fitLine?`, `line?`, `residuals?`, `onPointsChange?`, `onFit?`, `highlight?`, `hReferences?`, `color?`, `radius=4`, `height=300`, `ariaLabel`, `description?`, `showTable?`.
+`fitLine` draws a locally computed least-squares line (display only); pass `line={{ slope, intercept }}` from `@/lib/stats` to draw the course's fit instead. `residuals` draws amber segments to the line. `hReferences={[{ y: 0 }]}` for residual plots. Points may carry `series` (0–4) for colour and `label`. Props: `points`, `xLabel?`, `yLabel?`, `xDomain?`, `yDomain?`, `fitLine?`, `line?`, `residuals?`, `onPointsChange?`, `onFit?`, `highlight?`, `hReferences?`, `color?`, `radius=4`, `height=300`, `ariaLabel`, `description?`, `showTable?`.
+
+**Keyboard, when `onPointsChange` is set.** Drag with a pointer, or use the keyboard. The whole
+series is **one tab stop** — a roving tabindex, so the 412-point scatter in act-2-02 costs one Tab
+press and not 412. On the focused point: arrow keys move it (Shift for a ×10 step), `Alt`/`Ctrl` +
+an arrow key selects the previous or next point, `Home`/`End` jump to the ends, `Enter` or `Space`
+swaps the arrows over into a select mode (and `Escape` swaps back), and `Escape` again leaves the
+plot. Selection, movement and the mode are announced through a polite live region; the traversal
+keys are spelled out in the chart's description, so do not repeat them in `description`.
 
 ## DensityCurve
 

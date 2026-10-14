@@ -6,7 +6,7 @@
  */
 import { useMemo, useState, type KeyboardEvent } from 'react'
 import { scaleBand, scaleLinear } from 'd3'
-import { Panel } from '@/components'
+import { Panel, TableScroll } from '@/components'
 import { Segmented, Readout, ReadoutRow, Legend, useChartFrame, ChartSurface, PlotClip, BandAxis, YAxis } from '@/instruments/shared'
 import { chartTheme, seriesColor, tickTextProps, labelTextProps } from '@/design/chart-theme'
 import { twoWay, fmtPct, sum, type TwoWayTable } from '@/lib/stats'
@@ -199,6 +199,7 @@ export function TwoWayExplorer() {
       </div>
 
       {view === 'table' ? (
+        <TableScroll className="dr-table-wrap--flush">
         <table className="dr-xtab" aria-label={`Loss subtable, ${ROW_VAR} by ${COL_VAR}, showing ${SHOW_CAPTION[show]}`} onKeyDown={onKey} onMouseLeave={() => setHover(null)}>
           <caption>
             {ROW_VAR} × {COL_VAR} · {SHOW_CAPTION[show]}
@@ -254,6 +255,7 @@ export function TwoWayExplorer() {
             </tr>
           </tbody>
         </table>
+        </TableScroll>
       ) : (
         <ConditionalBars tw={condTable} mosaic={view === 'mosaic'} condLabel={condLabel} segLabel={segLabel} />
       )}

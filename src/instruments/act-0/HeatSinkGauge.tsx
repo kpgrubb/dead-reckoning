@@ -180,7 +180,7 @@ export function HeatSinkGauge({ initialProfile = 'Quiet', initialHours = 40, sta
 
       {runs.length >= 2 && (
         <>
-          <h4 className="dr-act0-heading">RUN TO RUN</h4>
+          <h3 className="dr-act0-heading">RUN TO RUN</h3>
           <ReadoutRow>
             <Readout label="MEAN PROJECTED ENDURANCE" value={fmt(mean(projections), 1)} units="h" tone="engineering" />
             <Readout label="RANGE OF PROJECTED ENDURANCES" value={`${fmt(min(projections), 1)}–${fmt(max(projections), 1)}`} units="h" />

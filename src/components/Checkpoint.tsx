@@ -27,7 +27,7 @@ export function Checkpoint({ act }: { act: string }) {
   const spec = getCheckpoint(act)
   if (!spec) {
     return (
-      <Panel label="CHECKPOINT" tone="alert">
+      <Panel headingLevel={2} label="CHECKPOINT" tone="alert">
         <p className="dr-muted">No checkpoint registered for {act}.</p>
       </Panel>
     )
@@ -103,7 +103,7 @@ export function CheckpointRunner({ spec }: { spec: CheckpointSpec }) {
 
   if (!started && !outcome) {
     return (
-      <Panel label={`CHECKPOINT · ${spec.title.toUpperCase()}`} status={`${total} ITEMS · ≈ ${spec.est_minutes} MIN · PASS ≥ ${Math.round(threshold * 100)}%`} tone="tactical" className="dr-checkpoint">
+      <Panel headingLevel={2} label={`CHECKPOINT · ${spec.title.toUpperCase()}`} status={`${total} ITEMS · ≈ ${spec.est_minutes} MIN · PASS ≥ ${Math.round(threshold * 100)}%`} tone="tactical" className="dr-checkpoint">
         <RichText text={spec.briefing} />
         <div className="dr-checkpoint__meta">
           <span>
@@ -131,7 +131,7 @@ export function CheckpointRunner({ spec }: { spec: CheckpointSpec }) {
   }
 
   return (
-    <Panel label={`CHECKPOINT · ${spec.title.toUpperCase()}`} status={outcome ? `ATTEMPT ${attemptNo} · SCORED` : `ATTEMPT ${attemptNo + 1} · ≈ ${spec.est_minutes} MIN`} tone="tactical" className="dr-checkpoint">
+    <Panel headingLevel={2} label={`CHECKPOINT · ${spec.title.toUpperCase()}`} status={outcome ? `ATTEMPT ${attemptNo} · SCORED` : `ATTEMPT ${attemptNo + 1} · ≈ ${spec.est_minutes} MIN`} tone="tactical" className="dr-checkpoint">
       {!outcome && (
         <div className="dr-checkpoint__progress" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={answered} aria-label="Items answered">
           <span>
@@ -169,11 +169,12 @@ export function CheckpointRunner({ spec }: { spec: CheckpointSpec }) {
               <li key={item.id}>
                 <section className={`dr-checkpoint__item ${r ? (r.correct ? 'is-correct' : 'is-wrong') : ''} ${done ? 'is-answered' : ''}`} aria-labelledby={headId}>
                   <div className="dr-checkpoint__item-head">
-                    <h4 id={headId}>
+                    {/* h3: the checkpoint Panel's own label is the h2 of this section. */}
+                    <h3 id={headId}>
                       Item {idx + 1} of {total}
                       {(item.weight ?? 1) !== 1 ? ` · weight ${item.weight}` : ''}
                       {isDisplayItem ? ' · interpret the display' : ''}
-                    </h4>
+                    </h3>
                     <span className="dr-checkpoint__item-state">{r ? (r.correct ? 'CONFIRMED' : 'MISSED') : done ? 'ANSWERED' : 'OPEN'}</span>
                   </div>
                   {disp && <ProblemDisplay spec={disp} index={idx} isDisplayItem={isDisplayItem} />}

@@ -10,6 +10,7 @@ import rehypeKatex from 'rehype-katex'
 import { fileURLToPath } from 'node:url'
 import { execSync } from 'node:child_process'
 import { contentManifest } from './plugins/content-manifest.ts'
+import { rehypeJsxTables } from './plugins/rehype-jsx-tables.ts'
 
 const src = fileURLToPath(new URL('./src', import.meta.url))
 const content = fileURLToPath(new URL('./content', import.meta.url))
@@ -39,7 +40,7 @@ export default defineConfig({
       enforce: 'pre',
       ...mdx({
         remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm, remarkMath],
-        rehypePlugins: [rehypeKatex],
+        rehypePlugins: [rehypeKatex, rehypeJsxTables],
         providerImportSource: '@mdx-js/react',
       }),
     },

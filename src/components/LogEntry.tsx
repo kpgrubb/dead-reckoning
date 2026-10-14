@@ -33,7 +33,7 @@ export function LogEntry({ title, concept, formula, mistake, tags, id }: LogEntr
   }, [entryId, meta.id, meta.act, title, concept, formula, mistake, tags, upsert])
 
   return (
-    <Panel label={`SHIP’S LOG · ${meta.id.toUpperCase()}`} status={title.toUpperCase()} tone="log" className="dr-logentry">
+    <Panel headingLevel={2} label={`SHIP’S LOG · ${meta.id.toUpperCase()}`} status={title.toUpperCase()} tone="log" className="dr-logentry">
       <RichText text={concept} className="dr-logentry__concept" />
       {formula && (
         <div className="dr-logentry__formula" dangerouslySetInnerHTML={{ __html: katex.renderToString(formula, { displayMode: true, throwOnError: false, output: 'htmlAndMathml' }) }} />

@@ -323,7 +323,7 @@ export function DelayNormalExplorer({ mode: mode0 = 'inverse', area: area0 = 0.0
         </p>
 
         <section aria-label="Normal probability plot">
-          <h4 className="dr-act5__head">Assessing normality · probability plot</h4>
+          <h3 className="dr-act5__head">Assessing normality · probability plot</h3>
           <div className="dr-controls">
             <Segmented<PlotVar>
               label="VARIABLE"

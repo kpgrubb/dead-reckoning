@@ -8,7 +8,7 @@
  */
 import { useMemo, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { scaleLinear } from 'd3'
-import { Panel } from '@/components'
+import { Panel, TableScroll } from '@/components'
 import { ChartSurface, DataTable, Legend, PlotClip, Readout, ReadoutRow, Segmented, Slider, XAxis, YAxis, chartTheme, niceTicks, padDomain, semanticColor, seriesColor, useChartFrame } from '@/instruments/shared'
 import { fmt, fmtInt, fmtP, linearRegression, t, type RegressionFit } from '@/lib/stats'
 import { CYRENE_ORE_INDEX, manifest, massFitWithout } from './data'
@@ -195,7 +195,9 @@ export function InfluenceExplorer() {
 
       <div className="dr-act2b-output" aria-label={`Computer output for the fit ${mode === 'without' ? 'without' : 'with'} Cyrene Ore`}>
         <div className="dr-act2b-output__title">COMPUTER OUTPUT · inferred mass = Constant + Declared mass</div>
-        <DataTable columns={['Predictor', 'Coef', 'SE Coef', 'T', 'P']} rows={outputRows(fit)} />
+        <TableScroll className="dr-table-wrap--flush">
+          <DataTable columns={['Predictor', 'Coef', 'SE Coef', 'T', 'P']} rows={outputRows(fit)} />
+        </TableScroll>
         <p className="dr-act2b-output__foot">
           S = {fmt(fit.s, 1)}   R-Sq = {fmt(100 * fit.r2, 1)} %   R-Sq(adj) = {fmt(100 * r2adj, 1)} %
         </p>
