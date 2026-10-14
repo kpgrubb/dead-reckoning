@@ -14,7 +14,7 @@ calc_briefing: null
 summary: "Off the record in the wardroom, Ferrante prices both errors: a career and a Service scandal against the next nineteen hulls. You set α, and you write down why."
 ---
 
-import { fmt, fmtInt, fmtPct } from '@/lib/stats'
+import { fmt, fmtInt, fmtPct, normal } from '@/lib/stats'
 import {
   ALTERNATIVE_COMPARABLE,
   ALTERNATIVE_DOUBLING,
@@ -46,6 +46,10 @@ export const themisSe0 = Math.sqrt((themisP0 * (1 - themisP0)) / themisN)
 export const themisSeA = Math.sqrt((themisPA * (1 - themisPA)) / themisN)
 export const themisCutoffTex = `\\hat p^\\star = p_0 + z^\\star\\sqrt{\\frac{p_0(1 - p_0)}{n}} = ${fmt(themisP0, 2)} + 1.645 \\times ${fmt(themisSe0, 5)} = ${fmt(themis05.rejectAbove, 5)}`
 export const themisPowerTex = `\\text{power} = P\\left(Z > \\frac{${fmt(themis05.rejectAbove, 5)} - ${fmt(themisPA, 2)}}{${fmt(themisSeA, 5)}}\\right) = P(Z > ${fmt((themis05.rejectAbove - themisPA) / themisSeA, 3)}) = ${fmt(themis05.power, 3)}`
+export const zStar05 = normal.standardQuantile(0.95)
+export const zStar01 = normal.standardQuantile(0.99)
+export const themisCutoffCmd = `${fmt(themisP0, 2)}+${fmt(zStar05, 4)}*${fmt(themisSe0, 5)}`
+export const themisPowerCmd = `normalcdf(${fmt(themis05.rejectAbove, 5)},1E99,${fmt(themisPA, 2)},${fmt(themisSeA, 5)})`
 export const powerGap = POWER_AT_05.power - POWER_AT_01.power
 export const doublingText = `${fmt(ALTERNATIVE_DOUBLING.p1, 3)} against ${fmt(ALTERNATIVE_DOUBLING.p2, 3)}`
 export const comparableText = `${fmt(ALTERNATIVE_COMPARABLE.p1, 3)} against ${fmt(ALTERNATIVE_COMPARABLE.p2, 3)}`
@@ -164,6 +168,17 @@ The Reach did not get its funding. The review was run on the arrivals the office
 *"We failed to reject, so H₀ is true."* A Type II error is by definition the case where $H_0$ is false and the test did not say so. Failing to reject leaves $H_0$ standing as an unrefuted possibility and never establishes it, and a low-powered test that missed a real difference produces exactly the same page as a corridor where nothing is wrong. *No evidence of an effect* and *evidence of no effect* are different sentences, and only one of them is ever available.
 </Briefing.Caution>
 </Briefing>
+
+<Calculator title="The two numbers a power calculation needs (TI-84 Plus CE)">
+<Calculator.Step keys={['2nd', 'DISTR', '3:invNorm(']} note="area: 1 − α · μ: 0 · σ: 1 · Tail: LEFT">The critical value, and it belongs to the level rather than to the data. One-sided at α = 0.05, `invNorm(0.95,0,1)` returns {fmt(zStar05, 4)}. At α = 0.01 the same screen with `0.99` returns {fmt(zStar01, 4)}. Older operating systems have no **Tail** field and always work from the left, so enter the area below the cutoff either way.</Calculator.Step>
+<Calculator.Step note={`${fmt(themisP0, 2)} + ${fmt(zStar05, 4)} × SE under H₀`}>The cutoff itself: how far the estimate has to come before the test rejects. On the Themis Reach review above, <code>{themisCutoffCmd}</code> gives the sample proportion the office would need to see. The standard error on this line is computed at the **null** value, because the cutoff is a property of the test and the test is defined under $H_0$.</Calculator.Step>
+<Calculator.Read label="p̂*" value={fmt(themis05.rejectAbove, 5)}>the rejection cutoff at α = 0.05. Store it rather than retyping it: `STO▸` `ALPHA` `C`.</Calculator.Read>
+<Calculator.Step keys={['2nd', 'DISTR', '2:normalcdf(']} note="lower: the cutoff · upper: 1E99 · μ: the alternative · σ: SE under the alternative">The area beyond that cutoff, measured on the alternative's own distribution. That area is the power. For the Reach at a true rate of {fmt(themisPA, 2)}: <code>{themisPowerCmd}</code>. Type `1E99` with `2nd` `,` for the `E`, not the letter.</Calculator.Step>
+<Calculator.Read label="power" value={fmt(themis05.power, 3)}>and therefore β = {fmt(themis05.beta, 3)}. Change only the first argument to the α = 0.01 cutoff and the same screen returns {fmt(themis01.power, 3)}.</Calculator.Read>
+<Calculator.Watch>**Two curves, two standard errors, and a comparison of two proportions needs both.** The cutoff is computed under $H_0$, which for a two-proportion test asserts a single common rate, so its standard error is the **pooled** one. The area is measured on the alternative, which asserts two different rates, so its standard error is the **unpooled** one, built from each group's own rate over its own count. Using one of them on both lines is the commonest error in a power calculation and it returns a plausible number.</Calculator.Watch>
+<Calculator.Watch>**There is no power screen on this calculator.** `3:invNorm(` then `2:normalcdf(` is the whole procedure, in that order, and the second screen consumes the output of the first. `6:2-PropZTest` answers a different question: it returns a p-value for a file you already have, and power is about a file you have not collected yet.</Calculator.Watch>
+<Calculator.Watch>**Check the answer against 1 − α before you write it down.** The two are areas under different curves and have no reason to agree; here 1 − α = 0.95 and the power is {fmt(themis05.power, 3)}. A power that comes out at exactly 1 − α means the second screen was never run.</Calculator.Watch>
+</Calculator>
 
 <PowerExplorer />
 

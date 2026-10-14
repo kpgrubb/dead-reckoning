@@ -278,6 +278,8 @@ export interface RunTableRow {
   profile: ProfileName
   hours: number
   loadKw: number
+  /** Cellar reading at torch-off. Logged so the Briefing can run the drain-rate route the mission beat asks for. */
+  sinkStartPct: number
   sinkEndPct: number
   purges: number
   detected: 'yes' | 'no'
@@ -292,7 +294,16 @@ export const yardAcceptanceRuns: RunTableRow[] = (() => {
   ]
   plan.forEach((p, i) => {
     const { loadKw, samples } = simulateColdRun(r, PROFILES[p.profile], p.hours, 3, { measured: false })
-    rows.push({ run: `A-${i + 1}`, profile: p.profile, hours: p.hours, loadKw: Math.round(loadKw), sinkEndPct: Math.round(samples[samples.length - 1].pct * 10) / 10, purges: p.purges, detected: p.detected })
+    rows.push({
+      run: `A-${i + 1}`,
+      profile: p.profile,
+      hours: p.hours,
+      loadKw: Math.round(loadKw),
+      sinkStartPct: Math.round(samples[0].pct * 10) / 10,
+      sinkEndPct: Math.round(samples[samples.length - 1].pct * 10) / 10,
+      purges: p.purges,
+      detected: p.detected,
+    })
   })
   return rows
 })()

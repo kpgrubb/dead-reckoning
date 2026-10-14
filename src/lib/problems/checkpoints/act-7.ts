@@ -6,10 +6,17 @@
  * through it in the wardroom with the hatch shut, looking for the one procedure that was chosen
  * wrong — because that is the only thing in it Ostrow needs.
  *
- * Item mix per the blueprint: 4 MC (q1, q4, q6, q10), 4 NUM (q2, q5, q7, plus the numeric inside
- * q11's display), 3 INT (q3, q8, q9 — q3 and q9 at weight 1.5, the two sentences a hearing would
- * quote) and exactly one DISP (q11, two small-sample dotplots). Generators live in
+ * Item mix: 4 MC (q1, q5, q8, q10), 3 NUM (q2, q4, q6), 3 INT (q3, q7, q9 — q3 and q9 at weight
+ * 1.5, the two sentences a hearing would quote) and exactly one DISP (q11, two small-sample
+ * dotplots). Items run in module order, act-7-01 through act-7-07. Generators live in
  * src/lib/problems/generators/act-7/ and are drawn fresh on every attempt.
+ *
+ * Topic coverage is the contract, and it is now complete: every CED topic 7.1 through 7.10 is
+ * assessed. The blueprint put 7.8 on q6 and q9 and neither built item carried it, so the slot that
+ * held `t-test-setup` (7.4, one-sample hypotheses and conditions) now holds `two-sample-setup`
+ * (7.8, the hypotheses and conditions for a difference of means) at q8, beside the conclusion it
+ * sets up. 7.4 is still assessed three times over, at q4, q5 and q6, and the conditions habit at
+ * q11's display.
  */
 import type { CheckpointSpec } from '../checkpoints'
 
@@ -45,38 +52,38 @@ export const act7Checkpoint: CheckpointSpec = {
     },
     {
       id: 'q4',
-      generator: 'act-7/t-test-setup',
-      review: ['act-7-03'],
-      debrief:
-        'Ferrier: "Hypotheses about the parameter, written before the statistic. Then the three conditions with their numbers in them. A conclusion with no conditions attached to it is a conclusion about nothing."',
-    },
-    {
-      id: 'q5',
       generator: 'act-7/t-test-statistic',
       review: ['act-7-03'],
       debrief:
         'Ebele: "Degrees of freedom, then the tail. The normal table gives a smaller p than the truth at this n, every time, and in the direction that flatters us."',
     },
     {
-      id: 'q6',
+      id: 'q5',
       generator: 'act-7/paired-or-two-sample',
       review: ['act-7-04'],
       debrief:
         'Ferrier: "Read the design before you read the numbers. If each row of one column belongs to a row of the other, the pairs are the units and the differences are your sample. If they do not, they do not, and pairing them is an invention."',
     },
     {
-      id: 'q7',
+      id: 'q6',
       generator: 'act-7/paired-t',
       review: ['act-7-04'],
       debrief:
         'Ebele: "One list of differences, one sample, n minus one degrees of freedom on the pairs. And the order of subtraction is decided before the sign is read, or the conclusion comes out backwards and reads perfectly well."',
     },
     {
-      id: 'q8',
+      id: 'q7',
       generator: 'act-7/difference-interval-interpretation',
       review: ['act-7-05'],
       debrief:
         'Ferrier: "Two groups, so the parameter is a difference of means and the sentence has to say which minus which. And when the interval holds zero, the honest sentence is that we have no evidence of a difference. Not that there is none."',
+    },
+    {
+      id: 'q8',
+      generator: 'act-7/two-sample-setup',
+      review: ['act-7-06'],
+      debrief:
+        'Sandoval: "Parameters before statistics, and each group keeps its own s over its own n. Pooling is a claim about two populations, Ensign, and two columns of equal length do not make it."',
     },
     {
       id: 'q9',
