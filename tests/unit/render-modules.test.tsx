@@ -28,6 +28,9 @@ const LEAKS: { label: string; re: RegExp }[] = [
   { label: 'raw Markdown table row', re: /\|\s*-{2,}\s*\|/ },
   { label: 'undefined in prose', re: /\bundefined\b/ },
   { label: 'NaN in prose', re: /\bNaN\b/ },
+  // <Drill> degrades to a muted panel rather than throwing when it cannot find its generator, so a
+  // module can ship with dead drills and nothing goes red. act-9/02 reached master with six.
+  { label: 'unregistered drill generator', re: /is not registered/ },
 ]
 
 function renderModule(meta: ModuleMeta, Body: ComponentType) {
