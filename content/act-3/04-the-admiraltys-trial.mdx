@@ -67,7 +67,7 @@ export const themisLopsided = [0, 1, 2, 3, 7, 8, 9, 10].reduce((s, x) => s + the
 
 Ferrier has had Attachment D since MET 70 and has not mentioned it once in two days.
 
-Breakfast under 4 mgee. The wardroom plot is the only display aboard big enough to take a roster whole, so you eat standing at the end of the table with the tray wedged against the coaming, and she puts the document up over the top of it. Roster first. Finding last. She stands to one side with her arms folded so that you are looking at the page and not at her.
+Breakfast under 4 mgee. The wardroom plot is the only display aboard big enough to take a roster whole. You eat standing at the end of the table with the tray wedged against the coaming while she puts the document up over the top of it. Roster first. Finding last. She stands to one side with her arms folded so that you are looking at the page and not at her.
 
 {fmtInt(BOARD_TRIAL.length)} transits, 2183, the Lane between the Marks. {fmtInt(escorted.length)} of them sailed with the cutter *Tindr* in company. {fmtInt(unescorted.length)} sailed alone. Every transit in the file came home; the incident column is {fmtInt(incidentTotal)} from top to bottom, and the Directorate has taken that column and written a sentence under it.
 
@@ -75,7 +75,7 @@ The rest of the page is where the work is.
 
 The escorted {fmtInt(escorted.length)} are two announced convoys: {fmtInt(convoyA.length)} hulls out on day {fmtInt(convoyA[0].departureDay)}, {fmtInt(convoyB.length)} on day {fmtInt(convoyB[0].departureDay)}. They sailed with the cutter because their owners wrote to Lane Operations and asked for one. Every one of them is a Mercantile house's hull. Every one of them is running a {escorted[0].drive} plant: {fmtInt(escortedTessera)} out of {fmtInt(escorted.length)}.
 
-The unescorted {fmtInt(unescorted.length)} are independents. No convoy, no announcement, departures scattered from day {fmtInt(firstUnescorted)} to day {fmtInt(lastUnescorted)} the way independents sail, and {fmtInt(unescortedTessera)} of them on a {escorted[0].drive}.
+The unescorted {fmtInt(unescorted.length)} are independents. No convoy, no announcement, departures scattered from day {fmtInt(firstUnescorted)} to day {fmtInt(lastUnescorted)}, and {fmtInt(unescortedTessera)} of them on a {escorted[0].drive}.
 
 And the owner column has {fmtInt(ownerClasses.length)} values in it, not {fmtInt(OWNERS.length)}. Not one Perrine hull in the trial. {fmtInt(perrineInTrial)}. Sulcus Freight moved no cargo down the Lane in the trial month. The Directorate gives that no line of its own. Ferrier has underlined it twice.
 
@@ -97,7 +97,7 @@ And the owner column has {fmtInt(ownerClasses.length)} values in it, not {fmtInt
 
 The builder takes the roster straight off Attachment D, one row per transit. Ferrier works down it the way she works a damage-control board: name the thing, check the thing, move on, and touch nothing until the whole board has been read.
 
-"Units." She taps the row count. "{fmtInt(BOARD_TRIAL.length)} transits. Not {fmtInt(BOARD_TRIAL.length)} hulls. Not {fmtInt(BOARD_TRIAL.length)} masters. A transit is what got the cutter and a transit is what got logged."
+"Units." She taps the row count. "{fmtInt(BOARD_TRIAL.length)} transits. Not {fmtInt(BOARD_TRIAL.length)} hulls. Not {fmtInt(BOARD_TRIAL.length)} masters. A transit got the cutter. A transit got logged."
 
 "Factor. Escort. *Tindr* in company, or not."
 
@@ -111,9 +111,9 @@ She clears the incident column and puts the advisory counts up in its place.
 
 "This one moves. Escorted, {fmt(boardMeans.escorted, 2)} off-nominal advisories a transit. Unescorted, {fmt(boardMeans.unescorted, 2)}. A gap of {fmt(boardGap, 2)}, which nobody at Valhalla has mentioned, because it runs the wrong way for the sentence they wanted."
 
-"Assignment." She does not editorialise. She reads the method line off the attachment. "*Escort provision allocated on application by the owner.*"
+"Assignment." She reads the method line off the attachment. "*Escort provision allocated on application by the owner.*"
 
-Then she presses **THE BOARD'S ASSIGNMENT**, which is where the builder already is, and lets the indicator sit.
+Then she presses **THE BOARD'S ASSIGNMENT** and lets the indicator sit.
 
 It reads {fmt(boardImbalance, 2)}. It is on its stop. It cannot read higher than that.
 
@@ -123,7 +123,7 @@ She presses **RANDOMIZE WITHIN OWNER**. {fmt(blockImbalance, 2)}.
 
 She says nothing about any of the three. She puts her hands flat on the table on either side of the plot and waits. After a while Ebele stops watching the indicator and starts watching you.
 
-<Dialogue speaker="xo" aside="She has not raised her voice once this morning and she is not going to. The roster is still on the plot behind her with the indicator on its stop.">
+<Dialogue speaker="xo" aside="She has not raised her voice once this morning. The roster is still on the plot behind her with the indicator on its stop.">
 Name it, Captain. Out loud first, then up on the plot where the Ensign can copy it into the draft. There is a column in that file the cutter never left the side of, and the Directorate has written a sentence that assumes it isn't there.
 </Dialogue>
 
@@ -135,7 +135,7 @@ Ebele has been holding something since the middle of it. He gets it out while sh
 
 <RegisterOfficeTable />
 
-Two offices, one register, {fmtInt(REGISTER_LOSSES)} losses between them, and the rows do not look like two clerks doing the same job. Ferrier reads it once and tells him to date it, sign it and put it in the appendix. Then she turns the plot back to Attachment D, which is what the Board asked this ship for this week.
+Two offices, one register, {fmtInt(REGISTER_LOSSES)} losses between them, and the rows do not look like two clerks doing the same job. Ferrier reads it once and tells him to date it, sign it and put it in the appendix. Then she turns the plot back to Attachment D. That is what the Board asked this ship for this week.
 
 <Briefing title="An experiment is something you did; a study is something you watched" topics={["3.5", "3.6"]}>
 <Briefing.Intuition>
@@ -204,11 +204,11 @@ Block on the leg instead. {fmtInt(themis.legSize)} outer, {fmtInt(themis.legSize
   {...confoundRubric()}>
   <Success>
   <Dialogue speaker="xo" aside="She reads it once, marks nothing, and sets it on top of Attachment D rather than under it.">
-  That is the paragraph. Note what you did not write: you did not write that the Directorate is wrong about escorts. You wrote that the Directorate cannot know, which is a harder sentence to answer and a great deal harder to hold against us.
+  That is the paragraph. Note what you did not write: you did not write that the Directorate is wrong about escorts. You wrote that the Directorate cannot know. That is a much harder sentence to answer.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="analyst" aside="He has the owner column and the escort column side by side, shaded the same colour to make the point to himself, and he reads his own draft back before he says anything about it.">
+  <Dialogue speaker="analyst" aside="He has the owner column and the escort column side by side, shaded the same colour, and he reads his own draft back before he says anything.">
   I named the column and then I stopped, sir. Naming it is not the argument. The column, how the column came to lie under the cutter, what that costs the sentence the Directorate wrote. And the part I leave out every time I write this: what the trial would have printed if escorts did nothing at all. The same sheet. Down to the last row.
   </Dialogue>
   </Failure>
@@ -232,7 +232,7 @@ Block on the leg instead. {fmtInt(themis.legSize)} outer, {fmtInt(themis.legSize
   hint="One of these removes a variable you can name before the trial starts. One trusts chance to remove it. One groups the units by the very thing the trial is supposed to measure. One buys more of the same mistake at twice the price.">
   <Success>
   <Dialogue speaker="xo" aside="She writes it into the recommendation in four lines and reads them back without warmth.">
-  Escort assigned by lot. Assignment not announced, to the owners or to the Lane. Blocks by owner class, drawn inside the block. Every transit in the window on the roster, escorted or not. Four lines, and the only version of this trial that could have answered the question it was commissioned to answer.
+  Escort assigned by lot. Assignment not announced, to the owners or to the Lane. Blocks by owner class, drawn inside the block. Every transit in the window on the roster, escorted or not. Four lines. The only version of this trial that could have answered the question.
   </Dialogue>
   </Success>
   <Failure>
@@ -244,30 +244,30 @@ Block on the leg instead. {fmtInt(themis.legSize)} outer, {fmtInt(themis.legSize
 
 <Gated by={["act-3-04-confound", "act-3-04-design"]}>
 
-<Scene stamp="MET 72/16:40" location="Wardroom · braking at 4 mgee · 2.50 AU from Callisto" condensed="Ebele counts the label-deals: of the ways to split the 26 transits in half, only about three in ten balance owner, and blocking keeps only those. Ferrier prices her own design out loud, a Close Season and two cutters the Service has not got, and files it anyway. The Board's trial could not have found anything either way, so whether escorts matter at all is still not in evidence. Which leaves the one cutter on the Lane whose escort assignments you can direct.">
+<Scene stamp="MET 72/16:40" location="Wardroom · braking at 4 mgee · 2.50 AU from Callisto" condensed="Ebele counts the label-deals: most ways of splitting the 26 transits in half leave the owner classes lopsided, and blocking keeps only the ones that do not. Ferrier prices her own design out loud, a Close Season and two cutters the Service has not got, and files it anyway. The Board's trial could not have found anything either way, so whether escorts matter at all is still not in evidence. Which leaves the one cutter on the Lane whose escort assignments you can direct.">
 
 Ebele does the counting after supper because he wants it in the appendix with a number on it rather than an adjective.
 
-"So there are {fmtInt(crdWays)} ways to deal {fmtInt(BOARD_TRIAL.length)} transits into two halves of {fmtInt(half)}, sir. {fmtInt(blockWays)} of them put the owner classes in the same proportion on both sides. That's {fmtPct(balancedShare, 0)}." He sits back. "So chance gets it exactly right about three times in ten. Blocking by owner throws away the other {fmtPct(1 - balancedShare, 0)} before the draw, and what's left is {fmtInt(blockWays)} assignments that are all balanced and still all random."
+"So there are {fmtInt(crdWays)} ways to deal {fmtInt(BOARD_TRIAL.length)} transits into two halves of {fmtInt(half)}, sir. {fmtInt(blockWays)} of them put the owner classes in the same proportion on both sides. That's {fmtPct(balancedShare, 0)}." He sits back. "Blocking by owner throws away the other {fmtPct(1 - balancedShare, 0)} before the draw. What's left is {fmtInt(blockWays)} assignments that are all balanced and still all random."
 
 "And the version of this trial we can actually run," Ferrier says, "costs the following."
 
-She counts it on the table with two fingers, the way she prices anything she is about to file and not get.
+She counts it on the table with two fingers.
 
-"A Close Season. Not a month. A season, with the Authority holding the schedule so that owners cannot sail early to dodge the draw and cannot apply for a cutter at all. That is the Lane Authority telling {fmtInt(FRAME_N)} masters that the Compact has taken over their sailing dates, and the Authority will not do it, because the Authority does not work for us."
+"A Close Season. Not a month. A season, with the Authority holding the schedule so that owners cannot sail early to dodge the draw and cannot apply for a cutter at all. That is the Lane Authority telling {fmtInt(FRAME_N)} masters that the Compact has taken over their sailing dates. They will not do it. The Authority does not work for us."
 
-"Two cutters, on station, for the whole of it. One to escort the treated half and one to hold the window when the first one is elsewhere. The Service has *Asgard* and it has *Tindr*, and *Tindr* is the one that ran Attachment D, which means *Tindr* is the one Lane Operations will not release. So: two cutters, of which we have less than one."
+"Two cutters, on station, for the whole of it. One to escort the treated half and one to hold the window when the first is elsewhere. The Service has *Asgard* and it has *Tindr*. *Tindr* ran Attachment D, so Lane Operations will not release her. Two cutters, and we have less than one."
 
-"Write it up anyway," she says. "Costed, at the front, with the four lines of design under it. When this is argued in two years I want the file to show that somebody specified the trial that would have settled it and priced it honestly, and that the price is the reason it did not happen."
+"Write it up anyway," she says. "Costed, at the front, with the four lines of design under it. When this is argued in two years I want the file to show that somebody specified the trial that would have settled it and priced it honestly. And that the price is why it never ran."
 
-So the recommendation goes in costed, at the front, and there it will stay. Under it goes the finding: Attachment D could not have come out any other way. With {fmtInt(incidentTotal)} incidents in {fmtInt(BOARD_TRIAL.length)} transits and the Lane's working loss rate of {fmtPct(lossRate, 0)} a transit, a roster this size would have carried even one loss only {fmtPct(seeOneLoss, 0)} of the time. Run it again with both cutters tied up at Uruk High and it prints the same sheet.
+So the recommendation goes in costed, at the front. Under it goes the finding: Attachment D could not have come out any other way. With {fmtInt(incidentTotal)} incidents in {fmtInt(BOARD_TRIAL.length)} transits and the Lane's working loss rate of {fmtPct(lossRate, 0)} a transit, a roster this size would have carried even one loss only {fmtPct(seeOneLoss, 0)} of the time. Run it again with both cutters tied up at Uruk High and it prints the same sheet.
 
 You do not know that escorts work. You do not know that they do not.
 
 Ferrier puts the roster away and the plot goes back to the Lane. The Lane at MET 72 has one cutter on it whose escort assignments are not the Directorate's to allocate. The warrant that says so is on the slate under your hand.
 
-<Dialogue speaker="xo" aside="She says it as a statement of fact about the warrant, not as a suggestion, and then she goes to bed.">
-Your warrant reaches one cutter. Which transits *Asgard* escorts on this corridor, for as long as the assessment runs. It does not reach the Authority, it does not reach the schedule, and it will never reach a season, so the Board's question is going to stay unanswered. Find the one that fits inside a cutter and a week, Captain. Put that in the file instead.
+<Dialogue speaker="xo" aside="She reads it off the warrant, and then she goes to bed.">
+Your warrant reaches one cutter. Which transits *Asgard* escorts on this corridor, for as long as the assessment runs. It does not reach the Authority or the schedule, and it will never reach a season. The Board's question stays unanswered. Find the one that fits inside a cutter and a week, Captain. Put that in the file instead.
 </Dialogue>
 
 </Scene>

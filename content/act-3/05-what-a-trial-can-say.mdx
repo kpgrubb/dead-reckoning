@@ -11,7 +11,7 @@ objectives:
 prereqs: ["act-3-04"]
 est_minutes: 30
 calc_briefing: null
-summary: "You hold the warrant. One week of Asgard's escort assignments, drawn by lot, and a difference in advisories that Ebele wants to call a third. The labels get shuffled every way they can fall, and the difference goes looking for somewhere unusual to stand."
+summary: "You hold the warrant. One week of Asgard's escort assignments, drawn by lot, and a difference in advisories that Ebele wants to call a third. Then the labels get shuffled every way they could have fallen, to see whether that difference is anywhere unusual."
 ---
 
 import { binomial, choose, fmt, fmtInt, fmtPct } from '@/lib/stats'
@@ -47,7 +47,7 @@ export const asgardTransitsFor90 = transitsToDetect(asgardRate)
 
 <Scene stamp="MET 74/07:40" location="Bridge · braking at 4 mgee · 2.53 AU from Callisto" condensed="Twelve hulls are on the Authority's schedule to transit Mark 6 to Mark 7 in the coming week. Asgard can cover six of them. As the Board's assessing officer the escort assignment is yours to make and nobody at Valhalla can answer inside forty minutes. Ferrier lays out what the warrant does and does not cover, and declines to tell you what to do with it.">
 
-The Authority's forward schedule comes down at 0600 and Solberg has it on the plot before you have finished the first cup: twelve hulls booked through the Mark 6 to Mark 7 stretch in the coming week, {lotteryMix}, spread across five days.
+The Authority's forward schedule comes down at 0600. Solberg has it on the plot before you have finished the first cup: twelve hulls booked through the Mark 6 to Mark 7 stretch in the coming week, {lotteryMix}, spread across five days.
 
 *Asgard* is on that stretch and has beam capacity for about half of them.
 
@@ -61,7 +61,7 @@ Ebele has the warrant up, because he has read it three times since MET 72 and wa
 
 "Taking the warrant as issued and unamended," Ferrier says. "I checked that at 0600. Say what you would do with it."
 
-"So the design," Ebele says, and gets faster. "Twelve transits, six escorted, six not, drawn by lot. Completely randomized. Twelve isn't enough to block on owner and the classes are too thin to split anyway. Unannounced: the masters find out *Asgard* is with them when *Asgard* is with them, and the Authority is told after the week. Same corridor, same week, same weather. The only thing that differs between the two groups is which of them drew the cutter, and it differs because a machine said so."
+"So the design," Ebele says, and gets faster. "Twelve transits, six escorted, six not, drawn by lot. Completely randomized. Twelve isn't enough to block on owner and the classes are too thin to split anyway. Unannounced: the masters find out *Asgard* is with them when *Asgard* is with them, and the Authority is told after the week. Same corridor, same week. The only thing that differs between the two groups is which of them drew the cutter. A machine decided that."
 
 "Response."
 
@@ -90,8 +90,8 @@ What it covers: which transits *Asgard* escorts, for the duration of the assessm
   <Dialogue speaker="xo" aside="She logs this one too, at the same length, with no change in her voice at all.">
   Logged, and noted that the authority existed and was not used. Then we take what *Asgard* already has. Her master ran six transits on her own account in the last fortnight and tossed for the escorts because she could not be in two places. Smaller than the week we did not order, and none of it our design. The toss did the assigning. That is the part that carries.
   </Dialogue>
-  <Dialogue speaker="analyst" aside="He is disappointed and doing a creditable job of not showing it, which mostly means he talks about arithmetic.">
-  Six transits, sir. Three and three. Every conclusion we can draw gets narrower by a factor I can compute, and I would rather compute it than pretend it isn't there. I will write the sample size into the first line of the finding and not the last.
+  <Dialogue speaker="analyst" aside="He goes straight to the arithmetic and does not look up from it.">
+  Six transits, sir. Three and three. Every conclusion we can draw gets narrower by a factor I can compute, and I would rather compute it than pretend it isn't there. I will write the sample size into the first line of the finding.
   </Dialogue>
   </Outcome>
 </MissionBeat>
@@ -100,7 +100,7 @@ What it covers: which transits *Asgard* escorts, for the duration of the assessm
 
 <Scene stamp="MET 75/05:20 → 79/18:40" location="Bridge · comms station · braking at 4 mgee · 2.55 AU from Callisto" condensed="Solberg draws the digits in pairs and logs every one, including the discards. Six labels come out; the list goes to Asgard with no reasons attached. Five days later the Register's advisory counts come back and the escorted transits are lower. Ebele calls it a third and you send him to the machine.">
 
-Solberg draws it at the change of the morning watch. Ebele stands where he can see the sheet and not the hand, which is Solberg's arrangement and not his.
+Solberg draws it at the change of the morning watch. He puts Ebele where he can see the sheet and not the hand.
 
 <Dialogue speaker="comms" aside="He reads the whole string out, discards included, so that somebody at Valhalla can run the draw again off the log alone." lag="lag 4 min 11 s · Asgard">
 Digits, in the order drawn, in pairs: {digitPairs}. Pairs out of range or already taken were discarded and are on the sheet. The six labels selected, in draw order: {escortedLabelList}. That is the escort list for *Asgard*, week of MET 74. Transmitting now, with no reasons appended, as directed.
@@ -108,7 +108,7 @@ Digits, in the order drawn, in pairs: {digitPairs}. Pairs out of range or alread
 
 The hulls behind those labels are {LOTTERY_TRANSITS.filter((t) => t.escorted).map((t) => t.hull).join(', ')}. It is not the set you would have picked.
 
-Five days, twelve transits, one cutter working half of them and logging the other half past her without comment. Nobody is lost. Nothing is even close. On MET 79 the Authority's Register posts the week's minor records and Ebele pulls the advisory counts against the labels, and the two columns are not the same.
+Five days, twelve transits, one cutter working half of them and logging the other half past her without comment. Nobody is lost. Nothing is even close. On MET 79 the Authority's Register posts the week's minor records. Ebele pulls the advisory counts against the labels. The two columns are not the same.
 
 Escorted: {LOTTERY_ESCORTED.join(', ')}. Mean {fmt(LOTTERY_EXACT.meanA, 2)}.
 
@@ -118,7 +118,7 @@ Unescorted: {LOTTERY_UNESCORTED.join(', ')}. Mean {fmt(LOTTERY_EXACT.meanB, 2)}.
 So that's a third fewer, sir. {fmt(LOTTERY_EXACT.meanA, 2)} against {fmt(LOTTERY_EXACT.meanB, 2)}. That is {fmtPct(lotteryDrop, 0)} down, and it was assigned by lot, so the word is *because*. Escorts reduce advisories by a third. I can have that in the preliminary in ten—
 </Dialogue>
 
-He is not wrong about anything yet except the last two sentences. Those are the two the Board would print.
+He is not wrong about anything yet except the last two sentences, and those are the two the Board would print.
 
 You tell him to put the labels back in the bag.
 
@@ -136,7 +136,7 @@ All of them. Every way the six could have fallen. Then find the one that actuall
 
 Six transits in the last fortnight, Mark 6 to Mark 7. She could cover three. She tossed for them, wrote the toss down, and escorted the three that came up. Attachment D had {fmtInt(BOARD_TRIAL.length)} transits and a season of planning behind it and no toss anywhere in it.
 
-<Dialogue speaker="xo" aside="She reads the covering line twice and then reads it out, which she does not often do." lag="lag 4 min 11 s · Asgard">
+<Dialogue speaker="xo" aside="She reads the covering line twice and then reads it out." lag="lag 4 min 11 s · Asgard">
 *Assignment by coin, results appended, offered for what it is worth.* It is worth this, Ensign: the three that got the cutter were not the three she would have chosen, and she can prove it. Her six transits differ from Attachment D on that one point, and it is the only point that pays.
 </Dialogue>
 
@@ -150,7 +150,7 @@ Unescorted: {PILOT_UNESCORTED.join(', ')}. Mean {fmt(PILOT_EXACT.meanB, 2)}.
 So that's a third fewer, sir. More than a third. {fmt(PILOT_EXACT.meanA, 2)} against {fmt(PILOT_EXACT.meanB, 2)}. That is {fmtPct(pilotDrop, 0)} down, and the coin did the assigning, so the word is *because*. Escorts reduce advisories. I can have that in the preliminary in ten—
 </Dialogue>
 
-He is not wrong about anything yet except the last two sentences. Those are the two the Board would print.
+He is not wrong about anything yet except the last two sentences, and those are the two the Board would print.
 
 You tell him to put the labels back in the bag.
 
@@ -262,8 +262,8 @@ Now the other arithmetic, which is the one nobody runs before commissioning a tr
 
 <LotteryBeat id="act-3-05-p">
   <Success>
-  <Dialogue speaker="analyst" aside="He has the observed difference marked on the distribution and he is looking at where it sits, which is not where he expected it to sit.">
-  So it's sitting in the crowd, sir. Middle of the pile. The lottery makes a gap that size on its own, without any escort doing a thing, that often. I had the sentence written. I had it written and the number was going to be the reason nobody argued with it.
+  <Dialogue speaker="analyst" aside="He has the observed difference marked on the distribution and has stopped talking over it.">
+  So it's sitting in the crowd, sir. Middle of the pile. The lottery makes a gap that size on its own, without any escort doing a thing, that often. I had the sentence written. I had it written before the numbers came in.
   </Dialogue>
   </Success>
   <Failure>
@@ -306,7 +306,7 @@ The finding takes four lines and the limits take eleven, and Ferrier puts the el
 
 A week of transits at the Lane's rate was never going to produce a loss to count. The report says so, and prints the number of transits that would have. Hundreds. The file goes on the beam to Valhalla inside three days, and *Asgard* has her own schedule back in the morning.
 
-<Dialogue speaker="xo" aside="She writes it as the closing line of the section, and she writes it in the register the Board reads, which is the flattest one she has.">
+<Dialogue speaker="xo" aside="She writes it as the closing line of the section, in the flattest register she has.">
 The Board is advised that no escort trial of a size the Service can mount is capable of detecting a change in a loss rate of this order, and that any future finding on escort effectiveness against loss, favourable or unfavourable, should be read in that light. That is a property of the question rather than a fault in the trial.
 </Dialogue>
 
@@ -316,7 +316,7 @@ Solberg logs one more thing before he goes off watch, because he logs everything
 
 Ferrier reads it, and then reads the paragraph number back into the log a second time, with the date.
 
-"Captain Ostrow will make something of that in due course," she says. "Let him. The authority is written down and the draw is on a sheet with every discarded pair on it. There is nothing here for him to find, which will not stop him looking, and the looking will be in the file too."
+"Captain Ostrow will make something of that in due course," she says. "Let him. The authority is written down and the draw is on a sheet with every discarded pair on it. There is nothing here for him to find. The looking will be in the file too."
 
 </Decided>
 
@@ -328,7 +328,7 @@ Nobody at Uruk asks a question, because nothing was ordered and *Asgard*'s maste
 
 You cannot say escorts work. You cannot say they do not. What you can say, and what nobody on the Lane has put in writing before, is exactly how much a trial of this size is able to see.
 
-Which leaves the thing the testimony kept pointing at and never reached. Independent masters saw Perrine hulls turn late on the approach. The Register gives *when* and *where* and stops. The question with an answer in it is **where the hulls actually go**, and nobody has asked it yet.
+Which leaves the thing the testimony kept pointing at and never reached. Independent masters saw Perrine hulls turn late on the approach. The Register gives *when* and *where* and stops. The question with an answer in it is where the hulls actually go, and nobody has asked it yet.
 
 The mark axis has been on the plot since the first week on the Lane, {fmtInt(REGISTER_LOSSES)} marks up the side of it, and it has stopped looking like a list.
 

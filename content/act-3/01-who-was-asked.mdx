@@ -41,9 +41,9 @@ export const feederYes = feeder.yes / feeder.answered
 
 <Scene stamp="MET 54/09:20" location="Wardroom · braking at 4 mgee · 1.80 AU from Callisto" condensed={`Eight days past turnover, the Board's third attachment is on the wardroom table: the Lane Authority's dock survey, ${fmtInt(CERES_SURVEY.n)} masters, ${fmtPct(CERES_SURVEY.pYes, 0)} of them agreeing that pirates are responsible. Ebele has taken it apart and found the mechanism: a notice at Ceres, answered by whoever wanted to answer it. Then he proposes to fix it by asking twice as many masters at Ceres. Ferrier does not answer him.`}>
 
-Eight days of braking. The deck still knows which way is down and your knees have stopped arguing with it. Sandoval says the wings are carrying the load and will keep carrying it as long as nobody asks the ship to be quiet. Nobody has asked since MET 46.
+Eight days of braking. The deck has a down to it again and your knees have stopped arguing about it. Sandoval says the wings are carrying the load. They will keep carrying it as long as nobody asks the ship to be quiet, and nobody has asked since MET 46.
 
-The wardroom table is the largest flat surface aboard and Ebele has covered two thirds of it with the Board's third attachment. He has been at it since the watch changed. There is a cup at his elbow with a skin on it. You move the cup to the fiddle rail before you sit down.
+The wardroom table is the largest flat surface aboard. Ebele has covered two thirds of it with the Board's third attachment and has been at it since the watch changed. There is a cup at his elbow with a skin on it. You move the cup to the fiddle rail before you sit down.
 
 "So it's a real survey, sir," he says. "That's the thing I want to say first. Somebody went out and collected it. The Authority posted a notice at the Ceres dock office, masters filled in a form, the forms were counted, the count is right. I recomputed every line of it. It is not fabricated."
 
@@ -55,7 +55,7 @@ Solberg puts the Callisto lag on the bulkhead board without being asked. Fourtee
 
 Ebele is already onto the fix. He has the next two dock rotations sketched on the back of the attachment, in pencil, with dates against them.
 
-"So we double it, sir. The Authority took {fmtInt(CERES_N)}. If we ask the dock office to run the notice again next rotation and get {fmtInt(doubleCeres)}, the margin halves and the number stops being soft. Two rotations, no link time, and Valhalla has a survey it can't argue with."
+"So we double it, sir. The Authority took {fmtInt(CERES_N)}. We ask the dock office to run the notice again next rotation and we have {fmtInt(doubleCeres)}. The margin halves. The number stops being soft. Two rotations. No link time. And Valhalla gets a survey it can't argue with."
 
 Ferrier is at the far end of the table with the Register's index open in front of her. She does not look up.
 
@@ -96,7 +96,7 @@ That last sentence is the whole module. Enlarging a sample shrinks the *variabil
 Three kinds of study, and three different licences:
 
 - A **sample survey** measures units without disturbing them and is designed to describe a population. If the units were chosen at **random from a frame that covers the population**, the estimate generalizes to that population, and to nothing wider.
-- An **observational study** records units as it finds them, grouped by something they already were, like owner class or port of registry. It can show association. It cannot say *because*, because whatever sorted the units into groups may also have sorted the response.
+- An **observational study** records units as it finds them, grouped by something they already were, like owner class or port of registry. It can show association. It cannot say *because*. Whatever sorted the units into groups may also have sorted the response.
 - An **experiment** *imposes* a treatment on units, and if it does so **at random**, the groups differ systematically in nothing but the treatment, so a difference too large to be chance can be attributed to it.
 
 The two randomizations are different things and buy different goods. Random **selection** buys generalization. Random **assignment** buys causation. A study with neither describes the individuals in it and stops there.
@@ -144,7 +144,7 @@ Write the scope honestly and it reads: *{fmtPct(feederYes, 0)} of responding mas
   ]}
   hint="The population is set by the sentence the Board wrote, not by the data. Then ask the only question that finds a frame: who could physically have been asked?">
   <Success>
-  <Dialogue speaker="analyst" aside="He labels the third circle last, the one that touches neither of the others, and sits looking at it.">
+  <Dialogue speaker="analyst" aside="He labels the third circle last, the one that touches neither of the others.">
   So the outer circle is the Lane and the middle one is the dock office. They overlap, but not the way the caption assumes. {fmtInt(ceresOnLane)} of the {fmtInt(CERES_SURVEY.n)} are masters who are on the schedule now, out of {fmtInt(FRAME_N)}. That's {fmtPct(frameCoverage, 0)} coverage of the corridor. And the third circle is everyone the schedule cannot reach at all. Of the {fmtInt(POPULATION_N)} masters working this Close Season: {UNREACHABLE_ORDER.map((s) => `${fmtInt(unreachableStatus[s])} ${STATUS_LABEL[s]}`).join('; ')}. {fmtInt(unreachable.length)} masters who are on nobody's tight-beam this month.
   </Dialogue>
   </Success>
@@ -181,19 +181,19 @@ You write the line into the preliminary in the Board's own register. Flat, passi
 
 Ebele reads it twice. "It doesn't say they're wrong."
 
-"They are not wrong," Ferrier says. "They asked {fmtInt(CERES_SURVEY.n)} people a question and counted the answers correctly. We don't know what the Lane thinks. Neither do they. The difference between us is that we are about to find out and put the method on the page."
+"They are not wrong," Ferrier says. "They asked {fmtInt(CERES_SURVEY.n)} people a question and counted the answers correctly. We don't know what the Lane thinks. Neither do they. We are about to find out, and we are going to put the method on the page."
 
 Solberg has been costing it since the middle of the forenoon watch and has the sheet in his hand before anybody asks for it.
 
 <Dialogue speaker="comms" aside="He has the schedule up with the tight-beam windows shaded in, one narrow band per hull.">
-Sir. One master, raised on tight-beam and worked through a return: {fmtInt(COST.contactMin)} minutes of link, plus or minus {fmtInt(COST.contactSd)}. That is the acquisition, the lag, the reading and the repeat-backs. The corridor is twenty-five light-seconds wide here, so a master is inside the beam for about a day and then is not, and the window does not come back.
+Sir. One master, raised on tight-beam and worked through a return: {fmtInt(COST.contactMin)} minutes of link, plus or minus {fmtInt(COST.contactSd)}. That is the acquisition, the lag, the reading and the repeat-backs. The corridor is twenty-five light-seconds wide here. A master is inside the beam for about a day and then he is not. The window does not come back.
 </Dialogue>
 
-<Dialogue speaker="comms" aside="He does the arithmetic on the board rather than say it, then says it.">
-All {fmtInt(FRAME_N)} of them would be {fmt(contactHours, 0)} hours. That is {fmt(contactDays, 1)} days of continuous link, and we have twenty-nine days before torch-off, and I sleep. I would like it recorded that I raised the sleeping.
+<Dialogue speaker="comms" aside="He works it on the board before he says it.">
+All {fmtInt(FRAME_N)} of them would be {fmt(contactHours, 0)} hours. That is {fmt(contactDays, 1)} days of continuous link. We have twenty-nine days before torch-off, and I sleep.
 </Dialogue>
 
-"Then we are not asking all of them," Ferrier says. "Which leaves the Ensign the part the Authority got wrong twice, and he has until Tuesday to have it on the plot."
+"Then we are not asking all of them," Ferrier says. "Which leaves the Ensign the part the Authority got wrong twice. He has until Tuesday to have it on the plot."
 
 </Scene>
 
