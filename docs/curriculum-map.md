@@ -1,8 +1,10 @@
 # DEAD RECKONING — Book One · Curriculum Map
 
-Owner: Curriculum Architect. Binding for Act Teams (module ids, topics, prerequisites, instruments, calc placement, checkpoint blueprints). Working titles are ship-instrument flavored placeholders; the Story Architect / Showrunner finalize titles and beats in `docs/beat-sheet.md`, but **ids, topic codes, prerequisites and instruments do not move without a note to the Curriculum Architect**.
+Owner: Curriculum Architect. Binding for Act Teams (module ids, topics, prerequisites, instruments, calc placement, checkpoint blueprints).
 
-Companion: `docs/ap-coverage.md` (topic → module / checkpoint matrix).
+**Book One is built. This document now describes what shipped.** Titles, filenames, minutes, prerequisites and checkpoint blueprints below were re-verified against `content/`, `src/instruments/` and `src/lib/problems/checkpoints/` after the Phase 4 reviews. Where this map and the build disagree, **the build is right and this file is wrong** — fix the file. The title column is the on-disk frontmatter `title`; the filename after each module heading is the on-disk path. **A module's file slug does not always match its title** (`act-6-07` is titled "Perrine and Everyone Else" and lives in `07-two-corridors.mdx`); the slug is frozen and only the title moves.
+
+Companion: `docs/ap-coverage.md` (topic → module / checkpoint matrix). Phase 4 review index: §9.
 
 ---
 
@@ -10,7 +12,7 @@ Companion: `docs/ap-coverage.md` (topic → module / checkpoint matrix).
 
 | Act | AP Unit (CED weight) | CED topics | Teaching modules | Checkpoint | Modules | Minutes |
 |---|---|---|---|---|---|---|
-| 0 Prologue | — | (seeds 1.1, 1.2, 1.3) | 3 | — | 3 | 60 |
+| 0 Prologue | — | (seeds 1.1, 1.2, 1.3) | 4 | 10 | 5 | 74 |
 | I Signatures | 1 · One-Variable Data (15–23%) | 10 | 7 | 20 | 8 | 205 |
 | II Manifests | 2 · Two-Variable Data (5–7%) | 9 | 6 | 20 | 7 | 195 |
 | III Testimony | 3 · Collecting Data (12–15%) | 7 | 5 | 20 | 6 | 165 |
@@ -20,10 +22,12 @@ Companion: `docs/ap-coverage.md` (topic → module / checkpoint matrix).
 | VII Halden Reach | 7 · Means (10–18%) | 10 | 7 | 25 | 8 | 225 |
 | VIII Kettle | 8 · Chi-Square (2–5%) | 7 | 4 | 20 | 5 | 135 |
 | IX Intent | 9 · Slopes (2–5%) | 6 | 4 | 25 | 5 | 140 |
-| 10 Epilogue | — | (revisits 4.5, 6.7) | 2 | — | 2 | 40 |
-| **Total** | 9 units | **80 topics** | **61** | **9 checkpoints · 200 min** | **70** | **1,865 min = 31.1 h** |
+| 10 Epilogue | — | (revisits 4.5, 6.7) | 2 | — | 2 | 45 |
+| **Total** | 9 units | **80 topics** | **62** | **10 checkpoints · 210 min** | **72** | **1,884 min = 31.4 h** |
 
-Arithmetic: teaching modules sum to 1,665 min (61 modules, mean 27.3 min, range 20–30); checkpoints sum to 200 min (9, range 20–25). 1,665 + 200 = 1,865 min = **31 h 05 min**, inside the 25–35 h contract with ~4 h of headroom either side. Per-Act minutes are listed in §2 and re-summed at the end of each Act block.
+Arithmetic: teaching modules sum to 1,674 min (62 modules, mean 27.0 min; 60 of them are `kind: module` at 20–30 min, the two interludes are 4 min and 20 min); checkpoints sum to 210 min (10, range 10–25). 1,674 + 210 = 1,884 min = **31 h 24 min**, inside the 25–35 h contract. Per-Act minutes are listed in §2 and re-summed at the end of each Act block.
+
+"Teaching modules" counts every non-checkpoint file, so it includes the two interludes (`act-0-00`, `act-10-02`). By `kind`: **60 module + 2 interlude + 10 checkpoint = 72 files.**
 
 Module-count rationale: Unit 4 (12 topics, up to 20% of the exam) gets the most modules (10 + checkpoint). Units 6 and 7 (11 and 10 topics, the inference core) get 8 and 7. Units 8 and 9 (2–5% each) get 4 each, which is the minimum that still lets every topic own a module rather than a paragraph. Unit 2 is 5–7% of the exam but has 9 topics with a lot of hands-on content (regression, residuals, transformations) and is the spine of the manifest-fraud plot, so it gets 6.
 
@@ -36,20 +40,29 @@ Module-count rationale: Unit 4 (12 topics, up to 20% of the exam) gets the most 
 - **Rubric** column = the module carries at least one interpretation drill graded by the `InterpretationAnswer` rubric ("conclusion in context"). Marked **R**. Every module from Act II onward carries one except the four flagged **—** (pure probability computation modules, where the mission beat still demands a sentence in context but the drills are numeric).
 - **Instruments**: names from build-order §8 are marked **[§8]**; instruments this map invents are marked **[new]**. Every §8 instrument is assigned to at least one module (index in §4).
 - **Investigative use** follows the build-order §3 unit-to-plot mapping. It stays at the level of "what data, what question"; the Story Architect owns characters and specifics.
-- **Every module** (including prologue/epilogue `module` kinds) follows the seven-beat contract: Scene → Briefing → Instrument → (Calc) → 4–8 drills → Mission beat → Log entry. `act-10-02` is the only `interlude`.
+- **Every module** (including prologue/epilogue `module` kinds) follows the seven-beat contract: Scene → Briefing → Instrument → (Calc) → 4–8 drills → Mission beat → Log entry. Two files are `kind: interlude` and are exempt: `act-0-00` (Standing Orders — reader orientation, no instrument, no drills, no beat) and `act-10-02` (Provident — scene, Briefing and one instrument, no drills).
 - Recurring datasets (the Story Architect should name them): **the Register** (corridor loss register: every ship lost on the corridor over ~6 years, with declared cause, owner, cargo category, tonnage, route, timestamp), **the Manifest file** (fuel burn, declared cargo mass, transit time per voyage), **the Crew Survey** (freighter crews' testimony), **the Sweep log** (own-ship sensor sweeps and detections), **the Refit set** (before/after reactor/transit data on refitted hulls).
 
 ---
 
 ## 2. Module plan
 
-### Act 0 — Prologue · "Shakedown" (3 modules · 60 min)
+### Act 0 — Prologue · "Shakedown" (4 modules + checkpoint · 74 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
+| act-0-00 | Standing Orders | — | — | — | null | 4 | — |
 | act-0-01 | Shakedown | 1.1 | 2 | — | null | 20 | — |
 | act-0-02 | Heat Budget | 1.2 | 1, 2 | act-0-01 | null | 20 | — |
 | act-0-03 | Tasking | 1.1, 1.3 | 2 | act-0-02 | null | 20 | — |
+| act-0-checkpoint | Release | 1.1, 1.2, 1.3 | 1–4 | act-0-03 | null | 10 | R |
+
+**act-0-00 · Standing Orders** — `content/act-0/00-standing-orders.mdx` — `kind: interlude`
+- Topics: none. `ap_topics: []`; it carries no CED content and is assessed nowhere.
+- Objectives: (a) Know who you are, where this is, and what the Service has sent you to do.
+- Instrument: none. A single `<Scene>` of orientation prose reading `register` and `losses` from `act-0/data`; no Briefing, no instrument, no drills, no mission beat, no log entry.
+- Investigative use: the reader's orientation page — the Compact, the Hundred-Day Lane, *Nightjar*, and the thirty-one losses in 2,612 transits. Read first; it is the only place the premise is stated outright rather than discovered.
+- Note: added after the original three-module Prologue plan. It is an exception to the seven-beat contract by design (see §1).
 
 **act-0-01 · Shakedown** — `content/act-0/01-shakedown.mdx` (replaces the pipeline placeholder; keep the id)
 - Topics: 1.1 Introducing Statistics: What Can We Learn from Data? (seed; taught in full in act-1-01)
@@ -72,21 +85,23 @@ Module-count rationale: Unit 4 (12 topics, up to 20% of the exam) gets the most 
 - Investigative use: the official incident register arrives with the tasking order; the learner computes what fraction of the register's 2,200 records are losses (the Board's summary mean is taken over all of them) and notes the population the register covers (one corridor, one reporting authority). The losses' own classification table is act-1-02's. Seeds the whole book's dataset.
 - Misconceptions: "the register is the population" (it is a recorded sample of a reporting process); confusing count and proportion.
 
-Act 0 subtotal: 20 + 20 + 20 = **60 min**.
+**act-0-checkpoint · Release** — `content/act-0/checkpoint.mdx` — 10 min — blueprint in §5. Added after the Act 0 build (orchestrator decision; `docs/beat-sheet.md` §3 records the rationale): the Prologue originally had no checkpoint, and the short release read-through teaches the checkpoint format on low stakes before Act I's.
+
+Act 0 subtotal: 4 + 20 + 20 + 20 + 10 = **74 min**.
 
 ---
 
 ### Act I — Unit 1 · Exploring One-Variable Data · "Signatures" (7 modules + checkpoint · 205 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
-| act-1-01 | Register of Losses | 1.1, 1.2, 1.3 | 1, 2 | act-0-03 | null | 25 | — |
+| act-1-01 | Register of Losses | 1.1, 1.2, 1.3 | 1, 2 | act-0-checkpoint | null | 25 | — |
 | act-1-02 | Cause Codes | 1.4 | 2, 4 | act-1-01 | null | 20 | R |
 | act-1-03 | Drive Signatures | 1.5, 1.6 | 2, 4 | act-1-01 | null | 30 | R |
-| act-1-04 | Center and Spread | 1.7 | 2, 4 | act-1-03 | null | 30 | R |
+| act-1-04 | The Mean in the Gap | 1.7 | 2, 4 | act-1-03 | null | 30 | R |
 | act-1-05 | Five Numbers | 1.8 | 2 | act-1-04 | null | 25 | — |
-| act-1-06 | Two Fleets | 1.9 | 2, 4 | act-1-05 | null | 25 | R |
-| act-1-07 | The Normal Curve | 1.10 | 2, 3 | act-1-04 | area-under-a-curve | 30 | R |
+| act-1-06 | Lost and Arrived | 1.9 | 2, 4 | act-1-05 | null | 25 | R |
+| act-1-07 | How Hot Is Too Hot | 1.10 | 2, 3 | act-1-04 | area-under-a-curve | 30 | R |
 | act-1-checkpoint | Checkpoint: Signatures | 1.1–1.10 | 1–4 | act-1-06, act-1-07 | null | 20 | R |
 
 **act-1-01 · Register of Losses** — `content/act-1/01-register-of-losses.mdx`
@@ -110,7 +125,7 @@ Act 0 subtotal: 20 + 20 + 20 = **60 min**.
 - Investigative use: thermal-peak drive signatures logged by the corvette's passive sensors across dozens of freighter transits; one signature sits far off the cluster — a ship that should not be able to run that hot, or that cold.
 - Misconceptions: "skewed left" read from where the peak is rather than where the tail is; treating a histogram as a bar chart (ordered vs unordered axis).
 
-**act-1-04 · Center and Spread** — `content/act-1/04-center-and-spread.mdx`
+**act-1-04 · The Mean in the Gap** — `content/act-1/04-the-mean-in-the-gap.mdx`
 - Topics: 1.7 Summary Statistics for a Quantitative Variable
 - Objectives: (a) Calculate and interpret mean, median, range, IQR and standard deviation in context. (b) Explain which statistics are resistant to outliers and choose center/spread measures appropriate to the shape. (c) Interpret standard deviation as typical distance from the mean, in units.
 - Instrument: outlier and skew explorer — drag one point out of the cluster and watch mean vs median and SD vs IQR diverge live. **[§8]**
@@ -124,14 +139,14 @@ Act 0 subtotal: 20 + 20 + 20 = **60 min**.
 - Investigative use: the 1.5 × IQR fence formally flags the anomalous signature; the learner logs it as an outlier and asks for the hull id — the first thread.
 - Misconceptions: "the box holds 50% of the range"; equating box width with sample size.
 
-**act-1-06 · Two Fleets** — `content/act-1/06-two-fleets.mdx`
+**act-1-06 · Lost and Arrived** — `content/act-1/06-lost-and-arrived.mdx`
 - Topics: 1.9 Comparing Distributions of a Quantitative Variable
 - Objectives: (a) Compare two or more distributions using parallel boxplots, back-to-back stemplots or comparative histograms. (b) Write a comparison that addresses shape, center, variability and unusual features in context with comparative language. (c) Choose the display that best supports a stated comparison.
 - Instrument: comparative distribution display — parallel boxplots / back-to-back stemplot / overlaid histograms of two groups with a group-selector. **[new: comparative display]**
 - Investigative use: lost hulls vs the Lane on hull age and declared cargo value, and the losses' mark-at-last-contact distribution against the all-incident mark distribution (an arrived hull's last contact is always Mark 12, so "arrived" is the wrong baseline for *where*) — the first formal comparison; the lost hulls cluster late and carry cheaper declared cargo.
 - Misconceptions: describing each distribution separately instead of comparing; "bigger box = more data".
 
-**act-1-07 · The Normal Curve** — `content/act-1/07-the-normal-curve.mdx`
+**act-1-07 · How Hot Is Too Hot** — `content/act-1/07-how-hot-is-too-hot.mdx`
 - Topics: 1.10 The Normal Distribution (includes z-scores, percentiles, effects of linear transformations, empirical rule, normal-model areas)
 - Objectives: (a) Compute and interpret z-scores and percentiles as measures of relative position. (b) Describe the effect of adding/multiplying a constant on center, spread and shape. (c) Use the empirical rule and the normal model to find proportions above/below/between values and to find a value from a proportion.
 - Instrument: z-score / normal-area explorer — drag cutoffs, shade, read area; unit-conversion toggle to show transformation effects. **[§8]**
@@ -147,24 +162,24 @@ Act I subtotal: 25 + 20 + 30 + 30 + 25 + 25 + 30 + 20 = **205 min**.
 
 ### Act II — Unit 2 · Exploring Two-Variable Data · "Manifests" (6 modules + checkpoint · 195 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
-| act-2-01 | Cross-Tabulation | 2.1, 2.2, 2.3 | 2, 4 | act-1-checkpoint | null | 30 | R |
-| act-2-02 | Burn vs Mass | 2.4, 2.5 | 2, 4 | act-2-01 | null | 30 | R |
+| act-2-01 | Cause by Owner | 2.1, 2.2, 2.3 | 2, 4 | act-1-checkpoint | null | 30 | R |
+| act-2-02 | Inferred Mass | 2.4, 2.5 | 2, 4 | act-2-01 | null | 30 | R |
 | act-2-03 | Line of Best Fit | 2.6, 2.8 | 2, 4 | act-2-02 | minimizing-squared-error | 30 | R |
-| act-2-04 | Residuals | 2.7 | 2, 4 | act-2-03 | null | 30 | R |
-| act-2-05 | Leverage | 2.8 | 2, 4 | act-2-04 | null | 25 | R |
-| act-2-06 | Curvature | 2.9 | 1, 2, 4 | act-2-05 | logs-and-linearization | 30 | R |
+| act-2-04 | The Nineteen | 2.7 | 2, 4 | act-2-03 | null | 30 | R |
+| act-2-05 | The Bulk Hauler | 2.8 | 2, 4 | act-2-04 | null | 25 | R |
+| act-2-06 | Root Law | 2.9 | 1, 2, 4 | act-2-05 | logs-and-linearization | 30 | R |
 | act-2-checkpoint | Checkpoint: Manifests | 2.1–2.9 | 1–4 | act-2-06 | null | 20 | R |
 
-**act-2-01 · Cross-Tabulation** — `content/act-2/01-cross-tabulation.mdx`
+**act-2-01 · Cause by Owner** — `content/act-2/01-cause-by-owner.mdx`
 - Topics: 2.1 Introducing Statistics: Are Variables Related? · 2.2 Representing Two Categorical Variables · 2.3 Statistics for Two Categorical Variables
 - Objectives: (a) Construct two-way tables and side-by-side, segmented and mosaic bar graphs. (b) Calculate joint, marginal and conditional relative frequencies. (c) Describe whether two categorical variables appear associated, using conditional distributions, in context.
 - Instrument: two-way table explorer with segmented-bar and mosaic views; toggle row/column conditioning. **[new: two-way table explorer]**
 - Investigative use: the Register cross-tabulated — declared cause × owner. Conditional distributions differ by owner; "accident" is the modal cause for one owner far more than for the others. This is descriptive only; the formal test waits for Act VIII.
 - Misconceptions: comparing counts instead of conditional proportions when group sizes differ; conditioning on the wrong variable.
 
-**act-2-02 · Burn vs Mass** — `content/act-2/02-burn-vs-mass.mdx`
+**act-2-02 · Inferred Mass** — `content/act-2/02-inferred-mass.mdx`
 - Topics: 2.4 Representing the Relationship Between Two Quantitative Variables · 2.5 Correlation
 - Objectives: (a) Construct and describe a scatterplot (direction, form, strength, unusual features) in context. (b) Calculate and interpret the correlation r and state its properties (unitless, symmetric, sensitive to outliers, linear only). (c) Explain why correlation does not imply causation.
 - Instrument: scatterplot with draggable points and live r **[§8]** (the regression line is unlocked in the next module).
@@ -179,21 +194,21 @@ Act I subtotal: 25 + 20 + 30 + 30 + 25 + 25 + 30 + 20 = **205 min**.
 - Investigative use: the learner fits burn on declared mass and interprets the slope as fuel per tonne — a number the chief engineer can check against the ship class's specs. The intercept has a physical meaning (empty-hull burn) that will be checked in Act VII.
 - Misconceptions: interpreting the slope without "predicted" and "on average"; interpreting an intercept outside the data range as physical; swapping x and y.
 
-**act-2-04 · Residuals** — `content/act-2/04-residuals.mdx`
+**act-2-04 · The Nineteen** — `content/act-2/04-the-nineteen.mdx`
 - Topics: 2.7 Residuals
 - Objectives: (a) Calculate and interpret a residual in context. (b) Construct a residual plot and use it to judge whether a linear model is appropriate. (c) Identify systematic patterns (curvature, fanning) and what they imply.
 - Instrument: scatterplot with live regression line and linked residual plot **[§8]** — hover a point to see its residual on both panels.
 - Investigative use: burn residuals by voyage. Most scatter around zero; a set of voyages by one owner sits consistently positive — they burned as if they carried more than the manifest says. Falsified manifests, in a plot.
 - Misconceptions: residual = predicted − actual (sign); "a residual plot with a pattern means the data are wrong" (it means the model is wrong).
 
-**act-2-05 · Leverage** — `content/act-2/05-leverage.mdx`
+**act-2-05 · The Bulk Hauler** — `content/act-2/05-leverage.mdx`
 - Topics: 2.8 Least Squares Regression (r², standard deviation of the residuals s, computer output, outliers, high-leverage and influential points)
 - Objectives: (a) Interpret r² and s in context. (b) Read a regression computer-output table (coefficients, SE, r², s) and write the equation. (c) Explain how outliers, high-leverage points and influential points affect the line, r and r².
 - Instrument: leverage/influence explorer — drag a single point through the x-range and watch slope, r² and s respond; toggle "with/without" comparison. **[new: influence explorer]** (Extension of the §8 scatterplot.)
 - Investigative use: one extreme voyage drags the whole fit; the learner decides whether to fit with or without it and reads a computer-output table for the first time — the same table the Admiralty's report quotes selectively.
 - Misconceptions: "r² is the correlation"; "s is the SD of y"; deleting an inconvenient point without justification.
 
-**act-2-06 · Curvature** — `content/act-2/06-curvature.mdx`
+**act-2-06 · Root Law** — `content/act-2/06-curvature.mdx`
 - Topics: 2.9 Analyzing Departures from Linearity
 - Objectives: (a) Recognize non-linear patterns and apply logarithmic/power transformations to achieve linearity. (b) Compare candidate models using residual plots and r². (c) Interpret a model fitted on transformed variables and back-transform a prediction.
 - Instrument: transformation toggler — raw / log y / log x / log-log with linked residual plot and r². **[new: transformation console]**
@@ -209,13 +224,13 @@ Act II subtotal: 30 + 30 + 30 + 30 + 25 + 30 + 20 = **195 min**.
 
 ### Act III — Unit 3 · Collecting Data · "Testimony" (5 modules + checkpoint · 165 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
 | act-3-01 | Who Was Asked | 3.1, 3.2 | 1, 4 | act-2-checkpoint | null | 25 | R |
 | act-3-02 | Drawing the Sample | 3.3 | 1, 3 | act-3-01 | null | 30 | R |
-| act-3-03 | Bias | 3.4 | 1, 3, 4 | act-3-02 | null | 30 | R |
+| act-3-03 | Bored at Ceres | 3.4 | 1, 3, 4 | act-3-02 | null | 30 | R |
 | act-3-04 | The Admiralty's Trial | 3.5, 3.6 | 1, 4 | act-3-03 | null | 30 | R |
-| act-3-05 | What a Trial Can Say | 3.7 | 3, 4 | act-3-04 | null | 30 | R |
+| act-3-05 | The Escort Lottery | 3.7 | 3, 4 | act-3-04 | null | 30 | R |
 | act-3-checkpoint | Checkpoint: Testimony | 3.1–3.7 | 1–4 | act-3-05 | null | 20 | R |
 
 **act-3-01 · Who Was Asked** — `content/act-3/01-who-was-asked.mdx`
@@ -232,7 +247,7 @@ Act II subtotal: 30 + 30 + 30 + 30 + 25 + 30 + 20 = **195 min**.
 - Investigative use: designing the Crew Survey: stratify by owner so the suspect owner's crews are represented; cluster by convoy to save transit time; the learner sees why cluster sampling is cheaper and noisier.
 - Misconceptions: "stratified = split into groups" (must sample from every stratum); "random = haphazard".
 
-**act-3-03 · Bias** — `content/act-3/03-bias.mdx`
+**act-3-03 · Bored at Ceres** — `content/act-3/03-bias.mdx`
 - Topics: 3.4 Potential Problems with Sampling
 - Objectives: (a) Identify undercoverage, nonresponse, voluntary response, convenience sampling and response bias (wording, interviewer, self-report) in a described study. (b) Predict the direction of bias in context. (c) Distinguish bias (systematic) from sampling variability (random) using a simulated sampling distribution.
 - Instrument: bias demonstrator — choose a selection mechanism (docked crews only, volunteers, leading wording) and watch the distribution of the sample estimate shift away from the truth while random SRS scatters around it. **[§8]**
@@ -246,7 +261,7 @@ Act II subtotal: 30 + 30 + 30 + 30 + 25 + 30 + 20 = **195 min**.
 - Investigative use: the Admiralty's escort "trial": escorts were assigned to convoys by owner request, not at random; loss rate with escorts looked lower. The learner rebuilds the design and shows owner is confounded with escort.
 - Misconceptions: "random sampling and random assignment are the same thing"; "a control group is a group that isn't treated" (it can be a standard treatment); blocking by the response.
 
-**act-3-05 · What a Trial Can Say** — `content/act-3/05-what-a-trial-can-say.mdx`
+**act-3-05 · The Escort Lottery** — `content/act-3/05-what-a-trial-can-say.mdx`
 - Topics: 3.7 Inference and Experiments
 - Objectives: (a) Explain how random assignment supports causal conclusions and random sampling supports generalization. (b) Use a simulated randomization distribution to judge whether an observed difference is statistically significant. (c) State the scope of inference of a study in context.
 - Instrument: randomization test machine — re-shuffle treatment labels, build the distribution of group differences, locate the observed difference. **[§8 bootstrap/randomization test machine — randomization mode]**
@@ -261,28 +276,28 @@ Act III subtotal: 25 + 30 + 30 + 30 + 30 + 20 = **165 min**.
 
 ### Act IV — Unit 4 · Probability, Random Variables & Probability Distributions · "Running Cold" (10 modules + checkpoint · 295 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
-| act-4-01 | Random or Not | 4.1, 4.2 | 3, 4 | act-3-checkpoint | null | 25 | R |
-| act-4-02 | Rules of Chance | 4.3, 4.4 | 3 | act-4-01 | null | 25 | — |
+| act-4-01 | Spring of '82 | 4.1, 4.2 | 3, 4 | act-3-checkpoint | null | 25 | R |
+| act-4-02 | The Sweep Log | 4.3, 4.4 | 3 | act-4-01 | null | 25 | — |
 | act-4-03 | Given That | 4.5 | 3, 4 | act-4-02 | null | 30 | R |
 | act-4-04 | Independence | 4.6 | 3, 4 | act-4-03 | null | 25 | R |
-| act-4-05 | Distribution of a Cold Run | 4.7 | 3 | act-4-02 | density-vs-mass | 25 | — |
+| act-4-05 | Distribution of a Cold Run | 4.7 | 3 | act-4-04 | density-vs-mass | 25 | — |
 | act-4-06 | The Heat Ledger | 4.8 | 3, 4 | act-4-05 | expected-value-as-weighted-sum | 30 | R |
-| act-4-07 | Combining Systems | 4.9 | 3, 4 | act-4-06 | null | 30 | R |
-| act-4-08 | Pings | 4.10 | 3 | act-4-04, act-4-06 | null | 30 | — |
-| act-4-09 | Binomial Parameters | 4.11 | 3, 4 | act-4-08 | null | 25 | R |
-| act-4-10 | Until First Contact | 4.12 | 3, 4 | act-4-08 | geometric-series | 25 | R |
-| act-4-checkpoint | Checkpoint: Running Cold | 4.1–4.12 | 1–4 | act-4-07, act-4-09, act-4-10 | null | 25 | R |
+| act-4-07 | The Cellar's Margin | 4.9 | 3, 4 | act-4-06 | null | 30 | R |
+| act-4-08 | Pings | 4.10 | 3 | act-4-07 | null | 30 | — |
+| act-4-09 | Thirty-One in Twenty-Six Hundred | 4.11 | 3, 4 | act-4-08 | null | 25 | R |
+| act-4-10 | Until First Contact | 4.12 | 3, 4 | act-4-09 | geometric-series | 25 | R |
+| act-4-checkpoint | Checkpoint: Running Cold | 4.1–4.12 | 1–4 | act-4-10 | null | 25 | R |
 
-**act-4-01 · Random or Not** — `content/act-4/01-random-or-not.mdx`
+**act-4-01 · Spring of '82** — `content/act-4/01-random-or-not.mdx`
 - Topics: 4.1 Introducing Statistics: Random and Non-Random Patterns? · 4.2 Estimating Probabilities Using Simulation
 - Objectives: (a) Describe what "random" means in the long run (law of large numbers) and why short runs show streaks. (b) Design and carry out a simulation to estimate a probability, stating the model, one trial, and the statistic. (c) Interpret a simulated probability in context.
 - Instrument: clustering simulator — simulate loss times as uniform over the period, compute the largest cluster in any 30-day window, build its distribution, compare to the Register's actual cluster. **[new: clustering simulator]**
 - Investigative use: losses on the Register cluster in time. The learner simulates random loss times and finds the observed cluster is unusual under randomness — the first quantitative statement that the losses are not "bad luck".
 - Misconceptions: gambler's fallacy; "random means evenly spread"; a simulated estimate reported as exact.
 
-**act-4-02 · Rules of Chance** — `content/act-4/02-rules-of-chance.mdx`
+**act-4-02 · The Sweep Log** — `content/act-4/02-rules-of-chance.mdx`
 - Topics: 4.3 Introduction to Probability · 4.4 Mutually Exclusive Events
 - Objectives: (a) Define sample space, event, and probability as long-run relative frequency; apply the complement rule. (b) Identify mutually exclusive events and apply the addition rule for them. (c) Compute probabilities from a two-way table or Venn diagram.
 - Instrument: sample-space / Venn area explorer — events drawn as areas on the sweep log's outcome space; drag to overlap or separate; P(A ∪ B) reads live. **[new: event-space panel]**
@@ -319,7 +334,7 @@ Act III subtotal: 25 + 30 + 30 + 30 + 30 + 20 = **165 min**.
 - Investigative use: choosing where to patrol: an inner route with lower expected heat cost but a fat tail, or an outer route with higher expected cost but a tight distribution. The learner decides, and the story goes where the numbers point.
 - Misconceptions: "expected value is the most likely outcome"; SD of a random variable computed as the SD of its possible values (ignoring probabilities).
 
-**act-4-07 · Combining Systems** — `content/act-4/07-combining-systems.mdx`
+**act-4-07 · The Cellar's Margin** — `content/act-4/07-combining-systems.mdx`
 - Topics: 4.9 Combining Random Variables
 - Objectives: (a) Calculate the mean and SD of a linear transformation aX + b of a random variable. (b) Calculate the mean and SD of sums and differences of independent random variables (variances add; SDs do not). (c) Explain why independence is required for the variance rule and what changes for a difference.
 - Instrument: random-variable combiner — two independent heat-load distributions (reactor, life-support), drag their means/SDs, watch the sum's distribution form and its SD compare to the "naive" sum of SDs. **[§8]**
@@ -333,7 +348,7 @@ Act III subtotal: 25 + 30 + 30 + 30 + 30 + 20 = **165 min**.
 - Investigative use: n independent enemy sweeps in a transit, each detecting the corvette with probability p — the number of detections is binomial; the learner computes P(0 detections) for a planned cold crossing.
 - Misconceptions: treating sampling without replacement as binomial without checking the 10% condition; P(X ≤ k) vs P(X < k).
 
-**act-4-09 · Binomial Parameters** — `content/act-4/09-binomial-parameters.mdx`
+**act-4-09 · Thirty-One in Twenty-Six Hundred** — `content/act-4/09-binomial-parameters.mdx`
 - Topics: 4.11 Parameters for a Binomial Distribution
 - Objectives: (a) Calculate and interpret the mean and SD of a binomial random variable. (b) Describe the shape of a binomial distribution and how it depends on n and p. (c) Use the binomial distribution to judge whether an observed count is surprising under a stated p.
 - Instrument: binomial explorer with mean ± 2 SD overlay and a "where does the observed count sit" marker. **[§8 binomial explorer, parameters mode]**
@@ -356,13 +371,13 @@ Act IV subtotal: 25 + 25 + 30 + 25 + 25 + 30 + 30 + 30 + 25 + 25 + 25 = **295 mi
 
 ### Act V — Unit 5 · Sampling Distributions · "Noise Floor" (5 modules + checkpoint · 160 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
 | act-5-01 | Why the Reports Disagree | 5.1, 5.4 | 3, 4 | act-4-checkpoint | null | 30 | R |
-| act-5-02 | Normal, Revisited | 5.2 | 3 | act-1-07, act-5-01 | integral-as-accumulation | 25 | R |
+| act-5-02 | One in Seven | 5.2 | 3 | act-1-07, act-5-01 | integral-as-accumulation | 25 | R |
 | act-5-03 | The Machine | 5.3, 5.7 | 3, 4 | act-5-02 | limits-and-the-clt | 30 | R |
 | act-5-04 | Proportions in the Noise | 5.5, 5.6 | 3, 4 | act-5-03 | null | 30 | R |
-| act-5-05 | Differences in Means | 5.8 | 3, 4 | act-5-03 | null | 25 | R |
+| act-5-05 | Differences in Means | 5.8 | 3, 4 | act-5-03, act-5-04 | null | 25 | R |
 | act-5-checkpoint | Checkpoint: Noise Floor | 5.1–5.8 | 1–4 | act-5-04, act-5-05 | null | 20 | R |
 
 **act-5-01 · Why the Reports Disagree** — `content/act-5/01-why-the-reports-disagree.mdx`
@@ -372,7 +387,7 @@ Act IV subtotal: 25 + 25 + 30 + 25 + 25 + 30 + 30 + 30 + 25 + 25 + 25 = **295 mi
 - Investigative use: three patrol reports give three different corridor loss estimates; the learner shows how much disagreement honest sampling produces and that the Admiralty's preferred statistic (a maximum-based one) is biased.
 - Misconceptions: "the sampling distribution is the distribution of the sample"; "bias" used for random error; "larger n reduces bias".
 
-**act-5-02 · Normal, Revisited** — `content/act-5/02-normal-revisited.mdx`
+**act-5-02 · One in Seven** — `content/act-5/02-normal-revisited.mdx`
 - Topics: 5.2 The Normal Distribution, Revisited
 - Objectives: (a) Calculate probabilities and percentiles for a normal distribution with given parameters, in both directions. (b) Assess whether a normal model is reasonable for a distribution (dotplot/histogram/normal probability plot). (c) Interpret a normal-model probability in context as a long-run proportion.
 - Instrument: z-score / normal-area explorer in inverse mode (enter an area, read the cutoff) with a normal-probability-plot side panel. **[§8, reused]**
@@ -410,15 +425,15 @@ Act V subtotal: 30 + 25 + 30 + 30 + 25 + 20 = **160 min**.
 
 ### Act VI — Unit 6 · Inference for Categorical Data: Proportions · "Accusation" (8 modules + checkpoint · 245 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
 | act-6-01 | Capture | 6.1, 6.2 | 3, 4 | act-5-checkpoint | tails-and-inverse-functions | 30 | R |
 | act-6-02 | Margin | 6.2, 6.3 | 1, 3, 4 | act-6-01 | null | 30 | R |
 | act-6-03 | The Hypothesis | 6.4 | 1, 4 | act-6-02 | null | 25 | R |
-| act-6-04 | What the p-Value Means | 6.5 | 3, 4 | act-6-03 | null | 25 | R |
-| act-6-05 | Conclusion | 6.6 | 4 | act-6-04 | null | 25 | R |
-| act-6-06 | Errors and Power | 6.7 | 3, 4 | act-6-05 | null | 30 | R |
-| act-6-07 | Two Corridors | 6.8, 6.9 | 1, 3, 4 | act-6-05 | null | 25 | R |
+| act-6-04 | At Least as Extreme | 6.5 | 3, 4 | act-6-03 | null | 25 | R |
+| act-6-05 | Strike the Word | 6.6 | 4 | act-6-04 | null | 25 | R |
+| act-6-06 | Paid in Hulls, Paid in People | 6.7 | 3, 4 | act-6-05 | null | 30 | R |
+| act-6-07 | Perrine and Everyone Else | 6.8, 6.9 | 1, 3, 4 | act-6-05 | null | 25 | R |
 | act-6-08 | The Accusation | 6.10, 6.11 | 1, 3, 4 | act-6-06, act-6-07 | null | 30 | R |
 | act-6-checkpoint | Checkpoint: Accusation | 6.1–6.11 | 1–4 | act-6-08 | null | 25 | R |
 
@@ -444,28 +459,28 @@ Act V subtotal: 30 + 25 + 30 + 30 + 25 + 20 = **160 min**.
 - Investigative use: framing the accusation as a test: H0: the corridor's loss rate equals the baseline; Ha: it is greater. The learner writes the hypotheses in terms of the population parameter, not the sample.
 - Misconceptions: hypotheses about p̂ instead of p; choosing the alternative after seeing the data; large-counts check with p̂ instead of p0.
 
-**act-6-04 · What the p-Value Means** — `content/act-6/04-what-the-p-value-means.mdx`
+**act-6-04 · At Least as Extreme** — `content/act-6/04-what-the-p-value-means.mdx`
 - Topics: 6.5 Interpreting p-Values
 - Objectives: (a) Interpret a p-value in context as the probability, assuming H0 is true, of a statistic at least as extreme as the one observed. (b) Obtain a p-value from the normal model and from simulation, and reconcile them. (c) Explain what a p-value is not (not P(H0 true), not the probability the result is due to chance).
 - Instrument: p-value visualizer — null distribution with shaded tail(s), simulation-vs-normal toggle, one- vs two-sided toggle. **[§8]**
 - Investigative use: the corridor's p-value under the baseline is small; the learner writes the sentence that will be read in a hearing — and must get it exactly right.
 - Misconceptions: "p is the probability H0 is true"; "p is the probability the result happened by chance"; "1 − p is the probability Ha is true"; two-sided p-value computed as one tail.
 
-**act-6-05 · Conclusion** — `content/act-6/05-conclusion.mdx`
+**act-6-05 · Strike the Word** — `content/act-6/05-conclusion.mdx`
 - Topics: 6.6 Concluding a Test for a Population Proportion
 - Objectives: (a) Make a decision by comparing the p-value to a significance level α and write a conclusion in context (reject / fail to reject H0; never "accept"). (b) Explain the relationship between a two-sided test at α and a (1 − α) confidence interval. (c) Explain how α is chosen and why the decision can flip with α.
 - Instrument: decision console — α slider, p-value, decision indicator, and a conclusion assembler that grades the sentence against the rubric live; CI/test duality overlay. **[new: decision console]**
 - Investigative use: the learner formally concludes there is convincing evidence the corridor's loss rate exceeds the baseline and reports it up the chain — the Act's turn: the report is received and quietly reclassified.
 - Misconceptions: "fail to reject = H0 is true"; "reject = Ha is proven"; concluding without context or without linking to the p-value.
 
-**act-6-06 · Errors and Power** — `content/act-6/06-errors-and-power.mdx`
+**act-6-06 · Paid in Hulls, Paid in People** — `content/act-6/06-errors-and-power.mdx`
 - Topics: 6.7 Potential Errors When Performing Tests
 - Objectives: (a) Define Type I and Type II errors and describe their consequences in context. (b) Define power and explain how sample size, α, and effect size affect it. (c) Choose α by weighing the consequences of each error in context.
 - Instrument: Type I / Type II error and power explorer — null and alternative distributions on one axis, α cutoff draggable, shaded α, β and power; n and effect-size sliders. **[§8]**
 - Investigative use: the cost of a false accusation (Type I: an institution's reputation and the learner's career) vs the cost of a miss (Type II: more ships lost). The learner sets α for the case and justifies it — a decision that carries.
 - Misconceptions: "Type I error is the worse one" as a rule; "power = 1 − α"; lowering α makes everything better.
 
-**act-6-07 · Two Corridors** — `content/act-6/07-two-corridors.mdx`
+**act-6-07 · Perrine and Everyone Else** — `content/act-6/07-two-corridors.mdx`
 - Topics: 6.8 Confidence Intervals for the Difference of Two Proportions · 6.9 Justifying a Claim About the Difference of Two Proportions Based on a Confidence Interval
 - Objectives: (a) Verify conditions and construct a two-sample z-interval for p1 − p2. (b) Interpret the interval in context, including the meaning of an interval that contains 0. (c) Use the interval to justify a claim about the difference.
 - Instrument: two-proportion interval explorer — two sample panels (n, successes), the interval on a difference axis with 0 marked. **[new: difference-of-proportions panel]**
@@ -487,18 +502,18 @@ Act VI subtotal: 30 + 30 + 25 + 25 + 25 + 30 + 25 + 30 + 25 = **245 min**.
 
 ### Act VII — Unit 7 · Inference for Quantitative Data: Means · "Halden Reach" (7 modules + checkpoint · 225 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
-| act-7-01 | Should I Worry About Error | 7.1, 7.2 | 3, 4 | act-6-checkpoint, act-5-03 | null | 30 | R |
+| act-7-01 | Twelve Is a Margin | 7.1, 7.2 | 3, 4 | act-6-checkpoint | null | 30 | R |
 | act-7-02 | Reactor Output | 7.2, 7.3 | 1, 3, 4 | act-7-01 | null | 25 | R |
-| act-7-03 | Testing a Mean | 7.4, 7.5 | 1, 3, 4 | act-7-02 | null | 30 | R |
+| act-7-03 | Within a Day | 7.4, 7.5 | 1, 3, 4 | act-7-02 | null | 30 | R |
 | act-7-04 | Before and After | 7.2, 7.4, 7.5 (paired) | 1, 3, 4 | act-7-03 | null | 30 | R |
-| act-7-05 | Two Fleets, Two Means | 7.6, 7.7 | 1, 3, 4 | act-7-04, act-5-05 | null | 25 | R |
+| act-7-05 | Two Fleets, Two Means | 7.6, 7.7 | 1, 3, 4 | act-7-04 | null | 25 | R |
 | act-7-06 | Transit Anomaly | 7.8, 7.9 | 1, 3, 4 | act-7-05 | null | 30 | R |
-| act-7-07 | Which Procedure | 7.10 | 1, 4 | act-7-06 | null | 30 | R |
+| act-7-07 | The Inference Brief | 7.10 | 1, 4 | act-7-06 | null | 30 | R |
 | act-7-checkpoint | Checkpoint: Halden Reach | 7.1–7.10 | 1–4 | act-7-07 | null | 25 | R |
 
-**act-7-01 · Should I Worry About Error** — `content/act-7/01-should-i-worry-about-error.mdx`
+**act-7-01 · Twelve Is a Margin** — `content/act-7/01-twelve-is-a-margin.mdx`
 - Topics: 7.1 Introducing Statistics: Should I Worry About Error? · 7.2 Constructing a Confidence Interval for a Population Mean (the t distribution, df, conditions)
 - Objectives: (a) Explain why estimating σ with s changes the sampling distribution and introduces the t distribution with n − 1 degrees of freedom. (b) Compare t and normal distributions and describe how t approaches normal as df grows. (c) Verify conditions for a one-sample t-interval (random, 10%, normal population or n ≥ 30, or no strong skew/outliers for small n).
 - Instrument: t vs normal comparator — df slider, overlaid densities, tail-probability readout, and a simulation showing z with s in the denominator producing heavy tails. **[§8]**
@@ -512,7 +527,7 @@ Act VI subtotal: 30 + 30 + 25 + 25 + 25 + 30 + 25 + 30 + 25 = **245 min**.
 - Investigative use: mean reactor output on refitted hulls vs the manufacturer's specification; the interval for the mean excludes spec — the refit did something to the reactors.
 - Misconceptions: "the interval contains 95% of the reactor outputs"; interpreting the interval about x̄ rather than μ.
 
-**act-7-03 · Testing a Mean** — `content/act-7/03-testing-a-mean.mdx`
+**act-7-03 · Within a Day** — `content/act-7/03-within-a-day.mdx`
 - Topics: 7.4 Setting Up a Test for a Population Mean · 7.5 Carrying Out a Test for a Population Mean
 - Objectives: (a) State hypotheses about a population mean and verify conditions for a one-sample t-test. (b) Calculate the t statistic and p-value (with df) and interpret the p-value in context. (c) Write a conclusion in context and connect it to the interval.
 - Instrument: p-value visualizer in t mode (df-aware null distribution). **[§8, reused]**
@@ -540,7 +555,7 @@ Act VI subtotal: 30 + 30 + 25 + 25 + 25 + 30 + 25 + 30 + 25 = **245 min**.
 - Investigative use: the two-sample test on transit times rejects; the anomaly is real, it is owner-specific, and the learner has two independent lines of evidence (Act VI proportions, Act VII means).
 - Misconceptions: conclusion phrased about the samples; treating the result as proof of intent.
 
-**act-7-07 · Which Procedure** — `content/act-7/07-which-procedure.mdx`
+**act-7-07 · The Inference Brief** — `content/act-7/07-the-inference-brief.mdx`
 - Topics: 7.10 Skills Focus: Selecting, Implementing, and Communicating Inference Procedures
 - Objectives: (a) Select the appropriate inference procedure (one-proportion, two-proportion, one-mean, paired, two-mean; interval vs test) from the question and data structure. (b) Implement the full four-step write-up (state, plan, do, conclude) and communicate it. (c) Judge robustness when conditions are shaky and use a bootstrap interval as a check.
 - Instrument: procedure selector (an interactive decision tree that grades the choice) plus the bootstrap machine — resample the Refit set, build a bootstrap distribution of the mean, compare to the t-interval. **[new: procedure selector] · [§8 bootstrap/randomization test machine — bootstrap mode]**
@@ -555,40 +570,40 @@ Act VII subtotal: 30 + 25 + 30 + 30 + 25 + 30 + 30 + 25 = **225 min**.
 
 ### Act VIII — Unit 8 · Inference for Categorical Data: Chi-Square · "Kettle" (4 modules + checkpoint · 135 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
-| act-8-01 | Are My Results Unexpected | 8.1, 8.2 | 1, 3 | act-7-checkpoint, act-2-01 | null | 30 | R |
-| act-8-02 | Goodness of Fit | 8.3 | 3, 4 | act-8-01 | null | 25 | R |
-| act-8-03 | Two-Way | 8.4, 8.5 | 1, 3 | act-8-02, act-4-04 | null | 30 | R |
-| act-8-04 | Independence | 8.6, 8.7 | 1, 4 | act-8-03 | null | 30 | R |
+| act-8-01 | Volatiles | 8.1, 8.2 | 1, 3 | act-7-checkpoint | null | 30 | R |
+| act-8-02 | Forty Seconds | 8.3 | 3, 4 | act-8-01 | null | 25 | R |
+| act-8-03 | Loss by Beneficiary | 8.4, 8.5 | 1, 3 | act-8-02 | null | 30 | R |
+| act-8-04 | Dacre's Stamp | 8.6, 8.7 | 1, 4 | act-8-03 | null | 30 | R |
 | act-8-checkpoint | Checkpoint: Kettle | 8.1–8.7 | 1–4 | act-8-04 | null | 20 | R |
 
-**act-8-01 · Are My Results Unexpected** — `content/act-8/01-are-my-results-unexpected.mdx`
+**act-8-01 · Volatiles** — `content/act-8/01-volatiles.mdx`
 - Topics: 8.1 Introducing Statistics: Are My Results Unexpected? · 8.2 Setting Up a Chi-Square Goodness of Fit Test
 - Objectives: (a) State hypotheses for a chi-square goodness-of-fit test in terms of a claimed distribution. (b) Calculate expected counts (n·p_i) and verify conditions (random, 10%, all expected counts ≥ 5). (c) Calculate the chi-square statistic and state its degrees of freedom.
 - Instrument: chi-square goodness-of-fit visualizer — observed vs expected bars per category, per-category contribution bars, the statistic accumulating. **[§8]**
 - Investigative use: declared cargo categories on lost ships vs the corridor-wide cargo mix — under "losses are random," the lost ships' cargo mix should match the corridor's. Expected counts, then the statistic.
 - Misconceptions: using percentages instead of counts in the statistic; expected counts rounded to integers; "expected ≥ 5" checked on observed counts.
 
-**act-8-02 · Goodness of Fit** — `content/act-8/02-goodness-of-fit.mdx`
+**act-8-02 · Forty Seconds** — `content/act-8/02-forty-seconds.mdx`
 - Topics: 8.3 Carrying Out a Chi-Square Test for Goodness of Fit
 - Objectives: (a) Obtain the p-value from the chi-square distribution with the correct df. (b) Write a conclusion in context. (c) Identify which categories contribute most to the statistic and interpret that as a follow-up.
 - Instrument: chi-square distribution panel — df slider, statistic marker, shaded upper tail; linked to the contribution bars. **[§8 GOF visualizer, distribution mode]**
 - Investigative use: the GOF test rejects; the largest contributions come from two cargo categories over-represented among losses — the ledger points at what was being carried, not where.
 - Misconceptions: two-sided p-value for chi-square; "reject H0 means every category differs"; interpreting the statistic size without df.
 
-**act-8-03 · Two-Way** — `content/act-8/03-two-way.mdx`
+**act-8-03 · Loss by Beneficiary** — `content/act-8/03-loss-by-beneficiary.mdx`
 - Topics: 8.4 Expected Counts in Two-Way Tables · 8.5 Setting Up a Chi-Square Test for Homogeneity or Independence
 - Objectives: (a) Calculate expected counts in a two-way table (row total × column total / n) and interpret an expected count. (b) Distinguish a test of homogeneity from a test of independence by how the data were collected, and state hypotheses accordingly. (c) Verify conditions and state df = (r − 1)(c − 1).
 - Instrument: chi-square independence visualizer — a two-way table with an expected-count overlay, mosaic view, and cell-contribution heat. **[§8]**
 - Investigative use: the Register cross-tabulated — loss outcome × owner (independence; one sample, two variables classified) vs cause code by corridor (homogeneity; separate samples). The learner sets up both correctly.
 - Misconceptions: homogeneity vs independence swapped; df = rc − 1; expected counts that don't preserve the margins.
 
-**act-8-04 · Independence** — `content/act-8/04-independence.mdx`
+**act-8-04 · Dacre's Stamp** — `content/act-8/04-dacres-stamp.mdx`
 - Topics: 8.6 Carrying Out a Chi-Square Test for Homogeneity or Independence · 8.7 Skills Focus: Selecting an Appropriate Inference Procedure for Categorical Data
 - Objectives: (a) Calculate the chi-square statistic and p-value for a two-way table and write a conclusion in context. (b) Identify the cells that drive the result and describe the association in context. (c) Select the appropriate categorical procedure (one-proportion z, two-proportion z, GOF, homogeneity, independence) for a question.
 - Instrument: the independence visualizer with the distribution panel, plus the procedure selector in categorical mode. **[§8, reused] · [new: procedure selector, categorical mode]**
-- Investigative use: losses are not independent of beneficiary; the driving cell is *Perrine, lost*. The examiner × lost table fails the expected-count condition (one cell expects 0.46) and is answered by simulating the null (permutation of loss labels among departures), not by chi-square; classification × office is a census of the 31 and is described, not tested. Combined with Act II's descriptive cross-tab, this is the ledger of who and what. See beat-sheet §5, decision 2.
+- Investigative use: losses are not independent of beneficiary; the driving cell is *Perrine, lost*. The **examiner × diverted** table (Dacre vs the other examiners, over the 412 Bureau departures in DS-02, not the Ledger) fails the expected-count condition — the smallest expected count is **0.830**, in the Dacre-diverted cell (`src/instruments/act-8/data.ts:27`, `examinerTable` = [[17, 1], [2, 392]]) — and is answered by simulating the null (permutation of the diverted labels among departures), not by chi-square; classification × office is a census of the 31 and is described, not tested. Combined with Act II's descriptive cross-tab, this is the ledger of who and what. See beat-sheet §5, decision 2.
 - Misconceptions: "association from a chi-square test implies cause"; reading a significant test as "large" association.
 
 **act-8-checkpoint · Checkpoint: Kettle** — `content/act-8/checkpoint.mdx` — 20 min — blueprint in §5.
@@ -599,36 +614,36 @@ Act VIII subtotal: 30 + 25 + 30 + 30 + 20 = **135 min**.
 
 ### Act IX — Unit 9 · Inference for Quantitative Data: Slopes · "Intent" (4 modules + checkpoint · 140 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
-| act-9-01 | Do Those Points Align | 9.1 | 2, 3 | act-8-checkpoint, act-2-05 | null | 30 | R |
-| act-9-02 | Interval for the Slope | 9.2, 9.3 | 1, 3, 4 | act-9-01, act-7-02 | null | 25 | R |
-| act-9-03 | Testing the Slope | 9.4, 9.5 | 1, 3, 4 | act-9-02 | null | 30 | R |
-| act-9-04 | Selecting the Procedure | 9.6 | 1, 4 | act-9-03 | null | 30 | R |
+| act-9-01 | The Slope Has a Spread | 9.1 | 2, 3 | act-8-checkpoint | null | 30 | R |
+| act-9-02 | One Tonne per Tonne | 9.2, 9.3 | 1, 3, 4 | act-9-01 | null | 25 | R |
+| act-9-03 | The Fuel to Reach Kettle | 9.4, 9.5 | 1, 3, 4 | act-9-02 | null | 30 | R |
+| act-9-04 | The Evidence Board | 9.6 | 1, 4 | act-9-03 | null | 30 | R |
 | act-9-checkpoint | Checkpoint: Intent | 9.1–9.6 | 1–4 | act-9-04 | null | 25 | R |
 
-**act-9-01 · Do Those Points Align** — `content/act-9/01-do-those-points-align.mdx`
+**act-9-01 · The Slope Has a Spread** — `content/act-9/01-the-slope-has-a-spread.mdx`
 - Topics: 9.1 Introducing Statistics: Do Those Points Align?
 - Objectives: (a) Describe the population regression model (μy = α + βx, with σ) and the sampling distribution of the sample slope b (mean β, SD σ/(σx·√n)). (b) Verify conditions for inference about a slope (linear, independent, normal residuals, equal SD, random). (c) Read the standard error of the slope from computer output and interpret it.
 - Instrument: regression-slope sampling distribution simulator — a true line with noise, repeated samples, each fitted slope stacked into a distribution; n and σ sliders. **[§8]**
 - Investigative use: the Manifest file's burn-vs-declared-mass slope for the suspect owner's ships; how much a fitted slope varies across samples of voyages sets the standard the final regression is held to.
 - Misconceptions: "the slope is fixed because the data are fixed"; conditions checked on y rather than residuals.
 
-**act-9-02 · Interval for the Slope** — `content/act-9/02-interval-for-the-slope.mdx`
+**act-9-02 · One Tonne per Tonne** — `content/act-9/02-one-tonne-per-tonne.mdx`
 - Topics: 9.2 Confidence Intervals for the Slope of a Regression Model · 9.3 Justifying a Claim About the Slope of a Regression Model Based on a Confidence Interval
 - Objectives: (a) Construct a t-interval for the slope (b ± t*·SE_b, df = n − 2) from computer output and interpret it in context. (b) Use the interval to justify a claim about the slope (including whether it excludes 0 or a physically required value). (c) Describe how n and residual spread affect the interval's width.
 - Instrument: slope interval builder from computer output, plus the capture simulator in slope mode. **[new: output reader] · [§8 capture simulator, slope mode]**
 - Investigative use: fuel loaded regressed on the fuel the plotted profile required (slope 1 for any honest hull, whatever the departure geometry); the nineteen diverted hulls' interval excludes 1 while the honest Perrine hulls' brackets it — their declared masses are systematically wrong.
 - Misconceptions: df = n − 1 for a slope; interpreting the interval as a range of slopes "in the data".
 
-**act-9-03 · Testing the Slope** — `content/act-9/03-testing-the-slope.mdx`
+**act-9-03 · The Fuel to Reach Kettle** — `content/act-9/03-the-fuel-to-reach-kettle.mdx`
 - Topics: 9.4 Setting Up a Test for the Slope of a Regression Model · 9.5 Carrying Out a Test for the Slope of a Regression Model
 - Objectives: (a) State hypotheses about a population slope (β = 0 or β = β0) and verify conditions. (b) Calculate t = (b − β0)/SE_b with df = n − 2 and obtain the p-value, from output or by hand. (c) Write a conclusion in context and state what a significant slope does and does not prove.
 - Instrument: p-value visualizer in slope mode with linked residual diagnostics. **[§8, reused]**
 - Investigative use: the final regression: excess fuel per true tonne (fuel loaded ÷ whole-phase inferred mass − the departure month's required fraction) regressed on the Δv from Mark 9.4 to Kettle on each hull's departure date — a variable that should have zero relationship with fuel loaded under any innocent story — has a slope significantly different from zero, and consistent with the rocket equation. Under any innocent story, β = 0; the p-value says otherwise. This is the analysis that proves intent.
 - Misconceptions: "a significant slope proves cause"; using the two-sided p-value from output for a one-sided test without halving.
 
-**act-9-04 · Selecting the Procedure** — `content/act-9/04-selecting-the-procedure.mdx`
+**act-9-04 · The Evidence Board** — `content/act-9/04-the-evidence-board.mdx`
 - Topics: 9.6 Skills Focus: Selecting an Appropriate Inference Procedure (across Units 6–9)
 - Objectives: (a) Select the appropriate inference procedure for a stated question and data structure across proportions, means, chi-square and slopes. (b) Communicate the full argument: procedure, conditions, result, conclusion in context, and limitations (causation, generalization). (c) Assess the strength of a body of evidence built from multiple analyses.
 - Instrument: unified procedure selector plus a case-file evidence board — each prior finding placed with its procedure, its conclusion and its limits; the board grades the assembled case. **[new: procedure selector, unified] · [new: evidence board]**
@@ -641,30 +656,30 @@ Act IX subtotal: 30 + 25 + 30 + 30 + 25 = **140 min**.
 
 ---
 
-### Act 10 — Epilogue · "Provident" (2 modules · 40 min)
+### Act 10 — Epilogue · "Provident" (2 modules · 45 min)
 
-| id | working title | topics | skills | prereqs | calc | min | rubric |
+| id | title | topics | skills | prereqs | calc | min | rubric |
 |---|---|---|---|---|---|---|---|
-| act-10-01 | Consequences | 6.7 (revisited; cumulative review) | 4 | act-9-checkpoint | null | 20 | R |
-| act-10-02 | Thread | 4.5 (revisited; Book Two seed) | 3 | act-10-01 | null | 20 | — |
+| act-10-01 | Consequences | 6.7 (revisited; cumulative review) | 4 | act-9-checkpoint | null | 25 | R |
+| act-10-02 | Provident | 4.5 (revisited; Book Two seed) | 3 | act-10-01 | null | 20 | — |
 
 **act-10-01 · Consequences** — `content/act-10/01-consequences.mdx` — kind: module
 - Topics: 6.7 Potential Errors When Performing Tests (revisited as the cost of the decisions made); cumulative review drills drawn from all nine checkpoints' generators.
 - Objectives: (a) Evaluate the decisions of the case in Type I / Type II terms and their consequences. (b) Recall and apply the interpretation discipline across proportions, means, chi-square and slopes.
-- Instrument: the ship's log itself as the instrument — a "reading your own log" review console that pulls the learner's `<LogEntry>` blocks and re-asks mixed drills. **[new: log review console]**
+- Instrument: built as `CaseReviewConsole` (`src/instruments/act-10/story.tsx`) — the hearing re-opens each finding for the learner to mark as surviving a hostile review or not — alongside `AlphaLine`, `HearingBeat` and the Act VI `PowerExplorer`, reused here. **[new: case-review console]**
 - Investigative use: resolution of the case and its costs; the learner is asked, in writing, which of their findings would survive a hostile review.
 - Misconceptions: "the case was proven"; forgetting scope of inference at the moment it matters most.
 
-**act-10-02 · Thread** — `content/act-10/02-thread.mdx` — kind: interlude (story-only with a single instrument and a short drill set; the one exception to the full seven-beat contract)
+**act-10-02 · Provident** — `content/act-10/02-provident.mdx` — kind: interlude (scene, Briefing and one instrument; **no drills and no mission beat** — exempt from the seven-beat contract)
 - Topics: 4.5 Conditional Probability (revisited: reversing the conditioning, P(hypothesis | evidence) from P(evidence | hypothesis)) — the Book Two Bayesian seed.
 - Objectives: (a) Reverse a conditional probability with a tree and interpret the result. (b) Recognize the question a p-value cannot answer and the machinery that could.
-- Instrument: the probability tree builder in "prior → posterior" mode. **[§8 tree builder, reused]**
+- Instrument: built as `PosteriorExplorer` (`src/instruments/act-10/PosteriorExplorer.tsx`) — the base rate is the control and the posterior moves with it; it is a prior → posterior panel, not the Act IV tree builder. **[new: posterior explorer]**
 - Investigative use: a new signal arrives; the learner computes P(hostile | signature) from P(signature | hostile) and a base rate — and sees how much the base rate matters. The thread to Book Two.
 - Misconceptions: base-rate neglect.
 
-Act 10 subtotal: 20 + 20 = **40 min**.
+Act 10 subtotal: 25 + 20 = **45 min**.
 
-**Grand total: 1,865 min = 31.1 h · 70 modules (61 teaching + 9 checkpoints).**
+**Grand total: 1,884 min = 31.4 h · 72 modules (62 teaching + 10 checkpoints); by `kind`, 60 module + 2 interlude + 10 checkpoint.**
 
 ---
 
@@ -682,7 +697,7 @@ Act 10 subtotal: 20 + 20 = **40 min**.
 - Paired procedures get their own module (7-04) even though the CED folds them into 7.2–7.5; the paired-vs-two-sample confusion is the single most common Unit 7 error and the Refit set is naturally paired.
 - 7.10, 8.7 and 9.6 (skills-focus topics) each own a module with the procedure selector, escalating from "means and proportions" to "categorical" to "everything".
 
-**Cross-act prerequisites** (beyond the linear chain within each Act and the previous Act's checkpoint):
+**Cross-act conceptual dependencies.** These are what each module *builds on*, not what the shipped frontmatter enforces. As built, the `prereqs` frontmatter is the linear chain within each Act plus the previous Act's checkpoint (the exceptions are listed under the graph), so every dependency below is already satisfied transitively by the time the module unlocks. Keep the graph for sequencing judgement; read the per-Act tables for the unlock rule.
 
 ```mermaid
 graph LR
@@ -699,42 +714,32 @@ graph LR
   A4_08 --> A4_10[act-4-10 geometric]
 ```
 
-Full prerequisite list (indented; each module also requires the module listed directly above it in its Act table unless a different prereq is shown):
+**The shipped unlock graph**, transcribed from the `prereqs` frontmatter of every file (this is what the mission map enforces):
 
 ```
-act-0-01
-  act-0-02
-    act-0-03
-      act-1-01
-        act-1-02
-        act-1-03
-          act-1-04
-            act-1-05
-              act-1-06
-            act-1-07  (calc: area-under-a-curve)
-              act-1-checkpoint  (requires act-1-06 and act-1-07)
-                act-2-01 → act-2-02 → act-2-03 → act-2-04 → act-2-05 → act-2-06 → act-2-checkpoint
-                  act-3-01 → act-3-02 → act-3-03 → act-3-04 → act-3-05 → act-3-checkpoint
-                    act-4-01 → act-4-02
-                      act-4-03 → act-4-04
-                      act-4-05 → act-4-06 → act-4-07
-                      act-4-08 (requires act-4-04, act-4-06) → act-4-09
-                      act-4-08 → act-4-10
-                      act-4-checkpoint (requires act-4-07, act-4-09, act-4-10)
-                        act-5-01 → act-5-02 (also act-1-07) → act-5-03 → act-5-04
-                                                                 act-5-03 → act-5-05
-                        act-5-checkpoint (requires act-5-04, act-5-05)
-                          act-6-01 → act-6-02 → act-6-03 → act-6-04 → act-6-05 → act-6-06
-                                                                        act-6-05 → act-6-07
-                          act-6-08 (requires act-6-06, act-6-07) → act-6-checkpoint
-                            act-7-01 (also act-5-03) → act-7-02 → act-7-03 → act-7-04
-                            act-7-05 (requires act-7-04, act-5-05) → act-7-06 → act-7-07 → act-7-checkpoint
-                              act-8-01 (also act-2-01) → act-8-02 → act-8-03 (also act-4-04) → act-8-04 → act-8-checkpoint
-                                act-9-01 (also act-2-05) → act-9-02 (also act-7-02) → act-9-03 → act-9-04 → act-9-checkpoint
-                                  act-10-01 → act-10-02
+act-0-00 (no prereqs — readable from the start)
+act-0-01 → act-0-02 → act-0-03 → act-0-checkpoint
+  act-1-01 → act-1-02 → act-1-03 → act-1-04 → act-1-05
+                                   act-1-04 → act-1-07  (calc: area-under-a-curve)
+                        act-1-05 → act-1-06
+                                   act-1-checkpoint (requires act-1-06 and act-1-07)
+    act-2-01 → act-2-02 → act-2-03 → act-2-04 → act-2-05 → act-2-06 → act-2-checkpoint
+      act-3-01 → act-3-02 → act-3-03 → act-3-04 → act-3-05 → act-3-checkpoint
+        act-4-01 → act-4-02 → act-4-03 → act-4-04 → act-4-05 → act-4-06 → act-4-07
+          act-4-07 → act-4-08 → act-4-09 → act-4-10 → act-4-checkpoint
+          act-5-01 → act-5-02 (also act-1-07) → act-5-03 → act-5-04
+                                                act-5-05 (requires act-5-03 and act-5-04)
+            act-5-checkpoint (requires act-5-04 and act-5-05)
+              act-6-01 → act-6-02 → act-6-03 → act-6-04 → act-6-05 → act-6-06
+                                                          act-6-05 → act-6-07
+                act-6-08 (requires act-6-06 and act-6-07) → act-6-checkpoint
+                  act-7-01 → act-7-02 → act-7-03 → act-7-04 → act-7-05 → act-7-06 → act-7-07 → act-7-checkpoint
+                    act-8-01 → act-8-02 → act-8-03 → act-8-04 → act-8-checkpoint
+                      act-9-01 → act-9-02 → act-9-03 → act-9-04 → act-9-checkpoint
+                        act-10-01 → act-10-02
 ```
 
-The mission map should unlock strictly by prerequisites; within an Act the learner may take modules with satisfied prerequisites in any order (e.g. act-1-06 and act-1-07 are both available after act-1-05 and act-1-04 respectively).
+Each Act's first module takes the previous Act's checkpoint as its prereq (`act-1-01` ← `act-0-checkpoint`, `act-4-01` ← `act-3-checkpoint`, and so on). Act IV's chain is strictly linear as built, which is stricter than the DAG the graph above describes but never blocks a learner who works in order. The mission map unlocks strictly by these prerequisites; within an Act the learner may take any module whose prerequisites are satisfied in any order (e.g. act-1-06 and act-1-07 are both available after act-1-05 and act-1-04 respectively).
 
 ---
 
@@ -751,7 +756,7 @@ Every build-order §8 instrument and where it is required. Act Teams may add ins
 | Least-squares "minimize the squares" visual | act-2-03 | — |
 | Sampling-method simulator (SRS, stratified, cluster, systematic) on a fleet population | act-3-02 | — |
 | Bias demonstrator | act-3-03 | act-5-01 (contrast with sampling variability) |
-| Probability tree builder | act-4-03 | act-10-02 (prior → posterior) |
+| Probability tree builder | act-4-03 | — (act-10-02 does the prior → posterior job with its own `PosteriorExplorer`, not this component) |
 | Binomial and geometric explorers | act-4-08, act-4-09 (binomial); act-4-10 (geometric) | act-5-04 (binomial → p̂ bridge) |
 | Random-variable combiner | act-4-07 | act-5-05 (difference of means bridge) |
 | Central Limit Theorem machine | act-5-03 | act-5-04 (Bernoulli parent), act-5-05 (difference mode) |
@@ -769,6 +774,7 @@ Instruments this map adds beyond §8 (Act Teams build; names are working names):
 | New instrument | Module | What the learner manipulates |
 |---|---|---|
 | Nav fix-error display | act-0-01 | Re-run six-fix sequences; watch the mean move |
+| Register reader (no instrument) | act-0-00 | — (interlude; reads `act-0/data` for the headline counts) |
 | Heat-sink capacity gauge | act-0-02 | Set the cold window; watch capacity drain with variation |
 | Register browser + variable inspector | act-0-03, act-1-01 | Filter/sort the loss register; classify columns; frequency tables recompute |
 | Display-integrity panel | act-1-02 | Adjust baseline/scale/bar width; toggle honest axes |
@@ -793,142 +799,173 @@ Instruments this map adds beyond §8 (Act Teams build; names are working names):
 | Procedure selector | act-7-07 (means/proportions), act-8-04 (categorical), act-9-04 (unified) | Interactive decision tree that grades the choice |
 | Output reader | act-9-02 | Read a regression output table; build the interval |
 | Evidence board | act-9-04 | Place each finding with procedure, conclusion, limits; the board grades the case |
-| Log review console | act-10-01 | Re-drill from the learner's own log entries |
+| Case-review console | act-10-01 | Mark each finding as surviving a hostile review or not; re-drill from the case file |
+| Posterior explorer | act-10-02 | Drag the base rate; watch the posterior P(hostile given the signature) move |
 
 ---
 
 ## 5. Checkpoint blueprints
 
-Common rules (build-order §4; `CheckpointSpec` in `src/lib/problems/checkpoints.ts`): 8–12 items, fresh parameters per attempt, threshold **0.8**, mixed formats — multiple choice (MC), numeric entry (NUM), short interpretation with rubric (INT), and exactly one "interpret this display" item (DISP). Every item names the module(s) it reviews (`review`) for the debrief. Weights default to 1; INT items may weigh 1.5 where marked. Estimated minutes listed per Act. The Story Architect frames each checkpoint as a mission event (briefing/onPass/onFail text); the item content below is the contract.
+Common rules (build-order §4; `CheckpointSpec` in `src/lib/problems/checkpoints.ts`): 8–12 items, fresh parameters per attempt, threshold **0.8**, mixed formats — multiple choice (MC), numeric entry (NUM), short interpretation with rubric (INT), and exactly one "interpret this display" item (DISP). Every item names the module(s) it reviews (`review`) for the debrief. Weights default to 1; INT items may weigh 1.5 where marked. The Story Architect frames each checkpoint as a mission event (briefing/onPass/onFail text).
+
+**These tables are transcribed from the shipped specs** in `src/lib/problems/checkpoints/act-N.ts`, with the `generator` column naming the registered generator each item draws from and the `topic` column taken from that generator's own `ap_topics`. All ten specs carry threshold 0.8 and exactly one DISP item. Verified: the union of each checkpoint's generators' `ap_topics` covers every CED topic in its unit, with no gaps. Where a spec traded a blueprint item away to close a coverage gap, the trade-off is recorded under the table and is also in the spec's header comment — keep the two in step.
+
+### act-0-checkpoint · Release (10 items · 10 min)
+| # | format | reviews | topic | generator | item |
+|---|---|---|---|---|---|
+| q1 | NUM | act-0-01 | 1.1 | `act-0/fix-run-centre` | Centre and spread of a six-fix run |
+| q2 | MC | act-0-01 | 1.1 | `act-0/parameter-or-statistic` | Parameter or statistic, and of what |
+| q3 | MC | act-0-01 | 1.1 | `act-0/summary-of-centre` | Which of these is a summary of centre (a range is not) |
+| q4 | MC | act-0-02 | 1.2 | `act-0/classify-telemetry` | Classify a telemetry variable (categorical / discrete / continuous) |
+| q5 | NUM | act-0-02 | 1.2 | `act-0/design-shortfall` | Measured endurance as a shortfall against the design curve |
+| q6 | NUM | act-0-03 | 1.3 | `act-0/relative-frequency-filtered` | Relative frequency from a filtered table (which filter moves the denominator) |
+| q7 | MC | act-0-03 | 1.1, 1.3 | `act-0/population-described` | The population a table describes |
+| q8 | NUM | act-0-03 | 1.3 | `act-0/percent-to-count` | From a stated percentage to a count |
+| q9 | DISP | act-0-01 | 1.1 | `act-0/read-the-run` | Dotplot of a fix run: read centre and spread off it |
+| q10 | INT (1.5) | act-0-03 | 1.1 | `act-0/register-population` | What the Register describes, and what it does not |
+
+Added after the original Prologue plan (which specified no checkpoint). It assesses the Prologue's seeds of 1.1, 1.2 and 1.3 only; Act I's checkpoint is where Unit 1 is certified.
 
 ### act-1-checkpoint · Signatures (11 items · 20 min)
-| # | format | reviews | topic | item |
-|---|---|---|---|---|
-| q1 | MC | act-1-01 | 1.1 | Given the Register and a question, identify population, sample, and whether the question is about a parameter or a statistic |
-| q2 | MC | act-1-01 | 1.2 | Classify four telemetry variables (categorical / quantitative discrete / quantitative continuous) |
-| q3 | NUM | act-1-01 | 1.3 | Relative frequency of a cause code from a generated frequency table |
-| q4 | MC | act-1-02 | 1.4 | Pick the statement the truncated-axis bar chart misrepresents |
-| q5 | DISP | act-1-03 | 1.5, 1.6 | Histogram of drive signatures: INT — describe shape, center, variability, unusual features in context (rubric: all four + units + context) |
-| q6 | NUM | act-1-04 | 1.7 | Median and IQR of a generated sample |
-| q7 | MC | act-1-04 | 1.7 | Which summary statistics change, and how, when one value is moved far out |
-| q8 | NUM | act-1-05 | 1.8 | Upper fence (Q3 + 1.5·IQR) and the number of outliers |
-| q9 | INT (1.5) | act-1-06 | 1.9 | Compare two boxplots in context (rubric: comparative language, center, spread, shape/outliers, context) |
-| q10 | NUM | act-1-07 | 1.10 | z-score of a signature, and the proportion of a normal model above it |
-| q11 | NUM | act-1-07 | 1.10 | Mean and SD after a linear unit conversion (aX + b) |
+| # | format | reviews | topic | generator | item |
+|---|---|---|---|---|---|
+| q1 | MC | act-1-01 | 1.1, 1.3 | `act-1/population-sample` | Given the Register and a question, identify population, sample, and whether the question is about a parameter or a statistic |
+| q2 | MC | act-1-01 | 1.2 | `act-1/variable-types` | Classify four telemetry variables (categorical / quantitative discrete / quantitative continuous) |
+| q3 | NUM | act-1-01 | 1.3 | `act-1/relative-frequency` | Relative frequency of a cause code from a generated frequency table |
+| q4 | MC | act-1-02 | 1.4 | `act-1/display-distortion` | Pick the statement the truncated-axis bar chart misrepresents |
+| q5 | DISP | act-1-03 | 1.5, 1.6 | `act-1/describe-signature-histogram` | Histogram of drive signatures: INT — describe shape, center, variability, unusual features in context (rubric: all four + units + context) |
+| q6 | NUM | act-1-04 | 1.7 | `act-1/median-iqr` | Median and IQR of a generated sample |
+| q7 | MC | act-1-04 | 1.7 | `act-1/resistance-choice` | Which summary statistics change, and how, when one value is moved far out |
+| q8 | NUM | act-1-05 | 1.8 | `act-1/upper-fence` | Upper fence (Q3 + 1.5·IQR) and the number of outliers |
+| q9 | INT (1.5) | act-1-06 | 1.9 | `act-1/compare-boxplots` | Compare two boxplots in context (rubric: comparative language, center, spread, shape/outliers, context) |
+| q10 | NUM | act-1-07 | 1.10 | `act-1/z-tail-area` | z-score of a signature, or the proportion of a normal model beyond it |
+| q11 | NUM | act-1-07 | 1.10 | `act-1/unit-conversion` | Mean and SD after a linear unit conversion (aX + b) |
 
 ### act-2-checkpoint · Manifests (10 items · 20 min)
-| # | format | reviews | topic | item |
-|---|---|---|---|---|
-| q1 | NUM | act-2-01 | 2.2, 2.3 | Conditional relative frequency from a generated two-way table |
-| q2 | INT (1.5) | act-2-01 | 2.1, 2.3 | Is there an association? Justify from conditional distributions in context |
-| q3 | DISP | act-2-02 | 2.4 | Scatterplot: INT — direction, form, strength, unusual features, in context |
-| q4 | MC | act-2-02 | 2.5 | Properties of r (units, symmetry, linearity, outlier sensitivity, causation) |
-| q5 | NUM | act-2-03, act-2-04 | 2.6, 2.7 | Predicted burn and residual for a given voyage from the LSRL |
-| q6 | INT | act-2-03 | 2.6 | Interpret the slope in context (rubric: "predicted", "on average"/"for each", units, direction) |
-| q7 | MC | act-2-04 | 2.7 | Match a residual plot pattern to what it implies about the model |
-| q8 | INT | act-2-05 | 2.8 | Interpret r² and s from a computer-output table in context |
-| q9 | MC | act-2-05 | 2.8 | Effect of removing a high-leverage point on slope, r and r² |
-| q10 | MC | act-2-06 | 2.9 | Choose the transformation given residual plots for raw / log y / log-log fits, and back-transform a prediction |
+| # | format | reviews | topic | generator | item |
+|---|---|---|---|---|---|
+| q1 | NUM | act-2-01 | 2.1, 2.2 | `act-2/conditional-from-table` | Conditional relative frequency from a generated two-way table |
+| q2 | INT (1.5) | act-2-01 | 2.2, 2.3 | `act-2/association-in-context` | Is there an association? Justify from conditional distributions in context |
+| q3 | DISP | act-2-02 | 2.4, 2.5 | `act-2/describe-scatter` | Scatterplot: INT — direction, form, strength, unusual features, in context |
+| q4 | MC | act-2-02 | 2.5 | `act-2/r-properties` | Properties of r (units, symmetry, linearity, outlier sensitivity, causation) |
+| q5 | NUM | act-2-03, act-2-04 | 2.6, 2.7 | `act-2/predict-and-residual` | Predicted burn and residual for a given voyage from the LSRL |
+| q6 | INT | act-2-03 | 2.6 | `act-2/interpret-slope` | Interpret the slope in context (rubric: "predicted", "on average"/"for each", units, direction) |
+| q7 | MC | act-2-04 | 2.7 | `act-2/residual-pattern` | Match a residual plot pattern to what it implies about the model |
+| q8 | INT | act-2-05 | 2.8 | `act-2/interpret-r2-s` | Interpret r² and s from a computer-output table in context |
+| q9 | MC | act-2-05 | 2.8 | `act-2/leverage-effect` | Effect of removing a high-leverage point on slope, r and r² |
+| q10 | MC | act-2-06 | 2.9 | `act-2/choose-transform` | Choose the transformation given residual plots for raw / log y / log-log fits, and back-transform a prediction |
 
 ### act-3-checkpoint · Testimony (10 items · 20 min)
-| # | format | reviews | topic | item |
-|---|---|---|---|---|
-| q1 | MC | act-3-01 | 3.1, 3.2 | Identify the study type and the population to which conclusions apply |
-| q2 | MC | act-3-02 | 3.3 | Identify the sampling method from a description (SRS / stratified / cluster / systematic) |
-| q3 | NUM | act-3-02 | 3.3 | Implement an SRS with a random-digit table: which hulls are selected |
-| q4 | INT (1.5) | act-3-03 | 3.4 | Name the bias in a described survey and the likely direction of the error, in context |
-| q5 | MC | act-3-03 | 3.4 | Bias vs sampling variability: which does a larger n fix |
-| q6 | MC | act-3-04 | 3.5 | Identify experimental units, factor(s), levels, treatments, response |
-| q7 | INT | act-3-04 | 3.5 | Explain how a named variable is confounded with the treatment, in context |
-| q8 | MC | act-3-04 | 3.6 | Choose completely randomized vs randomized block vs matched pairs for a stated goal, with the reason |
-| q9 | DISP | act-3-05 | 3.7 | Randomization distribution with the observed difference marked: is the result statistically significant, and why |
-| q10 | INT | act-3-05 | 3.7 | State the scope of inference (causation? generalization?) for a described study |
+| # | format | reviews | topic | generator | item |
+|---|---|---|---|---|---|
+| q1 | MC | act-3-01 | 3.1, 3.2 | `act-3/study-type-scope` | Identify the study type and the population to which conclusions apply |
+| q2 | MC | act-3-02 | 3.3 | `act-3/identify-method` | Identify the sampling method from a description (SRS / stratified / cluster / systematic) |
+| q3 | NUM | act-3-02 | 3.3 | `act-3/srs-random-digits` | Implement an SRS with a random-digit table: which hulls are selected |
+| q4 | INT (1.5) | act-3-03 | 3.4 | `act-3/name-the-bias` | Name the bias in a described survey and the likely direction of the error, in context |
+| q5 | MC | act-3-03 | 3.4 | `act-3/bias-or-variability` | Bias vs sampling variability: which does a larger n fix |
+| q6 | MC | act-3-04 | 3.5 | `act-3/units-factors-response` | Identify experimental units, factor(s), levels, treatments, response |
+| q7 | INT | act-3-04 | 3.5, 3.6 | `act-3/explain-confound` | Explain how a named variable is confounded with the treatment, in context |
+| q8 | MC | act-3-04 | 3.6 | `act-3/choose-design` | Choose completely randomized vs randomized block vs matched pairs for a stated goal, with the reason |
+| q9 | DISP | act-3-05 | 3.7 | `act-3/randomization-significance` | Randomization distribution with the observed difference marked: is the result statistically significant, and why |
+| q10 | INT | act-3-05 | 3.7 | `act-3/scope-of-inference` | State the scope of inference (causation? generalization?) for a described study |
 
 ### act-4-checkpoint · Running Cold (12 items · 25 min)
-| # | format | reviews | topic | item |
-|---|---|---|---|---|
-| q1 | MC | act-4-01 | 4.1, 4.2 | Pick the correct simulation design (model, one trial, statistic) for a probability question |
-| q2 | NUM | act-4-02 | 4.3, 4.4 | Probability via complement / addition rule for mutually exclusive events |
-| q3 | NUM | act-4-03 | 4.5 | Conditional probability from a two-way table |
-| q4 | NUM | act-4-03 | 4.5 | Reverse conditional from a tree (P(A given B) from P(B given A) and base rates) |
-| q5 | MC | act-4-04 | 4.6 | Are two events independent? Which check applies |
-| q6 | NUM | act-4-04 | 4.6 | General addition rule / multiplication rule for independent events |
-| q7 | NUM | act-4-05 | 4.7 | P(X ≤ k) from a discrete probability distribution |
-| q8 | INT | act-4-06 | 4.8 | Compute and interpret the expected value in context (rubric: long-run average, units, context; forbidden: "most likely") |
-| q9 | NUM | act-4-07 | 4.9 | SD of a sum or difference of independent random variables |
-| q10 | NUM | act-4-08 | 4.10 | Binomial probability P(X = k) or P(X ≤ k) |
-| q11 | NUM | act-4-09 | 4.11 | Mean and SD of a binomial count; is the observed count more than 2 SD out |
-| q12 | DISP | act-4-10 | 4.12 | Geometric pmf plot: read P(X = 1) and compute the expected number of trials; interpret |
+| # | format | reviews | topic | generator | item |
+|---|---|---|---|---|---|
+| q1 | MC | act-4-01 | 4.1 | `act-4/streaks` | What a clump of losses close together does and does not imply; the long run dilutes a streak, it does not settle an account |
+| q2 | MC | act-4-01 | 4.2 | `act-4/simulation-design` | Pick the correct simulation design (model, one trial, statistic) for a probability question |
+| q3 | NUM | act-4-02 | 4.3, 4.4 | `act-4/two-way-probability` | Probability from a two-way table: complement, "or" with the overlap subtracted, and the mutually exclusive case |
+| q4 | NUM | act-4-03 | 4.5 | `act-4/conditional-from-table` | Conditional probability from a two-way table |
+| q5 | NUM | act-4-03 | 4.5 | `act-4/reverse-conditional` | Reverse conditional from a tree (P(A given B) from P(B given A) and base rates) |
+| q6 | MC | act-4-04 | 4.6 | `act-4/independence-check` | Are two events independent? Which check says so |
+| q7 | NUM | act-4-05 | 4.7 | `act-4/pmf-cumulative` | P(X ≤ k) from a discrete probability distribution |
+| q8 | INT (1.5) | act-4-06 | 4.8 | `act-4/interpret-expected-value` | Compute and interpret the expected value in context (rubric: long-run average, units, context; forbidden: "most likely") |
+| q9 | NUM | act-4-07 | 4.9 | `act-4/sd-of-sum` | SD of a sum or difference of independent random variables |
+| q10 | NUM | act-4-08 | 4.10 | `act-4/binomial-pmf` | Binomial probability P(X = k) or P(X ≤ k) |
+| q11 | NUM | act-4-09 | 4.11 | `act-4/binomial-moments` | Mean and SD of a binomial count; is the observed count more than 2 SD out |
+| q12 | DISP | act-4-10 | 4.12 | `act-4/geometric-display` | Geometric pmf plot: read P(X = 1) and the expected number of trials; interpret |
+
+**Trade-offs** (`src/lib/problems/checkpoints/act-4.ts` header). Coverage is complete: one item per CED topic 4.1–4.12, with 4.5 the only topic drilled twice. Two blueprint items gave up their slots, each to a generator assessing the same ground:
+- q3 runs `two-way-probability` (4.3 **and** 4.4) in place of `complement-rule` (4.3 only). The original blueprint's q2 asked for "complement / addition rule for mutually exclusive events" and the built item had dropped the second half.
+- `general-addition` (4.6) gave up its slot to `streaks` (4.1, previously assessed nowhere). 4.6 is still assessed at q6, and q3's "or" branch subtracts an overlap, so the general addition rule is still exercised; the multiplication rule is not.
 
 ### act-5-checkpoint · Noise Floor (9 items · 20 min)
-| # | format | reviews | topic | item |
-|---|---|---|---|---|
-| q1 | MC | act-5-01 | 5.1 | Parameter vs statistic; what a sampling distribution is a distribution of |
-| q2 | DISP | act-5-01 | 5.4 | Simulated sampling distribution with the true parameter marked: is the estimator biased; how does variability change with n |
-| q3 | NUM | act-5-02 | 5.2 | Normal probability and inverse-normal cutoff |
-| q4 | MC | act-5-03 | 5.3 | What the CLT says about the sampling distribution of x̄ (and what it does not say about the population) |
-| q5 | NUM | act-5-03 | 5.7 | Mean and SD of the sampling distribution of x̄; probability x̄ exceeds a value |
-| q6 | NUM | act-5-04 | 5.5 | SD of p̂ and the large-counts check |
-| q7 | NUM | act-5-04 | 5.6 | SD of p̂1 − p̂2 and a probability about the difference |
-| q8 | NUM | act-5-05 | 5.8 | SD of x̄1 − x̄2 and a probability about the difference |
-| q9 | INT (1.5) | act-5-01, act-5-03 | 5.1, 5.3 | Explain in context why two honest patrol samples disagree and how much disagreement is expected |
+| # | format | reviews | topic | generator | item |
+|---|---|---|---|---|---|
+| q1 | MC | act-5-01 | 5.1 | `act-5/parameter-or-statistic` | Parameter vs statistic; what a sampling distribution is a distribution of |
+| q2 | DISP | act-5-01 | 5.4 | `act-5/checkpoint-estimator-display` | Simulated sampling distribution with the true parameter marked: is the estimator biased; how does variability change with n |
+| q3 | NUM | act-5-02 | 5.2 | `act-5/inverse-normal-cutoff` | Normal probability and inverse-normal cutoff |
+| q4 | MC | act-5-03 | 5.3 | `act-5/what-the-clt-claims` | What the CLT says about the sampling distribution of x̄ (and what it does not say about the population) |
+| q5 | NUM | act-5-03 | 5.7 | `act-5/probability-about-xbar` | Mean and SD of the sampling distribution of x̄; probability x̄ exceeds a value |
+| q6 | NUM | act-5-04 | 5.5 | `act-5/sd-of-phat` | SD of p̂ and the large-counts check |
+| q7 | NUM | act-5-04 | 5.6 | `act-5/sd-of-difference-proportions` | SD of p̂₁ − p̂₂ under a common rate, and a probability about the difference |
+| q8 | NUM | act-5-05 | 5.8 | `act-5/sd-of-difference-means` | SD of x̄₁ − x̄₂ and a probability about the difference |
+| q9 | INT (1.5) | act-5-01, act-5-03 | 5.1, 5.4 | `act-5/why-two-patrols-differ` | Explain in context why two honest patrol samples disagree and how much disagreement is expected |
 
 ### act-6-checkpoint · Accusation (12 items · 25 min)
-| # | format | reviews | topic | item |
-|---|---|---|---|---|
-| q1 | MC | act-6-01 | 6.2 | Which conditions are (not) met for a one-proportion z-interval in a described sample |
-| q2 | INT | act-6-01 | 6.1, 6.2 | Interpret the confidence level (rubric: long-run / repeated samples / % of intervals capture; forbidden: "probability the parameter is in this interval") |
-| q3 | NUM | act-6-02 | 6.2 | Construct a one-proportion z-interval (both endpoints) |
-| q4 | INT (1.5) | act-6-02 | 6.3 | Interpret the interval and justify a claim about the baseline in context |
-| q5 | NUM | act-6-02 | 6.2 | Sample size for a target margin at a given confidence |
-| q6 | MC | act-6-03 | 6.4 | Correct hypotheses (symbols, parameter, direction) for a described question |
-| q7 | INT (1.5) | act-6-04 | 6.5 | Interpret the p-value in context (rubric: assuming H0 true, at least as extreme, probability, context; forbidden: "probability H0 is true", "due to chance") |
-| q8 | INT (1.5) | act-6-05 | 6.6 | Write the conclusion in context (rubric: compare to α, reject/fail to reject, evidence for Ha in context; forbidden: "accept H0", "proves") |
-| q9 | MC | act-6-06 | 6.7 | Identify Type I / Type II error in context and the effect of a change in n / α / effect size on power |
-| q10 | NUM | act-6-07 | 6.8, 6.9 | Two-proportion z-interval endpoints; does it contain 0 |
-| q11 | NUM | act-6-08 | 6.10, 6.11 | Pooled proportion and the two-proportion z statistic; p-value |
-| q12 | DISP | act-6-04 | 6.5 | Normal curve with a shaded region: which alternative hypothesis and which p-value does this shading represent |
+| # | format | reviews | topic | generator | item |
+|---|---|---|---|---|---|
+| q1 | INT | act-6-01 | 6.1 | `act-6/interpret-confidence-level` | Interpret the confidence level (rubric: long-run / repeated samples / % of intervals capture; forbidden: "probability the parameter is in this interval") |
+| q2 | NUM | act-6-02 | 6.2 | `act-6/one-prop-interval` | One-proportion z-interval: an endpoint |
+| q3 | INT (1.5) | act-6-02 | 6.3 | `act-6/interval-interpretation` | Interpret the interval and justify a claim about the baseline in context |
+| q4 | MC | act-6-03 | 6.4 | `act-6/state-hypotheses` | Correct hypotheses (symbols, parameter, direction) for a described question |
+| q5 | INT (1.5) | act-6-04 | 6.5 | `act-6/interpret-p-value` | Interpret the p-value in context (rubric: assuming H0 true, at least as extreme, probability, context; forbidden: "probability H0 is true", "due to chance") |
+| q6 | INT (1.5) | act-6-05 | 6.6 | `act-6/test-conclusion` | Write the conclusion in context (rubric: compare to α, reject/fail to reject, evidence for Ha in context; forbidden: "accept H0", "proves") |
+| q7 | INT | act-6-06 | 6.7 | `act-6/type-i-ii` | Identify the Type I / Type II error in context and name its consequence |
+| q8 | NUM | act-6-07 | 6.8 | `act-6/two-prop-interval` | Two-proportion z-interval for the difference: an endpoint |
+| q9 | MC | act-6-07 | 6.9 | `act-6/interval-contains-zero` | What an interval that contains 0 does and does not license |
+| q10 | NUM | act-6-08 | 6.10 | `act-6/pooled-test-statistic` | Pooled proportion and the two-proportion z statistic |
+| q11 | MC | act-6-08 | 6.11 | `act-6/scope-of-inference` | What the finding covers, and what it may claim |
+| q12 | DISP | act-6-04 | 6.5 | `act-6/p-value-shading` | Normal curve with a shaded region: which alternative hypothesis and which p-value does this shading represent |
+
+**Trade-offs** (`src/lib/problems/checkpoints/act-6.ts` header). Coverage is complete: one item per CED topic 6.1–6.11, with 6.5 the only topic assessed twice (q5 in words, q12 in a picture). Twelve items cannot hold eleven topics and three duplicates, so two blueprint items gave up their slots:
+- `sample-size-margin` (6.3) → `interval-contains-zero` (6.9). The blueprint's q10 asked for "endpoints; does it contain 0" and the built item answered only the first half; q8 keeps the endpoints and q9 now asks the second. 6.3 is still assessed at q3.
+- `interval-conditions` (6.2) → `scope-of-inference` (6.11). The blueprint's q11 asked for 6.10 **and** 6.11 and no generator carries both, so the test's arithmetic stays at q10 and its scope becomes q11. 6.2 is still assessed at q2, which builds the interval.
+
+The cost: Act VI's checkpoint no longer has a standalone conditions item or a sample-size-for-a-margin item. Both skills are still drilled in act-6-01 and act-6-02, and conditions are assessed at the act-7, act-8 and act-9 checkpoints.
 
 ### act-7-checkpoint · Halden Reach (11 items · 25 min)
-| # | format | reviews | topic | item |
-|---|---|---|---|---|
-| q1 | MC | act-7-01 | 7.1 | Why t rather than z; the df; how t compares to normal |
-| q2 | NUM | act-7-02 | 7.2 | One-sample t-interval endpoints from summary statistics |
-| q3 | INT (1.5) | act-7-02 | 7.3 | Interpret the interval and justify a claim about the specification in context |
-| q4 | MC | act-7-03 | 7.4 | Hypotheses and conditions for a one-sample t-test in a described situation |
-| q5 | NUM | act-7-03 | 7.5 | t statistic, df and p-value for a one-sample test |
-| q6 | MC | act-7-04 | 7.4, 7.8 | Paired or two-sample? Identify the correct structure from the design |
-| q7 | NUM | act-7-04 | 7.2, 7.5 | Paired t: mean difference, t statistic, p-value |
-| q8 | NUM + INT | act-7-05 | 7.6, 7.7 | Two-sample t-interval for a difference in means; interpret and justify a claim |
-| q9 | INT (1.5) | act-7-06 | 7.8, 7.9 | Two-sample t-test conclusion in context (rubric: compare to α, decision, context, parameter language; forbidden: "proves", claims about the samples) |
-| q10 | MC | act-7-07 | 7.10 | Select the procedure for each of three described questions |
-| q11 | DISP | act-7-05, act-7-07 | 7.6, 7.10 | Two small-sample dotplots: are the conditions for a two-sample t procedure met, and why |
+| # | format | reviews | topic | generator | item |
+|---|---|---|---|---|---|
+| q1 | MC | act-7-01 | 7.1, 7.2 | `act-7/why-t` | Why t rather than z (σ unknown, not small n); the df; how t compares to normal |
+| q2 | NUM | act-7-02 | 7.2, 7.3 | `act-7/t-interval-endpoint` | One-sample t-interval: an endpoint from summary statistics |
+| q3 | INT (1.5) | act-7-02 | 7.3 | `act-7/mean-interval-interpretation` | Interpret the interval and justify a claim about the specification in context |
+| q4 | NUM | act-7-03 | 7.4, 7.5 | `act-7/t-test-statistic` | One-sample t: the statistic, the df or the p-value |
+| q5 | MC | act-7-04 | 7.4, 7.6 | `act-7/paired-or-two-sample` | Paired or two independent samples? Identify the structure from the design |
+| q6 | NUM | act-7-04 | 7.4, 7.5 | `act-7/paired-t` | Paired t: mean difference, t statistic or p-value |
+| q7 | INT | act-7-05 | 7.6, 7.7 | `act-7/difference-interval-interpretation` | Interpret an interval for a difference of means and justify a claim |
+| q8 | MC | act-7-06 | 7.8 | `act-7/two-sample-setup` | Hypotheses and conditions for a two-sample t-test |
+| q9 | INT (1.5) | act-7-06 | 7.9 | `act-7/two-sample-conclusion` | Two-sample t-test conclusion in context (rubric: compare to α, decision, context, parameter language; forbidden: "proves", claims about the samples) |
+| q10 | MC | act-7-07 | 7.10 | `act-7/select-procedure` | Select the inference procedure for a described question |
+| q11 | DISP | act-7-05, act-7-07 | 7.6 | `act-7/conditions-dotplots` | Two small samples: are the conditions for a two-sample t procedure met, and why |
+
+**Trade-off** (`src/lib/problems/checkpoints/act-7.ts` header). Coverage is complete: every CED topic 7.1–7.10 is assessed. The blueprint put 7.8 on q6 and q9 and neither built item carried it, so the slot that held `t-test-setup` (7.4, one-sample hypotheses and conditions) now holds `two-sample-setup` (7.8) at q8, beside the conclusion it sets up. 7.4 is still assessed three times over — q4, q5 and q6 — and the conditions habit at q11's display.
 
 ### act-8-checkpoint · Kettle (9 items · 20 min)
-| # | format | reviews | topic | item |
-|---|---|---|---|---|
-| q1 | MC | act-8-01 | 8.2 | Hypotheses and the expected count for a category under a claimed distribution |
-| q2 | NUM | act-8-02 | 8.2, 8.3 | Chi-square statistic and df for a goodness-of-fit table |
-| q3 | INT (1.5) | act-8-02 | 8.3 | GOF conclusion in context, including which category contributes most |
-| q4 | NUM | act-8-03 | 8.4 | Expected count for a cell in a two-way table |
-| q5 | MC | act-8-03 | 8.5 | Homogeneity or independence? Identify from the data-collection description; state df |
-| q6 | NUM | act-8-04 | 8.6 | Chi-square statistic and p-value for a two-way table |
-| q7 | INT (1.5) | act-8-04 | 8.6 | Conclusion in context for a two-way chi-square test; describe the association from the largest cell contributions |
-| q8 | MC | act-8-04 | 8.7 | Select the categorical procedure (one-prop z / two-prop z / GOF / homogeneity / independence) for three described questions |
-| q9 | DISP | act-8-01 | 8.1, 8.2 | Observed-vs-expected bar chart: are the conditions met, and which category is the largest contributor |
+| # | format | reviews | topic | generator | item |
+|---|---|---|---|---|---|
+| q1 | MC | act-8-01 | 8.1 | `act-8/gof-hypotheses` | H₀ and Hₐ in terms of a claimed distribution (at least one share is wrong, not all of them) |
+| q2 | NUM | act-8-01, act-8-02 | 8.2 | `act-8/gof-statistic` | Chi-square statistic and df for a goodness-of-fit table |
+| q3 | INT (1.5) | act-8-02 | 8.3 | `act-8/gof-conclusion` | GOF conclusion in context, including which category contributes most |
+| q4 | NUM | act-8-03 | 8.4 | `act-8/expected-count-cell` | Expected count for a cell in a two-way table |
+| q5 | MC | act-8-03 | 8.5 | `act-8/homogeneity-or-independence` | Homogeneity or independence? Identify from the data-collection description; state df |
+| q6 | NUM | act-8-04 | 8.6, 8.7 | `act-8/two-way-statistic` | Chi-square statistic for a 2 × 2 table |
+| q7 | INT (1.5) | act-8-04 | 8.6, 8.7 | `act-8/chi-square-conclusion` | Conclusion in context for a two-way chi-square test; describe the association from the largest cell contributions |
+| q8 | MC | act-8-04 | 8.6, 8.7 | `act-8/select-categorical-procedure` | Select the categorical procedure (one-prop z / two-prop z / GOF / homogeneity / independence / simulate the null / describe only) for a described question |
+| q9 | DISP | act-8-01, act-8-02 | 8.1, 8.2 | `act-8/observed-vs-expected` | Observed-vs-expected bar chart: are the conditions met, and which category is the largest contributor |
 
 ### act-9-checkpoint · Intent (9 items · 25 min)
-| # | format | reviews | topic | item |
-|---|---|---|---|---|
-| q1 | MC | act-9-01 | 9.1 | Conditions for slope inference; read SE of the slope from output |
-| q2 | DISP | act-9-01 | 9.1 | Residual plot and normal probability plot of residuals: which conditions are met |
-| q3 | NUM | act-9-02 | 9.2 | Slope t-interval from computer output (df = n − 2) |
-| q4 | INT (1.5) | act-9-02 | 9.3 | Interpret the slope interval and justify a claim about a physical constant in context |
-| q5 | MC | act-9-03 | 9.4 | Hypotheses for a slope test (including a non-zero null) |
-| q6 | NUM | act-9-03 | 9.5 | t statistic and p-value for the slope, from output or by hand |
-| q7 | INT (1.5) | act-9-03 | 9.5 | Conclusion in context for the slope test; state what it does not prove |
-| q8 | MC | act-9-04 | 9.6 | Select the procedure across Units 6–9 for four described questions |
-| q9 | INT (1.5) | act-9-04 | 9.6, 3.7 | State the limitations of the assembled case: causation, generalization, conditions |
+| # | format | reviews | topic | generator | item |
+|---|---|---|---|---|---|
+| q1 | MC | act-9-01 | 9.1 | `act-9/slope-output-and-conditions` | Conditions for slope inference; read SE(b) from output |
+| q2 | DISP | act-9-01 | 9.1 | `act-9/residual-and-normal` | Residual plot and normal probability plot of residuals: which conditions are met |
+| q3 | NUM | act-9-02 | 9.2 | `act-9/slope-interval-from-output` | Slope t-interval from computer output (df = n − 2) |
+| q4 | INT (1.5) | act-9-02 | 9.3 | `act-9/slope-interval-claim` | Interpret the slope interval and justify a claim about a physical constant in context |
+| q5 | MC | act-9-03 | 9.4 | `act-9/slope-hypotheses` | Hypotheses for a slope test (including a non-zero null) |
+| q6 | NUM | act-9-03 | 9.5 | `act-9/slope-t-and-p` | t statistic and P-value for the slope, from output or by hand |
+| q7 | INT (1.5) | act-9-03 | 9.5 | `act-9/slope-test-conclusion` | Conclusion in context for the slope test; state what it does not prove |
+| q8 | MC | act-9-04 | 9.6 | `act-9/select-inference-procedure` | Select the procedure across Units 6–9 for a described question |
+| q9 | INT (1.5) | act-9-04 | 9.6, 3.7 | `act-9/case-limitations` | State the limitations of the assembled case: causation, generalization, conditions |
 
 ---
 
@@ -954,7 +991,7 @@ Topics added to `topics.ts` by this map: `logs-and-linearization`, `geometric-se
 
 ## 7. Interpretation-rubric discipline (conclusion in context)
 
-Modules carrying at least one `InterpretationAnswer` drill: every module from act-1-02 onward **except** act-1-05, act-4-02, act-4-05, act-4-08 (numeric-only drills; their mission beats still require a sentence in context via the `<Failure>` feedback) and the interlude act-10-02. Every inference module (Acts VI–IX, all of them) carries at least two rubric drills: one interpreting the result (interval / p-value) and one writing the conclusion.
+Modules carrying at least one `InterpretationAnswer` drill, **as built**: every module from act-1-02 onward **except** act-1-05, act-4-02, act-4-05, act-4-08 (numeric-only drills; their mission beats still require a sentence in context via the `<Failure>` feedback) and the interlude act-10-02. The Prologue (act-0-00 … act-0-03) and act-1-01 carry none, by design. Every inference module in Acts VI–IX carries at least one rubric drill; eight of the twenty-three carry two or more (act-6-05, act-6-07, act-6-08, act-7-03, act-7-04, act-7-06, act-8-04, act-9-03). The "interpret the result **and** write the conclusion" pair is assessed at every Act's checkpoint rather than inside every module.
 
 Rubric conventions the Assessment Designer should standardize (the Act Teams reference them by name):
 - **describe-distribution**: shape, center, variability, unusual features, context, units.
@@ -978,4 +1015,18 @@ Rubric conventions the Assessment Designer should standardize (the Act Teams ref
 - The Act VI turn (report received, quietly reclassified) is the institutional-betrayal hinge; Act VII's paired Refit data should be something the learner obtains *because* the report was buried.
 - The variable in act-9-03 whose slope "cannot be innocent" is the Story Architect's to choose; the statistical requirement is only that under any innocent explanation the population slope is zero, the data are a random sample of voyages, and the residual conditions hold.
 - At least one crew loss must land between Acts VI and VIII; act-6-06 (Type I / Type II consequences) is the natural place for the stakes to be set in advance.
-- Module titles here are working titles; the Showrunner may rename but ids and file slugs are fixed once Act Teams start.
+- Module titles were working titles; the Showrunner renamed 31 of them during the build and the table above now carries the shipped `title`. Ids and file slugs are fixed, which is why several slugs no longer match their titles (see the note at the head of this file).
+
+---
+
+## 9. Phase 4 review index
+
+Five review reports live in `docs/reviews/`. All five are **report only** — they edited nothing — so each one's findings are a to-do list, and some have since been fixed in content or in this file. Check the finding against the build before acting on it.
+
+| Report | Scope | Headline |
+|---|---|---|
+| `docs/reviews/phase2-gate-review.md` | `docs/beat-sheet.md` and the dataset registry, before any Act Team started | PASS WITH REQUIRED FIXES; six Blocking items, resolved in beat-sheet §8 |
+| `docs/reviews/pedagogy.md` | All 62 modules + 10 checkpoints: Briefings, Calculator panels, drills, beats, gating, CED coverage | 0 BLOCKERs, 0 CED topics uncovered; six GAPs, five of them checkpoint-assessment holes (**all five now closed**, see §5's trade-off notes; GAP-1, act-2-03's unpractised y-intercept objective, is still open) |
+| `docs/reviews/math-audit.md` | Every Briefing, Formula, Calculator panel, mission beat, checkpoint and generator | 14 CONFIRMED defects, 4 SUSPECTED; its §A settled the act-8-04 expected-count figure at **0.830** (this file's old 0.46 is corrected above) and its §B settled the DS-09 discrepancy in favour of Act VII |
+| `docs/reviews/continuity.md` | Every scene stamp and MET reference, Act datasets, story bible, beat sheet, this file, crew roster | 19 CONFIRMED, 6 SUSPECTED, plus the §C documentation-drift schedule this file was reconciled against. Several §A/§C findings have since been fixed in content or in the documents — re-check before quoting one |
+| `docs/reviews/qa-accessibility.md` | Production build driven with Playwright: Act 0 end to end, an automated pass over all 72 modules and 10 checkpoints, reduced motion, 375 px | One BROKEN finding (passcode sync, since fixed); 0 console errors, 122/122 charts with `aria-label` and a data-table fallback |

@@ -1,6 +1,8 @@
 # DEAD RECKONING — Book One · Story Bible
 
-Binding reference for every Act Team, the Showrunner, and the Continuity / Hard-SF auditors. Where this document and a module disagree, the module is wrong. Where this document and `CLAUDE.md` disagree, `CLAUDE.md` wins and this file gets fixed.
+Binding reference for every Act Team, the Showrunner, and the Continuity / Hard-SF auditors. Where this document and `CLAUDE.md` disagree, `CLAUDE.md` wins and this file gets fixed.
+
+**Book One is built.** During the build this file was canon and a module that disagreed with it was wrong. That is no longer the rule: the shipped `content/` and `src/` are the source of truth, and where this file and the build disagree, **fix this file** — unless the build is demonstrably wrong on its own terms, in which case raise it rather than editing either. Open content defects are listed in `docs/reviews/` (continuity, hard-SF, math audit, pedagogy, QA); several findings there have since been fixed, so check a finding against the build before acting on it.
 
 Conventions used here: **MET** = mission elapsed time from *Nightjar*'s departure from Adlinda Yards, written `MET 104/07:20` (day/hh:mm). Story epoch is **2184**. Ship's log entries are past tense; scenes are second person, present tense.
 
@@ -623,44 +625,46 @@ Each Act below gives: opening situation · pressure · beats · the turn · lear
 4. MET 327 — Promotion. Captain. *Nightjar*, refit with the sink she was designed with, and a second hull of her class authorised. Ferrier is given *Asgard*. Ebele asks to stay. Sandoval says she would like it in writing that the new sink will be tested by someone who was not paid by the Provident Fund.
 5. MET 335 — Thread (act-10-02). Achterberg's office. She puts the 2177 intercept on the table — the one message on which Ashby-Hale built PROVIDENT — and beside it a new one, received that week from the Phobos yards: a drive signature that *could* be a heavy hull working up. She asks you what it means. You say what P(this signature | a hostile working up) is; she asks what P(a hostile working up | this signature) is, and what the base rate of heavy-hull signatures at Phobos has been over the last decade, and you realise you have never been asked that question in that order in thirty-four years. Neither, she says, had Ashby-Hale.
 
-**Book Two hook.** See §12.
+**Book Two hook.** See §13.
 
 ### 8.1 Module coverage for the Prologue and Acts I–IV
 
-The curriculum map gives the Prologue 3 modules, Act I 7, Act II 6, Act III 5 and Act IV 10 (plus checkpoints). Beats above map as follows; where a module needs a beat not listed above, it is added here.
+As built, the Prologue has 4 teaching files and a checkpoint, Act I 7 modules, Act II 6, Act III 5 and Act IV 10 (each with a checkpoint). Beats above map as follows; where a module needs a beat not listed above, it is added here. Module titles in this table are the shipped frontmatter `title`; the file slug sometimes differs (see `docs/curriculum-map.md`).
 
 | Module | Beat / data | Note |
 |---|---|---|
+| act-0-00 Standing Orders | **Added file, `kind: interlude`, no beat above:** reader orientation — the Compact, the Lane, *Nightjar*, the thirty-one in 2,612 | No AP topics, no instrument, no drills; read before Prologue beat 1 |
 | act-0-01 Shakedown | Prologue beat 1–2; six dead-reckoning nav fixes per run, re-run | Ferrier runs the fixes; the spread is the lesson |
 | act-0-02 Heat Budget | Prologue beat 2–3; the sink gauge | The Chief's first plus-or-minus |
 | act-0-03 Tasking | Prologue beat 5; the Register's summary page and its frequency table | You ask for the records |
+| act-0-checkpoint Release | **Added after the build began:** MET 10/02:30, Ferrier's read-through of the shakedown report before it goes to Adlinda under your name | Ten items on the Prologue's seeds of 1.1–1.3; its `onPass` is the torch lighting at MET 10/03:00, which is also Prologue beat 6 |
 | act-1-01 Register of Losses | Act I beat 1; variables of the Register | |
 | act-1-02 Cause Codes | Act I beat 1; the Board's bar chart of classifications over all 2,200 records | Ebele restores the denominator (losses only): *unknown* is 22 of 31 (19 of them Uruk's), *accident* 5, *piracy* 4 |
 | act-1-03 Drive Signatures | Act I beat 2; plume power by drive family, the hot contact | |
-| act-1-04 Center and Spread | Act I beat 2–3; the hot contact pulls the mean; time-to-silence mean vs median | |
+| act-1-04 The Mean in the Gap | Act I beat 2–3; the hot contact pulls the mean; time-to-silence mean vs median | |
 | act-1-05 Five Numbers | Act I beat 2–3; boxplot of plume-power ratio — the 1.5 × IQR fence flags the hot contact; the time-to-silence boxplot is the counter-example (a box hides two piles) | Hull id requested — first thread |
-| act-1-06 Two Fleets | Act I beat 4; lost hulls vs all transits on mark, cargo value, age | Lost hulls' mark distribution shifted late and tight |
-| act-1-07 The Normal Curve | Act I beat 2 revisited; z for the hot contact against the class table (z ≈ 2.6; the module's seeded contact is > 3) | Calc: area under a curve |
-| act-2-01 Cross-Tabulation | Act II opening; the Register's cause × beneficiary as a two-way table, descriptive only | *Unknown* is the modal code for Perrine, *accident* for everyone else |
-| act-2-02 Burn vs Mass | Act II beat 1; the Manifest file scatter | |
+| act-1-06 Lost and Arrived | Act I beat 4; lost hulls vs all transits on mark, cargo value, age | Lost hulls' mark distribution shifted late and tight |
+| act-1-07 How Hot Is Too Hot | Act I beat 2 revisited; z for the hot contact against the class table (z ≈ 2.6; the module's seeded contact is > 3) | Calc: area under a curve |
+| act-2-01 Cause by Owner | Act II opening; the Register's cause × beneficiary as a two-way table, descriptive only | *Unknown* is the modal code for Perrine, *accident* for everyone else |
+| act-2-02 Inferred Mass | Act II beat 1; the Manifest file scatter | |
 | act-2-03 Line of Best Fit | Act II beat 1; slope in t/t, intercept ≈ 0 and why | Calc: minimising squared error |
-| act-2-04 Residuals | Act II beat 2; the nineteen | |
-| act-2-05 Leverage | Act II beat 2–3; one 60,000-t bulk hauler at the top of the x-range; with/without | The Board's report quotes r² and omits s |
-| act-2-06 Curvature | Act II beat 3 extended; time-to-Mark-9 vs distance-at-departure across Close Seasons follows `t ∝ √d`; log–log linearises; the nineteen sit above the line | Calc: logs and linearisation |
+| act-2-04 The Nineteen | Act II beat 2; the nineteen | |
+| act-2-05 The Bulk Hauler | Act II beat 2–3; one 60,000-t bulk hauler at the top of the x-range; with/without | The Board's report quotes r² and omits s |
+| act-2-06 Root Law | Act II beat 3 extended; time-to-Mark-9 vs distance-at-departure across Close Seasons follows `t ∝ √d`; log–log linearises; the nineteen sit above the line | Calc: logs and linearisation |
 | act-3-01 Who Was Asked | Act III beat 1; the Crew Survey's frame | |
 | act-3-02 Drawing the Sample | Act III beat 2 | |
-| act-3-03 Bias | Act III beat 1 and 3; direction of bias in the Authority survey | |
+| act-3-03 Bored at Ceres | Act III beat 1 and 3; direction of bias in the Authority survey | |
 | act-3-04 The Admiralty's Trial | Act III beat 4; escorts assigned by owner request — owner confounded with escort | |
-| act-3-05 What a Trial Can Say | **Added beat, MET 74–79:** as the Board's assessing officer you direct *Asgard*'s escort assignments for three weeks by lot — twelve transits, six escorted at random. Randomisation test on the observed difference: not larger than chance. Escorts are not the explanation. | Small, honest, on your own authority; Ostrow later cites it as overreach |
-| act-4-01 Random or Not | Act IV coverage note; loss dates clustering simulation | The spring-2182 cluster |
-| act-4-02 Rules of Chance | Sweep log; thermal vs radar detection as mutually exclusive modes in one sweep | |
+| act-3-05 The Escort Lottery | **Added beat, MET 74–79:** as the Board's assessing officer you direct *Asgard*'s escort assignments for three weeks by lot — twelve transits, six escorted at random. Randomisation test on the observed difference: not larger than chance. Escorts are not the explanation. | Small, honest, on your own authority; Ostrow later cites it as overreach |
+| act-4-01 Spring of '82 | Act IV coverage note; loss dates clustering simulation | The spring-2182 cluster |
+| act-4-02 The Sweep Log | Sweep log; thermal vs radar detection as mutually exclusive modes in one sweep | |
 | act-4-03 Given That | The Board's wrong conditional: P(coded accident | Perrine) vs P(Perrine | coded unknown) | The prosecutor's fallacy, in a staff paper |
 | act-4-04 Independence | Consecutive sweeps not independent; loss not independent of beneficiary (descriptive) | Precursor to Act VIII |
 | act-4-05 Distribution of a Cold Run | Act IV beat 1; hours cold required to cross a sweep as a random variable; sink temperature as a density | Calc: density vs mass |
 | act-4-06 The Heat Ledger | Act IV beat 2; three loiter points as heat-cost distributions | Calc: expected value as weighted sum |
-| act-4-07 Combining Systems | Act IV beat 1; six subsystem loads, the total's SD, the yard's margin that added SDs | |
+| act-4-07 The Cellar's Margin | Act IV beat 1; six subsystem loads, the total's SD, the yard's margin that added SDs | |
 | act-4-08 Pings | Act IV beat 3; n sweeps, P(0 detections) for a window | |
-| act-4-09 Binomial Parameters | 31 losses in 2,612 under p = 0.005 and under 0.011 — surprising under one, not the other | Pre-inference version of Act VI |
+| act-4-09 Thirty-One in Twenty-Six Hundred | 31 losses in 2,612 under p = 0.005 and under 0.011 — surprising under one, not the other | Pre-inference version of Act VI |
 | act-4-10 Until First Contact | Act IV beat 3; sweeps until first detection; wait until first Perrine hull | Calc: geometric series |
 
 ---
@@ -848,7 +852,7 @@ Responding to `docs/curriculum-map.md` §8 and to the module list.
 6. **Titles** — Acts VII, VIII and the Epilogue are retitled *Halden Reach*, *Kettle*, *Provident* in `ACT_TITLES`; module ids and slugs untouched. Module working titles are yours; the Showrunner may rename in the beat sheet.
 
 7. **Two small requests back.**
-   - act-8-04's examiner table (Dacre: 17 of 19 diverted vs 5 of 881 honest) has an expected count below 5. I have written the beat so Ebele *notices* and the module must either (a) collapse to a 2×2 with the condition met by pooling the other three examiners, or (b) use it as the "conditions fail — what now" lesson. Your call; the scene supports either.
+   - act-8-04's examiner table has an expected count below 5. *(As built this became examiner × **diverted** over the 412 Bureau departures in DS-02 — `examinerTable` = [[17, 1], [2, 392]], Dacre signed 18 and 17 of the 19 diverted were his, smallest expected count **0.830**. The "17 of 19 vs 5 of 881" framing below is the pre-build proposal; see §8 Act VIII beat 6 and `docs/reviews/math-audit.md` §A for the shipped figures.)* I have written the beat so Ebele *notices* and the module must either (a) collapse to a 2×2 with the condition met by pooling the other three examiners, or (b) use it as the "conditions fail — what now" lesson. Your call; the scene supports either.
    - act-6-08's large-counts condition passes narrowly (900 × 0.0119 = 10.7). I have made that a beat (Ferrier notes a hostile reviewer will see it). If you would rather the numbers pass comfortably, raise Perrine's transit count to 1,100 (19/1,100 = 1.7% vs 12/1,512 = 0.8%; z ≈ 2.4, p ≈ 0.008) — the story does not care which, but §1.2's "34% of transits" and the Act VI numbers must be changed together.
    - *Showrunner's resolution (see `docs/beat-sheet.md` §5, decisions 1–2):* the examiner table is the "conditions fail — simulate the null" lesson (permutation on random assignment of 19 losses among 900 departures), not a collapse; act-6-08 keeps 900/1,712 and the narrow 10.7 is the beat.
 

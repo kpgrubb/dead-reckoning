@@ -29,7 +29,7 @@ Every in-world dataset, with provenance, variables, size, and the **generating s
 - **Acceleration.** Every diverted hull files its usual profile and is **thrust-limited** below it: `a = 3.00 × (F/588)/(1 + h)` ≈ **2.75–2.84 mgee** for both groups (mean ≈ 2.79). It arrives at Mark 9 **+2.0 to +3.1 days** late against the nominal plot (mean **+2.6 d**, SD 0.3) and receives the Authority's routine profile-deviation advisory (DS-01) like any late hull. Its Lane Δv is `2√(d·a)` ≈ 234 km/s at 3.33 AU (not 242).
 - **Fuel.** The Bureau certifies fuel against the plotted profile *for that departure*: **`f_lane(d) = 1 − e^(−2√(d·a_nom)/vₑ)`**, a_nom = 3.00 mgee, vₑ = 1,000 km/s — 0.186 at 2.4 AU, **0.215 at 3.33 AU**, 0.313 at 8 AU. Honest fuel = `f_lane(d) × declared × (1 + N(0, 0.010))`. Diverted fuel = `declared × (1 + h) × (1 − e^(−(Δv_L(d, a) + Δv_K)/vₑ)) × (1 + N(0, 0.010))`, with Δv_K from DS-16.
 - **Inferred mass.** From a single Mark 2 fix (DS-02, Act II): `declared × (1 + h) × (1 + N(0, 0.020))`. From the whole accelerate-phase relay archive, reprocessed by Ebele in Act IX: `(1 + N(0, 0.005))` — six weeks of state vectors beat one fix.
-- **Delay.** Every honest transit: `mark9_delay = u_hull + N(0, 0.9)` d, with the persistent per-hull filing offset `u_hull ~ N(0, 2.5)` (Perrine hulls `N(0.2, 2.5)`: they file a hair slow). Fleet SD **2.66 d**. Diverted: `u_hull + d_i + N(0, 0.9)`, d_i from the acceleration above.
+- **Delay.** Every honest transit: `mark9_delay = u_hull + N(0, 0.9)` d, with the persistent per-hull filing offset `u_hull ~ N(0, 2.5)` (Perrine hulls `N(0.2, 2.5)`: they file a hair slow). Fleet SD **2.73 d** as drawn (`LANE_DELAY_SD`; 2.66 is the nominal the generating story implies). Diverted: `u_hull + d_i + N(0, 0.9)`, d_i from the acceleration above.
 
 ### DS-01 · The Register (Lane Authority Incident Register; the Board's cover page calls it the Incident File)
 - **Provenance / bias.** Compiled by the Lane Authority from transponder logs, cutter search reports and the classifying office's finding. Honest about *when* and *where*; dishonest about *why*, because classification is a reporting process: the **Uruk office** (Compact secondees under Ostrow) classifies Compact-flag hulls, the **Ceres office** classifies the rest.
@@ -93,8 +93,8 @@ Every in-world dataset, with provenance, variables, size, and the **generating s
 ### DS-09 · The Transit Ledger (relay-net archive of every Lane transit, 2178 → MET 0)
 - **Provenance / bias.** Authority relay net; clean. One row per transit. 2,612 transits: **Perrine 900**, Mercantile 1,100, independent 612 (others = 1,712).
 - **Variables.** `transit_id`; `hull`; `owner_class`; `drive`; `departure_date`; `lane_length_AU` at departure (2.4–8.0 across the cycle); `f_lane` (= 1 − e^(−2√(d·a_nom)/vₑ), DS-00); `filed_accel` (mgee, within the Lane's permitted 2.7–3.3 band); `scheduled_t9` (d, = 0.75 × 2√(d/a_nom): **61 d at 2.4 AU, 71.4 d at 3.33 AU, 111 d at 8 AU**); `mark9_delay` (d, actual − scheduled against the nominal 3.00-mgee plot); `lost` (bool); `beneficiary` (Perrine / other, from DS-10 for lost hulls; owner's insurer otherwise). A *season* in the modules means one year of Lane traffic, **≈ 435 transits**.
-- **Generating story.** Per DS-00. Honest transit: `mark9_delay = u_hull + N(0, 0.9)`, `u_hull ~ N(0, 2.5)` (Perrine: `N(0.2, 2.5)`) — the persistent filing offset (a hull that files 2.9 mgee is always ~1.2 d slow against the nominal plot; slow filing saves Δv, so owners do it). Fleet SD **2.66 d**. **The 19 diverted transits:** `mark9_delay = u_hull + d_i + N(0, 0.9)` with d_i ≈ 2.0–3.1 d (mean 2.6) from thrust limitation; they filed their usual profiles and drew the routine late-check-in advisory. Transit time vs lane length follows `t9 ∝ √d` exactly (brachistochrone) — the Act II curvature dataset.
-- **Headline numbers.** Loss rate Perrine 19/900 = 2.11% vs other 12/1,712 = 0.70%; pooled 31/2,612 = 1.187%; two-proportion **z ≈ 3.16, one-sided p ≈ 0.0008**; large-counts check 900 × 0.01187 = **10.7** (passes narrowly, on purpose). Two-proportion 95% interval for the difference: (0.004, 0.024). 2×2 chi-square (loss × beneficiary) ≈ 10.0, df 1 (= z²). Under a common rate the SD of p̂₁ − p̂₂ is 0.0045, so a gap of **0.0104** is a 1-in-100 event (act-5-04's inverse question). **Delay:** the nineteen's mean delay vs the Lane's 0 ≈ **2.8 d** (0.2 Perrine offset + 2.6 thrust); their SD ≈ 2.7 d. P(one honest transit ≥ 2.8 d late) ≈ **0.15**; 1% cutoff 6.2 d, expected **≈ 2 of the 19** above it; P(mean of 19 honest ≥ 2.8) → **z ≈ 4.5**; one-sample t on the nineteen's own s: **t ≈ 4.5**, df 18. Surviving Perrine (881) vs others (1,712): difference ≈ 0.2 d, interval contains 0. **Lost Perrine (19) vs surviving Perrine (881): difference ≈ 2.6 d, SE 0.62, t ≈ 4.2, Welch df ≈ 18, interval ≈ (1.3, 3.9) d.** Ostrow's pooled "all Perrine vs all others": difference ≈ **0.25 d** (0.2 + 19 × 2.6/900 = 0.2 + 0.055); the SE of that comparison is 0.11 d, so its **power to see the nineteen's 0.055 d excess is ≈ 0.12** (one-sided, α 0.05) — act-7-03. **Power of the two-proportion test** (one-sided, 900/1,712) against 0.021 vs 0.007: **0.76 at α = 0.01, 0.90 at α = 0.05**; against a "comparable corridors" gap 0.012 vs 0.011: ≈ 0.08 (act-6-06). **Sample size for the rate argument:** margin 0.2 points at 95% needs ≈ 11,300 transits (≈ 20 more years at 435/yr); three more years (~1,300 transits) buys a margin of ≈ 0.35 points (act-6-02).
+- **Generating story.** Per DS-00. Honest transit: `mark9_delay = u_hull + N(0, 0.9)`, `u_hull ~ N(0, 2.5)` (Perrine: `N(0.2, 2.5)`) — the persistent filing offset (a hull that files 2.9 mgee is always ~1.2 d slow against the nominal plot; slow filing saves Δv, so owners do it). Fleet SD **2.73 d** as drawn (`LANE_DELAY_SD`; 2.66 is the nominal the generating story implies). **The 19 diverted transits:** `mark9_delay = u_hull + d_i + N(0, 0.9)` with d_i ≈ 2.0–3.1 d (mean 2.6) from thrust limitation; they filed their usual profiles and drew the routine late-check-in advisory. Transit time vs lane length follows `t9 ∝ √d` exactly (brachistochrone) — the Act II curvature dataset.
+- **Headline numbers.** Loss rate Perrine 19/900 = 2.11% vs other 12/1,712 = 0.70%; pooled 31/2,612 = 1.187%; two-proportion **z ≈ 3.16, one-sided p ≈ 0.0008**; large-counts check 900 × 0.01187 = **10.7** (passes narrowly, on purpose). Two-proportion 95% interval for the difference: (0.004, 0.024). 2×2 chi-square (loss × beneficiary) ≈ 10.0, df 1 (= z²). Under a common rate the SD of p̂₁ − p̂₂ is 0.0045, so a gap of **0.0104** is a 1-in-100 event (act-5-04's inverse question). **Delay** (figures below are the drawn seed's, read off `src/instruments/act-5/data.ts` and `act-7/data.ts`, not the registry's nominal): the nineteen's mean delay vs the Lane's ≈ 0.06 is **2.83 d** (0.2 Perrine offset + thrust); the Lane's honest σ is **2.73 d**, and **the nineteen's own s is 2.33 d** — the acceptance rule at `src/instruments/act-5/data.ts:210` allows `sd(nineteen) ∈ [2.2, 3.2]` and the seed accepted at attempt 31 sits at 2.33, so **do not quote 2.7 for the nineteen**. P(one honest transit ≥ 2.83 d late) = **0.155**; 1% cutoff **6.40 d**, with **1 of the 19** above it (0.19 expected under the honest model) — that gap is what act-5-02 is built on; P(mean of 19 honest ≥ 2.83) → **z = 4.43** (pinned to [4.35, 4.95]); one-sample t on the nineteen's own s: **t = 5.28**, df 18, p = 2.5e-5. The t moves with the drawn s; z is the pinned figure. (See `docs/reviews/math-audit.md` §B: Act VII is internally correct and should not be re-seeded to force s ≈ 2.7, because DS-09 is the spine of Acts V–X.) Surviving Perrine (881) vs others (1,712): difference ≈ 0.19 d, interval (−0.03, 0.41) contains 0. **Lost Perrine (19) vs surviving Perrine (881): difference 2.65 d, SE 0.54, t = 4.88, Welch df ≈ 19.0, interval (1.51, 3.78) d.** Ostrow's pooled "all Perrine vs all others": difference ≈ **0.25 d** (0.2 + 19 × 2.6/900 = 0.2 + 0.055); the SE of that comparison is 0.11 d, so its **power to see the nineteen's 0.055 d excess is ≈ 0.12** (one-sided, α 0.05) — act-7-03. **Power of the two-proportion test** (one-sided, 900/1,712) against 0.021 vs 0.007: **0.76 at α = 0.01, 0.90 at α = 0.05**; against a "comparable corridors" gap 0.012 vs 0.011: ≈ 0.08 (act-6-06). **Sample size for the rate argument:** margin 0.2 points at 95% needs ≈ 11,300 transits (≈ 20 more years at 435/yr); three more years (~1,300 transits) buys a margin of ≈ 0.35 points (act-6-02).
 - **Used by.** act-2-06, 4-09, 5-01…5-05, 6-01…6-08, 7-03, 7-05, 7-06, 7-07, 8-03, 8-04, checkpoints V–VIII.
 
 ### DS-10 · The Claims register (Authority claims office, Ceres)
@@ -186,13 +186,23 @@ Brachistochrone `t = 2√(d/a)`, `Δv = 2√(d·a)`; full tanks **518 km/s** (90
 
 Block format: header line (id · title · minutes · AP topics · calc briefing) → crew / MET / location → **Situation** → **Concept** → **Instrument** → **Dataset** → **Drills** → **Mission beat** → **Clue** → **Log entry** → **Delete-the-math**.
 
-### PROLOGUE · Shakedown (3 modules · 60 min)
+### PROLOGUE · Shakedown (4 modules + checkpoint · 74 min)
 
 **Opening.** MET 0/06:00, Adlinda Yards, Callisto. *Nightjar* leaves the slip under tug; the Chief reads the cellar at 4% and warming. Ferrier has been aboard nine days. Orders: three cold runs against Callisto's own telescopes, which know where to look. **Heat state:** hot, wings out, sink empty.
 **Pressure.** The yard wants numbers; the Board wants a ship it can announce; the sink's design figures have never been tested with sixteen people breathing in her.
 **Investigative question.** What does "cold" cost, and can the ship's own numbers be trusted before anyone else's?
 **Closing turn.** MET 9: the Board's tasking arrives with a one-page summary of the Incident File — a mean (Mark 6.5, "spread along the Lane") and a conclusion. You ask for the records. 2,200 of them. To know whether the summary is honest you need the shape, not the centre.
-**Checkpoint — `act-0-checkpoint` "Release" (10 min).** *Amended after the Act 0 build (orchestrator decision).* Originally specified as "no checkpoint"; the Prologue now closes with a short 10-item release read-through at MET 10/02:30 — Ferrier checking the shakedown report before it goes to Adlinda under your name. It still ends on the departure burn: the `onPass` text is the torch lighting at MET 10/03:00. Rationale: it teaches the checkpoint format on low stakes before Act I's real one, and gives the Prologue's three modules an assessment. Prologue total 70 min; course total 31 h 15 min (still inside the 25–35 h contract).
+**Checkpoint — `act-0-checkpoint` "Release" (10 min).** *Amended after the Act 0 build (orchestrator decision).* Originally specified as "no checkpoint"; the Prologue now closes with a short 10-item release read-through at MET 10/02:30 — Ferrier checking the shakedown report before it goes to Adlinda under your name. It still ends on the departure burn: the `onPass` text is the torch lighting at MET 10/03:00. Rationale: it teaches the checkpoint format on low stakes before Act I's real one, and gives the Prologue's three teaching modules an assessment. Prologue total 74 min; course total 31 h 24 min (still inside the 25–35 h contract).
+
+#### act-0-00 · Standing Orders — 4 min · AP — · kind: interlude · calc: —
+*Added after this sheet was first written; the Prologue shipped with four files plus the checkpoint.*
+Crew: none (narration) · 2184, standing orders · Valhalla, Callisto.
+**Situation.** Read first. One `<Scene>` of orientation: the Galilean Compact and its nine million people; the Hundred-Day Lane from Jovian orbit to Ceres, twelve transponder marks, 2,612 transits in six years; the Lane Authority's incident file; the thirty-one hulls that never arrived; and who Rook is — fifty-three, three commands, two years as the Service's liaison to the yard that built *Nightjar*.
+**Concept.** None. `ap_topics: []`. This file carries no CED content and is assessed nowhere.
+**Instrument.** None. It reads `register` and `losses` from `act-0/data` so the two headline counts cannot drift from the dataset.
+**Dataset.** DS-01 (counts only).
+**Drills.** None. **Mission beat.** None. Exempt from the seven-beat contract by `kind: interlude`.
+**Log entry.** None. **Delete-the-math.** Exempt: it is the reader's orientation page, the one place the premise is stated outright rather than discovered.
 
 #### act-0-01 · Shakedown — 20 min · AP 1.1 · calc: —
 Crew: xo, engineer, sensors (background) · MET 0/06:00–2/12:00 · Adlinda slip → Jovian space, under tug then 3 mgee.
@@ -229,6 +239,9 @@ Crew: comms, analyst, xo, medic, admiralty · MET 8/14:00–10/03:00 · Jovian s
 **Clue.** The summary page's mean (Mark 6.5) is taken over 2,200 records of every severity; the 31 losses are 1.4% of it.
 **Log entry.** *A table is only as honest as its denominator.* Mistake: reading a count as a proportion.
 **Delete-the-math.** Without the loss fraction, the Board's mean of 6.5 over 2,200 records stands as a description of the losses, and Act I has nothing to filter.
+
+#### act-0-checkpoint · Release — 10 min · AP 1.1, 1.2, 1.3
+Ferrier's read-through of the shakedown report at MET 10/02:30, thirty minutes before the departure burn, before it goes to Adlinda under your name (framing above). Ten items per map §5: NUM q1, q5, q6, q8 · MC q2, q3, q4, q7 · DISP q9 (a fix-run dotplot) · INT q10 at weight 1.5 (what the Register describes, and what it does not). On pass: Ferrier initials each page, Solberg sends the release at 02:52, and **the torch lights at four milligee at 03:00** — the Prologue's closing turn, carried by the `onPass` text. On fail: "It doesn't go under your name like this. Fix these before the burn." She names the modules; the burn timer does not stop.
 
 ---
 
@@ -1038,16 +1051,16 @@ Crew: analyst, xo, comms, ashbyhale, lindqvist (name), ostrow (name), achterberg
 
 ---
 
-### EPILOGUE · Provident (2 modules · 40 min)
+### EPILOGUE · Provident (2 modules · 45 min)
 
 **Opening.** MET 305 — Ceres to Callisto is seventy-one days at 4 mgee (DS-21). Adlinda Yards, Callisto, where the book began. *Nightjar* under tug into the same slip. The mast head is a stump. Fifteen people walk off her. **Heat state:** docked, cold in the ordinary sense.
 **Beats between modules (Writer's scenes, not modules).** MET 307, the Inspectorate: Ashby-Hale resigns before he can be charged; Ostrow charged with four counts of conspiracy to murder; Dacre with fraud; Vasque at large with *Patience*; eighty-seven people come home from Kettle over the following year; nineteen families had held funerals. MET 315, the Assembly keeps Kettle in closed session — *The Compact does not return what it needs to those who would use it against us*; Tharsis Mutual repaid quietly over twenty years; the Provident Fund under Inspectorate trusteeship; your pension is in it. MET 327: Captain. *Nightjar* refit with the sink she was designed with; Ferrier is given *Asgard*; Ebele asks to stay; Sandoval wants it in writing that the new sink will be tested by someone not paid by the Provident Fund.
 
-#### act-10-01 · Consequences — 20 min · AP 6.7 (revisited; cumulative review) · calc: —
+#### act-10-01 · Consequences — 25 min · AP 6.7 (revisited; cumulative review) · calc: —
 Crew: achterberg (name), medic, xo · MET 319 · A windowless room at Valhalla.
 **Situation.** Achterberg asks you, on the record, which of your findings would survive a hostile review, and which of your decisions you would make again. You answer in Type I and Type II terms because it is the only honest language for it: the α you chose, the power the case had against the difference you specified in 6-06 before the test, and the decision at 38,000 km — the probability computed correctly, the outcome in the thirty percent. She quotes your 0.01 back with approval if you chose it. Ferrante, afterwards: Oyelaran's mother asked him whether it was quick, and he told her the truth, and she thanked him.
 **Concept.** Type I / Type II consequences revisited as the cost of the decisions made; the interpretation discipline across proportions, means, chi-square, slopes. Misconceptions: "the case was proven"; forgetting scope at the moment it matters.
-**Instrument.** Log review console: the learner's own `<LogEntry>` blocks re-asked as mixed drills; the Type I/II explorer (from 6-06) reused on the case's key test.
+**Instrument.** *Built as* `CaseReviewConsole` (`src/instruments/act-10/story.tsx`): each finding re-opened for the learner to mark as surviving a hostile review or not, with `AlphaLine` and `HearingBeat` beside it; the Type I/II explorer (`act-6/PowerExplorer`, from 6-06) reused on the case's key test.
 **Dataset.** DS-09 / DS-10 (the accusation's test); the learner's log.
 **Drills.** 6, one rubric (`conclude-test` or `interpret-interval`, drawn from all nine checkpoints' generators): cumulative review, reseeded.
 **Mission beat.** kind interpretation — for the two-proportion result, state the Type I and Type II error in context, which you accepted more risk of by your α, and which finding you would *not* defend to a hostile reviewer and why (rubric: both errors named in context; scope; one limitation named). Wrong: "You said proven."
@@ -1055,14 +1068,14 @@ Crew: achterberg (name), medic, xo · MET 319 · A windowless room at Valhalla.
 **Log entry.** *Every decision under uncertainty has two ways to be wrong; name both before you choose.* Mistake: claiming the case was proven.
 **Delete-the-math.** Without the Type I/II accounting the hearing is a scene about feelings; the book's argument — that the decision was defensible *because* the odds were computed — cannot be stated.
 
-#### act-10-02 · Thread — 20 min · AP 4.5 (revisited; Book Two seed) · kind: interlude · calc: —
+#### act-10-02 · Provident — 20 min · AP 4.5 (revisited; Book Two seed) · kind: interlude · calc: —
 Crew: achterberg (name) · MET 335 · Achterberg's office.
 **Situation.** She puts the 2177 intercept on the table — the one message on which Ashby-Hale built PROVIDENT — and beside it a new one, from the Phobos yards: a drive signature that *could* be a heavy hull working up. She asks what it means. You say what P(this signature | a hostile working up) is: 0.9. She asks what P(a hostile working up | this signature) is, and what the base rate of heavy-hull signatures at Phobos has been over the last decade, and you realise you have never been asked that question in that order in thirty-four years. Neither, she says, had Ashby-Hale.
 **Concept.** Reversing a conditional with a tree: P(hypothesis | evidence) from P(evidence | hypothesis) and a base rate; the question a p-value cannot answer. Misconception: base-rate neglect.
-**Instrument.** Probability tree builder in prior → posterior mode.
+**Instrument.** *Built as* `PosteriorExplorer` (`src/instruments/act-10/PosteriorExplorer.tsx`): the base rate is the control and the posterior moves with it. Not the Act IV tree builder.
 **Dataset.** DS-20.
-**Drills.** 4 (short set; interlude): posterior at base rates 0.02 and 0.20; the same evidence, two priors; identify which conditional a sentence states.
-**Mission beat.** kind numeric — P(hostile | signature) at the base rate Achterberg gives (≈ 0.27) and at the one Ashby-Hale implicitly used (≈ 0.82). No failure flavour; the scene ends on the number.
+**Drills.** *None as built.* The interlude ships with no `<Drill>` and no `<MissionBeat>`: the scene, the Briefing, `PosteriorExplorer` and the log entry. The original plan was four short drills (posterior at base rates 0.02 and 0.20; the same evidence, two priors; identify which conditional a sentence states) and they were dropped so the last page of Book One is not an exercise. The two posteriors are instead computed in the scene text and pinned by `src/instruments/act-10/data.test.ts`.
+**Mission beat.** *None as built* (see Drills). The two figures still land on the page: P(hostile | signature) is 0.27 at the base rate Achterberg gives (0.02) and 0.82 at the one Ashby-Hale implicitly used (0.20). The scene ends on the number.
 **Clue.** The threat that justified PROVIDENT rests on one message and an unexamined prior. Book Two.
 **Log entry.** *P(H | E) is not P(E | H); the base rate is the difference.* Mistake: neglecting it.
 **Delete-the-math.** Exempt (interlude), but not empty: the two posteriors are the Book Two hook.
@@ -1188,7 +1201,7 @@ Reference authors: **James S.A. Corey** and **Richard Swan**.
 
 | Act | Modules | Teaching min | Checkpoint min | Act total |
 |---|---|---|---|---|
-| Prologue · Shakedown | 3 | 60 | 10 | 70 |
+| Prologue · Shakedown | 4 + cp | 64 | 10 | 74 |
 | I · Signatures | 7 + cp | 185 | 20 | 205 |
 | II · Manifests | 6 + cp | 175 | 20 | 195 |
 | III · Testimony | 5 + cp | 145 | 20 | 165 |
@@ -1198,10 +1211,10 @@ Reference authors: **James S.A. Corey** and **Richard Swan**.
 | VII · Halden Reach | 7 + cp | 200 | 25 | 225 |
 | VIII · Kettle | 4 + cp | 115 | 20 | 135 |
 | IX · Intent | 4 + cp | 115 | 25 | 140 |
-| Epilogue · Provident | 2 | 40 | — | 40 |
-| **Total** | **71** (61 teaching + 10 checkpoints) | **1,665** | **210** | **1,875 min = 31 h 15 min** |
+| Epilogue · Provident | 2 | 45 | — | 45 |
+| **Total** | **72** (62 teaching + 10 checkpoints) | **1,674** | **210** | **1,884 min = 31 h 24 min** |
 
-Inside the 25–35 h contract with ~4 h headroom either side. Module minutes are the map's; nothing here changes them.
+Inside the 25–35 h contract. Module minutes are the `est_minutes` frontmatter of the shipped files, re-summed after the build; the 62 teaching files include the two interludes (`act-0-00` at 4 min, `act-10-02` at 20 min).
 
 ---
 
