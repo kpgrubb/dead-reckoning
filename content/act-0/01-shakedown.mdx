@@ -20,19 +20,19 @@ import { NavFixDisplay } from '@/instruments/act-0/NavFixDisplay'
 
 <Scene stamp="MET 0/06:00" location="Adlinda Yards, Callisto · the slip" condensed="Nightjar comes off the Adlinda slip under tug at MET 0 with the release form still unsigned. You walk her: the cellar at four percent, the wings folded, Oyelaran in the blister cranking the lidar head round by hand. Orders: three cold runs with Callisto's telescopes watching. At MET 2 the torch goes out, Ferrier runs six fixes against the beacon, and no two of them agree.">
 
-The tug has her off the slip at 06:00, because Sandoval told the yard that anything later would go in the log with a name against it. The umbilicals come away. For three or four seconds there is no sound in the hull at all. Then the ship's own pumps take the load and the deck starts up against your boots at a pitch you have not heard before and will be living inside for a hundred days.
+The tug has her off the slip at 06:00, because Sandoval told the yard that anything later would go in the log with a name against it. The umbilicals come away. For three or four seconds there is no sound in the hull at all. Then the ship's own pumps take the load and the deck starts up against your boots at a pitch you have never heard before. You will be living inside it for a hundred days.
 
 The yard's release form is on the slate under your arm. Unsigned.
 
-You walk her. You did two years of this as the Service's build liaison and your hands have not learned the difference; you still put them on the same frames. The vault first, sixty tonnes of lithium behind that bulkhead, solid and cold, cold enough through the frame that you take your palm off it sooner than you meant to. Someone has taped an index card over the yard's brass plate. Pencil, block capitals, the Chief's hand, four figures that are not the four stamped underneath.
+You walk her. Two years as the Service's build liaison and your hands have not learned the difference; they still go to the same frames. The vault first. Sixty tonnes of lithium behind that bulkhead, and the cold of it comes through the frame hard enough that you take your palm off sooner than you meant to. Someone has taped an index card over the yard's brass plate. Pencil, block capitals, the Chief's hand. Four figures, and they are not the four stamped underneath.
 
 Four percent on the cellar. Warming.
 
-Forward past the wing roots, where the radiators lie folded into their channels with frost standing in the hinges. Then the wardroom, where eleven of the sixteen are eating and the talk stops for exactly as long as it takes you to cross and starts up again behind you. Nine days is not long. Ferrier has been aboard all nine of them, has read the design book front to back twice, and has not yet told you what she makes of it.
+Forward past the wing roots. The radiators lie folded into their channels with frost standing in the hinges. Then the wardroom, where eleven of the sixteen are eating. The talk stops while you cross and starts again behind you. Nine days is not long. Ferrier has been aboard for all nine, has read the design book twice, and has still not told you what she makes of it.
 
-Up the mast tube hand over hand, sixty metres of it, and at the top the cold comes through your gloves.
+Up the mast tube hand over hand, sixty metres of it. At the top the cold comes through your gloves.
 
-Oyelaran has the blister hatch open and both feet hooked under the rail, cranking the lidar head round by hand because she does not trust the actuator to a hundredth of a degree. Jupiter takes up a third of the port. The light off it is the colour of a sodium lamp and it puts a hard edge on everything in the compartment. Her breath fogs and clears, fogs and clears.
+Oyelaran has the blister hatch open and both feet hooked under the rail. She is cranking the lidar head round by hand because she does not trust the actuator to a hundredth of a degree. Jupiter takes up a third of the port. The light off it is the colour of a sodium lamp and it puts a hard edge on everything in the compartment. Her breath fogs and clears.
 
 "Four telescopes, four offsets, all inside spec." The head clicks over one notch. "Nothing else out here sits still enough to shoot at, sir. I'll have them inside half of—"
 
@@ -40,9 +40,9 @@ She stops, and reads something, and does not finish it.
 
 The orders run to one page. Three cold runs in Jovian space with Callisto's telescopes watching, and a schedule. The yard wants figures for its file. The Board wants a ship it can announce. Nobody has yet run the sink with sixteen people breathing in her.
 
-At MET 2/00:00 the torch goes out. The reactor scrams, the wings fold into the hull, and the floor stops being a floor. *Nightjar* is a cold mass on a ballistic path with no drive, no beacon and no way of knowing where she is except by counting what she did to get here.
+At MET 2/00:00 the torch goes out. The reactor scrams, the wings fold into the hull, and the floor stops being a floor. *Nightjar* is a cold mass on a ballistic path. No drive, no beacon, and no way of knowing where she is except by counting what she did to get here.
 
-Ferrier runs the first fix against Callisto's beacon at 01:00 and five more at ten-minute intervals: where the ship's own reckoning puts her, against where the beacon says she is. Six numbers come up on the plot, six dots strung out along one axis like buckshot. Some put her ahead of truth. Some put her behind it. None of them sits on zero.
+Ferrier runs the first fix against Callisto's beacon at 01:00 and five more at ten-minute intervals. Where the ship's own reckoning puts her, against where the beacon says she is. Six numbers come up on the plot, six dots strung out along one axis like buckshot. Some put her ahead of truth. Some put her behind it. None of them sits on zero.
 
 *Adlinda Nine* is standing off at two thousand kilometres as range safety, and the tug master wants the ship's position error for his log.
 
@@ -55,7 +55,7 @@ Six fixes since we went cold, Captain. They don't agree. The data says six thing
 He can have one number for where the ship thinks she is, and a second for how far the six disagree. Not one number doing both jobs.
 
 <Dialogue speaker="xo">
-Say it back to me, so it's on the log which one he's getting.
+Say it back to me. I want the log to show which one he got.
 </Dialogue>
 
 <Briefing title="Variation is data" topics={["1.1"]}>
@@ -119,12 +119,12 @@ Report both, and label both. The mean answers *where*; the range answers *how fa
   hint="Add the six values in the LOGGED RUN table, signs included, and divide by six. The range (largest minus smallest) is the second number, not this one.">
   <Success>
   <Dialogue speaker="xo" aside="She keys it to the tug before you have finished the sentence.">
-  Logged. Mean of six against the beacon, spread to follow on its own line. He can put the first in his position column and the second wherever he likes.
+  Logged. Mean of six against the beacon, spread to follow on its own line.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She does not look up from the six values.">
-  That is not the centre of those six, Captain. You have given him the spread as a position, or one fix as though it were all of them. Add the six, signs and all, and divide by six. The range is a second number and he gets it second.
+  That is not the centre of those six, Captain. You have given him the spread as a position, or one fix as though it were all of them. Add the six, signs and all, and divide by six. The range is the second number.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -135,11 +135,11 @@ Report both, and label both. The mean answers *where*; the range answers *how fa
 
 Solberg reads it back before he keys it. Mean, {fmt(mean(loggedFixRun.fixes), 1)} km along track. Spread, {fmt(range(loggedFixRun.fixes), 0)} km across the six. Four words come back from the tug, and they are about the first number.
 
-Ferrier writes both on the margin of the plot in pencil, the way navigators still do, and then writes a third thing that is not a measurement of anything. *Class of error: ±{FIX_ENVELOPE_KM} km.* Not this run's. The procedure's.
+Ferrier writes both on the margin of the plot in pencil. Then she writes a third thing under them that is not a measurement of anything. *Class of error: ±{FIX_ENVELOPE_KM} km.* Not this run's. The procedure's.
 
 "Cold ship, beacon known, six fixes," she says. "That is the box we are in, and we will be in it every hour between here and Ceres." She sets the pencil down in the tray and closes the tray. "A hull on a published profile with the Authority plotting it is known about that well too. By anyone holding the profile."
 
-Down in the vault the lithium ticks as it warms. Oyelaran calls the Eyes in at half of spec, as promised, and then says nothing at all for an hour.
+Down in the vault the lithium ticks as it warms. Oyelaran calls the Eyes in at half of spec, as promised, and then says nothing for an hour.
 
 </Scene>
 
