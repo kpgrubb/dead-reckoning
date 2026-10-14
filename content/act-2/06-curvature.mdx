@@ -55,11 +55,11 @@ export const relayBow = correlation(
 
 <Scene stamp="MET 044/06:30" location="Engineering deck · the sink vault · 1.14 AU from Callisto, 4 mgee" condensed="Ebele plots fuel loaded against declared mass, finds a smear rather than a line, and reaches for a log transform. Sandoval stops him: the Bureau certifies fuel for the profile plotted that month, and the file carries the Bureau's own required-fuel column. Against that column the smear is a straight line. Then the Ledger's transit times against Lane length, six years of crossings, come up bowed, and that curve is real.">
 
-Two days to turnover and the ship has settled into the part of a long burn where nothing is scheduled. Sandoval has the vault open again, the way other people check a watch, and Ebele has brought the terminal down because down here nobody asks him what he is doing every twenty minutes.
+Two days to turnover and the ship has settled into the part of a long burn where nothing is scheduled. Sandoval has the vault open again. Ebele has brought the terminal down, because down here nobody asks him what he is doing every twenty minutes.
 
 He is on fuel. It is the obvious next column: four hundred and twelve certificates, each with a declared mass and a tonnage of propellant loaded against it, and a hull carrying more than she says has to have burned for it.
 
-The plot is a disappointment. Fuel loaded against declared mass is a smear, a cloud with a direction and no spine, $r^2$ = {fmt(fuelOnDeclaredFit.r2, 2)}, and a band so wide you could hide a Sulcus hull in it sideways. He looks at it for a minute and then does the thing he has been taught to do to a smear.
+The plot is a disappointment. Fuel loaded against declared mass is a smear, a cloud with a direction and no spine, $r^2$ = {fmt(fuelOnDeclaredFit.r2, 2)}, and a band so wide you could hide a Sulcus hull in it sideways. He reaches for the thing he has been taught to do to a smear.
 
 "So. Log it, sir. Log the fuel, or log both. Something in here is multiplicative and I can straighten—"
 
@@ -75,19 +75,19 @@ The Bureau, being a bureau, has a column for it. *Required fuel*: the Lane-stand
 
 Plot fuel loaded against required fuel and the smear becomes a line. {fmt(100 * fuelOnRequiredFit.r2, 0)} percent of the variation, a band you could not hide a launch in, and a slope near one. The residuals of that fit are flat and there is nothing in them to straighten.
 
-There are points above the line. A small number of them, high, together. He colours by later-lost and they change colour, all of them at once, exactly as they did on the residual plot two days ago, and he says nothing this time. You have him note the column, the count and the date, and leave it.
+There are points above the line. A small number of them, high, together. He colours by later-lost and they change colour, all at once, exactly as they did on the residual plot two days ago. He says nothing this time. You have him note the column, the count and the date, and leave it.
 
 Then Sandoval puts the Ledger up, because she has been waiting for him to be finished.
 
 Six years of the Lane Authority's crossings: {fmtInt(ledgerSample.length)} transits, each with the Lane length at its departure and the time it took to reach the Mark 9 region. From {fmt(laneMin, 1)} to {fmt(laneMax, 1)} AU as the geometry opens and closes; from {fmt(t9Min, 0)} days to {fmt(t9Max, 0)}, two months to nearly four.
 
-The cloud climbs fast at the short end, keeps climbing, and flattens. A straight line laid through it sits above the data at both ends and below them through the middle. Ebele fits the straight line anyway, because he wants to see the residuals, and the residuals are a smile drawn across the plot from one end to the other.
+The cloud climbs fast at the short end, keeps climbing, and flattens. A straight line laid through it sits above the data at both ends and below them through the middle. Ebele fits the straight line anyway, because he wants to see the residuals, and the residuals are a smile drawn across the plot.
 
 <Dialogue speaker="analyst" aside="Reading the residual plot, not the scatter. He has at least learned where to look.">
 The residuals bend, so the model is wrong and the data are fine. A straight line through this says every long-season crossing is slow and every mid-season crossing is fast, and that isn't about the ships at all. That's about the plot I chose.
 </Dialogue>
 
-<Dialogue speaker="engineer" aside="She comes over, which means she is going to say something she has been saving.">
+<Dialogue speaker="engineer" aside="She comes over and puts one hand on the back of his chair.">
 It's a brachistochrone, Ensign. Flip at the midpoint, burn all the way, and the time goes as the square root of the distance. That's the drive, not a statistic. So it's a power law, and a power law has an exponent, and the Lane's is a half whether anybody fits it or not.
 </Dialogue>
 
@@ -199,7 +199,7 @@ Predict at 250 Mm. The line gives a logarithm first:
   hint="Set MODEL to log–log and read the fitted slope from the MODEL readout — the exponent on x in the power model it prints."
   prompt={`Sandoval says the drive makes the exponent a half. The file has not been asked.\n\nWith the console on **log–log**, what is the fitted **slope**, the exponent of the power law, across the ${fmtInt(ledgerSample.length)} crossings? Four decimal places, as the console prints it.`}>
   <Success>
-  <Dialogue speaker="engineer" aside="She looks at it for a moment longer than she needs to.">
+  <Dialogue speaker="engineer" aside="She copies the four digits onto the card before she says anything.">
   There it is. A half is what the geometry would give you if every master flew the plot they filed, and they don't, quite. But that is a half measured off six years of somebody else's paperwork, Skipper, and I have seen a yard fail to get that close with a test stand.
   </Dialogue>
   <Dialogue speaker="analyst">
@@ -237,13 +237,13 @@ Predict at 250 Mm. The line gives a logarithm first:
   hint="Colour the console by later-lost with the log–log model selected and read the mean residual in days for the coloured group. Residuals in days, not in logs — the readout does the back-transform."
   prompt={`The geometry is out of the plot now; what is left is the hulls. Of the ${fmtInt(ledgerSample.length)} crossings, ${fmtInt(lostCount)} belong to hulls later recorded as losses.\n\nOn the log–log fit, what is their **mean residual in days**, actual time to Mark 9 minus predicted? Two decimal places, and keep the sign.`}>
   <Success>
-  <Dialogue speaker="analyst" aside="He checks the other group before he says anything, which is new.">
-  And everybody else is on zero, sir. Not near zero. On it, to a tenth of a day, which is what a fitted line does to the group it was fitted to. It is only that one set that sits late.
+  <Dialogue speaker="analyst" aside="He checks the other group first.">
+  And everybody else is on zero, sir. Not near zero. On it, to a tenth of a day. It is only that one set that sits late.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo">
-  Read it off the fit that works, Captain, and in days. On the straight-line fit those hulls are buried in a residual plot that is already bent, and the number you get is a mixture of the hull and the season, which is exactly what the transformation was for.
+  Read it off the fit that works, Captain, and in days. On the straight-line fit those hulls are buried in a residual plot that is already bent, and the number you get is a mixture of the hull and the season.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -258,7 +258,7 @@ They departed heavier than their certificates, six to thirteen percent of declar
 
 A hull carrying mass she has not declared is a hull whose drive is pushing more ship than her profile assumed. Same thrust, more mass, less acceleration, a longer crossing. The second finding is the first one seen from the other end of the physics, arriving through a different office's paperwork, with nobody in either office in a position to have arranged the agreement.
 
-Ebele wants to write that down immediately and in those words. You make him write the narrower version: that the flagged hulls' mean residual on the fitted power model is positive and the remainder's is not, that the figure is descriptive, that no test has been run and none will be run this Act. He writes *a mean is not a p-value* on the card.
+Ebele wants to write that down immediately and in those words. You make him write the narrower version: that the flagged hulls' mean residual on the fitted power model is positive and the remainder's is not, that the figure is descriptive, that no test has been run and none will be run before Mark 9. He writes *a mean is not a p-value* on the card.
 
 Sandoval is not doing the transit arithmetic. She has been doing the other one since the residual plot, on the back of the same napkin, and she turns it over now.
 
@@ -276,7 +276,7 @@ Sixteen hundred tonnes has to be loaded. It has to be paid for, and stowed, and 
 Which is more than the report says, and more than the report will say. Nineteen hulls departed heavier than certified. That sentence, and the displays under it, and the Chief's signature on the mass. Turnover is in two days and the Board gets it at forty-eight.
 </Dialogue>
 
-The fuel column stays out of it. It is a second finding, it is thinner than the first, and a report with one finding is read once and answered; a report with two is read for the weaker one. Ebele files it with the date, the column name and the hull count, and it sits in the annex nobody sends, waiting for a ship's analyst with six weeks of state vectors and nothing else to do.
+The fuel column stays out of it. It is a second finding and it is thinner than the first. A report with one finding is read once and answered; a report with two is read for the weaker one. Ebele files it with the date, the column name and the hull count. It sits in the annex nobody sends, waiting for an analyst with six weeks of state vectors and nothing else to do.
 
 <LogEntry
   title="Transform until the residuals have nothing left to say"

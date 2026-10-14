@@ -32,15 +32,15 @@ export const cellarRMinutes = correlation(cellarTemp, cellarMinutes)
 export const cellarRSwapped = correlation(cellarHours, cellarTemp)
 export const cellarPoints = cellarTemp.map((t, i) => ({ x: t, y: cellarHours[i] }))
 
-<Scene stamp="MET 032/10:20" location="Engineering deck · sink vault · 0.49 AU from Callisto, 4 mgee" condensed="The Bureau's 412 certifications are open and joined to the relay net's Mark 2 accelerations. Sandoval works the arithmetic on a card: thrust over acceleration is a mass, plus or minus two percent, and nobody declared it. Ebele puts inferred against declared for all 412, reads the correlation off the display and says it proves the Bureau's numbers cause the acceleration; Sandoval corrects him. Oyelaran wants the axis in terawatts and r does not move. A few points sit above the cloud. Nobody names them.">
+<Scene stamp="MET 032/10:20" location="Engineering deck · sink vault · 0.49 AU from Callisto, 4 mgee" condensed="The Bureau's 412 certifications are open and joined to the relay net's Mark 2 accelerations. Sandoval works the arithmetic on a card: thrust over acceleration is a mass, plus or minus two percent, and nobody declared it. Ebele puts inferred against declared for all 412 and says the correlation proves the Bureau's numbers cause the acceleration. Sandoval corrects him. Oyelaran wants the axis in terawatts and r does not move. A few points sit above the cloud. Nobody names them.">
 
 The sink vault is the warmest compartment on the ship and the only one where the Chief will talk to you like a person. Sixty tonnes of lithium behind the bulkhead at thirty-one percent and climbing, the wings out, the torch steady. Callisto is four minutes three out. Anything you ask Valhalla this watch, you will hear about at lunch tomorrow.
 
-Sandoval has the arithmetic on a card taped over the yard's brass plate, in pencil, in her own hand, because that is where she puts numbers she intends to defend.
+Sandoval has the arithmetic on a card taped over the yard's brass plate. Pencil, her own hand. That is where she puts numbers she intends to defend.
 
-Thrust over acceleration. That is all of it. The relay net logs a state vector at Mark 2 for every hull that ever entered the Lane, and the difference between two of them is an acceleration, good to half a percent. The Authority's own archive gives the plume, and the plume with the drive model gives the thrust: five hundred and eighty-eight kilonewtons off a Mk 3 at full profile. Divide the one by the other and you have a mass. Not a declared mass. A mass.
+Thrust over acceleration. That is all of it. The relay net logs a state vector at Mark 2 for every hull that ever entered the Lane. The difference between two of them is an acceleration, good to half a percent. The Authority's own archive gives the plume, and the plume with the drive model gives the thrust: five hundred and eighty-eight kilonewtons off a Mk 3 at full profile. Divide the one by the other and you have a mass. Not a declared mass. A mass.
 
-"Plus or minus two percent, Skipper," she says, and she says the plus or minus before she says anything else, the way she always does. "That's one standard deviation of the honest spread, near enough. Call it four hundred tonnes on a twenty-thousand-tonne hull and don't let anybody quote it tighter."
+"Plus or minus two percent, Skipper," she says, before she says anything else. "That's one standard deviation of the honest spread, near enough. Call it four hundred tonnes on a twenty-thousand-tonne hull and don't let anybody quote it tighter."
 
 Ebele has been at the intel terminal since 05:00 and has the display ready before you ask for it. Declared mass along the bottom, in tonnes, as the Bureau wrote it. Inferred mass up the side, in tonnes, as the Lane measured it. Four hundred and twelve points, one per certification, and from the doorway it does not look like a cloud at all. It looks like somebody ruled a line and then breathed on it.
 
@@ -50,17 +50,17 @@ He reads the correlation off the readout and says the number twice.
 
 Sandoval does not look up from the card. "The physics causes the acceleration, Ensign. Mass and thrust. The Bureau writes it down afterwards on a different day in a different building. Those hulls would fly exactly the same if the Bureau had never opened."
 
-He takes it. Oyelaran, who has been in the hatchway for a minute with an inspection slate she has not opened, wants something else from the display. She does not think in tonnes. She thinks in what the Eyes see, which is power: terawatts of plume.
+He takes it. Oyelaran has been in the hatchway for a minute with an inspection slate she has not opened, and she wants something else from the display. She does not think in tonnes. She thinks in terawatts of plume, because that is what the Eyes see.
 
 "Put the vertical axis in terawatts, sir. I can't check a tonne. I can check a terawatt."
 
-Ebele rescales it. Same four hundred and twelve hulls, same ordering, a different unit up the side, and the correlation readout does not move. Not a digit. He says so out loud and then stops, because he can hear that he does not know why.
+Ebele rescales it. Same four hundred and twelve hulls, same ordering, a different unit up the side, and the correlation readout does not move. Not a digit. He says so out loud, then stops. He does not know why.
 
 Then he points at the top of the cloud. A handful of points sit above the rest of it, a little high and all on the same side. Six or eight of them, maybe more. At this scale you cannot count them and nobody tries.
 
 Nobody names them. Ferrier, on the intercom from the bridge, wants the description before the arithmetic: direction, form, strength, and anything unusual, said in tonnes and hulls and not in symbols.
 
-Sandoval has one more sheet pinned beside the card, and it is not one of the four hundred and twelve. *Harpagia Sulcus*, Sulcus-class, declared nineteen thousand four hundred tonnes, signed by Senior Examiner R. Dacre, arrived MET 26. She is still in transit. She has not departed and arrived inside the window the Bureau extracted, so she sits on the bulkhead by herself, a single certificate with no cloud to belong to.
+Sandoval has one more sheet pinned beside the card, and it is not one of the four hundred and twelve. *Harpagia Sulcus*, Sulcus-class, declared nineteen thousand four hundred tonnes, signed by Senior Examiner R. Dacre, arrived MET 26. She is still in transit. She has not departed and arrived inside the window the Bureau extracted, so she sits on the bulkhead by herself.
 
 </Scene>
 
@@ -156,12 +156,12 @@ Four errors, and a career of reports is built out of them.
   hint="Four things, in the hulls' own words: does inferred mass rise or fall with declared mass; is the cloud straight or curved; how tightly do the points hold it; and is anything sitting off the pattern? r gives you the first and the third. The word *causes* has no denominator.">
   <Success>
   <Dialogue speaker="xo" aside="Over the intercom from the bridge. She reads it back once, flatly, and does not ask for it again.">
-  Direction, form, strength, and the handful up top that you did not explain and did not pretend to. That is a description. Now find out whether those points are hulls or noise, because until you know that, they are a smudge on a display and the Board will call them one.
+  Direction, form, strength, and the handful up top that you did not explain and did not pretend to. That is a description. Now find out whether those points are hulls or noise. Until you know, they are a smudge on a display.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="engineer" aside="She puts the pencil down, which is worse than if she raised her voice.">
-  You said *causes*, Captain. Nobody set a hull's declared mass and watched what the Lane did about it. We have four hundred and twelve rows somebody typed and four hundred and twelve accelerations the net measured, and the strongest correlation in the Service will not make that an experiment. Direction, form, strength, unusual features. In tonnes.
+  <Dialogue speaker="engineer" aside="She puts the pencil down.">
+  You said *causes*, Captain. Nobody set a hull's declared mass and watched what the Lane did about it. We have four hundred and twelve rows somebody typed and four hundred and twelve accelerations the net measured. The strongest correlation in the Service will not make that an experiment. Direction, form, strength, unusual features. In tonnes.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -174,13 +174,13 @@ It goes in the log in one line, and the line is smaller than the work. Across {f
 
 Which is the finding, and you make Ebele write it as one. Four hundred and twelve hulls weigh very nearly what they said they weighed. Whatever is wrong on the Lane is not a filing system that is wrong about everything.
 
-Then the other thing, the one the description earned and did not resolve. A handful of points sit above the cloud. Above, and on the same side, and eight points out of four hundred and twelve is also about what two percent of honest scatter would put at the top of a picture this size. Nobody on this deck can yet say which hulls they are. Nobody can say how far above the pattern they sit, because "above the pattern" needs a line and there is no line yet. And nobody can rule out that the Authority's archive is simply noisier for some hulls than for others.
+Then the other thing, the one the description earned and did not resolve. A handful of points sit above the cloud, all on the same side. Eight points out of four hundred and twelve is also about what two percent of honest scatter would put at the top of a picture this size. Nobody on this deck can yet say which hulls they are. How far above the pattern they sit needs a line, and there is no line yet. And the Authority's archive may simply be noisier for some hulls than for others.
 
 "I can get you the residuals," Ebele says, and then corrects himself before anyone else does: "I can get you the residuals once there is a line to take them from."
 
 Sandoval taps the card. "Two percent, Ensign. Whatever you find, find it against two percent."
 
-Oyelaran has opened the slate at last, which means she wants an answer and not a conversation. The archive cross-check is four telescope-hours a day for a week, and those are the hours the sweep runs on. She will do it if she is told to. She would rather be told something else.
+Oyelaran has opened the slate at last. The archive cross-check is four telescope-hours a day for a week, and those are the hours the sweep runs on. She will do it if she is told to. She would rather be told something else.
 
 </Scene>
 
@@ -192,12 +192,12 @@ Oyelaran has opened the slate at last, which means she wants an answer and not a
   Understood, sir. Four hours in twelve to the archive, starting this watch. Sweep log will be thin for a week. Confirmed.
   </Dialogue>
   <Dialogue speaker="engineer">
-  She'll do it properly and she'll hate it properly. Both at once. That's the Lieutenant.
+  She'll do it properly. She'll also enter the lost sweep hours on the log every day for a week.
   </Dialogue>
   </Outcome>
   <Outcome option={1}>
   <Dialogue speaker="sensors">
-  Sweep schedule stands. Thank you, sir. The Ensign gets the archive out of the relay net the slow way, and he tells me that is two days longer. I have told him it is two days he can spend being right.
+  Sweep schedule stands. Thank you, sir. The Ensign gets the archive out of the relay net the slow way. He tells me that is two days longer.
   </Dialogue>
   <Dialogue speaker="analyst">
   Two days, sir. I'll have the cross-check by MET 34 instead of 32. It'll be the same file either way. Just later.
