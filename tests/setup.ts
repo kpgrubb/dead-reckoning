@@ -1,4 +1,16 @@
 import '@testing-library/jest-dom/vitest'
+import { useProgress } from '@/store/progress'
+
+/**
+ * Pin the learner seed. Every instrument seeds its simulations from it via `seedFrom`, and it is
+ * deliberately random per device — `freshSeed()` on store creation — so a test run draws a
+ * different sampling distribution each time. That made any assertion about a simulated result
+ * quietly flaky: <LimitStack>'s convergence check ("the largest gap from N(0,1) falls as n grows")
+ * failed about one run in three, because with finite reps that gap is itself a random quantity and
+ * the claim holds in distribution rather than always. Everything else in the project is seeded; this
+ * was the one input that was not.
+ */
+useProgress.setState({ learnerSeed: 20_260_101 })
 
 /**
  * Browser APIs jsdom does not implement, stubbed so instruments can be rendered in tests.
