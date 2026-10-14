@@ -120,9 +120,13 @@ export const WATCH_DESIGN_SD_HOURS = (WATCH_DESIGN_HOURS * WATCH_SD_KW) / WATCH_
 export const QUIET_DESIGN_HOURS = enduranceHours(PROFILE_LOAD_KW.quiet)
 export const QUIET_MEASURED_HOURS = 108
 
-/** Purge visibility (DS-05): naval-grade sensors at 0.55 AU, civilian-grade at 2.6 million km. */
+/**
+ * Purge visibility (DS-05): naval-grade sensors at 0.55 AU, civilian-grade at 8.2 million km.
+ * R = √(P / 4πF) on an 8.4 MW purge against the ledger's 10⁻¹⁶ / 10⁻¹⁴ W/m² thresholds, so the
+ * naval-to-civilian range ratio is the same 10:1 the plume and cold-hull pairs use.
+ */
 export const PURGE_NAVAL_AU = 0.55
-export const PURGE_CIVILIAN_KM = 2.6e6
+export const PURGE_CIVILIAN_KM = 8.2e6
 /** Cold *Nightjar*: naval-grade at 3.7 million km, civilian at 370,000 km. */
 export const COLD_NAVAL_KM = 3.7e6
 export const COLD_CIVILIAN_KM = 370_000
@@ -415,7 +419,7 @@ export const CONSECUTIVE_COLS = ['this sweep detects', 'this sweep clean'] as co
 // =================================================================================================
 
 /**
- * Nobody at Kettle can see a cold hull or a purge from 0.3 AU. The loiter's exposure is Lane traffic:
+ * Nobody at Kettle can see a cold hull or a purge from 0.2 AU. The loiter's exposure is Lane traffic:
  * the plot is public, so Ebele knows every hull whose scheduled track makes a close pass (inside
  * 2.6 million km) of a loiter point during a window. Passes are independent — different hulls,
  * scheduled — which is exactly what own-ship re-sweeps are not.

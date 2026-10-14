@@ -39,7 +39,7 @@ export const feederCoverage = feeder.reachable / feeder.listed
 export const feederResponse = feeder.answered / feeder.contacted
 export const feederYes = feeder.yes / feeder.answered
 
-<Scene stamp="MET 54/09:20" location="Wardroom · braking at 4 mgee · 0.61 AU from Callisto" condensed={`Eight days past turnover, the Board's third attachment is on the wardroom table: the Lane Authority's dock survey, ${fmtInt(CERES_SURVEY.n)} masters, ${fmtPct(CERES_SURVEY.pYes, 0)} of them agreeing that pirates are responsible. Ebele has taken it apart and found the mechanism: a notice at Ceres, answered by whoever wanted to answer it. Then he proposes to fix it by asking twice as many masters at Ceres. Ferrier does not answer him.`}>
+<Scene stamp="MET 54/09:20" location="Wardroom · braking at 4 mgee · 1.80 AU from Callisto" condensed={`Eight days past turnover, the Board's third attachment is on the wardroom table: the Lane Authority's dock survey, ${fmtInt(CERES_SURVEY.n)} masters, ${fmtPct(CERES_SURVEY.pYes, 0)} of them agreeing that pirates are responsible. Ebele has taken it apart and found the mechanism: a notice at Ceres, answered by whoever wanted to answer it. Then he proposes to fix it by asking twice as many masters at Ceres. Ferrier does not answer him.`}>
 
 Eight days of braking. The deck still knows which way is down and your knees have stopped arguing with it. Sandoval says the wings are carrying the load and will keep carrying it as long as nobody asks the ship to be quiet. Nobody has asked since MET 46.
 
@@ -51,7 +51,7 @@ The wardroom table is the largest flat surface aboard and Ebele has covered two 
 
 "It isn't a sample of the Lane." He turns the page round so it faces you. "It's a sample of who was bored at Ceres."
 
-Solberg puts the Callisto lag on the bulkhead board without being asked. Fourteen minutes thirty-two seconds each way, rising about sixteen seconds a day. Then he goes back to the traffic log.
+Solberg puts the Callisto lag on the bulkhead board without being asked. Fourteen minutes thirty-two seconds each way, rising about twenty-eight seconds a day. Then he goes back to the traffic log.
 
 Ebele is already onto the fix. He has the next two dock rotations sketched on the back of the attachment, in pencil, with dates against them.
 
@@ -173,7 +173,7 @@ Write the scope honestly and it reads: *{fmtPct(feederYes, 0)} of responding mas
 
 <Gated by={["act-3-01-three-circles", "act-3-01-question"]}>
 
-<Scene stamp="MET 54/14:05" location="Wardroom · braking at 4 mgee · 0.61 AU from Callisto" condensed={`The preliminary gets a line that survives Valhalla: the Authority's figure is a number about Ceres dock volunteers, and what masters on the Lane have actually seen is not yet in evidence. Solberg prices a contact at ${fmtInt(COST.contactMin)} minutes plus or minus ${fmtInt(COST.contactSd)}, and counts what all ${fmtInt(FRAME_N)} would cost: ${fmt(contactHours, 0)} hours of link, ${fmt(contactDays, 1)} days of it.`}>
+<Scene stamp="MET 54/14:05" location="Wardroom · braking at 4 mgee · 1.81 AU from Callisto" condensed={`The preliminary gets a line that survives Valhalla: the Authority's figure is a number about Ceres dock volunteers, and what masters on the Lane have actually seen is not yet in evidence. Solberg prices a contact at ${fmtInt(COST.contactMin)} minutes plus or minus ${fmtInt(COST.contactSd)}, and counts what all ${fmtInt(FRAME_N)} would cost: ${fmt(contactHours, 0)} hours of link, ${fmt(contactDays, 1)} days of it.`}>
 
 You write the line into the preliminary in the Board's own register. Flat, passive, nothing in it to take hold of.
 
