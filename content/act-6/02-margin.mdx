@@ -62,17 +62,17 @@ export const intervalRubric = confidenceIntervalInterpretation({
 
 <Scene stamp="MET 134/07:10" location="Bridge · CSV Nightjar · Compact consular berth, Ceres" condensed="Solberg has logged four transmissions from the Compact consulate to Valhalla in the first six hours alongside, none of them Nightjar's. Adjuster Renn wants a meeting. Ebele wants to say the Lane is dangerous; Ferrier sets the rule for what the claim may be before the numbers arrive. Then Ebele offers to shrink the margin by waiting a few more seasons, and Solberg is told to price it in years.">
 
-Berth fees start at 06:00 and the consulate bills them in six-hour blocks, so the first thing on the morning board is a number you have to initial before anything else on it can be read. You initial it standing up.
+Berth fees start at 06:00 and the consulate bills them in six-hour blocks. The first thing on the morning board is a number you have to initial before anything else on it can be read. You initial it standing up.
 
 Solberg is on the bridge before the watch and he has a list.
 
-<Dialogue speaker="comms" aside="He reads from the log in the flat voice he uses for facts he has no opinion about, which is all of them.">
+<Dialogue speaker="comms" aside="He reads from the log in the flat voice he uses for facts he has no opinion about.">
 Four transmissions from the Compact consular station to Valhalla since we mated the collar at MET 133/06:52. Timestamps 07:14, 09:01, 14:38 and 22:40. Lag twenty-four minutes each way. None of them are ours, sir. I do not have the contents and I am not going to pretend otherwise.
 </Dialogue>
 
 Four in six hours, from a consulate that files a traffic summary once a week.
 
-The second item is a meeting request routed through the consul's office and written by somebody used to being answered. *Halide Renn, Adjuster, Tharsis Mutual.* Her syndicate has paid a single beneficiary two point one billion credits over six years against hulls lost on the Hundred-Day Lane, and she would like to understand why a Compact navy that has never returned her calls has come to Ceres with its lights on.
+The second item is a meeting request routed through the consul's office and written by somebody used to being answered. *Halide Renn, Adjuster, Tharsis Mutual.* Her syndicate has paid a single beneficiary two point one billion credits over six years against hulls lost on the Hundred-Day Lane. She would like to understand why a Compact navy that has never returned her calls has come to Ceres with its lights on.
 
 Ferrier reads the request twice and puts it face down on the plot.
 
@@ -88,7 +88,7 @@ Ebele has the Ledger up: {fmtInt(LANE_TRANSITS)} transits, {fmtInt(LANE_LOSSES)}
 
 "Two numbers with no error bars on them, one of which you have been told twice this week is a sample." Ferrier does not raise her voice. She gets more exact instead. "The rule, and I want it before we compute anything, so nobody can accuse us of choosing it afterwards. Put an honest margin on our rate. Tell me what the low end of it reaches down to. If the figure we wanted to beat is above that, **then that isn't the claim. Make the claim the data can carry.**"
 
-Ebele takes it well and then makes the mistake she has been waiting for, which is a better mistake than the last one.
+Ebele takes it well. Then he makes the mistake she has been waiting for.
 
 "Then we make the margin smaller, sir. Two-tenths of a point would settle it. We just need more transits, and the Lane produces about {fmtInt(TRANSITS_PER_YEAR)} a year. It's a few more seasons."
 
@@ -96,7 +96,7 @@ Ebele takes it well and then makes the mistake she has been waiting for, which i
 
 "A few, sir."
 
-Ferrier looks at you. She has already done the arithmetic and she is not going to say it, because Ebele has offered the Board a timetable and has not priced it.
+Ferrier looks at you. She has already done the arithmetic and she is not going to say it. Ebele has offered the Board a timetable and has not priced it.
 
 "Solberg. When the Ensign gives you a number of transits, convert it to years at {fmtInt(TRANSITS_PER_YEAR)} a year, and read it back to him with the date on it."
 
@@ -262,22 +262,22 @@ Rounded up: **{fmtInt(boardNeeded)} transits**, more than half again what the co
 
 <Scene stamp="MET 134/16:30" location="Bridge · CSV Nightjar · Compact consular berth, Ceres" condensed="Solberg prices the Ensign's few seasons at two decades, and three more years buy a third of a point. The rate argument clears Rook's 2176 figure and does not clear the Board's corridor, so the report cannot be about the rate. Ferrier accepts Renn's meeting and tells Ebele to ask her for the claims register.">
 
-Solberg puts it on the board in his own hand, so that the arithmetic is visible when somebody asks whether the ship was being difficult.
+Solberg puts it on the board in his own hand. When somebody asks whether the ship was being difficult, the arithmetic will be where they can read it.
 
 {fmtInt(TRANSITS_FOR_TARGET_MARGIN)} transits in total for a margin of {fmt(TARGET_MARGIN, 3)}. The Ledger holds {fmtInt(LANE_TRANSITS)}. At {fmtInt(TRANSITS_PER_YEAR)} transits a year the difference is **{fmt(extraYears, 1)} more years** of Lane traffic, and at the Lane's present rate something on the order of {fmtInt(Math.round((TRANSITS_FOR_TARGET_MARGIN - LANE_TRANSITS) * LANE_RATE))} more lost hulls while everyone waits for the error bar to close.
 
-Ebele asks the follow-up himself, which is progress. Three seasons is {fmtInt(3 * TRANSITS_PER_YEAR)} transits, taking the file to {fmtInt(threeYearTransits)}, and the margin comes down from {fmt(laneMoe, 5)} to {fmt(MARGIN_AFTER_THREE_YEARS, 5)}. From {fmt(100 * laneMoe, 2)} of a point to {fmt(100 * MARGIN_AFTER_THREE_YEARS, 2)}. Still touching every figure the Board would want it to touch.
+Ebele asks the follow-up himself. Three seasons is {fmtInt(3 * TRANSITS_PER_YEAR)} transits, taking the file to {fmtInt(threeYearTransits)}, and the margin comes down from {fmt(laneMoe, 5)} to {fmt(MARGIN_AFTER_THREE_YEARS, 5)}. From {fmt(100 * laneMoe, 2)} of a point to {fmt(100 * MARGIN_AFTER_THREE_YEARS, 2)}. Still touching every figure the Board would want it to touch.
 
 "File it," Ferrier says. "Costed, at the front. When somebody asks in two years why we did not simply wait for better data, the file shows that we priced waiting and the price was {fmt(extraYears, 0)} years and {fmtInt(Math.round((TRANSITS_FOR_TARGET_MARGIN - LANE_TRANSITS) * LANE_RATE))} hulls."
 
-Which leaves the rate argument where the interval put it. The Lane is worse than it was in 2176 by your own report, and that sentence can go out at {fmtPct(0.95, 0)} over your signature. The Lane is worse than the Board's comparison corridor: that one cannot, today or in three years, because the corridor's rate sits inside your interval and the interval will not move far enough to push it out before anybody stops caring. **The rate argument beats your baseline and it does not beat the Board's.**
+Which leaves the rate argument where the interval put it. The Lane is worse than it was in 2176 by your own report, and that sentence can go out at {fmtPct(0.95, 0)} over your signature. The Lane is worse than the Board's comparison corridor: that one cannot. Not today, not in three years. The corridor's rate sits inside your interval, and the interval will not move far enough to push it out before anybody stops caring. **The rate argument beats your baseline and it does not beat the Board's.**
 
 So the report cannot be about the rate.
 
 Ferrier says it standing at the plot with the interval still up and both baselines marked.
 
 <Dialogue speaker="xo" aside="She has already written the meeting acceptance. Renn's office, the consulate, tomorrow at ten.">
-The data says the Lane loses hulls at a rate we cannot distinguish from a corridor the Board is content with. That is not a finding. So we stop asking how many and start asking **which ones**, because if the losses were falling at random across the Lane, who collects on them would be a dull question. The Adjuster has paid one beneficiary two point one billion credits. Ask her for the register.
+The data says the Lane loses hulls at a rate we cannot distinguish from a corridor the Board is content with. That is not a finding. So we stop asking how many and start asking **which ones**. If the losses were falling at random across the Lane, who collects on them would be a dull question. The Adjuster has paid one beneficiary two point one billion credits. Ask her for the register.
 </Dialogue>
 
 You initial the acceptance under hers. The berth block rolls over at 18:00 and there is a second number to sign by then.

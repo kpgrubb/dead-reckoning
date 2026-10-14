@@ -42,11 +42,11 @@ export const levelRubric = confidenceLevelRubric({
 
 <Scene stamp="MET 133/08:20" location="Intel terminal · CSV Nightjar · Compact consular berth, Ceres" condensed="Docked at Ceres with the transponder lit and forty plumes in the sky, Ebele has written the report's first sentence: the interval has a 95 per cent chance of containing the Lane's loss rate. Ferrier asks him which interval, the one on the screen or the method, and sends him to build a hundred of them before he writes anything else.">
 
-For a hundred and thirty-three days the hull has been the coldest thing anybody could have looked at. This morning there is a docking collar on it, a fuel line into the port tank, and a transponder reading your hull number to a Ceres controller who has already said it back twice.
+For a hundred and thirty-three days the hull has been the coldest thing anybody could have looked at. This morning there is a docking collar on it and a fuel line into the port tank. The transponder is reading your hull number to a Ceres controller who has already said it back twice.
 
 The deck is warm. Shore power, both radiators out, the frame eleven degrees up since the collar mated and the plating ticking as it grows. Everybody aboard has their jacket off. You have not, because you are due across at the consulate at ten and you want one sentence in your pocket before you go.
 
-Forty plumes on the plot and half of them inside a light-second. Oyelaran stopped calling them contacts at 06:40 and started calling them traffic. You came in with {fmtInt(tankKmS)} km/s in the tanks and you are taking on more in the open, at the Compact consular berth, where anybody with a berth manifest can work out what a corvette of your class does not normally do at Ceres.
+Forty plumes on the plot and half of them inside a light-second. Oyelaran stopped calling them contacts at 06:40 and started calling them traffic. You came in with {fmtInt(tankKmS)} km/s in the tanks and you are taking on more in the open, at the Compact consular berth. Anybody with a berth manifest can work out what a corvette of your class does not normally do at Ceres.
 
 Solberg has the lag on the board above his station, in his own hand. {fmtInt(lightLagMin)} minutes to Valhalla. {fmtInt(2 * lightLagMin)} there and back.
 
@@ -68,7 +68,7 @@ Ferrier does not look up from the fuel log.
 
 He turns back to the terminal and does not type anything.
 
-In seven days this ship accuses an insurer's beneficiary of something, over a channel with {fmtInt(lightLagMin)} minutes of lag, in front of a Board that keeps lawyers on the payroll. The sentence they will come for first is the one he has just read out, because it is the one everybody gets wrong, and getting it wrong lets them spend the afternoon on your English instead of your arithmetic.
+In seven days this ship accuses an insurer's beneficiary of something, over a channel with {fmtInt(lightLagMin)} minutes of lag, in front of a Board that keeps lawyers on the payroll. The sentence they will come for first is the one he has just read out. Get it wrong and they spend the afternoon on your English instead of your arithmetic.
 
 Ferrier closes the fuel log and puts it on the rack.
 
@@ -77,7 +77,7 @@ Ferrier closes the fuel log and puts it on the rack.
 </Scene>
 
 <Dialogue speaker="xo" aside="Outside the port a Ceres tug is holding station on a hull four times its size and making a mess of it.">
-The corridor runs about {fmtInt(TRANSITS_PER_YEAR)} transits in a year. One season, one interval, a hundred times over, built the same way each time off the same process at the same true rate. Then count the ones that miss. When you can tell me what that counter is a property of, you may write the sentence.
+The corridor runs about {fmtInt(TRANSITS_PER_YEAR)} transits in a year. One season, one interval, a hundred times over. Same process, same true rate every time. Then count the ones that miss. When you can tell me what that counter is a property of, you may write the sentence.
 </Dialogue>
 
 <Briefing title="An interval is a statistic with its error bar; the level belongs to the method" topics={["6.1", "6.2"]}>
@@ -164,7 +164,7 @@ Notice the price of the margin. {fmtInt(ROOK_2176.transits)} transits, eight yea
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She turns the screen so the capture counter faces you.">
-  Which interval? Point at it. If the sentence can be answered with "that one", it is the wrong sentence: that one is finished, the rate is a fixed number, and there is no chance left anywhere in this compartment. Put the repetitions back in. A hundred seasons, a hundred intervals, and the level is the share of them that cover the line.
+  Which interval? Point at it. If the sentence can be answered with "that one", it is the wrong sentence. That one is finished. The rate is a fixed number and there is no chance left anywhere in this compartment. Put the repetitions back in. A hundred seasons, a hundred intervals, and the level is the share of them that cover the line.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -173,7 +173,7 @@ Notice the price of the margin. {fmtInt(ROOK_2176.transits)} transits, eight yea
 
 <Scene stamp="MET 133/22:05" location="Wardroom · CSV Nightjar · Compact consular berth, Ceres" condensed="Ebele logs the corrected sentence with the three conditions above it and their numbers beside them. Master Yevgenia Marsh comes aboard with a bottle and a grievance about a two-line finding on her brother's ship, and asks whose ships this is about.">
 
-Ebele writes it into the appendix at 21:40 with the conditions above it and the numbers beside each one, which is the form Ferrier has been trying to get out of him since Callisto. Random: a stated property of the process. Ten per cent: a process that will produce far more than {fmtInt(10 * LANE_TRANSITS)} transits. Large counts: {fmtInt(LANE_LOSSES)} and {fmtInt(laneArrivals)}, with a note that the first of them is the weak link and that a reviewer will find it.
+Ebele writes it into the appendix at 21:40, conditions above it, the numbers beside each one. Ferrier has been trying to get that form out of him since Callisto. Random: a stated property of the process. Ten per cent: a process that will produce far more than {fmtInt(10 * LANE_TRANSITS)} transits. Large counts: {fmtInt(LANE_LOSSES)} and {fmtInt(laneArrivals)}, with a note that the first of them is the weak link and that a reviewer will find it.
 
 At 22:05 the watch officer passes up a name from the collar. Master Yevgenia Marsh, *Thessaly Dawn*, nine days on a Ceres berth waiting for a cargo that is not coming, carrying a bottle of something clear.
 
