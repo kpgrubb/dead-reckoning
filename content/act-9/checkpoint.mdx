@@ -1,0 +1,168 @@
+---
+id: act-9-checkpoint
+act: 9
+title: "Checkpoint: Intent"
+kind: checkpoint
+ap_topics: ["9.1", "9.2", "9.3", "9.4", "9.5", "9.6"]
+objectives:
+  - "Read a regression printout for the slope, its standard error and its degrees of freedom, and check the conditions on the residuals"
+  - "Build and interpret a t-interval for a slope, and use it to settle a claim about a value physics fixes"
+  - "State hypotheses about a slope, compute t = (b − β₀)/SE(b) and write the conclusion in context"
+  - "Select the inference procedure a design calls for across Units 6–9, and bound an assembled case"
+prereqs: ["act-9-04"]
+est_minutes: 25
+calc_briefing: null
+summary: "Fourteen findings, out loud, from memory, with the limits attached. The brief spools at MET 219 and the Inspectorate will read it once."
+---
+
+import { fmt, fmtInt, fmtPct } from '@/lib/stats'
+import { CASE_FILE } from '@/instruments/act-9/case-file'
+import { DIVERTED_N, KETTLE_TEST_ZERO, NINETEEN_FUEL_INTERVAL } from '@/instruments/act-9/data'
+import { DECISION_IDS, Decided, PassGate } from '@/instruments/act-9/story'
+
+export const caseSize = CASE_FILE.length
+export const fuelLo = NINETEEN_FUEL_INTERVAL.ci[0]
+export const fuelHi = NINETEEN_FUEL_INTERVAL.ci[1]
+
+<Scene stamp="MET 217/08:30" location="Wardroom · five milligee for Ceres, both wings out" condensed="Five of them in the wardroom with the hatch hooked back, and the brief in a sleeve in the middle of the table. Ferrier will not sign it until the officer whose name is on the cover sheet can take it apart out loud, finding by finding, with the limits attached and the page face down. Solberg has the spool window written on the back of his hand.">
+
+The hatch is hooked back against the bulkhead. Ferrier did that on her way in and said nothing about it, and the passage noise comes through for the whole of the next hour: the forward loop pump, somebody's boots on the ladder, Ferrante's hatch going twice.
+
+Her cap is on the table beside her.
+
+Ebele has the annexes stacked square with the table edge and his hands flat on either side of them. He has slept. Ferrante went into his compartment at 21:40 last night and came out six minutes later and then stood in the passage outside it for a while longer than that.
+
+Sandoval came up from the loop in what she stood the forenoon watch in and has not sat down.
+
+Solberg has the spool window on the back of his hand in pen, because the slate goes dark on a timer he cannot change.
+
+The sleeve is in the middle of the table with the cover sheet face up on it.
+
+<Dialogue speaker="xo" aside="She turns the sleeve over so the cover sheet is against the table.">
+Say it back to me. Not the page. You.
+</Dialogue>
+
+{fmtInt(caseSize)} findings, in the order they were made. Each one with the question it answered, the procedure that answered it, the conditions with their arithmetic, the conclusion in the units of the thing being estimated, and the line underneath saying where it stops.
+
+Ostrow will read this once. The Inspectorate will read it once. Neither of them will come back to ask what a column meant. The first page where a sentence claims more than its procedure bought is the last page either of them reads.
+
+</Scene>
+
+<Checkpoint act="act-9" />
+
+<PassGate>
+
+<Scene stamp="MET 219/11:00" location="Comms locker, then the bridge · five milligee for Ceres" condensed="Twenty-one minutes of spool at MET 219. MET 222: Ashby-Hale answers personally, warmly, in the first person, forty-three minutes after the burst reaches Valhalla. He does not mention the four. Rook drafts the question about Thessaly Ember four times and the reply takes three hours: I did not ask.">
+
+Twenty-one minutes of spool. Solberg stands for all of it in a locker two metres deep, reads the address blocks back before he starts and again at the halfway mark, and logs the stamp on the second reading.
+
+Ferrier signed the cover sheet at 10:41. Her signature takes up less room than the date beside it.
+
+<Decided id={DECISION_IDS.delivery} is="board">
+One address block. The Board, through Lane Operations, as ordered, with the Flag Secretary left off because the order did not mention her. Commodore Maalouf will forward it to the Inspectorate six days from now, under her own name, without being asked and without telling you.
+</Decided>
+
+<Decided id={DECISION_IDS.delivery} is="inspectorate">
+Three address blocks in one burst, all of them leaving at the same instant so that nobody at Valhalla can argue about which went first. Solberg confirmed the third one by name before he spooled it and logged that he had asked.
+</Decided>
+
+<Decided id={DECISION_IDS.delivery} is="broadcast">
+Four address blocks and the annexes in clear. The Lane Authority has the file at the same moment the Board does, and Tharsis Mutual twenty minutes later because their relay is slow. Somewhere out past Mark 6, a hauler master is going to read the annex about *Thessaly Ember* before the Service has finished the covering page.
+</Decided>
+
+MET 222. The reply comes in forty-three minutes after the burst reaches Valhalla, which means he answered it while it was still spooling onto his own terminal. It is in the first person. It is not routed through anybody.
+
+<Dialogue speaker="ashbyhale" lag="Valhalla, Callisto · 71 minutes one way">
+Anselm. You were always going to find it. I'd hoped you'd understand it when you did.
+</Dialogue>
+
+What follows is eleven hundred words about an intercept in 2177, two heavy hulls moved to Phobos in a Close Season, eleven auxiliaries and a stockpile of cores that the Assembly would never have authorised and that Martian money paid for without asking what it was buying.
+
+He does not mention the four.
+
+You draft the question four times. The first draft has three paragraphs of context in it and you cut all of them. What goes is one line asking whether he knew about *Thessaly Ember*.
+
+The reply takes three hours.
+
+<Dialogue speaker="ashbyhale" lag="Valhalla, Callisto · 71 minutes one way">
+I did not ask.
+</Dialogue>
+
+</Scene>
+
+<Scene stamp="MET 228/04:15" location="Bridge · matched velocity with CSV Halden Reach" condensed="The tender comes alongside and matches, and Captain Ostrow orders Nightjar to stand down and transfer her data cores. Commander Lindqvist-Oduya has read the brief. She has also read Sandoval's sink memo and her own engineering log, and her comms officer has helpfully left the channel open.">
+
+*Halden Reach* matches velocity at 04:11 and holds station four hundred metres off the port quarter with her running lights on. There is nothing out here to see her by them.
+
+Ostrow is on the wardroom camera at his own end, seated, with two officers standing behind him and a folder he does not open.
+
+<Dialogue speaker="ostrow" lag="400 m · no lag">
+Commander Rook. *Nightjar* will stand down her drive and prepare to transfer all data cores to this vessel. You and your officers will be conveyed to Callisto aboard *Halden Reach*. The order is Lane Operations', and it was issued on the seventeenth.
+</Dialogue>
+
+The seventeenth was two days before the burst. He has been carrying it since before he knew what was in the file.
+
+Lindqvist-Oduya comes on without being invited to, from her own bridge, on a channel her comms officer has left open to both ships and to the Lane Operations relay behind them.
+
+<Dialogue speaker="lindqvist" lag="400 m · no lag">
+Captain, a Lane tender does not detain a Service hull on a liaison officer's order. I have read the Commander's brief. I forwarded it to the Inspectorate at 03:50 under my own name, with my engineering log and the sink memo attached, and my transmission log is open to anybody who wants it.
+</Dialogue>
+
+Nobody fires anything. Ostrow does not say anything for eleven seconds, and the open channel carries the sound of his own bridge back to yours.
+
+</Scene>
+
+<MissionBeat id={DECISION_IDS.cores} kind="decision" label="THE CORES"
+  prompt={`The cores hold every table in the file and the raw returns under them, including Lieutenant Oyelaran's lidar buffer. Everything on them is already at Valhalla, in three places, in a burst that left nine days ago and cannot be recalled.\n\nLindqvist-Oduya's refusal covers you whichever way you answer, and she has made that as clear as an open channel allows.\n\n**What happens to the cores?**`}
+  options={[
+    'Transfer them under written protest, with the protest logged and a copy of the protest in the same transfer.',
+    'Refuse. The cores stay aboard this ship until the Inspectorate asks for them in writing.',
+  ]}>
+  <Outcome option={0}>
+  Sandoval copies both cores before they go across, which she does not ask about first and which takes her nineteen minutes. Captain Ostrow's staff will have read the file before the Inspectorate's people reach Callisto. It changes nothing in the file and it will cost him, later, that he read it.
+  </Outcome>
+  <Outcome option={1}>
+  Ferrier logs the refusal with the regulation's paragraph number beside it and the open channel carries it to three bridges at once. Ostrow does not repeat the order. The cores are still in their racks when the Inspectorate's people come aboard at Ceres.
+  </Outcome>
+</MissionBeat>
+
+<Gated by={DECISION_IDS.cores}>
+
+<Scene stamp="MET 231/17:50" location="Bridge · five milligee for Ceres" condensed="MET 231. Vice Admiral Achterberg's transmission is one sentence. Below it, separately, unsigned, is a second line. Book One's proof is complete, the findings all carry their limits, and the one thing the numbers never touched is whether the threat that justified it was ever real.">
+
+It comes in at 17:50 and Solberg brings it up himself rather than putting it on the queue.
+
+<Dialogue speaker="achterberg" lag="Valhalla, Callisto · 69 minutes one way">
+The Inspectorate has opened proceedings; Commander Rook will return to Callisto with all data and all officers; Captain Ostrow is relieved and will be conveyed by CSV *Halden Reach*.
+</Dialogue>
+
+Under it, on its own, with no address block and no signature:
+
+<Dialogue speaker="achterberg" aside="Unsigned. Sent separately, four minutes after the first." lag="Valhalla, Callisto · 69 minutes one way">
+Well done. I am sorry about Lieutenant Oyelaran.
+</Dialogue>
+
+Halvorsen reads it off the board, steps back, puts her hand on the top of the chair's backrest, and goes back to the board.
+
+{fmtInt(caseSize)} findings. A pattern in the losses, an owner who collects on them, a ledger that does not match the hulls, a stamp on seventeen of nineteen certificates, a stockpile at a rock the chart carries as an abandoned claim, and {fmtInt(DIVERTED_N)} sets of tanks filled at Uruk High for a braking burn that is not on any certificate. The fuel interval runs from {fmt(fuelLo, 3)} to {fmt(fuelHi, 3)} tonnes per tonne required and does not reach down to one. The Kettle slope stands at $t$ = {fmt(KETTLE_TEST_ZERO.statistic, 2)} on {fmtInt(KETTLE_TEST_ZERO.df)} degrees of freedom against a null that every innocent account of this requires.
+
+Every one of them with its limit written underneath by the officer who found it.
+
+And the sentence on the cover sheet, which is the only one in the whole file that will still be exactly true after every person named in it has been heard: it does not establish who gave the order, and it does not establish why.
+
+Ashby-Hale's eleven hundred words answer the second of those. They are a man's account of his own reasons, sent to somebody he taught, and the file holds no procedure that takes them as input.
+
+Three days to Ceres. Seventy-one from there to Callisto, and a hearing at the end of it.
+
+</Scene>
+
+<LogEntry
+  title="Act IX — a slope is a statistic, and a case is judged one finding at a time"
+  concept="Inference for a slope rests on the population regression model μy = α + βx with constant σ, under which the fitted slope b is a statistic: centred at β, approximately Normal, with SD σ/(σx·√n), estimated in practice by SE(b) = s/√Sxx. Every procedure about β runs on df = n − 2 because two parameters were estimated to place the line, and every condition — Linear, Independent, Normal residuals, Equal SD, Random — is judged on the residuals or on the design, never on a graph of the response. The interval b ± t*·SE(b) estimates the rate and settles a claim about any stated value by whether that value lies inside it; the test t = (b − β₀)/SE(b) holds the slope against a null that is zero when the question is whether a relationship exists and is whatever the science fixes when the rate itself is disputed. Computer output always prints a two-sided test against zero, so a one-sided question halves that P only when b falls on the alternative's side, and a non-zero null cannot use the printed t at all. A finding carries its procedure, its conditions, its conclusion in context and its limit; a body of findings is judged one at a time and then on whether one innocent account explains all of them together."
+  formula="\sigma_b = \frac{\sigma}{\sigma_x\sqrt{n}}, \quad SE(b) = \frac{s}{\sqrt{S_{xx}}}, \quad b \pm t^\star SE(b), \quad t = \frac{b - \beta_0}{SE(b)}, \quad df = n - 2"
+  mistake="Letting the printout answer a question it was never asked. Software tests every coefficient against zero, two-sided, because nobody told it the design; the degrees of freedom are n − 2 and not n − 1; the Normal condition lives on the residuals and not on the response; and no arithmetic on a set of P-values turns several findings into one probability."
+  tags={['unit-9', 'checkpoint', 'population regression model', 'sampling distribution of b', 'standard error of the slope', 'slope interval', 'slope test', 'non-zero null', 'df = n − 2', 'conditions', 'procedure selection', 'limitations', '9.1', '9.6']}
+/>
+
+</Gated>
+</PassGate>

@@ -1,0 +1,382 @@
+---
+id: act-9-03
+act: 9
+title: "The Fuel to Reach Kettle"
+kind: module
+ap_topics: ["9.4", "9.5"]
+objectives:
+  - "State hypotheses about a population slope, with a null value fixed by zero or by physics, and verify the conditions"
+  - "Compute t = (b − β₀)/SE(b) on n − 2 degrees of freedom and obtain the P-value from output or by hand"
+  - "Take a one-sided P-value from a two-sided printout, and only when the sign of b agrees with the alternative"
+  - "Write a conclusion in context for a slope test, and state what a significant slope does not establish"
+prereqs: ["act-9-02"]
+est_minutes: 30
+calc_briefing: null
+summary: "The nav software gives the delta-v to Kettle on each of nineteen departure dates. Under every innocent account of what happened, that number has nothing to do with how much fuel a hull loaded at Uruk High."
+---
+
+import { fmt, fmtInt, fmtP, fmtPct, linearRegression, pValueT, slopeTest } from '@/lib/stats'
+import { significanceTestConclusion } from '@/lib/problems/rubrics'
+import {
+  BETA_PHYSICAL,
+  BETA_EBELE,
+  DIVERTED_N,
+  KETTLE_ON_DECLARED,
+  KETTLE_OUTPUT,
+  KETTLE_TEST_PHYSICAL,
+  KETTLE_TEST_ZERO,
+  MARK2_FIX_SD,
+  WHOLE_PHASE_SD,
+  dvKettle,
+} from '@/instruments/act-9/data'
+import { RegressionOutputPanel } from '@/instruments/act-9/RegressionOutputPanel'
+import { SlopeTestVisualiser } from '@/instruments/act-9/SlopeTestVisualiser'
+
+export const standDemanded = [182, 205, 228, 247, 266, 290, 311, 334, 358, 391, 416]
+export const standMeasured = [193.0, 212.8, 243.1, 257.0, 281.6, 301.9, 329.4, 347.2, 378.6, 408.1, 437.0]
+export const standFit = linearRegression(standDemanded, standMeasured)
+export const standN = standDemanded.length
+export const standVsOne = slopeTest(standDemanded, standMeasured, { alt: 'greater', beta0: 1, random: true, populationSize: 1800 })
+export const standVsZero = slopeTest(standDemanded, standMeasured, { alt: 'two-sided', beta0: 0, random: true, populationSize: 1800 })
+export const standDf = standN - 2
+export const standInterceptT = standFit.intercept / standFit.seIntercept
+export const standInterceptP = pValueT(standInterceptT, standDf, 'two-sided')
+export const standSlopeT = standFit.slope / standFit.seSlope
+export const dvLow = Math.min(...dvKettle)
+export const dvHigh = Math.max(...dvKettle)
+
+export const kettleNulls = [
+  { label: 'β = 0 · no relationship', value: 0 },
+  { label: `β = ${fmt(BETA_PHYSICAL, 5)} · the rocket equation`, value: BETA_PHYSICAL },
+  { label: `β = ${fmt(BETA_EBELE, 5)} · one over the exhaust velocity`, value: BETA_EBELE },
+]
+
+export const baseConclusion = significanceTestConclusion({
+  pValue: KETTLE_TEST_ZERO.pValue,
+  alpha: 0.01,
+  parameterContext: {
+    population: 'the nineteen diverted Perrine departures',
+    variable: 'in excess fuel per true tonne against the Kettle delta-v at departure',
+    parameter: 'slope',
+    nullValue: '0',
+  },
+  direction: 'greater',
+  directionWords: ['increase', 'rises', 'higher', 'steeper'],
+})
+
+export const scopeGroup = {
+  label: 'States the scope: these nineteen departures',
+  phrasings: [/nineteen/i, /no wider/i, /not generaliz/i, /these departures/i, /only/i],
+  polarity: 'any',
+  feedback: 'Say how far the finding reaches: those nineteen departures, because that is the only group the regression was run on.',
+}
+
+export const namesNobodyGroup = {
+  label: 'States that the test names nobody',
+  phrasings: [/who ordered/i, /names nobody/i, /not say who/i, /not name/i, /motive/i, /not who/i],
+  polarity: 'any',
+  feedback: 'Say the limit out loud: the slope locates the fuel at the berth, and it does not say who ordered it loaded.',
+}
+
+export const conclusionRubric = {
+  ...baseConclusion,
+  required: [...baseConclusion.required, scopeGroup, namesNobodyGroup],
+  exemplar: `${baseConclusion.exemplar} The scope is those nineteen departures and no wider, and the test names nobody: it does not say who ordered the fuel loaded.`,
+  minWords: 25,
+}
+
+<Scene stamp="MET 213/05:40" location="Bridge · five milligee for Ceres, both wings out" condensed="The relay archive came aboard on the seventh and Ebele has spent four days turning six weeks of state vectors per hull into nineteen masses good to half a percent. The nav software will give the delta-v a hull at Mark 9.4 needs to arrive at rest at Kettle, on any date in the last six years. Rook wants the second column put against the first, because the Kettle delta-v on a departure date is a number no innocent account of the diversion has any reason to care about.">
+
+Eleven hours in the chair and the buckle has worn a line across your hip through the flight suit. You undid it at the end of the middle watch and have not done it up again.
+
+The bridge runs warm now. Six days of open radiators put the deckhead at twenty-six and the sensor board puts out more than that, and Halvorsen stands at it with her sleeves pushed up. She has stood the whole watch. The chair is bolted a metre to her left with the restraints squared away across it the way Oyelaran left them.
+
+Ebele comes up with three slates and sets two of them face down on the plot table before he starts.
+
+<Dialogue speaker="analyst" aside="Four days on it. He has been shaving in the passage because the head is further from the terminal.">
+Nineteen masses, sir, off the whole accelerate phase. Six weeks of vectors each and the fit closes to about {fmtPct(WHOLE_PHASE_SD, 1)} on every one of them. The Mark two fix we were using was {fmtPct(MARK2_FIX_SD, 0)}, so the hidden cargo was sitting inside our own error bar the entire time and I couldn't see it. Now I can.
+</Dialogue>
+
+What that buys is a denominator. Divide the fuel each hull loaded by what the hull actually weighed, take off the fraction its own month's filed profile required, and what is left is the fuel it carried for something the certificate did not mention. Per tonne. Owing nothing to anybody's declaration.
+
+You have been thinking about the other column since the wardroom.
+
+The Lane, Ceres and Kettle all move. A hull at Mark 9.4 that wanted to arrive at rest at Kettle instead of Ceres needed a different burn in 2178 from the one it needed in 2183, and the nav software will give you that number for any date you name. It has nothing to do with mass. It has nothing to do with the Bureau. It is pure geometry, and across six years it runs from {fmt(dvLow, 1)} to {fmt(dvHigh, 1)} kilometres per second.
+
+Under Ostrow's story, a master who decides at Mark 9 to run his hull somewhere else cannot have known any of that when the pumps were still on the berth.
+
+<Dialogue speaker="xo" aside="She has come up from the wardroom with the annex and has not sat down.">
+Say what you expect to see if he is telling the truth.
+</Dialogue>
+
+Nothing. A flat line. Nineteen points scattered about a slope of zero, because a clerk who falsifies a tonnage and a crew that goes rogue in the outer Lane have no reason between them to care what the geometry to a rock was on the Tuesday the hull sailed.
+
+Sandoval comes up the ladder with the rag still through her belt and reads the second slate over Ebele's arm without being asked.
+
+<Dialogue speaker="analyst">
+So the physical value would be one over the exhaust velocity, ma'am, which for these drives is—
+</Dialogue>
+
+<Dialogue speaker="engineer">
+At zero delta-v, Ensign. These hulls are at two-thirty by Mark nine. You want the marginal fraction at the burn they are actually flying, not at the burn nobody flies.
+</Dialogue>
+
+She takes the stylus off him and writes the exponential on the corner of the slate, and underneath it, in the same hand, the word *brake*.
+
+Ebele reads it and puts his own slate down.
+
+<Dialogue speaker="analyst">
+Then it isn't one number I'm testing against. It's two. Zero, because that's what innocent looks like. And then the rocket equation, because if the extra fuel is the fuel to reach Kettle, the slope has to come out at what the physics says and not at some other number that happens to miss zero.
+</Dialogue>
+
+<Dialogue speaker="xo">
+Run it.
+</Dialogue>
+
+</Scene>
+
+<Briefing title="Testing a slope: hypotheses, the statistic, and what a small P-value buys" topics={["9.4", "9.5"]}>
+<Briefing.Intuition>
+A slope test asks one question: **is the population slope $\beta$ equal to some stated value?** Everything else is bookkeeping.
+
+**The hypotheses.** They are always about the parameter, never about the fitted line:
+
+$$H_0: \beta = \beta_0 \qquad H_a: \beta > \beta_0, \quad \beta < \beta_0, \quad \text{or} \quad \beta \neq \beta_0$$
+
+$b$ is already known once the regression has run, so there is nothing to hypothesise about it. $\beta$ is the slope of the true line $\mu_y = \alpha + \beta x$ for the population the sample came from, and the test asks how surprising the observed $b$ would be if the null were true.
+
+**The null value.** Most of the time $\beta_0 = 0$, because a slope of zero means the response does not change with the explanatory variable: no linear relationship. That is a special case and not a rule. When the science, a contract or a specification fixes what the rate has to be, that value is the null, and zero never enters the problem. A relay net's delay per AU is fixed by the speed of light. A hull's fuel per tonne required is fixed by the requirement. The marginal fuel fraction per extra kilometre per second of braking is fixed by the rocket equation.
+
+**The direction.** The alternative is chosen from the question, before the data are seen. Choosing it afterwards so that it points the same way as $b$ is not a one-sided test; it is a two-sided test with the P-value quietly halved.
+
+**Conditions.** Identical to the interval's: Linear, Independent, Normal residuals, Equal SD, Random. All five are judged on the residual plot, the normal probability plot of the residuals, and the sentence describing how the data were collected. A P-value computed on a fit whose conditions fail is a number with nothing behind it.
+
+**The statistic.** The same shape as every $t$ statistic in the course: how many standard errors the estimate sits from the null value.
+
+$$t = \frac{b - \beta_0}{SE(b)}, \qquad df = n - 2$$
+
+Both ingredients come off the output, from the **Coef** and **SE Coef** columns of the predictor's row. The degrees of freedom are $n - 2$ because two parameters were estimated to place the line.
+
+**The P-value, and the one thing output gets wrong.** Software prints a $T$ and a $P$ beside every coefficient, and they are always the same test: **two-sided, against zero.** Three cases follow.
+
+- The question is two-sided against zero. The printed $P$ is the answer.
+- The question is one-sided against zero. The answer is **half** the printed $P$ — and only when $b$ falls on the side the alternative claims. When it falls the other way the one-tailed area is $1 - P/2$, which will be larger than a half, and the data are evidence against the alternative rather than for it.
+- The question is about a **non-zero** null. The printed $T$ and $P$ cannot be used at all. The null is in the numerator of $t$, so a different null is a different statistic, and it has to be rebuilt from Coef and SE Coef by hand.
+
+**What a small P-value buys, and what it does not.** It buys one sentence: the data would be surprising if $\beta$ were $\beta_0$, so there is convincing evidence that it is not. It does not buy a cause, because observational data describe association and a confounding variable produces the same slope. It does not buy a size, because a P-value is a verdict on one value of $\beta$ and an interval is what says how big the slope is. And it does not buy a wider population than the one the sample was drawn from.
+</Briefing.Intuition>
+<Briefing.Definition>
+<Formula tex={`H_0: \\beta = \\beta_0 \\qquad H_a: \\beta > \\beta_0 \\ \\text{ or } \\ \\beta < \\beta_0 \\ \\text{ or } \\ \\beta \\ne \\beta_0`} terms={{ '\\beta': 'the slope of the population regression line', '\\beta_0': 'the value the null claims: zero for "no relationship", otherwise whatever the science fixes' }} label="Hypotheses for a test about a slope" />
+
+<Formula tex={`t = \\frac{b - \\beta_0}{SE(b)}, \\qquad df = n - 2`} terms={{ b: 'the fitted slope, from the Coef column', 'SE(b)': 'its standard error, from the SE Coef column', 'df': 'n − 2, because the intercept and the slope were both estimated' }} label="The test statistic, and the curve it is read on" />
+
+<Formula tex={`P_{\\text{one-sided}} = \\tfrac{1}{2} P_{\\text{printed}} \\quad \\text{when } b \\text{ is on the side } H_a \\text{ claims}`} terms={{ 'P_{\\text{printed}}': 'the two-sided P against zero that software reports for every coefficient' }} label="Converting the printed P-value, and the condition on doing it" />
+</Briefing.Definition>
+<Briefing.Worked>
+The Adlinda Yards test stand, certified every quarter. {fmtInt(standN)} drives were bolted on, each with a certificate demanding a stated thrust, and the stand recorded what it measured.
+
+<table className="dr-table">
+  <caption className="dr-table__caption">Adlinda stand certification: demanded thrust against measured thrust</caption>
+  <thead>
+    <tr><th scope="col">demanded (kN)</th>{standDemanded.map((v, i) => (<th key={i} scope="col">{fmt(v, 0)}</th>))}</tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">measured (kN)</th>{standMeasured.map((v, i) => (<td key={i}>{fmt(v, 1)}</td>))}</tr>
+  </tbody>
+</table>
+
+A stand that reads true returns the thrust demanded, whatever size of drive is bolted to it, so the physics fixes $\beta$ at exactly 1 kN measured per kN demanded. The yard wants to know whether the stand reads high.
+
+*The hypotheses.* $H_0: \beta = 1$ against $H_a: \beta > 1$, where $\beta$ is the slope of the population regression line of measured thrust on demanded thrust for drives uprated at Adlinda. The direction comes from the question, which was asked before the quarter's drives were pulled.
+
+*The output.*
+
+<table className="dr-table">
+  <caption className="dr-table__caption">Regression of measured thrust (kN) on demanded thrust (kN)</caption>
+  <thead>
+    <tr><th scope="col">Predictor</th><th scope="col">Coef</th><th scope="col">SE Coef</th><th scope="col">T</th><th scope="col">P</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">Constant</th><td>{fmt(standFit.intercept, 3)}</td><td>{fmt(standFit.seIntercept, 3)}</td><td>{fmt(standInterceptT, 2)}</td><td>{fmtP(standInterceptP)}</td></tr>
+    <tr><th scope="row">demanded (kN)</th><td>{fmt(standFit.slope, 4)}</td><td>{fmt(standFit.seSlope, 4)}</td><td>{fmt(standSlopeT, 2)}</td><td>{fmtP(standVsZero.pValue)}</td></tr>
+  </tbody>
+</table>
+
+with $s$ = {fmt(standFit.s, 3)} kN and $n$ = {fmtInt(standN)}.
+
+*What the printed columns are testing.* $T$ = {fmt(standSlopeT, 2)} with $P$ = {fmtP(standVsZero.pValue)} is the test of $\beta = 0$: the hypothesis that the stand's reading has nothing whatever to do with the thrust demanded. Nobody has ever suggested that, and the number is useless here.
+
+*The statistic the question wants.*
+
+<Formula tex={`t = \\frac{${fmt(standFit.slope, 4)} - 1}{${fmt(standFit.seSlope, 4)}} = ${fmt(standVsOne.statistic, 2)}, \\qquad df = ${fmtInt(standN)} - 2 = ${fmtInt(standDf)}`} label="How many standard errors the fitted slope sits above the specification" />
+
+*The P-value.* The upper tail beyond {fmt(standVsOne.statistic, 2)} on $t$ with {fmtInt(standDf)} degrees of freedom gives $P$ = **{fmtP(standVsOne.pValue)}**.
+
+*The conclusion.* Because the P-value ({fmtP(standVsOne.pValue)}) is less than $\alpha$ = 0.05, reject $H_0$. There is convincing evidence that the true slope of measured thrust on demanded thrust at the Adlinda stand is greater than 1 kN per kN, so the stand reads high across its range by about {fmtPct(standFit.slope - 1, 1)}.
+
+*What that conclusion stops short of.* It does not say why the stand reads high, it does not extend to any other yard's stand, and it says nothing about whether {fmtPct(standFit.slope - 1, 1)} matters to anybody. The last of those is a question for an interval and for a fitter.
+</Briefing.Worked>
+<Briefing.Caution>
+*The printed P answers a question you did not ask.* Every statistics package tests every coefficient against zero, two-sided, because it has no idea what the analyst wanted. Before using the $P$ column, say out loud what null it was computed against and whether that is yours.
+
+*Halving has a condition attached.* A one-sided P is half the printed value **when $b$ lies on the side the alternative claims**. When it does not, the one-tailed area is the complement, and a P-value above a half is the signal that this has happened.
+
+*A significant slope is not a cause.* Nothing in the arithmetic distinguishes a relationship produced by one variable driving another from one produced by a third variable driving both. Random assignment is what separates them, and an archive has none.
+
+*Significance is not size.* A huge sample makes a trivial slope significant and a small one hides a large slope. The test reports whether $\beta$ is plausibly $\beta_0$; the interval reports how far from it $\beta$ might be.
+
+*Failing to reject is not confirmation.* A test against a physical value that comes back short leaves that value standing alongside every other value the interval would have contained. It is consistency, which is weaker than agreement and still worth reporting.
+</Briefing.Caution>
+</Briefing>
+
+<Calculator title="LinRegTTest, and the test it will not run for you">
+<Calculator.Step keys={['STAT', '1:Edit']} note="Worked case: the eleven Adlinda drives above, not Brandt's file below.">Demanded thrust into `L1`, measured thrust into `L2`, one drive per row, same order in both. {fmtInt(standN)} rows.</Calculator.Step>
+<Calculator.Step keys={['STAT', '▸ TESTS', 'F:LinRegTTest']} note="Xlist: L1 · Ylist: L2 · Freq: 1 · β & ρ: >0 · RegEQ: (blank) · Calculate">The `β & ρ` line chooses the **tail**, and nothing else. There is no field on this screen for a null value, because the screen only ever tests zero.</Calculator.Step>
+<Calculator.Read label="b" value={fmt(standFit.slope, 4)}>the fitted slope. This is the number the rest of the work is built on, and it is the one thing on the screen that does not depend on the hypothesis.</Calculator.Read>
+<Calculator.Read label="t" value={fmt(standSlopeT, 2)}>the statistic **against zero**. Not the answer here, and the route to the number that is.</Calculator.Read>
+<Calculator.Read label="df" value={String(standDf)}>$n - 2$, printed so you never have to trust your own subtraction.</Calculator.Read>
+<Calculator.Read label="s" value={fmt(standFit.s, 3)}>the residual standard deviation, in kN. Scroll down for it.</Calculator.Read>
+<Calculator.Step keys={['VARS', 'Statistics…', '▸ EQ']} note="Then ▸ TEST for t. Recall the stored values rather than retyping the rounded cells.">`LinRegTTest` never prints $SE(b)$, and on a null of zero the two values it stores give it up in one division: $SE(b) = b \div t$ = {fmt(standFit.slope, 4)} ÷ {fmt(standSlopeT, 2)} = **{fmt(standFit.seSlope, 4)}**. `b` sits on the `EQ` submenu and `t` on the `TEST` submenu of `VARS` `Statistics…`, and both are overwritten by the next test you run.</Calculator.Step>
+<Calculator.Step keys={['STO▸', 'ALPHA', 'S']} note="With SE(b) on the home screen.">Park it. `STO▸` is its own key, immediately above `ON`, and the next line needs the full-precision value rather than the four digits you can see. Then the statistic the question actually wants: $(b - 1) \div S$ = ({fmt(standFit.slope, 4)} − 1) ÷ {fmt(standFit.seSlope, 4)} = **{fmt(standVsOne.statistic, 2)}**. No TI-84 screen will do that subtraction for you.</Calculator.Step>
+<Calculator.Step keys={['2nd', 'DISTR', '6:tcdf(']} note="lower: the statistic · upper: 1E99 · df: n − 2">Lower bound {fmt(standVsOne.statistic, 2)}, upper bound `1E99`, df {fmtInt(standDf)}. It returns the upper-tail area, **{fmtP(standVsOne.pValue)}**. For a two-sided alternative, double it. Type the `E` in `1E99` with `2nd` `,`, not the letter `E` from `ALPHA`.</Calculator.Step>
+<Calculator.Watch>**`LinRegTTest` tests one null and it is always zero.** The `β & ρ` field picks `≠0`, `<0` or `>0`. It has no box for a value, so every question of the form "is the slope equal to the number physics requires?" is run by hand from `b` and `SE(b)`. On this file the calculator's own answer is $t$ = {fmt(standSlopeT, 2)} against the hand-built {fmt(standVsOne.statistic, 2)}, and only the second one is about the stand.</Calculator.Watch>
+<Calculator.Watch>**`2nd` `STO▸` is `RCL`, not store.** It recalls a stored value into the current line, and a keystroke that silently does the opposite of what was intended is worse than one that throws an error. To store, press `STO▸` on its own.</Calculator.Watch>
+<Calculator.Watch>**`STAT ▸ CALC 8:LinReg(a+bx)` prints no $t$ and no $s$.** It is the Unit 2 screen and there is no route from it to a standard error. Every Unit 9 question needs `F:LinRegTTest` or `G:LinRegTInt`.</Calculator.Watch>
+</Calculator>
+
+<SlopeTestVisualiser label="SENSOR · THE SLOPE THAT CANNOT BE INNOCENT" />
+
+<RegressionOutputPanel
+  table={KETTLE_OUTPUT}
+  mode="test"
+  nullValues={kettleNulls}
+  label="INTEL · THE TEST, FROM THE OUTPUT · DS-16, THE NINETEEN"
+  caption="Excess fuel per true tonne against the Kettle delta-v on the departure date. The printed T and P columns are a two-sided test against zero; move the null and watch how little of the table survives it."
+/>
+
+<Drill generator="act-9/slope-hypotheses" count={1} />
+<Drill generator="act-9/slope-t-and-p" count={1} />
+<Drill generator="act-9/one-sided-from-output" count={1} />
+<Drill generator="act-9/slope-vs-physical-null" count={1} />
+<Drill generator="act-9/slope-test-conclusion" count={1} />
+<Drill generator="act-9/what-a-slope-does-not-prove" count={1} />
+
+<MissionBeat id="act-9-03-t" kind="numeric" answer={KETTLE_TEST_ZERO.statistic} answerKind="testStat" digits={2} label="THE STATISTIC AGAINST THE INNOCENT STORY"
+  prompt={`The response is what each of the ${fmtInt(DIVERTED_N)} diverted hulls carried per true tonne beyond what its own departure month's filed profile required. The predictor is the delta-v from Mark 9.4 to rest at Kettle on that departure date.\n\nUnder clerical error, under petty under-declaration, under a crew that decided at Mark 9, the population slope is zero.\n\nTest H₀: β = 0 against Hₐ: β > 0. Report the **t statistic**, to **two decimal places**.`}
+  hint="Both ingredients are on the output table above, in the Coef and SE Coef columns of the predictor's row. The degrees of freedom are not nineteen.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He says the number and then says it again a second time, more slowly, as if checking it against the slate.">
+  On seventeen degrees of freedom, sir. And the same regression against the mass they declared instead of the mass they had comes out at {fmt(KETTLE_ON_DECLARED.statistic, 2)}. Same nineteen hulls, same delta-v column, and the only difference is what I divided by. The hidden cargo was in the denominator making noise.
+  </Dialogue>
+  <Dialogue speaker="comms" aside="He has the link ledger up and is closing it out.">
+  Forty-nine hours of antenna, Commander. For the record, that is what the difference between those two numbers cost.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  Coef over SE Coef, on the predictor's row. Not the constant, and not the T the software printed, which it computed before anybody told it what we were asking.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-9-03-p" kind="numeric" answer={KETTLE_TEST_ZERO.pValue} answerKind="pValue" label="HOW OFTEN AN INNOCENT FLEET DOES THIS"
+  prompt={`Now the **P-value** for that one-sided test, on ${fmtInt(KETTLE_OUTPUT.df)} degrees of freedom.\n\nThe output table prints a P beside the slope. Decide what that printed figure is before you use it, and report the P-value for H₀: β = 0 against Hₐ: β > 0. Four decimal places, or the inequality if it is smaller than that.`}
+  hint="Software prints a two-sided test against zero. This alternative names one side, and the sign of b agrees with it.">
+  <Success>
+  <Dialogue speaker="analyst">
+  Half of what's printed, sir, because it's one tail and b went the way we said it would.
+  </Dialogue>
+  <Dialogue speaker="engineer" aside="She has been standing at the plot table with her arms folded since the exponential went on the slate.">
+  Nineteen hulls, over six years, and the heavier they had to brake at the far end the more they carried off the berth. Nobody at Mark nine decides anything that gets back to Uruk High and into a tank before the hull sailed. That fuel was in there on the day.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst" aside="He puts the stylus on the P column and does not move it.">
+  Sir, that's the one the software gives you, and it's both tails. We asked a question with a side on it.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-9-03-conclusion" kind="interpretation" label="SAY WHAT IT PROVES"
+  prompt={`Ferrier will not put this in the brief without the sentence underneath it, and the Inspectorate will read that sentence before it reads the table.\n\nWrite the **conclusion in context** at α = 0.01. Name the decision, the comparison that produced it, and what the evidence is about: whose departures, which two variables, and in what direction. Then state the two things the test does not reach.`}
+  hint="Decision, P against α, convincing evidence that. Then the scope, which is those nineteen departures and nothing wider. Then the limit: a slope locates the fuel at the berth and names no one."
+  {...conclusionRubric}>
+  <Success>
+  <Dialogue speaker="xo" aside="She reads it off the slate, then turns it face down.">
+  That is the sentence. It goes under the table and the table does not go anywhere without it.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="xo">
+  You have given me a verdict with nobody in it. Which departures. Which two columns. Which direction. And then the line you will be asked for whether you write it or not: what this does not say.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<MissionBeat id="act-9-03-physical" kind="numeric" answer={KETTLE_TEST_PHYSICAL.pValue} answerKind="pValue" label="AGAINST THE ROCKET EQUATION"
+  prompt={`The second test, and the one that says what the excess fuel **is**.\n\nThe rocket equation's marginal fuel fraction per kilometre per second of extra braking, evaluated at each hull's own thrust-limited Lane burn and averaged, is β₀ = ${fmt(BETA_PHYSICAL, 5)} per km/s. If the extra fuel is the fuel to reach Kettle, that is the slope it has to have.\n\nTest H₀: β = ${fmt(BETA_PHYSICAL, 5)} against Hₐ: β ≠ ${fmt(BETA_PHYSICAL, 5)}. Report the **P-value**, to four decimal places.`}
+  hint="The null is in the numerator of t and nowhere else, so b and SE(b) do not move. Both tails this time.">
+  <Success>
+  <Dialogue speaker="analyst" aside="He has both tests on one slate now, one under the other.">
+  So zero is rejected and the physics isn't, sir. The slope is a long way from nothing and it sits right on top of the number the rocket equation says it should be.
+  </Dialogue>
+  <Dialogue speaker="engineer">
+  Which is the braking burn. That is what you are holding. They were fuelled to stop at Kettle.
+  </Dialogue>
+  </Success>
+  <Failure>
+  <Dialogue speaker="analyst">
+  Sir, the T on the printout is still testing zero. It doesn't know we've changed the question. Coef minus the physical value, over SE Coef, and then both tails.
+  </Dialogue>
+  </Failure>
+</MissionBeat>
+
+<Gated by={["act-9-03-t", "act-9-03-p", "act-9-03-conclusion", "act-9-03-physical"]}>
+
+<Scene stamp="MET 213/09:15" location="Bridge · five milligee for Ceres" condensed="The finding lands and nobody says anything for a while. The slope is convincingly above zero and comfortably consistent with the rocket equation's marginal fuel fraction at the thrust-limited Lane burn, which makes the excess fuel the fuel to stop at Kettle, computed per departure date, before each hull sailed. Ferrier names what it still cannot reach, and Rook writes the sentence himself.">
+
+Nobody says anything for a while. The sensor board cycles and Halvorsen reaches across and silences an advisory about a transponder four hundred thousand kilometres off the track.
+
+What is on the slate is nineteen numbers that had to be worked out at a desk. Somebody at Uruk High, on nineteen separate dates over six years, took that week's geometry, solved for the burn a Sulcus hull would need to arrive at rest at Kettle, converted it into tonnes through the rocket equation, and added it to the certificate before the examiner's stamp went on.
+
+Ostrow's masters were four weeks and two hundred million kilometres away from that desk.
+
+<Dialogue speaker="xo" aside="She has the annex open at the page where the conditions are written out and has not read it again.">
+Then it is premeditation at this end of the Lane, and it is the first thing in the file that is. Say what it does not reach.
+</Dialogue>
+
+It does not reach who. Nineteen stamps, one examiner's signature on seventeen of them, and a slope that locates the arithmetic at Uruk High before departure. None of that names the person who did the arithmetic, and none of it names whoever told them to.
+
+It does not reach why either. There is nothing in a fuel column about a reason.
+
+<Dialogue speaker="engineer" aside="Going back down the ladder, already half through the hatch.">
+Eighty-seven crew, Skipper. The hulls are at Kettle and somebody fuelled them to get there and stop. That is a plan with people in it.
+</Dialogue>
+
+Ebele is still at the plot table with the two tests side by side. He has drawn a box round the second one.
+
+<Dialogue speaker="analyst">
+The first one's the finding, sir. The second one's the thing I can't argue myself out of. A fluke that misses zero can be any slope at all. This one missed zero and then came down on the braking burn too, and I can't—
+</Dialogue>
+
+He stops and squares the slates.
+
+<Dialogue speaker="analyst">
+No. I'll say it properly in the brief.
+</Dialogue>
+
+Three weeks to Ceres. The Board has not convened. *Halden Reach* is nine hours astern and closing at a rate Lane Operations has not explained to anybody.
+
+What is left is the part Ferrier has been waiting for since Callisto: every finding in the file, laid out with the procedure that made it and the limit it carries, in an order a hostile reader cannot take apart.
+
+</Scene>
+
+<LogEntry
+  title="t = (b − β₀)/SE(b) on n − 2, and what a small P-value is worth"
+  concept="A slope test states hypotheses about the population slope β, never about the fitted b, with a null value that is zero when the question is whether a relationship exists and is whatever the science fixes when the rate itself is in dispute. The statistic is t = (b − β₀)/SE(b) on n − 2 degrees of freedom, built from the Coef and SE Coef columns of computer output, and the conditions are the same LINE plus Random judged on the residuals. Software always prints a two-sided test against zero: a one-sided question halves that P only when b falls on the side the alternative claims, and a question about a non-zero null cannot use the printed t at all, because the null sits in the numerator. A small P-value buys convincing evidence that β differs from β₀, for the population sampled; it does not buy a cause, because nothing was assigned, and it does not buy a size, because that is what an interval is for."
+  formula="H_0: \beta = \beta_0, \qquad t = \frac{b - \beta_0}{SE(b)}, \qquad df = n - 2"
+  mistake="Reading the printed T and P when the null is not zero. Software tests every coefficient against zero because nobody told it the question; changing the null changes the numerator of t, so the statistic has to be rebuilt by hand from two cells of the same table."
+  tags={['slope test', 'hypotheses', 'non-zero null', 't statistic', 'df = n − 2', 'one-sided from output', 'conclusion in context', 'association not cause', '9.4', '9.5']}
+/>
+
+</Gated>
