@@ -44,11 +44,10 @@ function renderModule(meta: ModuleMeta, Body: ComponentType) {
 
 /**
  * Modules that cannot render yet because their Act is unfinished. Each entry is debt, not an
- * exemption: delete it when the Act is completed, and the module joins the sweep.
- *  - act-6-checkpoint: Act VI is 7 of 9 modules; its checkpoint spec names generators
- *    (act-6/pooled-test-statistic and siblings) that have not been written, so the runner throws.
+ * exemption: delete it when the Act is completed, and the module joins the sweep. Empty is the
+ * correct state; add to it only with an Act that is mid-build, and say why.
  */
-const UNFINISHED = new Set(['act-6-checkpoint'])
+const UNFINISHED = new Set<string>()
 
 describe('every content module renders', () => {
   it('has modules to render', () => {

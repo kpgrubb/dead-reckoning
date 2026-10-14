@@ -54,7 +54,7 @@ export const laneRubric = conclusionInContextRubric({
   extraForbidden: AGENCY_FORBIDDEN,
 })
 
-<Scene stamp="MET 137/20:00" location="Bridge · alongside, Ceres · berth fees running, sink at eleven per cent" condensed="Ebele brings the draft conclusion at the end of the second dog watch. It says the result proves that Perrine hulls are being targeted. Two words come out of it: proves, because a procedure with a designed failure rate cannot prove anything, and targeted, because nothing in a difference of two rates contains an actor. What is left is a sentence about rates, which is the only thing the file has earned. Ebele asks whether the interval he has been told to build in two days will agree with the test; the answer is that it must, for a reason he has to be able to state, and with two caveats he has to be able to state as well.">
+<Scene stamp="MET 137/20:00" location="Bridge · alongside, Ceres · berth fees running, sink at eleven per cent" condensed="Ebele brings the draft conclusion at the end of the second dog watch, on paper. It says the result proves that Perrine hulls are being targeted. Rook strikes both words and hands it back with two gaps in it. Ebele asks what goes in their place and whether the interval he has been told to build in two days will agree with the test; Ferrier gives him the two caveats to write down before anybody asks him for them.">
 
 Ebele brings the draft at the end of the second dog watch, on paper, which he has never done before. Eleven lines. The arithmetic occupies two of them and is correct. The conclusion occupies one.
 
@@ -62,119 +62,115 @@ Ebele brings the draft at the end of the second dog watch, on paper, which he ha
 
 You read it twice. Then you find the stylus, take out the word *proves*, take out the word *targeted*, and hand it back with two gaps in it.
 
-He does not argue, which is new, but he does not understand either, and that is worse.
+He does not argue, which is new, and he does not understand either, which is worse.
 
 <Dialogue speaker="analyst" aside="He is holding the page at the angle you hold a page when you want the other person to read it again and agree with you.">
-Sir — {fmtInt(inTenThousand)} in ten thousand. If that is not enough to say something, then nothing in the whole of statistics is ever enough to say anything, and I do not see what we are for.
+Sir, {fmtInt(inTenThousand)} in ten thousand. If that is not enough to say something, then nothing in the whole of statistics is ever enough to say anything, and I do not see what we are for.
 </Dialogue>
 
-Two words, two different errors, and he has made both at once. Take them one at a time.
+"Two words, two different errors. A test is built with a failure rate we chose in advance, so it does not prove. And find me the step in your arithmetic where a hull was aimed at."
 
-*Proves.* A significance test is a machine with a designed failure rate: the level you set in advance is a promise about how often it will shout when nothing is happening — one time in twenty, one in a hundred, whatever you signed for. Nobody builds a machine like that to get certainty out of it. A procedure that is wrong on purpose at a stated rate cannot prove. It can provide convincing evidence — a word about the strength of an argument, not the truth of a fact, which is why a hearing cannot take it away from you.
+He goes back through it with a finger on the page. Two counts, two denominators, a pooled rate, a standard error, a tail area.
 
-*Targeted.* Worse, and quieter. Go back through the arithmetic and find the step where a hull was aimed at. There is none. There are two counts, two denominators, a pooled rate, a standard error and a tail area, and a difference in proportions has no room in it for an actor or a motive. It is equally consistent with a harder route, an insurer that writes policies on older hulls, a berth master with a habit, or nineteen genuinely bad nights. Every one of those produces the same number.
-
-<Dialogue speaker="xo" aside="She has been at the chart table with the file open and has not looked up once. She does not need to look up for this.">
+<Dialogue speaker="xo" aside="She has been at the chart table with the file open and has not looked up once.">
 And the one you believe is not admissible either. We all believe the same thing on this deck tonight. What you can write down is what the procedure paid for, and the procedure paid for a rate.
 </Dialogue>
 
 He rewrites the line twice, neither version is a sentence yet, and then he stops and asks the question that shows he has understood the problem rather than the correction.
 
-<Dialogue speaker="analyst" aside="He has the two-day plan open in the other pane — the interval Ferrier has already told him to build.">
-So — then what does the sentence say instead of *proves*? Because if I write *convincing evidence*, a reviewer asks convincing at what level, and we have not fixed a level. And — sir, in two days you have me building a confidence interval for the difference. If the test says one thing and the interval says another, which of them do I put in the brief?
+<Dialogue speaker="analyst" aside="He has the two-day plan open in the other pane, the interval Ferrier has already told him to build.">
+So what goes in instead of *proves*? If I write *convincing evidence*, a reviewer asks convincing at what level, and we have not fixed a level. And in two days you have me building a confidence interval for the difference. If the test says one thing and the interval says another, which of them goes in the brief?
 </Dialogue>
 
-Both halves are the right question, and they have the same answer.
+Tonight the sentence goes out at the conventional {fmt(ALPHA, 2)} and says so. Tomorrow the level gets chosen properly, with both ways of being wrong written out and priced, because on this file they are not priced the same.
 
-On the level: tonight you use the conventional {fmt(ALPHA, 2)} and you say so in the sentence. Tomorrow it gets chosen properly, with the two ways of being wrong written out and priced, because on this file they are not priced the same. That is a separate day's work and it is the next one.
+On the interval: it has to agree, and he has to be able to say why in one line. The test fixes a null value and asks how far out the data landed. The interval fixes the data and asks which null values would have survived. Same file, same arithmetic, asked from two ends.
 
-On the interval: it must agree, and he needs to be able to say why in one sentence. The interval and the test are the same arithmetic asked in two directions. The test fixes a null value and asks how far out the data landed; the interval fixes the data and asks which null values would have survived. Ask both at matched levels and they cannot contradict each other.
-
-<Dialogue speaker="xo" aside="Now she looks up, and what she says is the part Ebele has not thought about, which is the part that gets written into the brief.">
-Matched. Not *the same*. Write both caveats down now, while you are calm, because you will be asked them in front of people. Our test is one-sided — its partner is the *wider* interval, not the one you would print by habit. And the test pools the two samples, because the null says they share a rate, and the interval does not. The two standard errors are different quantities. They will agree; they are not the same algebra, and if you claim they are, that is the sentence they take apart instead of the conclusion.
+<Dialogue speaker="xo" aside="Now she looks up, and what she says goes into the brief as a paragraph.">
+Matched. Not *the same*. Write both caveats down while you are calm, because you will be asked them in front of people. Our test is one-sided, so its partner is the wider interval and not the one you would print by habit. And the test pools the two samples and the interval does not. They will agree. They are not the same algebra, and if you claim they are, that is the sentence they take apart instead of the conclusion.
 </Dialogue>
 
 </Scene>
 
 <Briefing title="The decision is arithmetic. The conclusion is a sentence about ships." topics={["6.6"]}>
 <Briefing.Intuition>
-**The decision has one moving part.** You fixed α before the data: the rate at which you are willing to shout when nothing is happening. The data produced a p-value. Compare them.
+**The decision has one moving part.** $\alpha$ was fixed before the data: the rate at which the analyst is willing to shout when nothing is happening. The data produced a p-value. Compare them.
 
-Reject $H_0$ when $P < \alpha$. Otherwise fail to reject. That is the whole rule, and nothing else in the file changes it — not the size of the sample, not how much you would like the answer, and not how close the two numbers turn out to be.
+Reject $H_0$ when $P < \alpha$. Otherwise fail to reject. That is the whole rule, and nothing else in the file changes it: not the size of the sample, not how much anybody would like the answer, not how close the two numbers turn out to be.
 
 **The two words that are never written.** *Accept $H_0$* and *proves*.
 
-Failing to reject is the absence of a finding, not a finding of absence. A test that cannot see a difference this size would fail to reject whether or not the difference is there, so "we fail to reject" is a statement about what this procedure could detect, not about what is true. Write *there is not convincing evidence that…* and you have said exactly what happened.
+Failing to reject is the absence of a finding rather than a finding of absence. A test that could not see a difference this size would fail to reject whether or not the difference is there, so "we fail to reject" describes what this procedure could detect. Write *there is not convincing evidence that…* and the sentence says exactly what happened.
 
-And a test never proves, in either direction, because a test is built with a known failure rate. At α = 0.05 one true null in twenty is rejected by construction. That is not a flaw; it is the specification. A procedure with a specification like that produces **convincing evidence**, which is a claim about an argument and survives being quoted, rather than proof, which is a claim about the world and does not.
+A test never proves, in either direction, because a test is built with a known failure rate. At α = 0.05 one true null in twenty is rejected by construction. That is the specification rather than a flaw, and a procedure with a specification like that produces **convincing evidence**, which is a claim about an argument and survives being quoted.
 
 **Five parts, and a hostile reader checks for all five.**
 
-1. the decision — reject or fail to reject $H_0$;
-2. the comparison that licensed it — $P$ against $\alpha$, both numbers on the page;
-3. the framing — *convincing evidence*, or *not convincing evidence*;
-4. the direction — what $H_a$ actually claimed;
-5. the context — which population, which variable.
+1. the decision, reject or fail to reject $H_0$;
+2. the comparison that licensed it, $P$ against $\alpha$, both numbers on the page;
+3. the framing, *convincing evidence* or *not convincing evidence*;
+4. the direction, what $H_a$ actually claimed;
+5. the context, which population and which variable.
 
-Drop the fifth and you have written arithmetic with a full stop after it. Drop the second and you have written an opinion. The conclusion is the only part of the analysis that travels: the file stays in the office and the sentence goes into somebody else's report, without the working and without you there to add the clause you meant.
+Drop the fifth and the conclusion is arithmetic with a full stop after it. Drop the second and it is an opinion. The conclusion is the only part of an analysis that travels: the file stays in the office and the sentence goes into somebody else's report, without the working and without its author there to add the clause they meant.
 
-**Why the p-value is reported and not just the verdict.** The decision changes at exactly $\alpha = P$. Above that value the test rejects, at it or below it the test does not, and a reader who works to a different standard than yours is entitled to redo the decision without redoing the work. "Significant at the 0.05 level" says only which side of one line a number fell on; the number itself says how far.
+**Why the p-value is reported and not just the verdict.** The decision changes at exactly $\alpha = P$. Above that value the test rejects, at it or below it the test does not, and a reader who works to a different standard is entitled to redo the decision without redoing the work. "Significant at the 0.05 level" says only which side of one line a number fell on. The number itself says how far.
 
-**Interval and test: the same question, asked twice.** A $(1 - \alpha)$ confidence interval is the set of null values a **two-sided** test at $\alpha$ would fail to reject. So if the interval excludes the null value, the two-sided test at $\alpha$ rejects it, and if it contains it, the test does not. Same estimate, same standard error, same $z^\star$; the interval simply runs the comparison for every null value at once, and tells you the size of the effect while it is at it.
+**Interval and test: the same question, asked twice.** A $(1 - \alpha)$ confidence interval is the set of null values a **two-sided** test at $\alpha$ would fail to reject. So if the interval excludes the null value, the two-sided test at $\alpha$ rejects it, and if it contains the null value, the test does not. Same estimate, same standard error, same $z^\star$. The interval runs the comparison for every null value at once, and reports the size of the effect while it is at it.
 
-Two caveats, and they are the hardest idea in the module:
+Two caveats, and they are the hardest idea here:
 
-- **One-sided tests do not pair with $(1 - \alpha)$ intervals.** A one-sided test at $\alpha$ puts all of its risk in one tail; its two-sided partner is the $(1 - 2\alpha)$ interval. A one-sided test at 0.05 matches a 90 % interval, not a 95 % one.
-- **For two proportions the standard errors are different quantities.** The test pools, because $H_0$ says both groups share a rate and every observation is evidence about it. The interval does not pool, because it is not assuming they are equal — it is estimating how far apart they are. The correspondence is therefore a near-identity rather than an algebraic one, and a result sitting on the line can come out on either side of it. When the two disagree, each is right about its own question.
+- **One-sided tests do not pair with $(1 - \alpha)$ intervals.** A one-sided test at $\alpha$ puts all of its risk in one tail, so its two-sided partner is the $(1 - 2\alpha)$ interval. A one-sided test at 0.05 matches a 90% interval.
+- **For two proportions the standard errors are different quantities.** The test pools, because $H_0$ says both groups share a rate and every observation is evidence about it. The interval does not pool, because it is estimating how far apart the rates are rather than assuming them equal. The correspondence is therefore a near-identity, and a result sitting on the line can come out on either side of it. Where the two disagree, each is right about its own question.
 </Briefing.Intuition>
 <Briefing.Definition>
 <Formula tex="\text{reject } H_0 \iff P < \alpha \qquad \text{otherwise fail to reject } H_0" terms={{ P: 'the p-value: the probability of a statistic at least as extreme, computed under H₀', '\\alpha': 'the significance level, fixed before the data: the false-alarm rate you agreed to' }} label="The decision rule — and the flip point is α = P" />
 
-<Formula tex="\underbrace{\text{reject } H_0}_{\text{decision}} \; \underbrace{(P = \ldots < \alpha = \ldots)}_{\text{comparison}} \; \Rightarrow \; \underbrace{\text{convincing evidence}}_{\text{framing}} \ \text{that} \ \underbrace{p_1 > p_2}_{\text{direction}} \ \underbrace{\text{for } \ldots}_{\text{context}}" terms={{ '\\text{framing}': 'evidence, never proof — the procedure has a designed failure rate', '\\text{context}': 'the population and the variable, named' }} label="The five parts of a conclusion" />
+<Formula tex="\underbrace{\text{reject } H_0}_{\text{decision}} \; \underbrace{(P = \ldots < \alpha = \ldots)}_{\text{comparison}} \; \Rightarrow \; \underbrace{\text{convincing evidence}}_{\text{framing}} \ \text{that} \ \underbrace{p_1 > p_2}_{\text{direction}} \ \underbrace{\text{for } \ldots}_{\text{context}}" terms={{ '\\text{framing}': 'evidence, never proof: the procedure has a designed failure rate', '\\text{context}': 'the population and the variable, named' }} label="The five parts of a conclusion" />
 
 <Formula tex="(1-\alpha)\ \text{interval} \;\longleftrightarrow\; \text{two-sided test at } \alpha \qquad (1-2\alpha)\ \text{interval} \;\longleftrightarrow\; \text{one-sided test at } \alpha" terms={{ '(1-\\alpha)': 'the level whose interval is the set of null values a two-sided test at α keeps', '(1-2\\alpha)': 'the wider interval: a one-sided α spends all of its risk in one tail' }} label="Confidence interval and test: the pairing" />
 </Briefing.Definition>
 <Briefing.Worked>
-**The Themis Reach, 2181 — the review whose plan you wrote out in 6-03, carried to its conclusion.**
+**The Themis Reach review of 2181, carried from its plan to its conclusion.**
 
-The survey office had its hypotheses on the page and dated before it pulled a row: $H_0: p_1 = p_2$, and $H_a: p_1 > p_2$ — {themis.group1} are held at the mark at a higher rate than {themis.group2}. It fixed α at {fmt(ALPHA, 2)}. The conditions passed at the pooled rate. Then it ran the file.
+The survey office had its hypotheses on the page and dated before it pulled a row: $H_0: p_1 = p_2$, and $H_a: p_1 > p_2$, that {themis.group1} are held at the mark at a higher rate than {themis.group2}. It fixed α at {fmt(ALPHA, 2)}. The conditions passed at the pooled rate. Then it ran the file.
 
-**The counts.** {fmtInt(themis.x1)} of {fmtInt(themis.n1)} charter transits held, which is {fmtPct(themisRate1, 2)}, against {fmtInt(themis.x2)} of {fmtInt(themis.n2)} for everyone else, which is {fmtPct(themisRate2, 2)}. The charter hulls are held more often. There is no argument about that; it is a fact about the file.
+**The counts.** {fmtInt(themis.x1)} of {fmtInt(themis.n1)} charter transits held, which is {fmtPct(themisRate1, 2)}, against {fmtInt(themis.x2)} of {fmtInt(themis.n2)} for everyone else, which is {fmtPct(themisRate2, 2)}. The charter hulls are held more often in this file.
 
-<Formula tex={themisTex} terms={{ '\\hat p_c': 'the pooled rate — the one rate H₀ says both classes share', '\\hat p_1 - \\hat p_2': 'the observed gap in the file', P: 'one tail, upper, because that is the side Hₐ named in 2181' }} label="Themis Reach, standardized and read" />
+<Formula tex={themisTex} terms={{ '\\hat p_c': 'the pooled rate: the one rate H₀ says both classes share', '\\hat p_1 - \\hat p_2': 'the observed gap in the file', P: 'one tail, upper, because that is the side Hₐ named in 2181' }} label="Themis Reach, standardized and read" />
 
 **The decision.** {fmtP(themisTest.pValue)} is {themisDecision ? 'less' : 'not less'} than {fmt(ALPHA, 2)}. {themisDecision ? 'Reject' : 'Fail to reject'} $H_0$.
 
 **The conclusion.** *Because the p-value ({fmtP(themisTest.pValue)}) is greater than α = {fmt(ALPHA, 2)}, we fail to reject $H_0$. There is not convincing evidence that the true proportion of {themis.group1} held at the mark on {themis.population} is greater than the proportion for {themis.group2}.*
 
-Read what that sentence does and does not do. It does not say the charter hulls are held at the same rate — the office never established that and could not. It does not say there is no difference; {fmtPct(themisRate1 - themisRate2, 2)} of a difference is sitting right there in the file. What it says is that {fmtInt(themis.n1)} charter transits are not enough to distinguish a gap that size from what {fmtInt(themis.n1)} transits do on their own. A review ten times the size might separate them easily.
+Read what that sentence does. It reports that {fmtInt(themis.n1)} charter transits are not enough to distinguish a gap of {fmtPct(themisRate1 - themisRate2, 2)} from what {fmtInt(themis.n1)} transits do on their own. It does not establish that the charter hulls are held at the same rate, which the office never showed and could not. A review ten times the size might separate them easily.
 
-**The same question as an interval.** The office also published the 95 % interval for the difference, unpooled:
+**The same question as an interval.** The office also published the 95% interval for the difference, unpooled:
 
-<Formula tex={themisCITex} terms={{ 'z^\\star': 'the 95 % critical value', '\\text{the square root}': 'the UNPOOLED standard error — the interval is not assuming the two rates are equal' }} label="Themis Reach, 95 % interval for p₁ − p₂" />
+<Formula tex={themisCITex} terms={{ 'z^\\star': 'the 95 % critical value', '\\text{the square root}': 'the UNPOOLED standard error: the interval is not assuming the two rates are equal' }} label="Themis Reach, 95 % interval for p₁ − p₂" />
 
-The interval **contains zero**, so zero is still a plausible value for the difference, and the two-sided test at {fmt(ALPHA, 2)} would keep $H_0$ — which is what it did. The duality holds, and note how it holds: the two-sided p-value here is {fmtP(themisTwoSided)}, comfortably above {fmt(ALPHA, 2)}, and the 95 % interval comfortably straddles zero. The matched pair for the office's *one-sided* test at {fmt(ALPHA, 2)} is the 90 % interval, ({fmt(themisCI90.ci[0], 5)}, {fmt(themisCI90.ci[1], 5)}) — narrower, and it contains zero too.
+The interval **contains zero**, so zero is still a plausible value for the difference, and the two-sided test at {fmt(ALPHA, 2)} would keep $H_0$, which is what it did. Note how the duality holds: the two-sided p-value is {fmtP(themisTwoSided)}, comfortably above {fmt(ALPHA, 2)}, and the 95% interval comfortably straddles zero. The matched pair for the office's *one-sided* test at {fmt(ALPHA, 2)} is the 90% interval, ({fmt(themisCI90.ci[0], 5)}, {fmt(themisCI90.ci[1], 5)}), which is narrower and contains zero too.
 
-**And the flip point.** The office's decision turns over at α = {fmtP(themisFlip)}. It rejects at every level above that and at none at or below it. A reviewer who worked at α = 0.20 would read this same file and reject; that is not a scandal, it is the reason the report prints {fmtP(themisTest.pValue)} rather than the word "not significant".
+**And the flip point.** The decision turns over at α = {fmtP(themisFlip)}. It rejects at every level above that and at none at or below it. A reviewer working at α = 0.20 would read this file and reject, which is why the report prints {fmtP(themisTest.pValue)} rather than the words "not significant".
 </Briefing.Worked>
 <Briefing.Caution>
-*"We fail to reject, so $H_0$ is true."* The single commonest error in the topic. Failing to reject means the data are consistent with $H_0$ — and with a great many other values as well, which is exactly what the confidence interval shows you. Absence of evidence is evidence of absence only when the procedure had a real chance of finding the effect, and whether it did is the question 6-06 asks.
+*"We fail to reject, so $H_0$ is true."* The commonest error in the topic. Failing to reject means the data are consistent with $H_0$, and with a great many other values as well, which is exactly what the confidence interval shows. Absence of evidence is evidence of absence only when the procedure had a real chance of finding the effect, and whether it did is the next topic's question.
 
-*"We reject, so $H_a$ is proven."* At α = 0.05 the test rejects one true null in twenty, by design. The finding is convincing evidence and nothing stronger. "Proves" is the first word a hearing strikes, and striking it removes nothing the procedure actually bought.
+*"We reject, so $H_a$ is proven."* At α = 0.05 the test rejects one true null in twenty, by design. The finding is convincing evidence and nothing stronger. "Proves" is the first word a hearing strikes, and striking it removes nothing the procedure bought.
 
-*"We accept $H_0$."* Never written, in either direction. There is no procedure here that accepts a hypothesis; there is one that finds the data too unlikely under $H_0$ to keep working with it, and one that does not.
+*"We accept $H_0$."* Never written, in either direction. There is no procedure here that accepts a hypothesis. There is one that finds the data too unlikely under $H_0$ to keep working with it, and one that does not.
 
-*A conclusion with no context.* "P = 0.0043 < α = 0.05, so we reject H₀ and the result is statistically significant" is arithmetically perfect and useless. Significant about what, for whom, in which direction? Name the variable and name the population, in the same sentence as the decision.
+*A conclusion with no context.* "P = 0.0043 < α = 0.05, so we reject H₀ and the result is statistically significant" is arithmetically perfect and useless. Significant about what, for whom, in which direction? Name the variable and name the population in the same sentence as the decision.
 
-*A conclusion with no p and no α.* The mirror error. "There is convincing evidence that the rate is higher" states the finding and hides the only thing that licensed it. Both numbers go in, so that a reader working to a different standard can use your file instead of taking your verdict.
+*A conclusion with no p and no α.* The mirror error. "There is convincing evidence that the rate is higher" states the finding and hides the thing that licensed it. Both numbers go in, so that a reader working to a different standard can use the file instead of taking the verdict.
 
-*Matching a one-sided test at α to a $(1 - \alpha)$ interval.* The most common duality mistake, and it is a factor of two in the tail, not a rounding difference. One-sided at α pairs with $(1 - 2\alpha)$.
+*Matching a one-sided test at α to a $(1 - \alpha)$ interval.* The commonest duality mistake, and it is a factor of two in the tail rather than a rounding difference. One-sided at α pairs with $(1 - 2\alpha)$.
 
-*Treating the interval and the test as the same arithmetic for two proportions.* The test's standard error is pooled and the interval's is not. They agree on every case that is not on the line, and "they always agree exactly" is a claim you cannot defend when somebody produces the case where they do not.
+*Treating the interval and the test as the same arithmetic for two proportions.* The test's standard error is pooled and the interval's is not. They agree on every case that is not on the line, and "they always agree exactly" is a claim that cannot be defended when somebody produces the case where they do not.
 </Briefing.Caution>
 </Briefing>
 
-The console below is the Lane's own case, at the conventional level. Move α and watch the decision turn over; find the value it turns over at, which is not a coincidence. Then build the sentence out of the clauses and watch a hearing read it: the chips include *proves*, *accept H₀* and *targeted*, so you can see precisely what each of them costs. The overlay at the bottom is the interval Ebele has been told to build in two days, drawn against zero at both matched levels.
+The console below is the Lane's own case at the conventional level. Move α and watch the decision turn over, and find the value it turns over at. Then build the sentence out of the clauses and watch a hearing read it: the chips include *proves*, *accept H₀* and *targeted*, so you can see what each of them costs. The overlay at the bottom is the interval Ebele has been told to build in two days, drawn against zero at both matched levels.
 
 <DecisionConsole />
 
@@ -191,12 +187,12 @@ The console below is the Lane's own case, at the conventional level. Move α and
   {...laneRubric}>
   <Success>
   <Dialogue speaker="xo" aside="She reads it, then reads it again out loud in the flat hostile voice, pausing in the wrong places to see where it breaks. It does not break.">
-  That is the report. Everything else in this file can be recomputed by a competent ensign in an afternoon. That sentence is the only thing in it that is ours, and it is the only thing in it they can strike — so there is nothing in it to strike.
+  That is the report. Everything else in this file can be recomputed by a competent ensign in an afternoon. That sentence is the only thing in it that is ours, and the only thing in it they can strike, so there is nothing in it to strike.
   </Dialogue>
   </Success>
   <Failure>
   <Dialogue speaker="xo" aside="She puts the page down flat and taps twice on the clause that does the damage.">
-  Read that one back to me the way counsel will read it. You have claimed something the arithmetic did not buy, or you have left out the comparison that bought the rest. Decision. P against alpha, both numbers. Evidence, not proof. The direction. Whose ships. Say it back to me.
+  Read that back the way counsel will read it. You have claimed something the arithmetic did not buy, or you have left out the comparison that bought the rest. Decision. P against alpha, both numbers. Evidence, not proof. The direction. Whose ships.
   </Dialogue>
   </Failure>
 </MissionBeat>
@@ -212,18 +208,18 @@ The console below is the Lane's own case, at the conventional level. Move α and
   correct={0}
   feedback={[
     null,
-    "The first half is the right idea and the details are both wrong, which is the dangerous kind of wrong. A (1 − α) interval splits its α of missed captures between two tails, so it matches the TWO-sided test at α; the one-sided test at α spends all of its risk in one tail and matches the wider (1 − 2α) interval. And for two proportions the test pools the samples under H₀ while the interval does not, so the two standard errors are not the same quantity. Claim exact equivalence in a hearing and that is the sentence they take apart — instead of the conclusion.",
-    "They are not independent. Both are built from the same estimate and the same data, and a (1 − α) interval is precisely the set of null values a two-sided test at α would fail to reject. Reporting them as unrelated evidence invites the obvious question — what happens if they disagree? — and leaves you without an answer.",
-    "The agreement is right and the number is not. Neither an interval nor a test produces a probability for a parameter or a hypothesis: the difference in true rates is a fixed unknown, and 1 − p is computed entirely inside the world where H₀ holds. What the interval adds is a range of plausible values for the size of the gap — the effect, not a probability about it — which is worth far more to the Board than a verdict, and is the actual reason to publish it.",
+    "The first half is the right idea and the details are both wrong, which is the dangerous kind of wrong. A (1 − α) interval splits its α of missed captures between two tails, so it matches the TWO-sided test at α; the one-sided test at α spends all of its risk in one tail and matches the wider (1 − 2α) interval. And for two proportions the test pools the samples under H₀ while the interval does not, so the two standard errors are not the same quantity. Claim exact equivalence in a hearing and that is the sentence they take apart, instead of the conclusion.",
+    "They are not independent. Both are built from the same estimate and the same data, and a (1 − α) interval is precisely the set of null values a two-sided test at α would fail to reject. Reporting them as unrelated evidence invites the obvious question, what happens if they disagree, and leaves you without an answer.",
+    "The agreement is right and the number is not. Neither an interval nor a test produces a probability for a parameter or a hypothesis: the difference in true rates is a fixed unknown, and 1 − p is computed entirely inside the world where H₀ holds. What the interval adds is a range of plausible values for the size of the gap, the effect rather than a probability about it, which is worth far more to the Board than a verdict and is the actual reason to publish it.",
   ]}
   hint="Two things to check in each option: which test the interval is matched to, and whether the standard errors are the same quantity. One of them is also hiding a probability statement about a parameter.">
   <Success>
   <Dialogue speaker="analyst" aside="He writes it into the brief as a paragraph, under the conclusion, unprompted.">
-  So — they agree because they are the same arithmetic asked in two directions, and I say *matched*, not *identical*, and I name the two reasons before anybody asks me for them. Yes, sir. I would rather be the one who raises it.
+  So they agree because it is the same arithmetic asked from two ends, and I say *matched* rather than *identical*, and I name the two reasons before anybody asks me for them. Yes, sir. I would rather be the one who raises it.
   </Dialogue>
   </Success>
   <Failure>
-  <Dialogue speaker="xo" aside="She does not take the page back. She writes two words in the margin — POOLED and TAILS — and leaves it in front of him.">
+  <Dialogue speaker="xo" aside="She does not take the page back. She writes two words in the margin, POOLED and TAILS, and leaves it in front of him.">
   Both of those are the whole difference. How many tails does our alternative count, and which interval has that much risk in one side of it. And what rate does the test put in its standard error that the interval refuses to. Answer those two and you have the paragraph.
   </Dialogue>
   </Failure>
@@ -231,45 +227,43 @@ The console below is the Lane's own case, at the conventional level. Move α and
 
 <Gated by={["act-6-05-conclusion", "act-6-05-duality"]}>
 
-<Scene stamp="MET 137/23:20" location="Wardroom · alongside, Ceres" condensed="The conclusion goes into the file at the conventional level, with the flip point written beside it so that nobody has to take the level on trust. What the Lane has bought is convincing evidence of a higher loss rate for Perrine-beneficiary hulls. What it has not bought is agency, intent, or the location of a single hull. Marsh reads the sentence, understands it exactly, and asks the only question left, which is what you are going to do. Nobody answers her, because the honest answer needs a level that has not been set and an error that has not been priced.">
+<Scene stamp="MET 137/23:20" location="Wardroom · alongside, Ceres" condensed="The conclusion goes into the file at the conventional level with the flip point written beside it. What the Lane has bought is convincing evidence of a higher loss rate for Perrine-beneficiary hulls; what it has not bought is agency, intent, or the location of a single hull. Marsh reads the sentence upside down, gets it right, and nobody can answer what she asks next, because it needs a level that has not been set.">
 
-The conclusion goes into the file a little before midnight, at the conventional level, with the flip point written on the line underneath it so that no reader has to take {fmt(ALPHA, 2)} on trust. Ferrier initials the margin. Ebele goes to get the coffee he did not get at 06:50.
+The conclusion goes into the file a little before midnight, at the conventional level, with the flip point on the line underneath so that no reader has to take {fmt(ALPHA, 2)} on trust. Ferrier initials the margin. Ebele goes to get the coffee he did not get at 06:50.
 
-What the file now contains, and it is worth being exact about how little and how much that is:
+What the file now contains: **convincing evidence of a higher loss rate for hulls whose policies name {PERRINE_HOLDINGS}.** A gap of {fmtPct(PERRINE_RATE - OTHER_RATE, 2)} per transit, {fmtPct(PERRINE_RATE, 2)} against {fmtPct(OTHER_RATE, 2)}, on {fmtInt(PERRINE_TRANSITS)} transits against {fmtInt(OTHER_TRANSITS)}, tested one-sided against a pooled rate of {fmt(POOLED_RATE, 4)}, with a p-value of about {fmtInt(inTenThousand)} seasons in ten thousand and the conditions on the page above the working.
 
-**Convincing evidence of a higher loss rate for hulls whose policies name {PERRINE_HOLDINGS}.** A gap of {fmtPct(PERRINE_RATE - OTHER_RATE, 2)} per transit — {fmtPct(PERRINE_RATE, 2)} against {fmtPct(OTHER_RATE, 2)} — on {fmtInt(PERRINE_TRANSITS)} transits against {fmtInt(OTHER_TRANSITS)}, tested one-sided against a pooled rate of {fmt(POOLED_RATE, 4)}, with a p-value of about {fmtInt(inTenThousand)} seasons in ten thousand and the conditions on the page above the working.
-
-What it does not contain, in any sentence, anywhere:
+What it does not contain, in any sentence:
 
 - **who.** The beneficiary column is a label on the data. A test on a label finds a pattern in the label, and {PERRINE_HOLDINGS} is a name on a policy before it is anything else.
-- **why.** Nothing in a difference of two proportions distinguishes a deliberate act from a hard route, an old fleet or nineteen bad nights. Every one of those produces the same arithmetic.
-- **where.** Not one of the nineteen hulls has a position. The file says a rate is higher. It does not say a hull is anywhere.
+- **why.** A difference of two proportions cannot distinguish a deliberate act from a hard route, an old fleet or nineteen bad nights. All four produce the same arithmetic.
+- **where.** Not one of the nineteen hulls has a position.
 
-Marsh is in the wardroom at 23:20 because *Thessaly Dawn* has been promised a slot at 0400 and she does not believe it. She reads the conclusion off the table upside down, which she is good at, and she gets it right the first time, which not everybody in a panelled room will.
+Marsh is in the wardroom at 23:20 because *Thessaly Dawn* has been promised a slot at 0400 and she does not believe it. She reads the conclusion off the table upside down, which she is good at, and gets it right the first time.
 
-<Dialogue speaker="marsh" name="Master Yevgenia Marsh · Thessaly Dawn" aside="She reads it once. She does not ask what any of the words mean. She puts one finger on the word *evidence* and leaves it there.">
-So it says the ones insured to that lot go missing more, and you can show your working, and it does not say a fucking thing about anybody doing it on purpose. Which is more than the Board has managed in two years, and it is also exactly nothing, from where I am sitting.
+<Dialogue speaker="marsh" name="Master Yevgenia Marsh · Thessaly Dawn" aside="She reads it once and does not ask what any of the words mean. She puts one finger on the word *evidence* and leaves it there.">
+So the ones insured to that lot go missing more, and you can show your working, and there is not a word in there about anybody doing it on purpose. Which is more than the Board has managed in two years, and it is also exactly nothing, from where I am sitting.
 
-My brother was on *Thessaly Ember*. Insured to that lot. So — what are you going to do?
+My brother was on *Thessaly Ember*. Insured to that lot.
 </Dialogue>
 
 Nobody answers her.
 
-The honest answer is that a number cannot be acted on until somebody has decided how wrong they are willing to be, and in which direction, and what each kind of wrong costs. On this file the two kinds of wrong are not priced the same and never will be: call a clean corridor dirty and you end a career and embarrass a service; call a dirty corridor clean and hulls keep going, with people in them, at a rate this file can now put a number on. Choosing between those is not arithmetic and it does not belong to Ebele.
+A number cannot be acted on until somebody has decided how wrong they are willing to be, in which direction, and what each kind of wrong costs. On this file the two kinds of wrong will never be priced the same. Call a clean corridor dirty and you end a career and embarrass a service. Call a dirty corridor clean and hulls keep going, with people in them, at a rate this file can now put a number on. Choosing between those is not arithmetic and it does not belong to Ebele.
 
-<Dialogue speaker="xo" aside="She says it to Marsh, not to you, which is the only courtesy available at this hour.">
+<Dialogue speaker="xo" aside="She says it to Marsh rather than to you, which is the only courtesy available at this hour.">
 Tomorrow, Master. Tonight we have a sentence. Tomorrow the Captain decides what it would cost this ship to be wrong about it, and then the sentence gets a level on it and a signature under it, and then it goes to Valhalla and stops being ours.
 </Dialogue>
 
-And the thing nobody in the wardroom says out loud, because it has been true since MET 136 and saying it does not improve it: {PERRINE_HOLDINGS}' majority member is {PROVIDENT_FUND}, and every officer at that table pays into it out of every quarter's salary, and the sentence they have just written is the first one in this commission that any of them will be asked about under oath.
+{PERRINE_HOLDINGS}' majority member is {PROVIDENT_FUND}, and every officer at that table pays into it out of every quarter's salary. Nobody in the wardroom says so out loud.
 
 </Scene>
 
 <LogEntry
   title="Decision by p against α, and the conclusion in context"
-  concept="Reject H₀ when P < α, and otherwise fail to reject — never accept, in either direction. Failing to reject is the absence of a finding, not a finding of absence, and rejecting yields convincing evidence, never proof, because a test at level α is built to reject one true null in 1/α by design. A conclusion has five parts and a hostile reader checks for all of them: the decision, the p-value against α with both numbers on the page, evidence framing, the direction Hₐ claimed, and the population and variable named. The decision flips at exactly α = P, which is why the report carries the p-value rather than the verdict alone. A (1 − α) confidence interval is the set of null values a two-sided test at α would fail to reject, so interval and test agree about whether the null value is plausible — with two caveats: a one-sided test at α is matched by the (1 − 2α) interval, and for two proportions the test's pooled standard error and the interval's unpooled one are different quantities, so the correspondence is a near-identity and not an algebraic one."
+  concept="Reject H₀ when P < α, and otherwise fail to reject — never accept, in either direction. Failing to reject is the absence of a finding, not a finding of absence, and rejecting yields convincing evidence, never proof, because a test at level α is built to reject one true null in 1/α by design. A conclusion has five parts and a hostile reader checks for all of them: the decision, the p-value against α with both numbers on the page, evidence framing, the direction Hₐ claimed, and the population and variable named. The decision flips at exactly α = P, which is why the report carries the p-value rather than the verdict alone. A (1 − α) confidence interval is the set of null values a two-sided test at α would fail to reject, so interval and test agree about whether the null value is plausible, with two caveats: a one-sided test at α is matched by the (1 − 2α) interval, and for two proportions the test's pooled standard error and the interval's unpooled one are different quantities, so the correspondence is a near-identity and not an algebraic one."
   formula="\text{reject } H_0 \iff P < \alpha \qquad \text{flip point: } \alpha = P \qquad (1-\alpha)\ \text{interval} \leftrightarrow \text{two-sided test at } \alpha \qquad (1-2\alpha)\ \text{interval} \leftrightarrow \text{one-sided test at } \alpha"
-  mistake="“We accept H₀.” Failing to reject means the data are consistent with H₀ and with a great many other values besides — which is exactly what the confidence interval shows. Its mirror image is “the result proves Hₐ”, written after a rejection: a procedure with a designed false-alarm rate provides convincing evidence and nothing stronger. The third, quieter failure is a conclusion that is arithmetically perfect and names nobody: significant about what, for whom, in which direction?"
+  mistake="“We accept H₀.” Failing to reject means the data are consistent with H₀ and with a great many other values besides, which is exactly what the confidence interval shows. Its mirror image is “the result proves Hₐ”, written after a rejection: a procedure with a designed false-alarm rate provides convincing evidence and nothing stronger. The third, quieter failure is a conclusion that is arithmetically perfect and names nobody: significant about what, for whom, in which direction?"
   tags={['significance level', 'alpha', 'reject', 'fail to reject', 'conclusion in context', 'convincing evidence', 'proves', 'accept H0', 'confidence interval', 'duality', 'one-sided', '6.6']}
 />
 

@@ -5,7 +5,7 @@ title: "Checkpoint: Accusation"
 kind: checkpoint
 ap_topics: ["6.1", "6.2", "6.3", "6.4", "6.5", "6.6", "6.7", "6.8", "6.9", "6.10", "6.11"]
 objectives:
-  - "Defend every claim in the four-step brief — state, plan, do, conclude — against a reader whose job is to take it apart"
+  - "Defend every claim in the four-step brief (state, plan, do, conclude) against a reader whose job is to take it apart"
   - "Write the three sentences a hearing would quote (the interval, the p-value, the conclusion) so that none of them claims more than the procedure paid for"
 prereqs: ["act-6-08"]
 est_minutes: 25
@@ -32,7 +32,7 @@ I am not reading this as your executive officer. I am reading it as the officer 
 </Dialogue>
 
 <Dialogue speaker="analyst" aside="He has the register, the Ledger and the working file open side by side and his hands flat on the table between them.">
-So — everything in it is in the file, sir. If a question comes back at me I can put my finger on where the number came from. That is the only part I am sure of.
+So. Everything in it is in the file, sir. If a question comes back at me I can put my finger on where the number came from. That is the only part I am sure of.
 </Dialogue>
 
 <Checkpoint act="act-6" />
@@ -56,7 +56,7 @@ Four claims, a scope, and a sentence at the end that says what the analysis cann
 </Scene>
 
 <Dialogue speaker="comms" aside="He has the geometry on the board before you ask for it, the way he always does.">
-Away at twenty-two forty, Captain. Ceres to Valhalla is two point nine astronomical units tonight. That is twenty-four minutes out and twenty-four minutes back. There is no opinion about this before twenty-three oh four tomorrow, and I would not look for one before the day after.
+Away at twenty-two forty, Captain. Two point nine AU tonight, Ceres to Valhalla. Twenty-four minutes out, twenty-four back. There is no opinion about this before twenty-three oh four tomorrow, and I would not look for one before the day after.
 </Dialogue>
 
 <Scene variant="transmission" stamp="MET 141/02:10 · VALHALLA" condensed="The reply comes back three hours and thirty minutes after transmission — four minutes after it arrived. It is the first message in the commission signed by a man rather than by the Board, and it orders Nightjar to a tender for a sink refit and a briefing on the Board's transit-time analysis.">
@@ -97,7 +97,7 @@ She does not sit down.
 
 You tell her what the brief says, because she has earned the sentence and because it will be public eventually and better from you. You tell her what it does not say, which takes longer.
 
-<Dialogue speaker="marsh" aside="She listens to the whole thing, including the part about scope, and she does not interrupt once, which from her is a kind of courtesy nobody else aboard would recognise.">
+<Dialogue speaker="marsh" aside="She listens to the whole thing, including the part about scope, without interrupting.">
 Right. So you have proved that somebody's ships die more than mine do. Fine. That is more than anyone's managed in six years and I will not pretend otherwise.
 
 Now. What are you going to do?
@@ -112,7 +112,7 @@ You tell Marsh you are going to go and read it.
 </Scene>
 
 <LogEntry
-  title="Act VI — the accusation, signed"
+  title="Act VI: the accusation, signed"
   concept="A significance test asks one question: if the null hypothesis were true, how surprising would data at least this extreme be? The p-value answers it, the significance level decides what counts as surprising enough, and the conclusion is written in context as evidence — never as proof, and never about the samples. A confidence interval answers the other half of the question, the one a p-value never addresses: how big the difference is, with an honest margin, in units a hearing can act on. The test uses the pooled proportion because the null says there is one rate; the interval does not, because it is not assuming there is."
   formula="z = \frac{\hat{p}_1 - \hat{p}_2}{\sqrt{\hat{p}_c(1-\hat{p}_c)\left(\frac{1}{n_1}+\frac{1}{n_2}\right)}}, \quad \hat{p}_c = \frac{x_1+x_2}{n_1+n_2} \qquad (\hat{p}_1 - \hat{p}_2) \pm z^\star\sqrt{\frac{\hat{p}_1(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2(1-\hat{p}_2)}{n_2}}"
   mistake="Reading the p-value as the probability that the null hypothesis is true, or as the probability that the result is due to chance. It is neither. It is the probability of data at least this extreme computed under the assumption that the null is true — a statement about the data given the hypothesis, never about the hypothesis given the data."
