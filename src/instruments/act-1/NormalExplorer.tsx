@@ -39,6 +39,11 @@ export interface NormalExplorerProps {
   sd?: number
   /** The observed signature marked on the curve. */
   value?: number
+  /**
+   * Which reading the panel opens on. act-1/07 opens on `between` so the panel is not already
+   * sitting on the upper tail its mission beat asks the learner to set it to.
+   */
+  mode?: 'below' | 'above' | 'between' | 'inverse'
 }
 
 type Mode = 'below' | 'above' | 'between' | 'inverse'
@@ -52,13 +57,13 @@ const CURVE_SAMPLES = 241
 const TABLE_SAMPLES = 21
 const SD_SPAN = 4.2
 
-export function NormalExplorer({ mean: muProp = fleetModel.mean, sd: sdProp = fleetModel.sd, value = harpagia.ratio_pct }: NormalExplorerProps) {
+export function NormalExplorer({ mean: muProp = fleetModel.mean, sd: sdProp = fleetModel.sd, value = harpagia.ratio_pct, mode: modeProp = 'above' }: NormalExplorerProps) {
   const mu = muProp
   const sigma = sdProp
   const domLo = mu - SD_SPAN * sigma
   const domHi = mu + SD_SPAN * sigma
 
-  const [mode, setMode] = useState<Mode>('above')
+  const [mode, setMode] = useState<Mode>(modeProp)
   const [tail, setTail] = useState<Tail>('above')
   /** Single cutoff for below / above; `lo`–`hi` is the pair the between mode drags. */
   const [cut, setCutValue] = useState(value)

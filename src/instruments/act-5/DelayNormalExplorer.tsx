@@ -42,7 +42,7 @@ import {
   type ScatterPoint,
 } from '@/instruments/shared'
 import { fmt, fmtInt, linearRegression, normal, skewness, zScore } from '@/lib/stats'
-import { DELAY_CUTOFF_1PCT, LANE_DELAY_MEAN, LANE_DELAY_SD, NINETEEN_MEAN_DELAY, NINETEEN_N, NINETEEN_SD_DELAY, honestDelays, nineteenDelays } from './data'
+import { LANE_DELAY_MEAN, LANE_DELAY_SD, NINETEEN_MEAN_DELAY, NINETEEN_N, NINETEEN_SD_DELAY, honestDelays, nineteenDelays } from './data'
 import './act5.css'
 
 type Mode = 'inverse' | 'forward'
@@ -261,8 +261,9 @@ export function DelayNormalExplorer({ mode: mode0 = 'inverse', area: area0 = 0.0
           <Readout label={`μ · ${popLabel}`} value={fmt(mu, 4)} units="d" size="sm" />
           <Readout label={`σ · ${popLabel}`} value={fmt(sigma, 4)} units="d" size="sm" />
           <Readout label="transits measured" value={fmtInt(popN)} size="sm" />
+          {/* The Lane's own 1 % cutoff is not printed as a reference: it is what act-5/02 asks the
+              learner to produce, and the panel returns it the moment an area of 0.01 goes in. */}
           <Readout label="the nineteen's average" value={fmt(NINETEEN_MEAN_DELAY, 3)} units="d" size="sm" tone="alert" />
-          <Readout label="1 % cutoff on the Lane" value={fmt(DELAY_CUTOFF_1PCT, 3)} units="d" size="sm" tone="log" />
         </ReadoutRow>
 
         <ChartSurface frame={frame} ariaLabel={`Normal density of Mark-9 delay for ${popLabel}, with the ${areaLabel} shaded`} description={curveDescription} table={table} footer={<Legend items={legend} ariaLabel="Delay model key" />}>

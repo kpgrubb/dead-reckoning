@@ -218,7 +218,7 @@ That is the honest version of the Board's claim, and it is also the reason this 
 <Calculator.Watch>**The margin of error is not on the screen.** Subtract to get it: (high − low) ÷ 2, which for this case is {fmt((archive.ci[1] - archive.ci[0]) / 2, 6)}. And the device checks no conditions at all. It will build an interval from 2 successes in 9 trials and print six decimals while doing it, so the four observed counts are yours to check before you press `Calculate`.</Calculator.Watch>
 </Calculator>
 
-<DifferencePanel />
+<DifferencePanel confidence={0.9} />
 
 <Drill generator="act-6/difference-conditions" count={1} />
 <Drill generator="act-6/two-prop-interval" count={1} />

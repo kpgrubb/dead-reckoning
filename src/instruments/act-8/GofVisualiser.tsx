@@ -52,6 +52,12 @@ export interface GofVisualiserProps {
   label?: string
   tone?: PanelTone
   initialView?: View
+  /**
+   * How many categories are already accumulated into the statistic on load. The default is all of
+   * them; act-8/01 opens at zero so the panel does not print the chi-square its own mission beat
+   * asks for, and the learner walks the ADD A CATEGORY control through the table instead.
+   */
+  initialSteps?: number
 }
 
 export function GofVisualiser({
@@ -64,11 +70,12 @@ export function GofVisualiser({
   label = 'INTEL · GOODNESS OF FIT',
   tone = 'intel',
   initialView = 'observed',
+  initialSteps,
 }: GofVisualiserProps = {}) {
   const k = categories.length
   const [view, setView] = useState<View>(initialView)
   const [basis, setBasis] = useState<Basis>('counts')
-  const [steps, setSteps] = useState(k)
+  const [steps, setSteps] = useState(initialSteps ?? k)
 
   const n = observed.reduce((a, b) => a + b, 0)
   const axis = labels ?? (categories === CARGO_CATEGORIES ? CARGO_LABELS : categories)
@@ -115,7 +122,7 @@ export function GofVisualiser({
     (view === 'observed'
       ? `Each bar is an observed figure with a marker at the figure the claimed distribution expects. ${categories.map((c, i) => `${c}: observed ${fmt(shownObserved[i], digits)}, expected ${fmt(shownExpected[i], digits)}`).join('; ')}. `
       : `Each bar is one category's contribution to the statistic. ${categories.map((c, i) => `${c}: ${fmt(shown.contributions[i], digits)}`).join('; ')}. `) +
-    `Accumulated over the first ${fmtInt(steps)} of ${fmtInt(k)} categories the statistic stands at ${fmt(running, digits)}; the whole table gives ${fmt(shown.statistic, digits)} on ${fmtInt(shown.df ?? k - 1)} degrees of freedom. The table below carries every figure.`
+    `Accumulated over the first ${fmtInt(steps)} of ${fmtInt(k)} categories the statistic stands at ${fmt(running, digits)}, on ${fmtInt(shown.df ?? k - 1)} degrees of freedom. The table below carries every figure.`
 
   return (
     <Panel
@@ -163,7 +170,8 @@ export function GofVisualiser({
 
         <ReadoutGrid>
           <Readout label={`χ² over ${fmtInt(steps)} of ${fmtInt(k)} categories`} value={fmt(running, digits)} tone="intel" live />
-          <Readout label="still to come" value={fmt(shown.statistic - running, digits)} size="sm" live />
+          {/* With nothing accumulated, "still to come" would be the whole statistic. */}
+          <Readout label="still to come" value={steps === 0 ? '—' : fmt(shown.statistic - running, digits)} stale={steps === 0} size="sm" live />
           <Readout label="df · categories − 1" value={fmtInt(shown.df ?? k - 1)} size="sm" />
           <Readout label="P-value" value={complete ? fmtP(shown.pValue as number) : '—'} tone={complete && (shown.pValue as number) < 0.05 ? 'alert' : 'log'} size="sm" live />
         </ReadoutGrid>
@@ -176,7 +184,9 @@ export function GofVisualiser({
 
         <Note tone={basis === 'counts' ? 'muted' : 'alert'} live>
           {basis === 'counts'
-            ? `Counts. χ² = ${fmt(gof.statistic, 2)} on ${fmtInt(gof.df ?? k - 1)} df, P = ${fmtP(gof.pValue as number)}.`
+            ? complete
+              ? `Counts. χ² = ${fmt(gof.statistic, 2)} on ${fmtInt(gof.df ?? k - 1)} df, P = ${fmtP(gof.pValue as number)}.`
+              : `Counts, ${fmtInt(steps)} of ${fmtInt(k)} categories in. The statistic and its P-value arrive when the last category does.`
             : `${basis === 'percent' ? 'Percentages' : 'Proportions'}. The same ${fmtInt(k)} gaps, divided by ${basis === 'percent' ? 'a hundredth' : 'a factor of ' + fmtInt(n)} of what the formula wants, give χ² = ${fmt(shown.statistic, digits)} and P = ${fmtP(shown.pValue as number)} against the counts' ${fmt(gof.statistic, 2)} and ${fmtP(gof.pValue as number)}. Switch back to counts before reading anything off this panel.`}
         </Note>
 

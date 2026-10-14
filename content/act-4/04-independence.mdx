@@ -213,8 +213,6 @@ Adding the two margins without subtracting would count the {fmtInt(pairs.table[0
 
 <IndependenceChecker preset="sweeps" />
 
-<IndependenceChecker preset="owner" />
-
 <Drill generator="act-4/independence-check" count={2} />
 <Drill generator="act-4/general-addition" count={1} />
 <Drill generator="act-4/multiplication-independent" count={2} />
@@ -269,6 +267,8 @@ Adding the two margins without subtracting would count the {fmtInt(pairs.table[0
 </MissionBeat>
 
 <Gated by={["act-4-04-conditional", "act-4-04-marginal", "act-4-04-verdict"]}>
+
+<IndependenceChecker preset="owner" />
 
 <Scene stamp={metStamp(closeAt)} location={`Sensor bay · Quiet, cellar ${fmt(sinkAt(closeAt), 0)}%`} condensed={`The finding goes into the file scoped to the Ledger: in ${fmtInt(LEDGER_TRANSITS)} records, loss and owner class do not appear independent, ${fmtPct(P_LOST_GIVEN_PERRINE, 1)} of Perrine transits lost against ${fmtPct(P_LOST, 1)} of all transits. Ferrier makes Ebele write 'in this register', logs the file name and the date with it, and holds the word 'why' back for want of a hypothesis. Going off watch, Oyelaran names what matters next: two close passes filed a month apart by two offices multiply, and the ship's own sweeps do not.`}>
 

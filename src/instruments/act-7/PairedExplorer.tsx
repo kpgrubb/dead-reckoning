@@ -86,6 +86,12 @@ export interface PairedExplorerProps {
   differenceLabel?: string
   confidence?: number
   digits?: number
+  /**
+   * Which reading the panel opens on. act-7/04 opens on `two-sample` because its first beat asks
+   * the learner to set the explorer to paired and report d̄; opening already paired printed that
+   * mean before the question.
+   */
+  mode?: 'paired' | 'two-sample'
   showSimulator?: boolean
   label?: string
   tone?: PanelTone
@@ -133,11 +139,12 @@ export function PairedExplorer({
   differenceLabel = 'delay after the uprate minus delay before it',
   confidence: c0 = 0.95,
   digits = 2,
+  mode: mode0 = 'paired',
   showSimulator = true,
   label = 'ENGINEERING · PAIRED OR TWO SAMPLES',
   tone = 'engineering',
 }: PairedExplorerProps = {}) {
-  const [mode, setMode] = useState<Mode>('paired')
+  const [mode, setMode] = useState<Mode>(mode0)
   const [confidence, setConfidence] = useState(c0)
   const [offsetSd, setOffsetSd] = useState(2.5)
 

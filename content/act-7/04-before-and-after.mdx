@@ -195,7 +195,7 @@ One reading finds a shift of {fmt(Math.abs(beaconPaired.estimate), 2)} ms/day th
 <Calculator.Watch>**The df on the paired screen is $n - 1$ pairs minus one**, so {fmtInt(beaconN)} markers give {fmtInt(beaconN - 1)}. It is not {fmtInt(2 * beaconN - 2)}. If the df on your screen is near twice what you expected, you are on `4:2-SampTTest`.</Calculator.Watch>
 </Calculator>
 
-<PairedExplorer />
+<PairedExplorer mode="two-sample" />
 
 <Drill generator="act-7/paired-or-two-sample" count={1} />
 <Drill generator="act-7/paired-t" count={1} />

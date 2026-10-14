@@ -8,7 +8,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, within, type RenderResult } from '@testing-library/react'
 import type { ReactElement } from 'react'
-import { binomial, expectedValue, fmt, geometric, geometricMoments, normal, round, rvCdf, rvSd } from '@/lib/stats'
+import { binomial, expectedValue, fmt, fmtPct, geometric, geometricMoments, normal, round, rvCdf, rvSd } from '@/lib/stats'
 import {
   ARRIVALS_PER_DAY,
   BASELINES,
@@ -170,9 +170,11 @@ describe('<HeatBudgetPlanner>', () => {
     expect(round(normal.sf(64, middle.meanHours, middle.sdHours), 3)).toBe(0.006)
     expect(normal.sf(64, 48, 3)).toBeLessThan(1e-6)
 
+    // The comparator ranks the three points, so it reads in percentage points; the selected
+    // option's own readout keeps four decimals.
     const table = screen.getByRole('table', { name: 'Loiter point comparator' })
     for (const o of LOITER_OPTIONS) {
-      expect(within(table).getByText(fmt(normal.sf(64, o.meanHours, o.sdHours), 4))).toBeInTheDocument()
+      expect(within(table).getByText(fmtPct(normal.sf(64, o.meanHours, o.sdHours), 1))).toBeInTheDocument()
     }
     expect(readout('P(cost > 64 h)')).toContain(fmt(normal.sf(64, middle.meanHours, middle.sdHours), 4))
   })

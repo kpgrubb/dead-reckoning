@@ -7,7 +7,7 @@ import { ProbabilityTreeBuilder } from './ProbabilityTreeBuilder'
 import { IndependenceChecker } from './IndependenceChecker'
 import { BeingSeenSimulator } from './BeingSeenSimulator'
 import { SinkLedgerPanel } from './SinkLedgerPanel'
-import { binomial, fmt, fmtInt, fmtP, geometric, twoWay } from '@/lib/stats'
+import { binomial, fmt, fmtInt, geometric, twoWay } from '@/lib/stats'
 import {
   CLOSE_PASSES,
   CLUSTER_RUNS,
@@ -15,7 +15,6 @@ import {
   FADE_ROWS,
   MARIUS_MET,
   OBSERVED_CLUSTER,
-  P_CLUSTER_SIMULATED,
   P_GRADUAL_GIVEN_LOSS,
   P_LOST,
   P_LOST_GIVEN_PERRINE,
@@ -57,7 +56,8 @@ describe('<ClusterSimulator>', () => {
     expect(screen.getByRole('region', { name: 'INTEL · CLUSTERING SIMULATION' })).toBeInTheDocument()
     expect(readout('runs completed')).toBe(fmtInt(CLUSTER_RUNS))
     expect(readout(`runs with ${OBSERVED_CLUSTER} or more`)).toBe(fmtInt(clusterAtLeastObservedCount))
-    expect(readout('estimated P')).toBe(fmtP(P_CLUSTER_SIMULATED))
+    // The console does not divide for the logged study: that quotient is act-4-01-cluster's answer.
+    expect(readout('estimated P')).toBe('—')
     // The lesson: the count and the run size, never a bare probability.
     expect(readout('that is')).toBe(`${fmtInt(clusterAtLeastObservedCount)} of ${fmtInt(CLUSTER_RUNS)}`)
     expect(screen.getByText(new RegExp(`${fmtInt(clusterAtLeastObservedCount)} of ${fmtInt(CLUSTER_RUNS)} runs produced`))).toBeInTheDocument()

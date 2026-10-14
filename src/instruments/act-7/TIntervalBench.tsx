@@ -270,14 +270,16 @@ export function TIntervalBench({
 
             <section aria-label="What each level costs in margin">
               <Subhead>The same twelve numbers at four levels</Subhead>
+              {/* t* and the margin, not the endpoints: the lesson is what a level costs in width,
+                  and printing all four intervals handed act-7-02-lower its answer. */}
               <KeyTable
-                ariaLabel="Critical value, margin of error and endpoints at four confidence levels for the current summary statistics"
+                ariaLabel="Critical value and margin of error at four confidence levels for the current summary statistics"
                 caption={`x̄ = ${fmt(xbar, 2)}, s = ${fmt(s, 2)}, n = ${fmtInt(n)}`}
-                columns={['level', `t* (df ${fmtInt(n - 1)})`, 'margin', 'lower', 'upper']}
+                columns={['level', `t* (df ${fmtInt(n - 1)})`, 'margin · t*·SE', 'width · 2 × margin']}
                 rows={[0.8, 0.9, 0.95, 0.99].map((c) => {
                   const r = oneMeanInterval({ mean: xbar, sd: s, n }, { confidence: c, random: true })
-                  const [a, b] = r.ci as [number, number]
-                  return [fmtPct(c, 0), fmt(r.criticalValue ?? 0, 4), fmt(r.marginOfError ?? 0, 4), fmt(a, 3), fmt(b, 3)]
+                  const m = r.marginOfError ?? 0
+                  return [fmtPct(c, 0), fmt(r.criticalValue ?? 0, 4), fmt(m, 4), fmt(2 * m, 4)]
                 })}
               />
             </section>

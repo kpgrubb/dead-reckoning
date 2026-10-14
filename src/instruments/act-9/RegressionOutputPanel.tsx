@@ -58,6 +58,12 @@ export interface RegressionOutputPanelProps {
   caption?: string
   /** mode="test": the nulls the learner may select. Default [{ label: 'β = 0', value: 0 }]. */
   nullValues?: readonly { label: string; value: number }[]
+  /**
+   * mode="interval": the level the panel opens on. Default '95'. act-9/02 opens at '90' so the
+   * panel is not already sitting on the interval its mission beats ask the learner to build; the
+   * level control is one click away and the construction readouts are all on screen.
+   */
+  level?: Level
   /** mode="interval": the value a claim is made against, drawn as a reference line. */
   claimAt?: number
   claimLabel?: string
@@ -72,6 +78,7 @@ export function RegressionOutputPanel({
   label = 'ENGINEERING · REGRESSION OUTPUT',
   caption,
   nullValues = DEFAULT_NULLS,
+  level: level0 = '95',
   claimAt,
   claimLabel = 'the claimed value',
   tone = 'engineering',
@@ -82,7 +89,7 @@ export function RegressionOutputPanel({
   const digits = columnDigits([b, seB])
 
   const [target, setTarget] = useState<ReadTarget>('se')
-  const [level, setLevel] = useState<Level>('95')
+  const [level, setLevel] = useState<Level>(level0)
   const [nullIndex, setNullIndex] = useState('0')
   const [alt, setAlt] = useState<Alternative>('greater')
 
@@ -239,19 +246,19 @@ export function RegressionOutputPanel({
             <section aria-label="The same output at three levels">
               <Subhead>What the level costs in width</Subhead>
               <KeyTable
-                ariaLabel="Critical value, margin of error and endpoints at three confidence levels for this output"
+                ariaLabel="Critical value, margin of error and width at three confidence levels for this output"
                 caption={`b = ${fmt(b, digits)}, SE(b) = ${fmt(seB, digits)}, df = ${fmtInt(table.df)}`}
-                columns={['level', `t* (df ${fmtInt(table.df)})`, 'margin', 'lower', 'upper', ...(claimAt === undefined ? [] : ['contains ' + fmt(claimAt, digits)])]}
+                columns={['level', `t* (df ${fmtInt(table.df)})`, 'margin · t*·SE(b)', 'width · 2 × margin', ...(claimAt === undefined ? [] : ['contains ' + fmt(claimAt, digits)])]}
                 rows={LEVELS.map((l) => {
                   const c = Number(l.value) / 100
                   const r = slopeIntervalFromOutput({ b, seB, n: table.n, confidence: c })
                   const [a, z] = r.ci as [number, number]
+                  const m = r.marginOfError ?? 0
                   return [
                     fmtPct(c, 0),
                     fmt(r.criticalValue ?? 0, 4),
-                    fmt(r.marginOfError ?? 0, digits),
-                    fmt(a, digits),
-                    fmt(z, digits),
+                    fmt(m, digits),
+                    fmt(2 * m, digits),
                     ...(claimAt === undefined ? [] : [a <= claimAt && claimAt <= z ? 'yes' : 'no']),
                   ]
                 })}

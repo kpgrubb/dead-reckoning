@@ -116,7 +116,7 @@ So the line goes at **{fmt(fleetCut5, 2)} percent of expectation**, and one hone
 <Calculator.Watch>**Neither command reads a list.** `normalcdf` evaluates a *model* you have chosen and knows nothing about whether the data support it. The probability plot is the step that licenses the model, and the calculator will happily return a tail area for a variable that has no business having one.</Calculator.Watch>
 </Calculator>
 
-<DelayNormalExplorer />
+<DelayNormalExplorer area={0.05} />
 
 The panel opens in **AREA → CUTOFF**, which is the direction Ferrier asked for: put the tail area in the field, read the cutoff off the *cutoff delay* readout, and check the *z-score of the cutoff* against what you expected. The **TAIL** control decides whether the area you typed sits above the line or below it. Set it wrong and the arithmetic will be perfect and the answer will come from the wrong end of the Lane.
 

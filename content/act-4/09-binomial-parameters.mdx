@@ -34,7 +34,12 @@ import { binomialSurpriseInterpretation } from '@/lib/problems/generators/act-4/
 
 export const heat = heatFor('act-4-09')
 export const board = BOARD_FIT
-/** The 2176 fit is the learner's to produce — its numbers appear nowhere before the gate. */
+/**
+ * The 2176 fit is the learner's to produce. Its μ, σ and tail are kept off the page above the
+ * gate: the second explorer is opened below the gate, and the explorer above it carries the
+ * Board's baseline with the cross-baseline sentence switched off. The learner can still load the
+ * 2176 rate into that explorer, which is the instrument doing its job and an act they must take.
+ */
 export const rook = ROOK_FIT
 export const boardPoint = binomial.pmf(LEDGER_LOSSES, LEDGER_TRANSITS, BASELINES.board.p)
 /** The likeliest single count under the Board's baseline: floor((n+1)p). */
@@ -185,8 +190,6 @@ Everything above holds *under the Board's p*. Now do it under the other one, and
 
 <BinomialExplorer n={LEDGER_TRANSITS} p={BASELINES.board.p} k={LEDGER_LOSSES} observed={LEDGER_LOSSES} mode="parameters" label="a Lane transit" />
 
-<BinomialExplorer n={LEDGER_TRANSITS} p={BASELINES.rook.p} k={LEDGER_LOSSES} observed={LEDGER_LOSSES} mode="parameters" label="a Lane transit" />
-
 <Drill generator="act-4/binomial-moments" count={1} />
 <Drill generator="act-4/binomial-z-distance" count={1} />
 <Drill generator="act-4/binomial-tail" count={1} />
@@ -259,6 +262,8 @@ Everything above holds *under the Board's p*. Now do it under the other one, and
 </MissionBeat>
 
 <Gated by={["act-4-09-moments", "act-4-09-spread", "act-4-09-tail", "act-4-09-verdict"]}>
+
+<BinomialExplorer n={LEDGER_TRANSITS} p={BASELINES.rook.p} k={LEDGER_LOSSES} observed={LEDGER_LOSSES} mode="parameters" label="a Lane transit" compare />
 
 <Scene stamp="MET 095/14:36" location={`Bridge · wings in, cellar ${fmtInt(PURGE_FLOOR_PCT)}%`} condensed="The wings come in and both fits go into the annex side by side, each under the rate that produced it. Ferrier will not let the finding say the Board is wrong; it says what the Board assumed and what follows from it. What nobody aboard can settle is which baseline the Lane is entitled to, because that is a question about how far a rate measured off one file can be trusted.">
 
