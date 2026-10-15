@@ -13,7 +13,8 @@
 .dr-table { border-collapse: collapse; font-family: var(--dr-font-mono); font-size: var(--dr-fs-sm); min-width: 40%; }
 .dr-table th, .dr-table td { border-bottom: 1px solid var(--dr-line); padding: var(--dr-sp-1) var(--dr-sp-3); text-align: left; white-space: nowrap; }
 .dr-table th { color: var(--dr-fg-2); font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: var(--dr-fs-xs); border-bottom-color: var(--dr-line-strong); }
-.dr-table td.is-num, .dr-table .is-right { text-align: right; font-variant-numeric: tabular-nums; }
+/* is-num is decided per column, so the header carries it too and sits over its figures. */
+.dr-table td.is-num, .dr-table th.is-num, .dr-table .is-right { text-align: right; font-variant-numeric: tabular-nums; }
 .dr-table .is-center { text-align: center; }
 .dr-table tbody tr:last-child td { border-bottom: 0; }
 .dr-richtext blockquote { margin: var(--dr-sp-2) 0; padding-left: var(--dr-sp-3); border-left: 2px solid var(--dr-line-strong); color: var(--dr-fg-1); }
