@@ -1,0 +1,1 @@
+import{a as e,n as t}from"./jsx-runtime-D3jfb0Ew.js";var n=e(t(),1),r=(0,n.createContext)(null);function i(){return(0,n.useContext)(r)||{meta:{id:`standalone`,act:0,title:`Standalone`,est_minutes:0,path:``},registerBeat:()=>{}}}export{i as n,r as t};

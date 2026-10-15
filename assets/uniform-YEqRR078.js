@@ -1,0 +1,1 @@
+function e(e,t){if(!(t>e))throw RangeError(`uniform: need a < b, got a=${e}, b=${t}`)}function t(t,n=0,r=1){return e(n,r),t>=n&&t<=r?1/(r-n):0}export{t};
